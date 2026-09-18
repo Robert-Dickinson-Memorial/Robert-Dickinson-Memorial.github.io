@@ -2,6 +2,8 @@
 
 This repository preserves the complete source for the Robert E. Dickinson memorial website and includes a GitHub Pages publication snapshot.
 
+The deployment workflow publishes the visitor-facing snapshot whenever `main` is updated.
+
 ## Publication
 
 - The full application source is in `app/`, with its database schema in `db/` and `drizzle/`.
