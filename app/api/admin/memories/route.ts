@@ -1,11 +1,11 @@
 import { env } from "cloudflare:workers";
-import { isModeratorEmail } from "../../../moderation";
+import { isOwnerEmail, requestUserEmail } from "../../../moderation";
 
 export const dynamic = "force-dynamic";
 
 function moderatorEmail(request: Request): string | null {
-  const email = request.headers.get("oai-authenticated-user-email");
-  return email && isModeratorEmail(email) ? email : null;
+  const email = requestUserEmail(request);
+  return email && isOwnerEmail(email) ? email : null;
 }
 
 export async function PATCH(request: Request) {

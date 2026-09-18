@@ -1,11 +1,11 @@
 import { env } from "cloudflare:workers";
-import { isModeratorEmail } from "../../../../moderation";
+import { isOwnerEmail, requestUserEmail } from "../../../../moderation";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request, context: { params: Promise<{ key: string[] }> }) {
-  const email = request.headers.get("oai-authenticated-user-email");
-  if (!email || !isModeratorEmail(email) || !env.DB || !env.BUCKET) {
+  const email = requestUserEmail(request);
+  if (!email || !isOwnerEmail(email) || !env.DB || !env.BUCKET) {
     return new Response("Not found", { status: 404 });
   }
 

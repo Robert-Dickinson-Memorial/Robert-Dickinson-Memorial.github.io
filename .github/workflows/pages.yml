@@ -1,4 +1,3 @@
-# Re-trigger after account rename
 name: Deploy memorial website to GitHub Pages
 
 on:
@@ -27,10 +26,12 @@ jobs:
 
       - name: Prepare static publication
         run: |
-          mkdir -p _site/assets _site/memory-book
+          mkdir -p _site/assets _site/memory-book _site/tree
           cp static/index.html _site/index.html
           cp static/site.js _site/site.js
+          cp static/config.js _site/config.js
           cp static/memory-book.html _site/memory-book/index.html
+          cp static/tree/index.html _site/tree/index.html
           tail -n +4 app/globals.css > _site/assets/styles.css
           cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
           cp public/memorial-horizon.png _site/assets/memorial-horizon.png

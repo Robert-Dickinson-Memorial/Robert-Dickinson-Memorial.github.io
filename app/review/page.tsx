@@ -1,18 +1,19 @@
 import { env } from "cloudflare:workers";
 import { ArrowLeft, Bell, BellOff } from "lucide-react";
+import Link from "next/link";
 import { requireChatGPTUser } from "../chatgpt-auth";
-import { emailNotificationsConfigured, isModeratorEmail } from "../moderation";
+import { emailNotificationsConfigured, isOwnerEmail } from "../moderation";
 import ReviewQueue, { PendingMemory } from "./review-queue";
 
 export const dynamic = "force-dynamic";
 
 export default async function ReviewPage() {
   const user = await requireChatGPTUser("/review");
-  if (!isModeratorEmail(user.email)) {
+  if (!isOwnerEmail(user.email)) {
     return (
       <main className="review-shell">
-        <a className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</a>
-        <section className="review-denied"><h1>Moderator access required</h1><p>This review area is limited to approved memorial editors.</p></section>
+        <Link className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</Link>
+        <section className="review-denied"><h1>Owner access required</h1><p>Only the memorial owner can approve or reject submissions.</p></section>
       </main>
     );
   }
@@ -27,7 +28,7 @@ export default async function ReviewPage() {
   return (
     <main className="review-shell">
       <header className="review-header">
-        <a className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</a>
+        <Link className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</Link>
         <p className="section-kicker">Private moderation</p>
         <h1>Review submitted memories</h1>
         <p>Approve a story to publish it on the memory wall, or reject it to keep it private.</p>

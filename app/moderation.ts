@@ -5,17 +5,41 @@ function runtimeValue(key: string): string {
   return runtime[key]?.trim() ?? "";
 }
 
-export function isModeratorEmail(email: string): boolean {
-  const allowed = runtimeValue("MODERATOR_EMAILS")
+function emailList(key: string): string[] {
+  return runtimeValue(key)
     .split(",")
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean);
+}
+
+export function requestUserEmail(request: Request): string | null {
+  return request.headers.get("cf-access-authenticated-user-email") || request.headers.get("oai-authenticated-user-email");
+}
+
+export function isOwnerEmail(email: string): boolean {
+  const allowed = [...emailList("OWNER_EMAILS"), ...emailList("REVIEWER_EMAILS"), ...emailList("MODERATOR_EMAILS")];
   return allowed.includes(email.trim().toLowerCase());
 }
 
-export function isModeratorRequest(request: Request): boolean {
-  const email = request.headers.get("oai-authenticated-user-email");
-  return Boolean(email && isModeratorEmail(email));
+export async function isEditorEmail(email: string): Promise<boolean> {
+  if (isOwnerEmail(email)) return true;
+  if (!env.DB) return false;
+  try {
+    const editor = await env.DB.prepare("SELECT email FROM memorial_editors WHERE lower(email) = ? LIMIT 1").bind(email.trim().toLowerCase()).first();
+    return Boolean(editor);
+  } catch {
+    return emailList("EDITOR_EMAILS").includes(email.trim().toLowerCase());
+  }
+}
+
+export function isOwnerRequest(request: Request): boolean {
+  const email = requestUserEmail(request);
+  return Boolean(email && isOwnerEmail(email));
+}
+
+export async function isEditorRequest(request: Request): Promise<boolean> {
+  const email = requestUserEmail(request);
+  return Boolean(email && await isEditorEmail(email));
 }
 
 export function emailNotificationsConfigured(): boolean {

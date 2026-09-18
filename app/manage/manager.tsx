@@ -5,6 +5,7 @@ import { CalendarPlus, ImagePlus, Save, Trash2, Video } from "lucide-react";
 import type { GalleryItem, MemorialEvent } from "../site-data";
 
 type EditableContent = { heroIntro: string; obituaryStory: string; treeTribute: string; treeDetail: string };
+type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -12,7 +13,7 @@ async function responseData(response: Response) {
   return data;
 }
 
-export default function Manager({ content, events, media }: { content: EditableContent; events: MemorialEvent[]; media: GalleryItem[] }) {
+export default function Manager({ content, events, media, editors, owner }: { content: EditableContent; events: MemorialEvent[]; media: GalleryItem[]; editors: MemorialEditor[]; owner: boolean }) {
   const [contentValues, setContentValues] = useState(content);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -49,6 +50,24 @@ export default function Manager({ content, events, media }: { content: EditableC
     setBusy(true); setMessage("");
     try {
       await responseData(await fetch(`/api/admin/${path}?id=${id}`, { method: "DELETE" }));
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
+  async function addEditor(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setMessage("");
+    const form = new FormData(event.currentTarget);
+    try {
+      await responseData(await fetch("/api/admin/editors", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(Object.fromEntries(form.entries())) }));
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
+  async function removeEditor(email: string) {
+    if (!window.confirm(`Remove editor access for ${email}?`)) return;
+    setBusy(true); setMessage("");
+    try {
+      await responseData(await fetch(`/api/admin/editors?email=${encodeURIComponent(email)}`, { method: "DELETE" }));
       window.location.reload();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
@@ -98,6 +117,18 @@ export default function Manager({ content, events, media }: { content: EditableC
           {!media.length && <p>No gallery items have been added.</p>}
         </div>
       </section>
+
+      {owner && <section id="edit-access" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Family & trusted editors</p><h2>Manage editor access</h2><p>Editors can update text, events, and gallery items. Only you can approve or reject submitted memories.</p></div>
+        <form className="manager-form" onSubmit={addEditor}>
+          <div className="manager-row"><label>Name<input name="displayName" placeholder="Family member or editor" /></label><label>Email address<input name="email" type="email" required placeholder="name@example.com" /></label></div>
+          <button className="manager-primary" disabled={busy}><Save size={18} /> Grant editor access</button>
+        </form>
+        <div className="manager-items">
+          {editors.map((editor) => <article key={editor.email}><div><strong>{editor.displayName || editor.email}</strong><span>{editor.email}</span></div><button onClick={() => removeEditor(editor.email)} aria-label={`Remove editor access for ${editor.email}`}><Trash2 size={17} /></button></article>)}
+          {!editors.length && <p>No additional editors have been added.</p>}
+        </div>
+      </section>}
     </div>
   );
 }

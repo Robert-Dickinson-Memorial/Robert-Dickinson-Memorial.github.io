@@ -43,3 +43,9 @@ export const galleryItems = sqliteTable("gallery_items", {
   published: integer("published", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").notNull(),
 }, (table) => [index("idx_gallery_published_created").on(table.published, table.createdAt)]);
+
+export const memorialEditors = sqliteTable("memorial_editors", {
+  email: text("email").primaryKey(),
+  displayName: text("display_name"),
+  createdAt: text("created_at").notNull(),
+});

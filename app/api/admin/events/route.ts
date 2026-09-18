@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { isModeratorRequest } from "../../../moderation";
+import { isEditorRequest } from "../../../moderation";
 
 export const dynamic = "force-dynamic";
 const clean = (value: unknown, max: number) => typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -11,7 +11,7 @@ function safeUrl(value: unknown): string | null {
 }
 
 export async function POST(request: Request) {
-  if (!isModeratorRequest(request)) return Response.json({ error: "Editor access is required." }, { status: 403 });
+  if (!await isEditorRequest(request)) return Response.json({ error: "Editor access is required." }, { status: 403 });
   if (!env.DB) return Response.json({ error: "The memorial archive is unavailable." }, { status: 503 });
   const body = await request.json() as Record<string, unknown>;
   const title = clean(body.title, 180);
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!isModeratorRequest(request)) return Response.json({ error: "Editor access is required." }, { status: 403 });
+  if (!await isEditorRequest(request)) return Response.json({ error: "Editor access is required." }, { status: 403 });
   if (!env.DB) return Response.json({ error: "The memorial archive is unavailable." }, { status: 503 });
   const id = Number(new URL(request.url).searchParams.get("id"));
   if (!Number.isInteger(id) || id < 1) return Response.json({ error: "Invalid event." }, { status: 400 });

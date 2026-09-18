@@ -8,7 +8,9 @@ The deployment workflow publishes the visitor-facing snapshot whenever `main` is
 
 - The full application source is in `app/`, with its database schema in `db/` and `drizzle/`.
 - The GitHub Pages snapshot is in `static/` and is deployed by `.github/workflows/pages.yml`.
-- GitHub Pages is static hosting. The original full application’s database, photo uploads, moderation queue, editor pages, and email notifications require a server runtime plus D1/R2-compatible storage; those pieces remain represented in this repository but do not execute on GitHub Pages.
+- GitHub Pages is static hosting. The visitor page is prepared to load approved memories, gallery items, events, and editable copy from the companion Worker API configured in `static/config.js`.
+- The companion application uses D1 for content and moderation records, R2 for photographs, and a protected identity layer for `/manage` and `/review`.
+- `OWNER_EMAILS` controls the single owner/reviewer role. Additional family or trusted editors are managed from the private editor page and can update text, events, and gallery items without gaining approve/reject access.
 
 ## Local development
 

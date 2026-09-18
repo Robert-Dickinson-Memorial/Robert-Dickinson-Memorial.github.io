@@ -3,8 +3,6 @@ import {
   BookOpen,
   CloudSun,
   Compass,
-  GraduationCap,
-  Heart,
   Leaf,
   Quote,
   Sprout,
@@ -15,13 +13,16 @@ import EventsSection from "./events-section";
 import GallerySection from "./gallery-section";
 import MemoryWall from "./memory-wall";
 import { getChatGPTUser } from "./chatgpt-auth";
-import { isModeratorEmail } from "./moderation";
+import { isEditorEmail, isOwnerEmail } from "./moderation";
 import { getPublishedEvents, getPublishedGallery, getSiteContent } from "./site-data";
 
 async function ReviewLink() {
   const user = await getChatGPTUser();
-  if (!user || !isModeratorEmail(user.email)) return null;
-  return <><a href="/manage">Manage memorial</a><a href="/review">Review submissions</a></>;
+  if (!user) return null;
+  const editor = await isEditorEmail(user.email);
+  const owner = isOwnerEmail(user.email);
+  if (!editor && !owner) return null;
+  return <>{editor && <a href="/manage">Manage memorial</a>}{owner && <a href="/review">Review submissions</a>}</>;
 }
 
 const milestones = [
@@ -95,13 +96,23 @@ export default async function Home() {
         </figure>
       </header>
 
-      <div className="memorial-actions" aria-label="Memorial actions">
-        <a href="#life"><BookOpen size={22} /><span><strong>Read the obituary</strong><small>His life and work</small></span></a>
-        <a href="#share"><Heart size={22} /><span><strong>Share a memory</strong><small>Stories and photos</small></span></a>
-        <a href="#memories"><Quote size={22} /><span><strong>Visit the memory wall</strong><small>Voices of his community</small></span></a>
-        <a href="#tree"><Sprout size={22} /><span><strong>Plant a tree</strong><small>In a Minnesota forest</small></span></a>
-        <a href="/memory-book"><BookOpen size={22} /><span><strong>Turn photos into a book</strong><small>Print or save a keepsake</small></span></a>
-      </div>
+      <section className="tribute-actions" aria-labelledby="tribute-actions-title">
+        <div className="tribute-actions-copy">
+          <p className="section-kicker">Living tributes</p>
+          <h2 id="tribute-actions-title">Two lasting ways to remember Robert</h2>
+          <p>The main navigation now leads directly to his story, scientific legacy, events, gallery, and community memories.</p>
+        </div>
+        <div className="tribute-action-grid">
+          <a className="tribute-action-card tree-card" href="/tree">
+            <span className="tribute-action-icon"><Sprout size={28} aria-hidden="true" /></span>
+            <span><small>Living tribute</small><strong>Plant a tree in his memory</strong><em>Dedicate trees, add a message, and receive a personalized certificate.</em><b>Begin a dedication →</b></span>
+          </a>
+          <a className="tribute-action-card book-card" href="/memory-book">
+            <span className="tribute-action-icon"><BookOpen size={28} aria-hidden="true" /></span>
+            <span><small>Community keepsake</small><strong>Turn memories into a book</strong><em>Read or print an editorial collection of approved stories and photographs.</em><b>Open the memory book →</b></span>
+          </a>
+        </div>
+      </section>
 
       <section id="life" className="story-section">
         <div className="section-kicker">His story</div>
@@ -155,10 +166,9 @@ export default async function Home() {
           <h2>Plant a tree in Robert’s memory</h2>
           <p>{content.treeTribute}</p>
           <p className="tree-detail">{content.treeDetail}</p>
-          <a className="tree-button" href="https://www.memorialtree.com/chippewa-national-forest-project" target="_blank" rel="noopener noreferrer">
-            <Leaf size={18} aria-hidden="true" /> Plant a memorial tree
-          </a>
-          <small>Opens the Chippewa National Forest planting project at A Tree to Remember.</small>
+          <div className="tree-highlights" aria-label="Tree dedication features"><span>Personalized certificate</span><span>Custom memorial message</span><span>Native reforestation</span></div>
+          <a className="tree-button" href="/tree"><Leaf size={18} aria-hidden="true" /> View the tree dedication</a>
+          <small>Learn how the dedication works before continuing to the nonprofit provider.</small>
         </div>
       </section>
 

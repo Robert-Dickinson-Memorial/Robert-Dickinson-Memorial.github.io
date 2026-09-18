@@ -1,11 +1,11 @@
 import { env } from "cloudflare:workers";
-import { isModeratorRequest } from "../../../moderation";
+import { isEditorRequest } from "../../../moderation";
 
 export const dynamic = "force-dynamic";
 const allowedKeys = new Set(["heroIntro", "obituaryStory", "treeTribute", "treeDetail"]);
 
 export async function PATCH(request: Request) {
-  if (!isModeratorRequest(request)) return Response.json({ error: "Editor access is required." }, { status: 403 });
+  if (!await isEditorRequest(request)) return Response.json({ error: "Editor access is required." }, { status: 403 });
   if (!env.DB) return Response.json({ error: "The memorial archive is unavailable." }, { status: 503 });
   const body = await request.json() as { values?: Record<string, unknown> };
   const values = Object.entries(body.values ?? {}).filter(([key, value]) => allowedKeys.has(key) && typeof value === "string");
