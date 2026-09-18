@@ -1,3 +1,4 @@
+# Re-trigger after account rename
 name: Deploy memorial website to GitHub Pages
 
 on:
