@@ -1,0 +1,49 @@
+name: Deploy memorial website to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare static publication
+        run: |
+          mkdir -p _site/assets _site/memory-book
+          cp static/index.html _site/index.html
+          cp static/site.js _site/site.js
+          cp static/memory-book.html _site/memory-book/index.html
+          tail -n +4 app/globals.css > _site/assets/styles.css
+          cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
+          cp public/memorial-horizon.png _site/assets/memorial-horizon.png
+          cp public/favicon.svg _site/favicon.svg
+          touch _site/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload publication
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,101 @@
+import { env } from "cloudflare:workers";
+import { sendReviewNotification } from "../../moderation";
+
+export const dynamic = "force-dynamic";
+
+function clean(value: unknown, max: number) {
+  return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
+export async function GET() {
+  try {
+    if (!env.DB) throw new Error("Database unavailable");
+    const result = await env.DB.prepare(
+      `SELECT id, name, relationship, title, story, photo_key AS photoKey
+       FROM memories WHERE status = ? ORDER BY created_at DESC, id DESC LIMIT 50`
+    ).bind("approved").all();
+    return Response.json({ memories: result.results });
+  } catch {
+    return Response.json({ memories: [] });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    if (!env.DB) throw new Error("The memorial archive is temporarily unavailable.");
+    const contentType = request.headers.get("content-type") || "";
+    let name = "", relationship = "", email = "", title = "", story = "";
+    let consent = false;
+    let photo: File | null = null;
+
+    if (contentType.includes("multipart/form-data")) {
+      const form = await request.formData();
+      name = clean(form.get("name"), 100);
+      relationship = clean(form.get("relationship"), 120);
+      email = clean(form.get("email"), 200);
+      title = clean(form.get("title"), 160);
+      story = clean(form.get("story"), 6000);
+      consent = form.get("consent") === "on";
+      const candidate = form.get("photo");
+      photo = candidate instanceof File && candidate.size > 0 ? candidate : null;
+    } else {
+      const body = await request.json() as Record<string, unknown>;
+      name = clean(body.name, 100);
+      relationship = clean(body.relationship, 120);
+      email = clean(body.email, 200);
+      title = clean(body.title, 160);
+      story = clean(body.story, 6000);
+      consent = true;
+    }
+
+    if (name.length < 2 || relationship.length < 2 || title.length < 2 || story.length < 20) {
+      return Response.json({ error: "Please complete your name, connection, title, and story." }, { status: 400 });
+    }
+    if (!consent) {
+      return Response.json({ error: "Permission is required before we can accept a submission." }, { status: 400 });
+    }
+
+    let photoKey: string | null = null;
+    let photoName: string | null = null;
+    if (photo) {
+      const allowed = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowed.includes(photo.type) || photo.size > 8 * 1024 * 1024) {
+        return Response.json({ error: "Please choose a JPG, PNG, or WebP image under 8 MB." }, { status: 400 });
+      }
+      if (!env.BUCKET) throw new Error("Photo storage is temporarily unavailable.");
+      photoKey = `pending/${crypto.randomUUID()}`;
+      photoName = clean(photo.name, 240);
+      await env.BUCKET.put(photoKey, photo.stream(), {
+        httpMetadata: { contentType: photo.type },
+        customMetadata: { originalName: photoName },
+      });
+    }
+
+    try {
+      await env.DB.prepare(
+        `INSERT INTO memories
+         (name, relationship, email, title, story, photo_key, photo_name, status, consent, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(name, relationship, email || null, title, story, photoKey, photoName, "pending", 1, new Date().toISOString()).run();
+    } catch (error) {
+      if (photoKey && env.BUCKET) await env.BUCKET.delete(photoKey);
+      throw error;
+    }
+
+    try {
+      await sendReviewNotification({
+        name,
+        relationship,
+        title,
+        reviewUrl: new URL("/review", request.url).toString(),
+      });
+    } catch (notificationError) {
+      console.warn("Review notification could not be sent", notificationError);
+    }
+
+    return Response.json({ ok: true, status: "pending_review" }, { status: 201 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to save this memory.";
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
