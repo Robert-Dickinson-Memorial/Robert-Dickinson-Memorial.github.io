@@ -1,7 +1,10 @@
 import { getPublishedGallery } from "../../site-data";
+import { publicJson, publicOptions } from "../../cors";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  return Response.json({ gallery: await getPublishedGallery() });
+  return publicJson({ gallery: await getPublishedGallery() });
 }
+
+export function OPTIONS() { return publicOptions(); }

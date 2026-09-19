@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare static publication
+        env:
+          MEMORIAL_API_BASE: ${{ vars.MEMORIAL_API_BASE }}
         run: |
           mkdir -p _site/assets _site/memory-book _site/tree
           cp static/index.html _site/index.html
@@ -37,6 +39,7 @@ jobs:
           cp public/memorial-horizon.png _site/assets/memorial-horizon.png
           cp public/favicon.svg _site/favicon.svg
           touch _site/.nojekyll
+          node -e 'require("node:fs").writeFileSync("_site/config.js", `window.MEMORIAL_API_BASE = ${JSON.stringify(process.env.MEMORIAL_API_BASE || "")};\n`)'
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

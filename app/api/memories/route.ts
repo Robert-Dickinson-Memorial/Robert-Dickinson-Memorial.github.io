@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { sendReviewNotification } from "../../moderation";
+import { isAllowedPublicOrigin, publicJson, publicOptions } from "../../cors";
 
 export const dynamic = "force-dynamic";
 
@@ -14,17 +15,24 @@ export async function GET() {
       `SELECT id, name, relationship, title, story, photo_key AS photoKey
        FROM memories WHERE status = ? ORDER BY created_at DESC, id DESC LIMIT 50`
     ).bind("approved").all();
-    return Response.json({ memories: result.results });
+    return publicJson({ memories: result.results });
   } catch {
-    return Response.json({ memories: [] });
+    return publicJson({ memories: [] });
   }
+}
+
+export function OPTIONS() {
+  return publicOptions();
 }
 
 export async function POST(request: Request) {
   try {
+    if (!isAllowedPublicOrigin(request)) {
+      return publicJson({ error: "This submission source is not allowed." }, { status: 403 });
+    }
     if (!env.DB) throw new Error("The memorial archive is temporarily unavailable.");
     const contentType = request.headers.get("content-type") || "";
-    let name = "", relationship = "", email = "", title = "", story = "";
+    let name = "", relationship = "", email = "", title = "", story = "", website = "";
     let consent = false;
     let photo: File | null = null;
 
@@ -35,6 +43,7 @@ export async function POST(request: Request) {
       email = clean(form.get("email"), 200);
       title = clean(form.get("title"), 160);
       story = clean(form.get("story"), 6000);
+      website = clean(form.get("website"), 200);
       consent = form.get("consent") === "on";
       const candidate = form.get("photo");
       photo = candidate instanceof File && candidate.size > 0 ? candidate : null;
@@ -48,11 +57,13 @@ export async function POST(request: Request) {
       consent = true;
     }
 
+    if (website) return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
+
     if (name.length < 2 || relationship.length < 2 || title.length < 2 || story.length < 20) {
-      return Response.json({ error: "Please complete your name, connection, title, and story." }, { status: 400 });
+      return publicJson({ error: "Please complete your name, connection, title, and story." }, { status: 400 });
     }
     if (!consent) {
-      return Response.json({ error: "Permission is required before we can accept a submission." }, { status: 400 });
+      return publicJson({ error: "Permission is required before we can accept a submission." }, { status: 400 });
     }
 
     let photoKey: string | null = null;
@@ -60,7 +71,7 @@ export async function POST(request: Request) {
     if (photo) {
       const allowed = ["image/jpeg", "image/png", "image/webp"];
       if (!allowed.includes(photo.type) || photo.size > 8 * 1024 * 1024) {
-        return Response.json({ error: "Please choose a JPG, PNG, or WebP image under 8 MB." }, { status: 400 });
+        return publicJson({ error: "Please choose a JPG, PNG, or WebP image under 8 MB." }, { status: 400 });
       }
       if (!env.BUCKET) throw new Error("Photo storage is temporarily unavailable.");
       photoKey = `pending/${crypto.randomUUID()}`;
@@ -93,9 +104,9 @@ export async function POST(request: Request) {
       console.warn("Review notification could not be sent", notificationError);
     }
 
-    return Response.json({ ok: true, status: "pending_review" }, { status: 201 });
+    return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to save this memory.";
-    return Response.json({ error: message }, { status: 500 });
+    return publicJson({ error: message }, { status: 500 });
   }
 }

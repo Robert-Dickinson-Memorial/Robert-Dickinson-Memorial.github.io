@@ -89,7 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = document.querySelector("[data-memory-wall]");
     if (!(target instanceof HTMLElement)) return;
     const { memories = [] } = await getJson("/api/memories");
-    if (!memories.length) return;
+    if (!memories.length) {
+      target.replaceChildren(node("p", { className: "memories-empty", text: "Approved community memories will appear here." }));
+      return;
+    }
     target.replaceChildren(...memories.map((memory) => {
       const article = node("article", { className: "memory-card" });
       if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));

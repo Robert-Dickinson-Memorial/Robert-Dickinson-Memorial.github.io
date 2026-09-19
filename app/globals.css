@@ -464,3 +464,18 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+.form-honeypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+}
+
+.memories-empty {
+  color: var(--muted);
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 28px 0;
+}

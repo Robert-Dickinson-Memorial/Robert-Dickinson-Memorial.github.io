@@ -12,6 +12,28 @@ The deployment workflow publishes the visitor-facing snapshot whenever `main` is
 - The companion application uses D1 for content and moderation records, R2 for photographs, and a protected identity layer for `/manage` and `/review`.
 - `OWNER_EMAILS` controls the single owner/reviewer role. Additional family or trusted editors are managed from the private editor page and can update text, events, and gallery items without gaining approve/reject access.
 
+## Public submissions and private review
+
+The GitHub Pages address remains the only public memorial address. Its memory form sends submissions directly to a separate Cloudflare Worker API; visitors do not leave the page. D1 stores stories and moderation status, while R2 stores photographs. Nothing appears publicly until the owner approves it.
+
+The repository contains two deployment workflows:
+
+- `pages.yml` publishes the public site and inserts the Worker URL from the `MEMORIAL_API_BASE` repository variable.
+- `backend.yml` builds the full service, applies D1 migrations, and deploys the Worker.
+
+### One-time Cloudflare setup
+
+The ChatGPT Cloudflare connector is not required. Complete these items directly in the Cloudflare and GitHub dashboards:
+
+1. In Cloudflare, create a D1 database named `robert-dickinson-memorial` and an R2 bucket named `robert-dickinson-memorial-photos`.
+2. Create a scoped Cloudflare API token that can deploy Workers and edit D1 and R2 resources.
+3. In the GitHub repository, add Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+4. Add repository variables `CLOUDFLARE_D1_DATABASE_ID`, `MEMORIAL_OWNER_EMAIL`, and—after the first backend deployment—`MEMORIAL_API_BASE`. Optional variables `CLOUDFLARE_D1_DATABASE_NAME` and `CLOUDFLARE_R2_BUCKET_NAME` override the default resource names.
+5. Run **Deploy memorial submission service** once. Copy the resulting `workers.dev` URL into `MEMORIAL_API_BASE`, without a trailing slash, then rerun **Deploy memorial website to GitHub Pages**.
+6. In Cloudflare Zero Trust Access, protect the Worker paths `/manage*`, `/review*`, and `/api/admin/*`. Allow email one-time-pin authentication. The application still enforces `MEMORIAL_OWNER_EMAIL` for approve/reject access and the database editor list for content/gallery access.
+
+The owner reviews submissions at `<MEMORIAL_API_BASE>/review` and manages text, events, gallery items, and editor access at `<MEMORIAL_API_BASE>/manage`.
+
 ## Local development
 
 The application uses Node.js 22+ and pnpm. See the original Sites lifecycle notes below for the full development setup.
