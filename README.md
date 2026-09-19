@@ -32,6 +32,8 @@ The ChatGPT Cloudflare connector is not required. Complete these items directly 
 5. Run **Deploy memorial submission service** once. Copy the resulting `workers.dev` URL into `MEMORIAL_API_BASE`, without a trailing slash, then rerun **Deploy memorial website to GitHub Pages**.
 6. In Cloudflare Zero Trust Access, protect the Worker paths `/manage*`, `/review*`, and `/api/admin/*`. Allow email one-time-pin authentication. The application still enforces `MEMORIAL_OWNER_EMAIL` for approve/reject access and the database editor list for content/gallery access.
 
+Current deployed API: `https://robert-dickinson-memorial-api.gisgter2008.workers.dev`
+
 The owner reviews submissions at `<MEMORIAL_API_BASE>/review` and manages text, events, gallery items, and editor access at `<MEMORIAL_API_BASE>/manage`.
 
 ## Local development
