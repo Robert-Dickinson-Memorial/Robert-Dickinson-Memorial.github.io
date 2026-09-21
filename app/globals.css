@@ -287,6 +287,9 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 .manager-items article div { display: flex; flex-direction: column; }
 .manager-items article span, .manager-items > p { color: var(--muted); font-size: .78rem; }
 .manager-items button { background: transparent; border: 0; color: #852d28; cursor: pointer; padding: 9px; }
+.manager-items article .manager-actions { flex-direction: row; gap: 5px; }
+.manager-actions button { align-items: center; border: 1px solid #d7c7bd; border-radius: 999px; display: inline-flex; gap: 6px; padding: 7px 10px; }
+.manager-actions button b { font-size: .72rem; font-weight: 650; white-space: nowrap; }
 .manager-message { background: #e3eee4; color: #315b3a; margin: 0; padding: 13px 16px; }
 
 .book-shell { background: #d9d2c7; min-height: 100vh; padding: 34px 20px 80px; }

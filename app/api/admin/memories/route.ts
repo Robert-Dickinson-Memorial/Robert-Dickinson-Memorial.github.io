@@ -50,7 +50,8 @@ export async function DELETE(request: Request) {
   }
 
   const id = Number(new URL(request.url).searchParams.get("id"));
-  if (!Number.isInteger(id) || id < 1) {
+  const mode = new URL(request.url).searchParams.get("mode") || "all";
+  if (!Number.isInteger(id) || id < 1 || !["photo", "all"].includes(mode)) {
     return Response.json({ error: "Invalid memory." }, { status: 400 });
   }
 
@@ -61,7 +62,14 @@ export async function DELETE(request: Request) {
     return Response.json({ error: "Published memory not found." }, { status: 404 });
   }
 
+  if (mode === "photo") {
+    if (!memory.photoKey) return Response.json({ error: "This memory has no photo." }, { status: 404 });
+    await env.BUCKET.delete(memory.photoKey);
+    await env.DB.prepare("UPDATE memories SET photo_key = NULL, photo_name = NULL WHERE id = ? AND status = 'approved'").bind(id).run();
+    return Response.json({ ok: true, id, deleted: "photo" });
+  }
+
   if (memory.photoKey) await env.BUCKET.delete(memory.photoKey);
   await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
-  return Response.json({ ok: true, id });
+  return Response.json({ ok: true, id, deleted: "memory" });
 }
