@@ -21,6 +21,8 @@ config.vars = {
   PUBLIC_SITE_ORIGIN: "https://robert-dickinson-memorial.github.io",
   ...(process.env.REVIEW_NOTIFICATION_TO?.trim() ? { REVIEW_NOTIFICATION_TO: process.env.REVIEW_NOTIFICATION_TO.trim() } : {}),
   ...(process.env.REVIEW_NOTIFICATION_FROM?.trim() ? { REVIEW_NOTIFICATION_FROM: process.env.REVIEW_NOTIFICATION_FROM.trim() } : {}),
+  ...(process.env.NOTIFICATION_FROM_EMAIL?.trim() ? { NOTIFICATION_FROM_EMAIL: process.env.NOTIFICATION_FROM_EMAIL.trim() } : {}),
+  ...(process.env.NOTIFICATION_FROM_NAME?.trim() ? { NOTIFICATION_FROM_NAME: process.env.NOTIFICATION_FROM_NAME.trim() } : {}),
 };
 
 config.d1_databases = (config.d1_databases || []).map((binding) =>

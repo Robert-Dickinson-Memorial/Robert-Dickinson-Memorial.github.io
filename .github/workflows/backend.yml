@@ -36,6 +36,9 @@ jobs:
       MEMORIAL_OWNER_EMAIL: ${{ vars.MEMORIAL_OWNER_EMAIL }}
       REVIEW_NOTIFICATION_TO: ${{ vars.REVIEW_NOTIFICATION_TO }}
       REVIEW_NOTIFICATION_FROM: ${{ vars.REVIEW_NOTIFICATION_FROM }}
+      NOTIFICATION_FROM_EMAIL: ${{ vars.NOTIFICATION_FROM_EMAIL }}
+      NOTIFICATION_FROM_NAME: ${{ vars.NOTIFICATION_FROM_NAME }}
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
     steps:
       - name: Check out repository
@@ -67,6 +70,10 @@ jobs:
       - name: Deploy Worker
         run: pnpm exec wrangler deploy --config dist/server/wrangler.deploy.json
 
-      - name: Activate email service
+      - name: Activate Brevo email service
+        if: ${{ env.BREVO_API_KEY != '' }}
+        run: printf '%s' "$BREVO_API_KEY" | pnpm exec wrangler secret put BREVO_API_KEY --config dist/server/wrangler.deploy.json
+
+      - name: Activate Resend email service
         if: ${{ env.RESEND_API_KEY != '' }}
         run: printf '%s' "$RESEND_API_KEY" | pnpm exec wrangler secret put RESEND_API_KEY --config dist/server/wrangler.deploy.json
