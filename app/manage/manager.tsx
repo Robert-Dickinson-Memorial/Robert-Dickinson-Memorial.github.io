@@ -6,6 +6,7 @@ import type { GalleryItem, MemorialEvent } from "../site-data";
 
 type EditableContent = { heroIntro: string; obituaryStory: string; treeTribute: string; treeDetail: string };
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
+type PublishedMemoryPhoto = { id: number; name: string; title: string; photoKey: string };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -13,7 +14,7 @@ async function responseData(response: Response) {
   return data;
 }
 
-export default function Manager({ content, events, media, editors, owner }: { content: EditableContent; events: MemorialEvent[]; media: GalleryItem[]; editors: MemorialEditor[]; owner: boolean }) {
+export default function Manager({ content, events, media, memoryPhotos, editors, owner }: { content: EditableContent; events: MemorialEvent[]; media: GalleryItem[]; memoryPhotos: PublishedMemoryPhoto[]; editors: MemorialEditor[]; owner: boolean }) {
   const [contentValues, setContentValues] = useState(content);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -72,6 +73,15 @@ export default function Manager({ content, events, media, editors, owner }: { co
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
 
+  async function removeMemoryPhoto(id: number, title: string) {
+    if (!window.confirm(`Delete the published photo attached to “${title}”? The memory text will remain published.`)) return;
+    setBusy(true); setMessage("");
+    try {
+      await responseData(await fetch(`/api/admin/memories?id=${id}`, { method: "DELETE" }));
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
   return (
     <div className="manager-grid">
       {message && <p className="manager-message" role="status">{message}</p>}
@@ -103,7 +113,7 @@ export default function Manager({ content, events, media, editors, owner }: { co
       </section>
 
       <section id="edit-gallery" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Gallery</p><h2>Add photos and videos</h2><p>Upload photographs directly, or add a YouTube or Vimeo link.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Gallery</p><h2>Add and manage photos and videos</h2><p>Upload photographs directly, add a YouTube or Vimeo link, or remove published media below.</p></div>
         <form className="manager-form" onSubmit={addMedia}>
           <label>Media type<select name="kind" defaultValue="image"><option value="image">Photo</option><option value="video">Video link</option></select></label>
           <label>Title<input name="title" required /></label>
@@ -113,9 +123,17 @@ export default function Manager({ content, events, media, editors, owner }: { co
           <button className="manager-primary" disabled={busy}><ImagePlus size={18} /> Add to gallery</button>
         </form>
         <div className="manager-items">
-          {media.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>{item.kind === "image" ? "Photo" : "Video"}</span></div><button onClick={() => remove("media", item.id)} aria-label={`Remove ${item.title}`}><Trash2 size={17} /></button></article>)}
+          {media.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>{item.kind === "image" ? "Gallery photo" : "Gallery video"}</span></div><button onClick={() => remove("media", item.id)} aria-label={`Remove ${item.title}`} title="Delete from gallery"><Trash2 size={17} /></button></article>)}
           {!media.length && <p>No gallery items have been added.</p>}
         </div>
+
+        {owner && <div className="manager-subsection">
+          <div className="manager-panel-heading"><h3>Photos attached to published memories</h3><p>Deleting a photo here keeps its accompanying memory text on the website.</p></div>
+          <div className="manager-items">
+            {memoryPhotos.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name}</span></div><button onClick={() => removeMemoryPhoto(item.id, item.title)} aria-label={`Delete photo attached to ${item.title}`} title="Delete photo only"><Trash2 size={17} /></button></article>)}
+            {!memoryPhotos.length && <p>No published memories currently include photographs.</p>}
+          </div>
+        </div>}
       </section>
 
       {owner && <section id="edit-access" className="manager-panel">
