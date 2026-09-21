@@ -51,7 +51,7 @@ export async function DELETE(request: Request) {
 
   const id = Number(new URL(request.url).searchParams.get("id"));
   const mode = new URL(request.url).searchParams.get("mode") || "all";
-  if (!Number.isInteger(id) || id < 1 || !["photo", "all"].includes(mode)) {
+  if (!Number.isInteger(id) || id < 1 || !["text", "photo", "all"].includes(mode)) {
     return Response.json({ error: "Invalid memory." }, { status: 400 });
   }
 
@@ -60,6 +60,21 @@ export async function DELETE(request: Request) {
   ).bind(id).first<{ photoKey: string | null }>();
   if (!memory) {
     return Response.json({ error: "Published memory not found." }, { status: 404 });
+  }
+
+  if (mode === "text") {
+    if (memory.photoKey) {
+      await env.DB.batch([
+        env.DB.prepare(
+          `INSERT INTO gallery_items (kind, title, caption, object_key, external_url, published, created_at)
+           VALUES ('image', 'Community photograph', NULL, ?, NULL, 1, ?)`
+        ).bind(memory.photoKey, new Date().toISOString()),
+        env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id),
+      ]);
+    } else {
+      await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
+    }
+    return Response.json({ ok: true, id, deleted: "text" });
   }
 
   if (mode === "photo") {

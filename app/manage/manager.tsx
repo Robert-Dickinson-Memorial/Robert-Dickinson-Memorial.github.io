@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { CalendarPlus, ImageOff, ImagePlus, Save, Trash2, Video } from "lucide-react";
+import { CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video } from "lucide-react";
 import type { GalleryItem, MemorialEvent } from "../site-data";
 
 type EditableContent = { heroIntro: string; obituaryStory: string; treeTribute: string; treeDetail: string };
@@ -73,10 +73,14 @@ export default function Manager({ content, events, media, publishedMemories, edi
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
 
-  async function removePublishedMemory(id: number, title: string, mode: "photo" | "all") {
-    const warning = mode === "photo"
-      ? `Delete only the photo attached to “${title}”? The memory text will remain published.`
-      : `Permanently delete “${title}”? Its memory text and attached photo will both be removed from the public memorial.`;
+  async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "all", hasPhoto = true) {
+    const warning = mode === "text"
+      ? hasPhoto
+        ? `Delete only the text for “${title}”? Its photo will be preserved in the public gallery.`
+        : `Permanently delete the text-only memory “${title}”?`
+      : mode === "photo"
+        ? `Delete only the photo attached to “${title}”? The memory text will remain published.`
+        : `Permanently delete “${title}”? Its memory text and attached photo will both be removed from the public memorial.`;
     if (!window.confirm(warning)) return;
     setBusy(true); setMessage("");
     try {
@@ -131,9 +135,9 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
 
         {owner && <div className="manager-subsection">
-          <div className="manager-panel-heading"><h3>Published memories</h3><p>Remove only an attached photo while keeping its text, or permanently delete the complete contribution.</p></div>
+          <div className="manager-panel-heading"><h3>Published memories</h3><p>Remove only the text, only the attached photo, or permanently delete the complete contribution.</p></div>
           <div className="manager-items">
-            {publishedMemories.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><div className="manager-actions">{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "photo")} aria-label={`Delete only the photo attached to ${item.title}`} title="Delete photo only"><ImageOff size={17} /><b>Photo only</b></button>}<button onClick={() => removePublishedMemory(item.id, item.title, "all")} aria-label={`Delete published memory ${item.title}`} title="Delete text and photo"><Trash2 size={17} /><b>Photo + text</b></button></div></article>)}
+            {publishedMemories.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><div className="manager-actions"><button onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))} aria-label={`Delete only the text for ${item.title}`} title="Delete text only"><FileX size={17} /><b>Text only</b></button>{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "photo")} aria-label={`Delete only the photo attached to ${item.title}`} title="Delete photo only"><ImageOff size={17} /><b>Photo only</b></button>}{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "all")} aria-label={`Delete published memory ${item.title}`} title="Delete text and photo"><Trash2 size={17} /><b>Text + photo</b></button>}</div></article>)}
             {!publishedMemories.length && <p>No memories are currently published.</p>}
           </div>
         </div>}
