@@ -34,6 +34,9 @@ jobs:
       CLOUDFLARE_D1_DATABASE_NAME: ${{ vars.CLOUDFLARE_D1_DATABASE_NAME }}
       CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
       MEMORIAL_OWNER_EMAIL: ${{ vars.MEMORIAL_OWNER_EMAIL }}
+      REVIEW_NOTIFICATION_TO: ${{ vars.REVIEW_NOTIFICATION_TO }}
+      REVIEW_NOTIFICATION_FROM: ${{ vars.REVIEW_NOTIFICATION_FROM }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -63,3 +66,7 @@ jobs:
 
       - name: Deploy Worker
         run: pnpm exec wrangler deploy --config dist/server/wrangler.deploy.json
+
+      - name: Activate email service
+        if: ${{ env.RESEND_API_KEY != '' }}
+        run: printf '%s' "$RESEND_API_KEY" | pnpm exec wrangler secret put RESEND_API_KEY --config dist/server/wrangler.deploy.json

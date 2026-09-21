@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { isOwnerRequest } from "../../../moderation";
+import { isOwnerRequest, sendEditorInvitation } from "../../../moderation";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,17 @@ export async function POST(request: Request) {
     `INSERT INTO memorial_editors (email, display_name, created_at) VALUES (?, ?, ?)
      ON CONFLICT(email) DO UPDATE SET display_name = excluded.display_name`
   ).bind(email, displayName || null, new Date().toISOString()).run();
-  return Response.json({ ok: true, email }, { status: 201 });
+  let invitationSent = false;
+  try {
+    invitationSent = await sendEditorInvitation({
+      email,
+      displayName,
+      manageUrl: new URL("/manage", request.url).toString(),
+    });
+  } catch (error) {
+    console.warn("Editor invitation could not be sent", error);
+  }
+  return Response.json({ ok: true, email, invitationSent }, { status: 201 });
 }
 
 export async function DELETE(request: Request) {

@@ -86,3 +86,51 @@ export async function sendReviewNotification(input: {
   }
   return true;
 }
+
+export async function sendEditorInvitation(input: {
+  email: string;
+  displayName: string;
+  manageUrl: string;
+}): Promise<boolean> {
+  const apiKey = runtimeValue("RESEND_API_KEY");
+  if (!apiKey) return false;
+
+  const from = runtimeValue("REVIEW_NOTIFICATION_FROM") || "Robert Dickinson Memorial <onboarding@resend.dev>";
+  const greeting = input.displayName ? `Dear ${input.displayName},` : "Hello,";
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${apiKey}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [input.email],
+      subject: "You are invited to edit the Robert Dickinson Memorial",
+      text: [
+        greeting,
+        "",
+        "You have been granted editor access to the Robert Dickinson Memorial website.",
+        "",
+        "How to sign in:",
+        `1. Open ${input.manageUrl}`,
+        `2. Enter this email address: ${input.email}`,
+        "3. Cloudflare will email you a one-time verification code.",
+        "4. Enter the code to open the private management dashboard.",
+        "",
+        "As an editor, you can update memorial text, events, photos and videos; review and approve or reject submitted memories; and remove published memory text or photographs.",
+        "",
+        "Important: the memorial owner must also add this exact email address to the Cloudflare Access Editors policy. If Cloudflare denies access, please contact the memorial owner.",
+        "",
+        "Robert Dickinson Memorial",
+      ].join("\n"),
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    console.warn("Editor invitation failed", response.status, detail.slice(0, 500));
+    return false;
+  }
+  return true;
+}

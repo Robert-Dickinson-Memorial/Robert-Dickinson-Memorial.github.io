@@ -1,11 +1,11 @@
 import { env } from "cloudflare:workers";
-import { isOwnerEmail, requestUserEmail } from "../../../../moderation";
+import { isEditorEmail, requestUserEmail } from "../../../../moderation";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request, context: { params: Promise<{ key: string[] }> }) {
   const email = requestUserEmail(request);
-  if (!email || !isOwnerEmail(email) || !env.DB || !env.BUCKET) {
+  if (!email || !await isEditorEmail(email) || !env.DB || !env.BUCKET) {
     return new Response("Not found", { status: 404 });
   }
 

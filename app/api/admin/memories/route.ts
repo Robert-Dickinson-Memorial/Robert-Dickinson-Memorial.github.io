@@ -1,15 +1,15 @@
 import { env } from "cloudflare:workers";
-import { isOwnerEmail, requestUserEmail } from "../../../moderation";
+import { isEditorEmail, requestUserEmail } from "../../../moderation";
 
 export const dynamic = "force-dynamic";
 
-function moderatorEmail(request: Request): string | null {
+async function moderatorEmail(request: Request): Promise<string | null> {
   const email = requestUserEmail(request);
-  return email && isOwnerEmail(email) ? email : null;
+  return email && await isEditorEmail(email) ? email : null;
 }
 
 export async function PATCH(request: Request) {
-  if (!moderatorEmail(request)) {
+  if (!await moderatorEmail(request)) {
     return Response.json({ error: "Moderator access is required." }, { status: 403 });
   }
   if (!env.DB) {
@@ -42,7 +42,7 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!moderatorEmail(request)) {
+  if (!await moderatorEmail(request)) {
     return Response.json({ error: "Owner access is required." }, { status: 403 });
   }
   if (!env.DB || !env.BUCKET) {

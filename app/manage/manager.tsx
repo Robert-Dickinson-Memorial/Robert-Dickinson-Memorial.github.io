@@ -59,7 +59,8 @@ export default function Manager({ content, events, media, publishedMemories, edi
     event.preventDefault(); setBusy(true); setMessage("");
     const form = new FormData(event.currentTarget);
     try {
-      await responseData(await fetch("/api/admin/editors", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(Object.fromEntries(form.entries())) }));
+      const result = await responseData(await fetch("/api/admin/editors", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(Object.fromEntries(form.entries())) }));
+      if (!result.invitationSent) window.alert("Editor access was added, but the invitation email could not be sent. Mail service activation may still be required.");
       window.location.reload();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
@@ -134,17 +135,17 @@ export default function Manager({ content, events, media, publishedMemories, edi
           {!media.length && <p>No gallery items have been added.</p>}
         </div>
 
-        {owner && <div className="manager-subsection">
+        <div className="manager-subsection">
           <div className="manager-panel-heading"><h3>Published memories</h3><p>Remove only the text, only the attached photo, or permanently delete the complete contribution.</p></div>
           <div className="manager-items">
             {publishedMemories.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><div className="manager-actions"><button onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))} aria-label={`Delete only the text for ${item.title}`} title="Delete text only"><FileX size={17} /><b>Text only</b></button>{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "photo")} aria-label={`Delete only the photo attached to ${item.title}`} title="Delete photo only"><ImageOff size={17} /><b>Photo only</b></button>}{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "all")} aria-label={`Delete published memory ${item.title}`} title="Delete text and photo"><Trash2 size={17} /><b>Text + photo</b></button>}</div></article>)}
             {!publishedMemories.length && <p>No memories are currently published.</p>}
           </div>
-        </div>}
+        </div>
       </section>
 
       {owner && <section id="edit-access" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Family & trusted editors</p><h2>Manage editor access</h2><p>Editors can update text, events, and gallery items. Only you can approve or reject submitted memories.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Family & trusted editors</p><h2>Manage editor access</h2><p>Editors can update text, events, gallery items, review submissions, and remove published memories. Only you can add or remove editors.</p></div>
         <form className="manager-form" onSubmit={addEditor}>
           <div className="manager-row"><label>Name<input name="displayName" placeholder="Family member or editor" /></label><label>Email address<input name="email" type="email" required placeholder="name@example.com" /></label></div>
           <button className="manager-primary" disabled={busy}><Save size={18} /> Grant editor access</button>
