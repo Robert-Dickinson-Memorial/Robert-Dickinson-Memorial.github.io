@@ -2,6 +2,20 @@ name: Deploy memorial submission service
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "app/**"
+      - "components/**"
+      - "db/**"
+      - "drizzle/**"
+      - "scripts/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "vite.config.ts"
+      - "next.config.ts"
+      - ".github/workflows/backend.yml"
 
 permissions:
   contents: read
