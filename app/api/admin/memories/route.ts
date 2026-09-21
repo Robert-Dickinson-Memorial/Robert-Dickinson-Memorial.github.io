@@ -57,13 +57,11 @@ export async function DELETE(request: Request) {
   const memory = await env.DB.prepare(
     "SELECT photo_key AS photoKey FROM memories WHERE id = ? AND status = 'approved'"
   ).bind(id).first<{ photoKey: string | null }>();
-  if (!memory?.photoKey) {
-    return Response.json({ error: "This published memory has no photo." }, { status: 404 });
+  if (!memory) {
+    return Response.json({ error: "Published memory not found." }, { status: 404 });
   }
 
-  await env.BUCKET.delete(memory.photoKey);
-  await env.DB.prepare(
-    "UPDATE memories SET photo_key = NULL, photo_name = NULL WHERE id = ? AND status = 'approved'"
-  ).bind(id).run();
+  if (memory.photoKey) await env.BUCKET.delete(memory.photoKey);
+  await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
   return Response.json({ ok: true, id });
 }

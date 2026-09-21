@@ -6,7 +6,7 @@ import type { GalleryItem, MemorialEvent } from "../site-data";
 
 type EditableContent = { heroIntro: string; obituaryStory: string; treeTribute: string; treeDetail: string };
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemoryPhoto = { id: number; name: string; title: string; photoKey: string };
+type PublishedMemory = { id: number; name: string; title: string; photoKey: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -14,7 +14,7 @@ async function responseData(response: Response) {
   return data;
 }
 
-export default function Manager({ content, events, media, memoryPhotos, editors, owner }: { content: EditableContent; events: MemorialEvent[]; media: GalleryItem[]; memoryPhotos: PublishedMemoryPhoto[]; editors: MemorialEditor[]; owner: boolean }) {
+export default function Manager({ content, events, media, publishedMemories, editors, owner }: { content: EditableContent; events: MemorialEvent[]; media: GalleryItem[]; publishedMemories: PublishedMemory[]; editors: MemorialEditor[]; owner: boolean }) {
   const [contentValues, setContentValues] = useState(content);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -73,8 +73,8 @@ export default function Manager({ content, events, media, memoryPhotos, editors,
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
 
-  async function removeMemoryPhoto(id: number, title: string) {
-    if (!window.confirm(`Delete the published photo attached to “${title}”? The memory text will remain published.`)) return;
+  async function removePublishedMemory(id: number, title: string) {
+    if (!window.confirm(`Permanently delete “${title}”? Its memory text and attached photo will both be removed from the public memorial.`)) return;
     setBusy(true); setMessage("");
     try {
       await responseData(await fetch(`/api/admin/memories?id=${id}`, { method: "DELETE" }));
@@ -128,10 +128,10 @@ export default function Manager({ content, events, media, memoryPhotos, editors,
         </div>
 
         {owner && <div className="manager-subsection">
-          <div className="manager-panel-heading"><h3>Photos attached to published memories</h3><p>Deleting a photo here keeps its accompanying memory text on the website.</p></div>
+          <div className="manager-panel-heading"><h3>Published memories</h3><p>Delete an approved contribution when necessary. Its text and attached photo will both be permanently removed.</p></div>
           <div className="manager-items">
-            {memoryPhotos.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name}</span></div><button onClick={() => removeMemoryPhoto(item.id, item.title)} aria-label={`Delete photo attached to ${item.title}`} title="Delete photo only"><Trash2 size={17} /></button></article>)}
-            {!memoryPhotos.length && <p>No published memories currently include photographs.</p>}
+            {publishedMemories.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><button onClick={() => removePublishedMemory(item.id, item.title)} aria-label={`Delete published memory ${item.title}`} title="Delete memory and photo"><Trash2 size={17} /></button></article>)}
+            {!publishedMemories.length && <p>No memories are currently published.</p>}
           </div>
         </div>}
       </section>
