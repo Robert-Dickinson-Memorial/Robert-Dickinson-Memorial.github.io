@@ -41,6 +41,7 @@ jobs:
           cp static/tree/index.html _site/tree/index.html
           tail -n +4 app/globals.css > _site/assets/styles.css
           cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
+          cp public/dickinson-1967-mit-phd.jpg _site/assets/dickinson-1967-mit-phd.jpg
           cp public/memorial-horizon.png _site/assets/memorial-horizon.png
           cp public/favicon.svg _site/favicon.svg
           touch _site/.nojekyll

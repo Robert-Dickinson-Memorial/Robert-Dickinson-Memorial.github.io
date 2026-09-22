@@ -3,7 +3,7 @@ import { InteriorHero, SiteFooter, SiteNav } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 
 const milestones = [
-  { year: "1961–68", title: "Harvard & MIT", text: "Studied chemistry and physics at Harvard, earned graduate degrees in meteorology at MIT, and remained there as a research associate." },
+  { year: "1961–68", title: "MIT", text: "Earned his S.M. and Ph.D. in meteorology at MIT, then remained as a research associate through 1968." },
   { year: "1968–90", title: "A home at NCAR", text: "Joined the National Center for Atmospheric Research, rising from scientist to section head and deputy director." },
   { year: "1980s", title: "Land enters the climate system", text: "Pioneered the representation of vegetation and land-surface processes in global climate models." },
   { year: "1988", title: "National Academy of Sciences", text: "Elected to the U.S. National Academy of Sciences for foundational contributions to atmospheric and climate science." },

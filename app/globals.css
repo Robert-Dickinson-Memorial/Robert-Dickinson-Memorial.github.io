@@ -213,6 +213,17 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 .journey-detail li::before { color: #ddb96f; content: "—"; left: 0; position: absolute; }
 .journey-detail blockquote { border-left: 2px solid rgba(221,185,111,.7); margin: 0; padding: 0 0 0 24px; }
 .journey-detail blockquote span { color: rgba(255,255,255,.78); font-family: Georgia, serif; font-size: 1.08rem; line-height: 1.55; }
+.journey-evidence { display: grid; gap: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin: 48px 0 0 71px; }
+.journey-evidence figure { background: rgba(255,255,255,.06); margin: 0; }
+.journey-evidence figure img { aspect-ratio: 1.18 / 1; display: block; height: auto; object-fit: cover; width: 100%; }
+.journey-evidence figcaption { color: rgba(255,255,255,.78); font-family: Georgia, serif; font-size: .92rem; line-height: 1.45; padding: 18px 20px 20px; }
+.journey-evidence figcaption small { color: rgba(255,255,255,.4); display: block; font-family: Arial, sans-serif; font-size: .66rem; margin-top: 7px; }
+.landmark-publication { align-items: start; background: #e4c57e; color: var(--navy); display: flex; flex-direction: column; justify-content: center; padding: clamp(28px, 4vw, 52px); }
+.landmark-publication .journey-label { color: #60491e; margin-bottom: 20px; }
+.landmark-publication .journey-label span { color: rgba(11,34,57,.42); }
+.landmark-publication h4 { font-family: Georgia, serif; font-size: clamp(1.45rem, 2.3vw, 2.2rem); font-weight: 400; line-height: 1.16; margin: 0; }
+.landmark-publication cite { border-bottom: 1px solid rgba(11,34,57,.25); color: rgba(11,34,57,.7); font-size: .72rem; font-style: normal; line-height: 1.5; margin-top: 16px; padding-bottom: 20px; width: 100%; }
+.landmark-publication > p:last-child { color: rgba(11,34,57,.78); font-size: .82rem; line-height: 1.62; margin: 21px 0 0; }
 .journey-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 36px 0 0 71px; }
 .journey-tags span { border: 1px solid rgba(255,255,255,.18); border-radius: 999px; color: rgba(255,255,255,.55); font-size: .63rem; letter-spacing: .04em; padding: 7px 10px; }
 .enduring-threads { margin-top: 120px; }
@@ -507,6 +518,8 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
   .journey-rail nav::-webkit-scrollbar { display: none; }
   .journey-rail a { border-bottom: 1px solid rgba(255,255,255,.14); min-width: 185px; padding-right: 22px; }
   .journey-detail { grid-template-columns: 1fr; }
+  .journey-evidence { grid-template-columns: 1fr; }
+  .journey-evidence figure img { max-height: 560px; }
   .thread-grid { grid-template-columns: repeat(2, 1fr); }
   .thread-grid article:nth-child(n) { border-left: 0; padding-left: 0; }
   .thread-grid article:nth-child(even) { border-left: 1px solid rgba(255,255,255,.15); padding-left: 28px; }
@@ -556,7 +569,7 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
   .journey-chapter { padding: 48px 0 58px; }
   .journey-chapter header { grid-template-columns: auto minmax(0, 1fr); }
   .journey-scale { border-left: 0; grid-column: 2; padding-left: 0; }
-  .journey-summary, .journey-detail, .journey-tags { margin-left: 0; }
+  .journey-summary, .journey-detail, .journey-evidence, .journey-tags { margin-left: 0; }
   .journey-detail { margin-top: 35px; }
   .enduring-threads { margin-top: 85px; }
   .thread-grid { grid-template-columns: 1fr; }
