@@ -8,6 +8,8 @@ import Manager from "./manager";
 
 export const dynamic = "force-dynamic";
 
+const PUBLIC_MEMORIAL_URL = "https://robert-dickinson-memorial.github.io/";
+
 type PublishedMemory = {
   id: number;
   name: string;
@@ -18,7 +20,7 @@ type PublishedMemory = {
 export default async function ManagePage() {
   const user = await requireChatGPTUser("/manage");
   if (!await isEditorEmail(user.email)) {
-    return <main className="review-shell"><Link className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</Link><section className="review-denied"><h1>Editor access required</h1><p>This area is limited to approved memorial editors.</p></section></main>;
+    return <main className="review-shell"><Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link><section className="review-denied"><h1>Editor access required</h1><p>This area is limited to approved memorial editors.</p></section></main>;
   }
   const content = await getSiteContent();
   const [eventResult, mediaResult, editorResult, memoryResult] = env.DB ? await Promise.all([
@@ -31,7 +33,7 @@ export default async function ManagePage() {
   return (
     <main className="manage-shell">
       <header className="manage-header">
-        <Link className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</Link>
+        <Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link>
         <p className="section-kicker">Private memorial editor</p><h1>Manage the memorial</h1>
         <p>Edit the obituary, publish events, and add photographs or videos without changing the website code.</p>
         <nav className="manager-nav"><a href="#edit-story">Edit story</a><a href="#edit-events">Events</a><a href="#edit-gallery">Photos & videos</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a><a href="/memory-book"><BookOpen size={16} /> Preview book</a></nav>
