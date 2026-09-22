@@ -267,7 +267,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
             <div className="manager-subcard">
               <h3>Chapter photograph</h3>
-              {chapter.photo && <><label>Alt text<input value={chapter.photo.alt} onChange={(e) => updateChapter(index, { photo: { ...chapter.photo!, alt: e.target.value } })} /></label><label>Caption<textarea rows={3} value={chapter.photo.caption} onChange={(e) => updateChapter(index, { photo: { ...chapter.photo!, caption: e.target.value } })} /></label></>}
+              {chapter.photo && <><img className="manager-image-preview" src={chapter.photo.objectKey ? `/api/chapter-photos/${chapter.photo.objectKey.split("/").map(encodeURIComponent).join("/")}` : `/${(chapter.photo.asset || "").replace(/^\//, "")}`} alt={chapter.photo.alt} /><label>Alt text<input value={chapter.photo.alt} onChange={(e) => updateChapter(index, { photo: { ...chapter.photo!, alt: e.target.value } })} /></label><label>Caption<textarea rows={3} value={chapter.photo.caption} onChange={(e) => updateChapter(index, { photo: { ...chapter.photo!, caption: e.target.value } })} /></label></>}
               <form className="manager-photo-form" onSubmit={(event) => uploadChapterPhoto(event, chapter.id)}><label><ImagePlus size={17} /> {chapter.photo ? "Replace photograph" : "Add photograph"}<input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label><button className="manager-secondary" disabled={busy}>Upload photo</button>{chapter.photo && <button type="button" className="manager-danger" disabled={busy} onClick={() => removeChapterPhoto(chapter.id)}>Remove photo</button>}</form>
             </div>
 
