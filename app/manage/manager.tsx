@@ -5,7 +5,7 @@ import { BookOpen, CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video
 import type { GalleryItem, LegacyChapter, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; featuredQuote: number; quoteExcerpt: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -65,7 +65,6 @@ const copyFieldNames: Record<string, string> = {
   voicesKicker: "Scientific community voices — kicker",
   voicesTitle: "Scientific community voices — heading",
   voicesIntro: "Scientific community voices — introduction",
-  voicesReadMore: "Featured quote — full reflection link",
   honorsKicker: "Honors, awards & recognition — heading",
   shareKicker: "Share a memory — kicker",
   shareTitle: "Share a memory — heading",
@@ -152,6 +151,18 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
   function updateLegacyThread(index: number, field: "title" | "text", value: string) {
     setContentValues((current) => ({ ...current, legacyThreads: current.legacyThreads.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
+  }
+
+  function updateCommunityQuote(index: number, field: "quote" | "attribution", value: string) {
+    setContentValues((current) => ({ ...current, communityQuotes: current.communityQuotes.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
+  }
+
+  function addCommunityQuote() {
+    setContentValues((current) => ({ ...current, communityQuotes: [...current.communityQuotes, { quote: "", attribution: "" }] }));
+  }
+
+  function removeCommunityQuote(index: number) {
+    setContentValues((current) => ({ ...current, communityQuotes: current.communityQuotes.filter((_, itemIndex) => itemIndex !== index) }));
   }
 
   function updateHonor(index: number, field: "year" | "title" | "detail", value: string) {
@@ -264,7 +275,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <strong>Included automatically</strong>
             <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy overview, connected themes, and summary cards.</p>
             <p><b>His life</b> — full biography, education and career timeline, and mentorship reflection.</p>
-            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, curated community voices, and honors.</p>
+            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, and honors.</p>
             <p><b>Memories</b> — every approved community memory and its published photograph.</p>
           </div>
           <a className="manager-primary manager-preview-book" href="/memory-book" target="_blank" rel="noopener noreferrer"><BookOpen size={18} /> Preview memory book</a>
@@ -365,14 +376,6 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-legacy-voices" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Voices from the scientific community</h2><p>This is an editorial selection drawn from approved Memories. The full reflections stay on the Memories page; only the selected verbatim excerpts appear here.</p><a className="manager-section-link" href="#copy-legacy">Edit this section’s heading & introduction ↓</a></div>
-        <div className="manager-form manager-stack">
-          {publishedMemories.filter((item) => Boolean(item.featuredQuote) && Boolean(item.quoteExcerpt)).map((item) => <div className="manager-edit-card manager-featured-quote-preview" key={`featured-${item.id}`}><p>“{item.quoteExcerpt}”</p><strong>{item.name}</strong><small>{item.relationship}</small><a className="manager-section-link" href={`#manage-memory-${item.id}`}>Edit this selection in Memories ↓</a></div>)}
-          {!publishedMemories.some((item) => Boolean(item.featuredQuote) && Boolean(item.quoteExcerpt)) && <div className="manager-edit-card"><strong>No quotations featured yet</strong><p>Choose an approved reflection in Memories, select a verbatim excerpt, and check “Feature a quotation…” to make it appear here.</p><a className="manager-section-link" href="#edit-memories">Choose from approved Memories ↓</a></div>}
-        </div>
-      </section>
-
       <section id="edit-honors" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Honors, awards & recognition</h2><p>Edit the honors section shown at the end of the Scientific legacy page.</p></div>
         <div className="manager-form manager-stack">
@@ -430,30 +433,36 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
       </section>
 
-      <section id="edit-memories" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Stories that carry forward</h2><p>Edit published memories here. You can also select a short excerpt from a scientist’s reflection to feature editorially in Scientific Legacy—without creating a second submission system.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
-                <div className="manager-subsection manager-subsection-standalone">
-          
-          <div className="manager-edit-list">
-            {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" id={`manage-memory-${item.id}`} key={item.id} onSubmit={savePublishedMemory}>
-              <input type="hidden" name="id" value={item.id} />
-              {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}
-              <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
-              <label>Memory title<input name="title" defaultValue={item.title} required /></label>
-              <label>Memory text<textarea name="story" rows={7} defaultValue={item.story} required /></label>
-              <div className="manager-subcard manager-quote-curation">
-                <h3>Scientific Legacy feature</h3>
-                <label className="manager-checkbox-label"><input name="featuredQuote" type="checkbox" value="1" defaultChecked={Boolean(item.featuredQuote)} /> Feature a quotation from this reflection in “Voices from the scientific community”</label>
-                <label>Selected quotation <span>Paste the exact sentence or short passage you want to feature. The full reflection remains on the Memories page.</span><textarea name="quoteExcerpt" rows={4} defaultValue={item.quoteExcerpt ?? ""} placeholder="Selected verbatim excerpt from this memory…" /></label>
-              </div>
-              <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory text</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))}><FileX size={16} /> Delete text</button>{item.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
-            </form>)}
-            {!publishedMemories.length && <p>No memories are currently published.</p>}
+      <section id="edit-memories" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Voices & community memories</h2><p>Edit the curated scientist quotations shown near the top of the Memories page, along with the full published community memories below.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
+        <div className="manager-form manager-stack">
+          <div className="manager-subcard">
+            <h3>Voices from the scientific community</h3>
+            <p className="manager-help">These appear as a bulleted quotation list on the public Memories page. Edit the quotation and attribution directly, add new entries, or remove entries.</p>
+            {contentValues.communityQuotes.map((item, index) => <div className="manager-edit-card manager-community-quote-editor" key={`community-quote-${index}`}>
+              <label>Quotation<textarea rows={3} value={item.quote} onChange={(e) => updateCommunityQuote(index, "quote", e.target.value)} /></label>
+              <label>Attribution<input value={item.attribution} onChange={(e) => updateCommunityQuote(index, "attribution", e.target.value)} /></label>
+              <button type="button" className="manager-danger" onClick={() => removeCommunityQuote(index)}><Trash2 size={16} /> Remove quote</button>
+            </div>)}
+            <div className="manager-inline-actions"><button type="button" className="manager-secondary" onClick={addCommunityQuote}>Add quotation</button><button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save quotations</button></div>
+          </div>
+
+          <div className="manager-subcard">
+            <h3>Published community memories</h3>
+            <div className="manager-edit-list">
+              {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" key={item.id} onSubmit={savePublishedMemory}>
+                <input type="hidden" name="id" value={item.id} />
+                {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}
+                <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
+                <label>Memory title<input name="title" defaultValue={item.title} required /></label>
+                <label>Memory text<textarea name="story" rows={7} defaultValue={item.story} required /></label>
+                <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory text</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))}><FileX size={16} /> Delete text</button>{item.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
+              </form>)}
+              {!publishedMemories.length && <p>No memories are currently published.</p>}
+            </div>
           </div>
         </div>
-
       </section>
-
 
 
       <section id="edit-tree-content" className="manager-panel">
