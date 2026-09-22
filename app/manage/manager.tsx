@@ -37,6 +37,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setContentValues((current) => ({ ...current, homeLegacyTopics: current.homeLegacyTopics.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
 
+  function updateHomeLegacyCard(index: number, field: "title" | "text", value: string) {
+    setContentValues((current) => ({ ...current, homeLegacyCards: current.homeLegacyCards.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
+  }
+
   function updateHonor(index: number, field: "year" | "title" | "detail", value: string) {
     setContentValues((current) => ({ ...current, honors: current.honors.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
@@ -153,7 +157,8 @@ export default function Manager({ content, events, media, publishedMemories, edi
         <div className="manager-panel-heading"><p className="section-kicker">Homepage</p><h2>Scientific legacy network</h2><p>Edit the five connected themes shown on the homepage.</p></div>
         <div className="manager-form manager-stack">
           <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
-          {contentValues.homeLegacyTopics.map((topic, index) => <div className="manager-edit-card" key={index}><strong>Theme {index + 1}</strong><label>Title<input value={topic.title} onChange={(e) => updateTopic(index, "title", e.target.value)} /></label><label>Supporting line<input value={topic.note} onChange={(e) => updateTopic(index, "note", e.target.value)} /></label></div>)}
+          {contentValues.homeLegacyTopics.map((topic, index) => <div className="manager-edit-card" key={`topic-${index}`}><strong>Network theme {index + 1}</strong><label>Title<input value={topic.title} onChange={(e) => updateTopic(index, "title", e.target.value)} /></label><label>Supporting line<input value={topic.note} onChange={(e) => updateTopic(index, "note", e.target.value)} /></label></div>)}
+          {contentValues.homeLegacyCards.map((card, index) => <div className="manager-edit-card" key={`card-${index}`}><strong>Homepage summary card {index + 1}</strong><label>Heading<input value={card.title} onChange={(e) => updateHomeLegacyCard(index, "title", e.target.value)} /></label><label>Text<textarea rows={3} value={card.text} onChange={(e) => updateHomeLegacyCard(index, "text", e.target.value)} /></label></div>)}
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save homepage legacy</button>
         </div>
       </section>
