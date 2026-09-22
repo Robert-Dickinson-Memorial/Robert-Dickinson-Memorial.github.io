@@ -141,24 +141,52 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setContentValues((current) => ({ ...current, lifeMilestones: current.lifeMilestones.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
 
-  function updateTopic(index: number, field: "title" | "note", value: string) {
-    setContentValues((current) => ({ ...current, homeLegacyTopics: current.homeLegacyTopics.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
-  }
-
   function updateHomeLegacyCard(index: number, field: "title" | "text", value: string) {
     setContentValues((current) => ({ ...current, homeLegacyCards: current.homeLegacyCards.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
 
   function addHomeLegacyCard() {
-    setContentValues((current) => ({ ...current, homeLegacyCards: [...current.homeLegacyCards, { title: "", text: "" }] }));
+    setContentValues((current) => ({ ...current, homeLegacyCards: [...current.homeLegacyCards, { title: "", text: "", threadIds: [] }] }));
   }
 
   function removeHomeLegacyCard(index: number) {
     setContentValues((current) => ({ ...current, homeLegacyCards: current.homeLegacyCards.filter((_, itemIndex) => itemIndex !== index) }));
   }
 
+  function toggleHighlightThread(index: number, threadId: string) {
+    setContentValues((current) => ({
+      ...current,
+      homeLegacyCards: current.homeLegacyCards.map((item, itemIndex) => itemIndex === index ? {
+        ...item,
+        threadIds: item.threadIds.includes(threadId) ? item.threadIds.filter((id) => id !== threadId) : [...item.threadIds, threadId],
+      } : item),
+    }));
+  }
+
   function updateLegacyThread(index: number, field: "title" | "text", value: string) {
     setContentValues((current) => ({ ...current, legacyThreads: current.legacyThreads.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
+  }
+
+  function updateSecondaryLegacyTopic(index: number, field: "title" | "text", value: string) {
+    setContentValues((current) => ({ ...current, secondaryLegacyTopics: current.secondaryLegacyTopics.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
+  }
+
+  function toggleSecondaryThread(index: number, threadId: string) {
+    setContentValues((current) => ({
+      ...current,
+      secondaryLegacyTopics: current.secondaryLegacyTopics.map((item, itemIndex) => itemIndex === index ? {
+        ...item,
+        threadIds: item.threadIds.includes(threadId) ? item.threadIds.filter((id) => id !== threadId) : [...item.threadIds, threadId],
+      } : item),
+    }));
+  }
+
+  function addSecondaryLegacyTopic() {
+    setContentValues((current) => ({ ...current, secondaryLegacyTopics: [...current.secondaryLegacyTopics, { title: "", text: "", threadIds: [] }] }));
+  }
+
+  function removeSecondaryLegacyTopic(index: number) {
+    setContentValues((current) => ({ ...current, secondaryLegacyTopics: current.secondaryLegacyTopics.filter((_, itemIndex) => itemIndex !== index) }));
   }
 
   function updateCommunityQuote(index: number, field: "quote" | "attribution", value: string) {
@@ -330,18 +358,23 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-home-legacy" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy</h2><p>Edit the connected scientific themes and the achievement cards shown in the Home section titled “Science that changed how we see Earth.” Cards can be added or removed at any time.</p></div>
+      <section id="edit-home-legacy" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The Home page now combines editorial highlights with the same six enduring threads used on Scientific Legacy. Edit the story here; edit the shared thread vocabulary below.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
         <div className="manager-form manager-stack">
           <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
-          {contentValues.homeLegacyTopics.map((topic, index) => <div className="manager-edit-card" key={`topic-${index}`}><strong>Network theme {index + 1}</strong><label>Title<input value={topic.title} onChange={(e) => updateTopic(index, "title", e.target.value)} /></label><label>Supporting line<input value={topic.note} onChange={(e) => updateTopic(index, "note", e.target.value)} /></label></div>)}
           <div className="manager-subcard">
-            <h3>Homepage achievement cards</h3>
-            <p className="manager-help">Each card has an editable heading and description. Add or remove cards here; the homepage layout updates automatically.</p>
-            {contentValues.homeLegacyCards.map((card, index) => <div className="manager-edit-card manager-home-legacy-card-editor" key={`card-${index}`}><strong>Card {index + 1}</strong><label>Heading<input value={card.title} onChange={(e) => updateHomeLegacyCard(index, "title", e.target.value)} /></label><label>Text<textarea rows={5} value={card.text} onChange={(e) => updateHomeLegacyCard(index, "text", e.target.value)} /></label><button type="button" className="manager-danger" onClick={() => removeHomeLegacyCard(index)}><Trash2 size={16} /> Remove card</button></div>)}
-            <button type="button" className="manager-secondary" onClick={addHomeLegacyCard}>Add card</button>
+            <h3>Major editorial highlights</h3>
+            <p className="manager-help">These are the large bullet-style statements on Home. Choose which enduring threads each highlight connects to; the public constellation uses those relationships to draw the story.</p>
+            {contentValues.homeLegacyCards.map((card, index) => <div className="manager-edit-card manager-home-legacy-card-editor" key={`card-${index}`}>
+              <strong>Highlight {index + 1}</strong>
+              <label>Heading<input value={card.title} onChange={(e) => updateHomeLegacyCard(index, "title", e.target.value)} /></label>
+              <label>Text<textarea rows={5} value={card.text} onChange={(e) => updateHomeLegacyCard(index, "text", e.target.value)} /></label>
+              <fieldset className="manager-thread-picker"><legend>Connected enduring threads</legend>{contentValues.legacyThreads.map((thread) => <label key={thread.id}><input type="checkbox" checked={card.threadIds.includes(thread.id)} onChange={() => toggleHighlightThread(index, thread.id)} /> {thread.title}</label>)}</fieldset>
+              <button type="button" className="manager-danger" onClick={() => removeHomeLegacyCard(index)}><Trash2 size={16} /> Remove highlight</button>
+            </div>)}
+            <button type="button" className="manager-secondary" onClick={addHomeLegacyCard}>Add highlight</button>
           </div>
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save homepage legacy</button>
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save homepage scientific story</button>
         </div>
       </section>
 
@@ -381,11 +414,22 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-legacy-threads" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Enduring research threads</h2><p>Edit every research-thread heading and description shown beneath the career chapters.</p></div>
+      <section id="edit-legacy-threads" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific map</h2><p>These six enduring threads are the shared vocabulary for both the Home constellation and the deeper Scientific Legacy section. “Other frontiers” are smaller supporting topics shown with less visual emphasis.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
         <div className="manager-form manager-stack">
-          {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={`thread-${index}`}><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save research threads</button>
+          <div className="manager-subcard"><h3>Six enduring research threads</h3>
+            {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={thread.id}><strong>Primary thread {index + 1}</strong><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
+          </div>
+          <div className="manager-subcard"><h3>Other scientific frontiers</h3><p className="manager-help">These appear as smaller satellite topics on Home and in “Other frontiers he helped open” on Scientific Legacy. Add or remove them freely.</p>
+            {contentValues.secondaryLegacyTopics.map((topic, index) => <div className="manager-edit-card manager-secondary-topic-editor" key={`secondary-${index}`}>
+              <label>Topic<input value={topic.title} onChange={(e) => updateSecondaryLegacyTopic(index, "title", e.target.value)} /></label>
+              <label>Short explanation<textarea rows={3} value={topic.text} onChange={(e) => updateSecondaryLegacyTopic(index, "text", e.target.value)} /></label>
+              <fieldset className="manager-thread-picker"><legend>Related enduring threads</legend>{contentValues.legacyThreads.map((thread) => <label key={thread.id}><input type="checkbox" checked={topic.threadIds.includes(thread.id)} onChange={() => toggleSecondaryThread(index, thread.id)} /> {thread.title}</label>)}</fieldset>
+              <button type="button" className="manager-danger" onClick={() => removeSecondaryLegacyTopic(index)}><Trash2 size={16} /> Remove topic</button>
+            </div>)}
+            <button type="button" className="manager-secondary" onClick={addSecondaryLegacyTopic}>Add frontier topic</button>
+          </div>
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save shared scientific map</button>
         </div>
       </section>
 
