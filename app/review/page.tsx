@@ -7,12 +7,14 @@ import ReviewQueue, { PendingMemory } from "./review-queue";
 
 export const dynamic = "force-dynamic";
 
+const PUBLIC_MEMORIAL_URL = "https://robert-dickinson-memorial.github.io/";
+
 export default async function ReviewPage() {
   const user = await requireChatGPTUser("/review");
   if (!await isEditorEmail(user.email)) {
     return (
       <main className="review-shell">
-        <Link className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</Link>
+        <Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link>
         <section className="review-denied"><h1>Editor access required</h1><p>Only approved memorial editors can review submissions.</p></section>
       </main>
     );
@@ -28,7 +30,7 @@ export default async function ReviewPage() {
   return (
     <main className="review-shell">
       <header className="review-header">
-        <Link className="review-back" href="/"><ArrowLeft size={17} /> Return to the memorial</Link>
+        <Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link>
         <p className="section-kicker">Private moderation</p>
         <h1>Review submitted memories</h1>
         <p>Approve a story to publish it on the memory wall, or reject it to keep it private.</p>
