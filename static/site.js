@@ -284,13 +284,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function hydrateMemories() {
     const wallTarget = document.querySelector("[data-memory-wall]");
-    const voicesTarget = document.querySelector("[data-featured-quotes]");
-    if (!(wallTarget instanceof HTMLElement) && !(voicesTarget instanceof HTMLElement)) return;
+    const quoteList = document.querySelector("[data-community-quotes]");
+    if (!(wallTarget instanceof HTMLElement) && !(quoteList instanceof HTMLElement)) return;
     const [{ memories = [] }, { content = {} }] = await Promise.all([
       getJson("/api/memories"),
       getJson("/api/content"),
     ]);
     const copy = content.pageCopy || editableCopy || {};
+
+    if (quoteList instanceof HTMLElement && Array.isArray(content.communityQuotes)) {
+      quoteList.replaceChildren(...content.communityQuotes.map((item) => {
+        const li = node("li");
+        li.append(
+          node("blockquote", { text: `“${item.quote || ""}”` }),
+          node("cite", { text: `— ${item.attribution || ""}` })
+        );
+        return li;
+      }));
+    }
 
     if (wallTarget instanceof HTMLElement) {
       if (!memories.length) {
@@ -305,37 +316,6 @@ document.addEventListener("DOMContentLoaded", () => {
           article.append(footer);
           return article;
         }));
-      }
-    }
-
-    if (voicesTarget instanceof HTMLElement) {
-      const featured = memories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
-      const grid = voicesTarget.querySelector("[data-featured-quote-grid]");
-      if (!(grid instanceof HTMLElement)) {
-        return;
-      }
-      if (!featured.length) {
-        const empty = node("div", { className: "legacy-voices-empty" });
-        empty.append(
-          node("p", { text: copy["legacy.voicesEmpty"] || "Selected reflections from Robert’s scientific community will appear here as they are curated from the Memories archive." }),
-          node("a", { text: (copy["legacy.voicesBrowse"] || "Browse community memories") + " →", attrs: { href: "/memories/" } })
-        );
-        grid.replaceChildren(empty);
-        voicesTarget.hidden = false;
-      } else {
-        grid.replaceChildren(...featured.map((memory, index) => {
-          const article = node("article", { className: index === 0 ? "legacy-voice-card legacy-voice-card-featured" : "legacy-voice-card" });
-          article.append(node("span", { text: "“", attrs: { "aria-hidden": "true" } }), node("blockquote", { text: memory.quoteExcerpt.trim() }));
-          const footer = node("footer");
-          footer.append(
-            node("strong", { text: memory.name || "" }),
-            node("small", { text: memory.relationship || "" }),
-            node("a", { text: (copy["legacy.voicesReadMore"] || "Read the full reflection") + " →", attrs: { href: `/memories/#memory-${memory.id}` } })
-          );
-          article.append(footer);
-          return article;
-        }));
-        voicesTarget.hidden = false;
       }
     }
   }
@@ -365,8 +345,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const storyParagraphs = String(content.obituaryStory || "").split(/\n\s*\n/).filter(Boolean);
     const bookMemories = [...memories].sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || Number(a.id || 0) - Number(b.id || 0));
     const memorySpreads = Array.from({ length: Math.ceil(bookMemories.length / 2) }, (_, index) => bookMemories.slice(index * 2, index * 2 + 2));
-    const featuredQuotes = bookMemories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
-    const featuredQuoteSpreads = Array.from({ length: Math.ceil(featuredQuotes.length / 4) }, (_, index) => featuredQuotes.slice(index * 4, index * 4 + 4));
     const pages = [];
 
     const cover = node("header", { className: "book-spread book-cover-spread" });
@@ -474,29 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const tags = node("div", { className: "book-tags" });
       (chapter.threads || []).forEach((thread) => tags.append(node("span", { text: thread })));
       section.append(tags, node("span", { className: "book-page-number", text: chapter.institution || "" }));
-      pages.push(section);
-    });
-
-    featuredQuoteSpreads.forEach((spread, index) => {
-      const section = node("section", { className: "book-spread book-voices-spread" });
-      section.append(node("p", { className: "book-running-title", text: (copy["nav.legacy"] || "Scientific legacy") + " · " + (copy["legacy.voicesTitle"] || "Voices from the scientific community") }));
-      const heading = node("div", { className: "book-section-heading" });
-      heading.append(
-        node("p", { className: "book-label", text: copy["legacy.voicesKicker"] || "In the words of his colleagues" }),
-        node("h2", { text: copy["legacy.voicesTitle"] || "Voices from the scientific community" }),
-        node("p", { text: copy["legacy.voicesIntro"] || "Selected reflections from Robert’s students, collaborators, and colleagues—drawn from the memorial’s community memories." })
-      );
-      section.append(heading);
-      const grid = node("div", { className: "book-voice-grid" });
-      spread.forEach((memory, quoteIndex) => {
-        const article = node("article", { className: quoteIndex === 0 && index === 0 ? "book-voice-featured" : "" });
-        article.append(node("span", { text: "“", attrs: { "aria-hidden": "true" } }), node("blockquote", { text: memory.quoteExcerpt || "" }));
-        const footer = node("footer");
-        footer.append(node("strong", { text: memory.name || "" }), node("small", { text: memory.relationship || "" }));
-        article.append(footer);
-        grid.append(article);
-      });
-      section.append(grid, node("span", { className: "book-page-number", text: "Voices " + (index + 1) }));
       pages.push(section);
     });
 
