@@ -54,7 +54,7 @@ export default async function MemoryBookPage() {
             <div className="book-home-legacy">
               <h3>{copy["home.legacyTitle"]}</h3>
               <p>{content.homeLegacyIntro}</p>
-              <div className="book-theme-grid">{content.homeLegacyTopics.map((topic) => <article key={topic.title}><strong>{topic.title}</strong><span>{topic.note}</span></article>)}</div>
+              <div className="book-theme-grid">{content.legacyThreads.map((thread) => <article key={thread.id}><strong>{thread.title}</strong><span>{thread.text}</span></article>)}</div>
               <div className="book-home-card-grid">{content.homeLegacyCards.map((card) => <article key={card.title}><h4>{card.title}</h4><p>{card.text}</p></article>)}</div>
             </div>
           </div>
@@ -79,7 +79,8 @@ export default async function MemoryBookPage() {
         <section className="book-spread book-legacy-overview-spread">
           <p className="book-running-title">{copy["nav.legacy"]} · {copy["global.footerName"]}</p>
           <div className="book-section-heading"><p className="book-label">{copy["legacy.heroKicker"]}</p><h2>{copy["legacy.heroTitle"]}</h2><p>{copy["legacy.heroIntro"]}</p></div>
-          <div className="book-thread-grid">{content.legacyThreads.map((thread, index) => <article key={thread.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{thread.title}</h3><p>{thread.text}</p></article>)}</div>
+          <div className="book-thread-grid">{content.legacyThreads.map((thread, index) => <article key={thread.id}><span>{String(index + 1).padStart(2, "0")}</span><h3>{thread.title}</h3><p>{thread.text}</p></article>)}</div>
+          <div className="book-frontier-list">{content.secondaryLegacyTopics.map((topic) => <span key={topic.title}>{topic.title}</span>)}</div>
           <span className="book-page-number">Scientific legacy</span>
         </section>
 
