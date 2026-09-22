@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
-import { publicMediaResponse } from "../../../../cors";
-import { getSiteContent } from "../../../../site-data";
+import { publicMediaResponse } from "../../../cors";
+import { getSiteContent } from "../../../site-data";
 
 export const dynamic = "force-dynamic";
 
