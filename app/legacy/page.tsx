@@ -1,50 +1,53 @@
-import { CloudSun, Compass, Users } from "lucide-react";
 import { InteriorHero, SiteFooter, SiteNav } from "../site-chrome";
+import { getSiteContent, type LegacyChapterPhoto } from "../site-data";
 
-const overview = [
-  { icon: CloudSun, number: "01", title: "He changed climate models", text: "Robert helped transform land from a passive boundary into a living, dynamic part of the climate system." },
-  { icon: Compass, number: "02", title: "He connected the Earth system", text: "His work joined atmosphere, land, water, vegetation, and carbon into a more faithful picture of Earth." },
-  { icon: Users, number: "03", title: "He multiplied possibility", text: "His influence continues through the students, postdoctoral scholars, and collaborators he guided." },
-];
-
-const scaleSteps = [
-  { number: "01", title: "Planetary waves", note: "The motions that organize atmospheres" },
-  { number: "02", title: "Atmosphere", note: "Circulation, radiation, and composition" },
-  { number: "03", title: "Climate", note: "A connected global physical system" },
-  { number: "04", title: "Land–atmosphere", note: "Vegetation, water, and energy in motion" },
-  { number: "05", title: "Coupled Earth", note: "Climate, carbon, ecosystems, and people" },
-];
-
-const chapters = [
-  { id: "legacy-mit", number: "01", years: "1961–1968", institution: "MIT", scale: "Planetary waves", title: "Finding order in planetary-scale motion", summary: "At MIT, Bob began with atmospheric dynamics: how planetary-scale waves propagate through a rotating, stratified atmosphere and how they interact with the circulation around them. His Ph.D. work on Propagators of Atmospheric Motions led directly into a remarkable series of papers on planetary and stratospheric waves.", contributions: ["Advanced the theory of vertically propagating planetary and Rossby waves in a spherical atmosphere.", "Developed fundamental ideas about waveguides, critical-line absorption, and wave–mean-flow interaction.", "Helped lay the conceptual foundation for modern understanding of stratospheric dynamics and thermodynamics; his early work foreshadowed diagnostic tools still used today."], impact: "This was the beginning of Bob’s characteristic scientific style: identify a fundamental physical problem, strip it to its essentials, and then follow its implications across scales.", threads: ["Atmospheric dynamics", "Planetary waves", "Stratosphere", "Wave–mean-flow interaction"], photo: { src: "/dickinson-1967-mit-phd.jpg", alt: "Robert E. Dickinson seated with a notebook in 1967, during his MIT period", caption: "Bob Dickinson in 1967, one year after completing his Ph.D. at MIT." }, publication: { year: "1968", title: "Planetary Rossby Waves Propagating Vertically Through Weak Westerly Wind Wave Guides", citation: "Journal of the Atmospheric Sciences, 25, 984–1002", note: "This landmark paper developed the first theory of Rossby-wave critical-line absorption, extended the atmospheric refractive-index concept into two dimensions, and introduced a group-velocity framework that anticipated the Eliassen–Palm flux vector." } },
-  { id: "legacy-ncar", number: "02", years: "1968–1990", institution: "NCAR", scale: "Atmosphere to climate", title: "Expanding from atmospheric theory to climate", summary: "At the National Center for Atmospheric Research, Robert’s science widened from upper-atmospheric dynamics and planetary atmospheres to global circulation and climate. As a scientist, section head, and deputy director, he helped shape both the models and the community building them.", contributions: ["Advanced understanding of atmospheric circulation, radiation, and the upper atmospheres of Earth, Venus, and Mars.", "Helped establish climate modeling as a framework for studying the interacting processes that govern global change.", "Pioneered land-surface representations that brought soil, water, and vegetation into global climate models."], impact: "Land was no longer merely the lower boundary of an atmospheric model. It became an active, living participant in climate.", threads: ["Climate modeling", "Atmospheric dynamics", "Land surface", "BATS"] },
-  { id: "legacy-arizona", number: "03", years: "1990–1999", institution: "University of Arizona", scale: "Land–atmosphere system", title: "Making the living land visible to climate models", summary: "Working across atmospheric science, hydrology, and tree-ring research at Arizona, Robert deepened the physical description of the land surface and helped make those models testable against observations.", contributions: ["Linked vegetation, evapotranspiration, soil moisture, snow, and surface energy exchange in land-surface models.", "Advanced model evaluation through international land-surface intercomparison and field observations.", "Connected satellite measurements and canopy reflectance with studies of drought, hydrology, and tropical deforestation."], impact: "His work helped turn land modeling into an observational science—one that could be compared, challenged, and improved across places and scales.", threads: ["Hydrology", "Remote sensing", "Deforestation", "Model evaluation"] },
-  { id: "legacy-georgia-tech", number: "04", years: "1999–2008", institution: "Georgia Tech", scale: "Water, energy, and carbon", title: "Connecting the exchanges that make an Earth system", summary: "At Georgia Tech, Robert brought atmospheric physics, hydrology, ecosystems, and biogeochemistry into closer conversation. His research and teaching increasingly treated climate as a coupled Earth system rather than a collection of separate components.", contributions: ["Advanced land models that connected roots, soil moisture, surface energy, ecosystems, and the carbon cycle.", "Used remote sensing and observations to test land temperature, vegetation, and land–atmosphere exchange.", "Extended his leadership globally through the IPCC, the American Geophysical Union, and a growing international group of students and collaborators."], impact: "The scientific question had expanded again: not only how land affects climate, but how water, energy, carbon, vegetation, and atmosphere continually reshape one another.", threads: ["Earth-system modeling", "Carbon cycle", "Hydrology", "Scientific leadership"] },
-  { id: "legacy-ut", number: "05", years: "2008–2018", institution: "UT Austin", scale: "Coupled Earth system", title: "Synthesis—and a new generation of scientists", summary: "At UT Austin’s Jackson School of Geosciences, Robert continued to connect models with observations while giving unusual care to students, postdoctoral scholars, and visiting scientists. From 2018, he continued his intellectual life as a Distinguished Professor in Residence at UCLA.", contributions: ["Studied drought, soil-moisture feedbacks, vegetation, surface temperature, atmospheric circulation, and climate extremes.", "Helped frame national priorities for climate modeling, prediction, and sustained satellite observations.", "Mentored researchers across disciplines and continents, often working beside them on the physical meaning hidden inside models and code."], impact: "By the end of his career, Robert’s legacy lived in both a more complete representation of Earth and a worldwide community trained to keep improving it.", threads: ["Drought", "Remote sensing", "Coupled processes", "Mentorship"] },
-];
+export const dynamic = "force-dynamic";
 
 const threads = [
   { title: "Atmospheric dynamics", text: "Planetary waves, circulation, radiation, and the physics that set atmospheres in motion." },
+  { title: "Climate change", text: "Physical understanding of how greenhouse gases and feedbacks reshape the climate system." },
   { title: "Climate modeling", text: "Models used not merely to predict, but to reveal how interacting processes create climate." },
-  { title: "The living land", text: "Vegetation, soils, snow, roots, and surface energy made active parts of the climate system." },
-  { title: "Water and drought", text: "Hydrology and land–atmosphere feedbacks connected from local landscapes to global change." },
+  { title: "Land–atmosphere interactions", text: "Vegetation, soils, water, snow, roots, and surface energy made active parts of the climate system." },
   { title: "Observation from space", text: "Remote sensing used to confront models with the changing temperature and condition of land." },
   { title: "A coupled Earth", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
 ];
 
-const honors = ["National Academy of Sciences · 1988", "Vetlesen Prize · 1996", "AGU Roger Revelle Medal · 1996", "AMS Carl-Gustaf Rossby Research Medal · 1997", "National Academy of Engineering · 2002", "President, American Geophysical Union · 2002–04", "Chinese Academy of Sciences · Foreign Member, 2006", "IPCC Fourth Assessment Report · Lead Author"];
+function photoSrc(photo: LegacyChapterPhoto | null): string | null {
+  if (!photo) return null;
+  if (photo.objectKey) return `/api/chapter-photos/${photo.objectKey.split("/").map(encodeURIComponent).join("/")}`;
+  if (photo.asset) return `/${photo.asset.replace(/^\//, "")}`;
+  return null;
+}
 
-export default function LegacyPage() {
-  return <main className="interior-page legacy-page"><SiteNav active="legacy" /><InteriorHero kicker="Scientific legacy" title="Science that changed how we see Earth" intro="A chronological journey through the institutions, questions, and enduring ideas that shaped Robert’s work." />
+export default async function LegacyPage() {
+  const content = await getSiteContent();
+  return <main className="interior-page legacy-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+    <SiteNav active="legacy" />
+    <InteriorHero kicker="Scientific legacy" title="Science that changed how we see Earth" intro="A chronological journey through the institutions, questions, and enduring ideas that shaped Robert’s work." />
     <section className="legacy-section legacy-page-content">
-      <div className="chapter-grid legacy-overview">{overview.map(({ icon: Icon, number, title, text }) => <article className="chapter-card" key={number}><div className="chapter-top"><Icon size={24} /><span>{number}</span></div><h3>{title}</h3><p>{text}</p></article>)}</div>
-      <div className="legacy-scale-intro"><p className="section-kicker light">A widening scientific horizon</p><h3>He repeatedly changed the scale of the problem.</h3><p>Across five decades, each question opened into a larger one—without losing the physical clarity of the question that came before it.</p></div>
-      <ol className="legacy-scale" aria-label="The expanding scale of Robert Dickinson's science">{scaleSteps.map((step) => <li key={step.number}><span>{step.number}</span><strong>{step.title}</strong><small>{step.note}</small></li>)}</ol>
-      <div className="legacy-journey"><aside className="journey-rail"><p className="section-kicker light">Career chapters</p><nav>{chapters.map((chapter) => <a href={`#${chapter.id}`} key={chapter.id}><span>{chapter.number}</span><b>{chapter.institution}</b><small>{chapter.years}</small></a>)}</nav></aside>
-        <div className="journey-chapters">{chapters.map((chapter) => <article className="journey-chapter" id={chapter.id} key={chapter.id}><header><div className="journey-number">{chapter.number}</div><div><p>{chapter.institution} <span>·</span> {chapter.years}</p><h3>{chapter.title}</h3></div><div className="journey-scale"><small>Scale</small><strong>{chapter.scale}</strong></div></header><p className="journey-summary">{chapter.summary}</p><div className="journey-detail"><div><p className="journey-label">Key contributions</p><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><p className="journey-label">Legacy</p><span>{chapter.impact}</span></blockquote></div>{chapter.photo && chapter.publication && <div className="journey-evidence"><figure><img src={chapter.photo.src} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>Photo shared for the Robert E. Dickinson memorial.</small></figcaption></figure><article className="landmark-publication"><p className="journey-label">Landmark publication <span>·</span> {chapter.publication.year}</p><h4>{chapter.publication.title}</h4><cite>{chapter.publication.citation}</cite><p>{chapter.publication.note}</p></article></div>}<div className="journey-tags">{chapter.threads.map((thread) => <span key={thread}>{thread}</span>)}</div></article>)}</div>
+      <div className="legacy-scale-intro"><p className="section-kicker light">A widening scientific horizon</p><h3>He repeatedly changed the scale of the problem.</h3><p>Across six decades, each question opened into a larger one—without losing the physical clarity of the question that came before it.</p></div>
+      <ol className="legacy-scale legacy-scale-six" aria-label="Robert Dickinson's scientific journey">{content.legacyChapters.map((chapter) => <li key={chapter.id}><span>{chapter.number}</span><strong>{chapter.institution}</strong><small>{chapter.scale}</small></li>)}</ol>
+
+      <div className="legacy-journey"><aside className="journey-rail"><p className="section-kicker light">Career chapters</p><nav>{content.legacyChapters.map((chapter) => <a href={`#${chapter.id}`} key={chapter.id}><span>{chapter.number}</span><b>{chapter.institution}</b><small>{chapter.years}</small></a>)}</nav></aside>
+        <div className="journey-chapters">{content.legacyChapters.map((chapter) => {
+          const image = photoSrc(chapter.photo);
+          return <article className="journey-chapter" id={chapter.id} key={chapter.id}>
+            <header><div className="journey-number">{chapter.number}</div><div><p>{chapter.institution} <span>·</span> {chapter.years}</p><h3>{chapter.title}</h3></div><div className="journey-scale"><small>Scientific focus</small><strong>{chapter.scale}</strong></div></header>
+            <p className="journey-summary">{chapter.summary}</p>
+            <div className="journey-detail"><div><p className="journey-label">Key contributions</p><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><p className="journey-label">Legacy</p><span>{chapter.impact}</span></blockquote></div>
+            {(image || chapter.publication) && <div className="journey-evidence">
+              {image && chapter.photo && <figure><img src={image} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>Photo shared for the Robert E. Dickinson memorial.</small></figcaption></figure>}
+              {chapter.publication && <article className="landmark-publication"><p className="journey-label">Landmark publication <span>·</span> {chapter.publication.year}</p><h4>{chapter.publication.title}</h4><cite>{chapter.publication.citation}</cite><p>{chapter.publication.note}</p></article>}
+            </div>}
+            <div className="journey-tags">{chapter.threads.map((thread) => <span key={thread}>{thread}</span>)}</div>
+          </article>;
+        })}</div>
       </div>
+
       <div className="enduring-threads"><div className="threads-heading"><div><p className="section-kicker light">Across every institution</p><h3>Enduring research threads</h3></div><p>The affiliations mark chapters in Robert’s career. These ideas reveal the deeper continuity running through them.</p></div><div className="thread-grid">{threads.map((thread, index) => <article key={thread.title}><span>{String(index + 1).padStart(2, "0")}</span><h4>{thread.title}</h4><p>{thread.text}</p></article>)}</div></div>
-      <div className="honors-block"><p className="section-kicker light">Selected honors & service</p><div className="honors-grid">{honors.map((honor) => <div key={honor}>{honor}</div>)}</div><p className="honors-note">As a lead author of the IPCC Fourth Assessment Report, Robert contributed to the body of work recognized when the IPCC and Al Gore received the 2007 Nobel Peace Prize.</p></div>
-    </section><SiteFooter />
+
+      <div className="honors-block"><p className="section-kicker light">Honors, awards & recognition</p><div className="honors-grid honors-grid-detailed">{content.honors.map((honor) => <div className="honor-item" key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.detail}</small></div>)}</div><p className="honors-note">{content.honorsNote}</p></div>
+    </section>
+    <SiteFooter />
   </main>;
 }
