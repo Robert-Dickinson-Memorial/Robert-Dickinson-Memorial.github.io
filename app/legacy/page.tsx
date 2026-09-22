@@ -36,7 +36,15 @@ export default async function LegacyPage() {
         })}</div>
       </div>
 
-      <div className="enduring-threads"><div className="threads-heading"><div><p className="section-kicker light">{copy["legacy.threadsKicker"]}</p><h3>{copy["legacy.threadsTitle"]}</h3></div><p>{copy["legacy.threadsIntro"]}</p></div><div className="thread-grid">{content.legacyThreads.map((thread, index) => <article key={thread.title}><span>{String(index + 1).padStart(2, "0")}</span><h4>{thread.title}</h4><p>{thread.text}</p></article>)}</div></div>
+      <div className="enduring-threads">
+        <div className="threads-heading"><div><p className="section-kicker light">{copy["legacy.threadsKicker"]}</p><h3>{copy["legacy.threadsTitle"]}</h3></div><p>{copy["legacy.threadsIntro"]}</p></div>
+        <div className="thread-ledger">{content.legacyThreads.map((thread, index) => <article key={thread.id}><span>{String(index + 1).padStart(2, "0")}</span><h4>{thread.title}</h4><p>{thread.text}</p></article>)}</div>
+      </div>
+
+      <div className="legacy-frontiers">
+        <div className="threads-heading"><div><p className="section-kicker light">{copy["legacy.frontiersKicker"]}</p><h3>{copy["legacy.frontiersTitle"]}</h3></div><p>{copy["legacy.frontiersIntro"]}</p></div>
+        <div className="frontier-cloud">{content.secondaryLegacyTopics.map((topic) => <article key={topic.title}><span aria-hidden="true">•</span><div><h4>{topic.title}</h4><p>{topic.text}</p></div></article>)}</div>
+      </div>
 
       <div className="honors-block"><p className="section-kicker light">{copy["legacy.honorsKicker"]}</p><div className="honors-grid honors-grid-detailed">{content.honors.map((honor) => <div className="honor-item" key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.detail}</small></div>)}</div><p className="honors-note">{content.honorsNote}</p></div>
     </section>
