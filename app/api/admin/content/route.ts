@@ -19,6 +19,7 @@ const jsonKeys = new Set([
   "homeLegacyCards",
   "lifeMilestones",
   "legacyThreads",
+  "communityQuotes",
   "pageCopy",
   "siteAssets",
   "legacyChapters",
