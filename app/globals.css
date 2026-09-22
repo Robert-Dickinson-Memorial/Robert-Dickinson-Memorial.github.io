@@ -1584,3 +1584,16 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .science-thread-node, .science-satellite-node { flex-basis: 100%; }
   .thread-ledger article { gap: 10px 14px; grid-template-columns: 34px 1fr; }
 }
+
+.book-frontier-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.book-frontier-list span {
+  border: 1px solid #d8cfbf;
+  color: var(--muted);
+  font-size: .62rem;
+  padding: 5px 8px;
+}
