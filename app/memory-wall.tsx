@@ -5,7 +5,7 @@ import { Quote } from "lucide-react";
 
 type Memory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
 
-export default function MemoryWall() {
+export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -16,14 +16,14 @@ export default function MemoryWall() {
       .finally(() => setLoaded(true));
   }, []);
 
-  if (!loaded) return <div className="memory-empty">Gathering stories…</div>;
+  if (!loaded) return <div className="memory-empty">{copy["memories.loading"]}</div>;
   if (!memories.length) {
     return (
       <div className="memory-empty">
         <Quote size={28} strokeWidth={1.4} aria-hidden="true" />
-        <h3>The first stories are being gathered.</h3>
-        <p>Be among the first to share a memory with the community.</p>
-        <a href="#share">Share a memory</a>
+        <h3>{copy["memories.emptyTitle"]}</h3>
+        <p>{copy["memories.emptyText"]}</p>
+        <a href="#share">{copy["memories.emptyCta"]}</a>
       </div>
     );
   }
