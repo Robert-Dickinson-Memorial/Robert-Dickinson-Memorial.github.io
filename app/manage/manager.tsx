@@ -29,6 +29,44 @@ export default function Manager({ content, events, media, publishedMemories, edi
     finally { setBusy(false); }
   }
 
+  function updatePageCopy(key: string, value: string) {
+    setContentValues((current) => ({ ...current, pageCopy: { ...current.pageCopy, [key]: value } }));
+  }
+
+  function updateSiteAssetAlt(assetId: "portrait" | "horizon", value: string) {
+    setContentValues((current) => ({
+      ...current,
+      siteAssets: { ...current.siteAssets, [assetId]: { ...current.siteAssets[assetId], alt: value } },
+    }));
+  }
+
+  function siteAssetSrc(assetId: "portrait" | "horizon") {
+    const asset = contentValues.siteAssets[assetId];
+    if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
+    return `/${asset.asset.replace(/^\//, "")}`;
+  }
+
+  async function uploadSiteAsset(event: FormEvent<HTMLFormElement>, assetId: "portrait" | "horizon") {
+    event.preventDefault(); setBusy(true); setMessage("");
+    try {
+      await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
+      const form = new FormData(event.currentTarget);
+      form.set("assetId", assetId);
+      await responseData(await fetch("/api/admin/site-asset", { method: "POST", body: form }));
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
+  async function resetSiteAsset(assetId: "portrait" | "horizon") {
+    if (!window.confirm("Restore the original built-in image?")) return;
+    setBusy(true); setMessage("");
+    try {
+      await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
+      await responseData(await fetch(`/api/admin/site-asset?assetId=${encodeURIComponent(assetId)}`, { method: "DELETE" }));
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
   function updateMilestone(index: number, field: "year" | "title" | "text", value: string) {
     setContentValues((current) => ({ ...current, lifeMilestones: current.lifeMilestones.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
@@ -139,6 +177,45 @@ export default function Manager({ content, events, media, publishedMemories, edi
           <label>Body font<select value={contentValues.bodyFont} onChange={(e) => setContentValues({ ...contentValues, bodyFont: e.target.value })}><option value="system-sans">Clean sans serif</option><option value="humanist-sans">Humanist sans serif</option><option value="book-serif">Book serif</option></select></label>
           <label>Heading font<select value={contentValues.headingFont} onChange={(e) => setContentValues({ ...contentValues, headingFont: e.target.value })}><option value="classic-serif">Classic serif</option><option value="book-serif">Book serif</option><option value="modern-sans">Modern sans serif</option></select></label>
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save typography</button>
+        </div>
+      </section>
+
+      <section id="edit-images" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Site images</p><h2>Edit homepage & book images</h2><p>The homepage headshot and horizon artwork are now managed here and reused wherever they appear, including the memory book.</p></div>
+        <div className="manager-form manager-stack">
+          {(["portrait", "horizon"] as const).map((assetId) => {
+            const asset = contentValues.siteAssets[assetId];
+            const label = assetId === "portrait" ? "Homepage headshot / portrait" : "Homepage horizon / background artwork";
+            return <div className="manager-edit-card manager-asset-editor" key={assetId}>
+              <strong>{label}</strong>
+              <img className="manager-image-preview" src={siteAssetSrc(assetId)} alt={asset.alt} />
+              <label>Alt text<input value={asset.alt} onChange={(e) => updateSiteAssetAlt(assetId, e.target.value)} /></label>
+              <form className="manager-photo-form" onSubmit={(event) => uploadSiteAsset(event, assetId)}>
+                <label><ImagePlus size={17} /> Replace image<input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
+                <button className="manager-secondary" disabled={busy}>Upload replacement</button>
+                {asset.objectKey && <button type="button" className="manager-danger" disabled={busy} onClick={() => resetSiteAsset(assetId)}>Restore original</button>}
+              </form>
+            </div>;
+          })}
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save image text</button>
+        </div>
+      </section>
+
+      <section id="edit-all-copy" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">All page text</p><h2>Edit every interface label & page heading</h2><p>This is the complete text registry for navigation, homepage headings, His Life, Scientific Legacy labels, Events, Gallery, Memories, the tree page, and the memory book. Changes are shared by the public site and private preview.</p></div>
+        <div className="manager-form manager-stack">
+          {Object.entries(contentValues.pageCopy).map(([key, value]) => {
+            const isUrl = key.toLowerCase().endsWith("url");
+            const longValue = value.length > 90 || /(?:Text|Intro|Message|Subtitle|Note|Caption)$/i.test(key);
+            return <div className="manager-copy-row" key={key}>
+              <label><span className="manager-copy-key">{key}</span>
+                {longValue && !isUrl
+                  ? <textarea rows={Math.min(6, Math.max(2, Math.ceil(value.length / 70)))} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />
+                  : <input type={isUrl ? "url" : "text"} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />}
+              </label>
+            </div>;
+          })}
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save all page text</button>
         </div>
       </section>
 
