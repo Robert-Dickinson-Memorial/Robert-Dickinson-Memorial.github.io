@@ -62,6 +62,10 @@ const copyFieldNames: Record<string, string> = {
   threadsKicker: "Enduring research threads — kicker",
   threadsTitle: "Enduring research threads — heading",
   threadsIntro: "Enduring research threads — introduction",
+  voicesKicker: "Scientific community voices — kicker",
+  voicesTitle: "Scientific community voices — heading",
+  voicesIntro: "Scientific community voices — introduction",
+  voicesReadMore: "Featured quote — full reflection link",
   honorsKicker: "Honors, awards & recognition — heading",
   shareKicker: "Share a memory — kicker",
   shareTitle: "Share a memory — heading",
@@ -361,6 +365,14 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
+      <section id="edit-legacy-voices" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Voices from the scientific community</h2><p>This is an editorial selection drawn from approved Memories. The full reflections stay on the Memories page; only the selected verbatim excerpts appear here.</p><a className="manager-section-link" href="#copy-legacy">Edit this section’s heading & introduction ↓</a></div>
+        <div className="manager-form manager-stack">
+          {publishedMemories.filter((item) => Boolean(item.featuredQuote) && Boolean(item.quoteExcerpt)).map((item) => <div className="manager-edit-card manager-featured-quote-preview" key={`featured-${item.id}`}><p>“{item.quoteExcerpt}”</p><strong>{item.name}</strong><small>{item.relationship}</small><a className="manager-section-link" href={`#manage-memory-${item.id}`}>Edit this selection in Memories ↓</a></div>)}
+          {!publishedMemories.some((item) => Boolean(item.featuredQuote) && Boolean(item.quoteExcerpt)) && <div className="manager-edit-card"><strong>No quotations featured yet</strong><p>Choose an approved reflection in Memories, select a verbatim excerpt, and check “Feature a quotation…” to make it appear here.</p><a className="manager-section-link" href="#edit-memories">Choose from approved Memories ↓</a></div>}
+        </div>
+      </section>
+
       <section id="edit-honors" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Honors, awards & recognition</h2><p>Edit the honors section shown at the end of the Scientific legacy page.</p></div>
         <div className="manager-form manager-stack">
@@ -423,7 +435,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
                 <div className="manager-subsection manager-subsection-standalone">
           
           <div className="manager-edit-list">
-            {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" key={item.id} onSubmit={savePublishedMemory}>
+            {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" id={`manage-memory-${item.id}`} key={item.id} onSubmit={savePublishedMemory}>
               <input type="hidden" name="id" value={item.id} />
               {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}
               <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
