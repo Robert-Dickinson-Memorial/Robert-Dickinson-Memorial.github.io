@@ -44,12 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
-  function renderHomeLegacy(topics, cards) {
+  function renderHomeLegacy(topics, summaryItems) {
     const target = document.querySelector("[data-home-legacy-topics]");
     if (!(target instanceof HTMLElement) || !Array.isArray(topics)) return;
-    const cards = target.querySelectorAll(".home-legacy-node");
+    const topicCards = target.querySelectorAll(".home-legacy-node");
     topics.forEach((topic, index) => {
-      const card = cards[index];
+      const card = topicCards[index];
       if (!(card instanceof HTMLElement)) return;
       const strong = card.querySelector("strong");
       const small = card.querySelector("small");
@@ -58,9 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const summaryTarget = document.querySelector("[data-home-legacy-cards]");
-    if (summaryTarget instanceof HTMLElement && Array.isArray(cards)) {
+    if (summaryTarget instanceof HTMLElement && Array.isArray(summaryItems)) {
       const summaryCards = summaryTarget.querySelectorAll(".chapter-card");
-      cards.forEach((item, index) => {
+      summaryItems.forEach((item, index) => {
         const card = summaryCards[index];
         if (!(card instanceof HTMLElement)) return;
         const heading = card.querySelector("h3");
