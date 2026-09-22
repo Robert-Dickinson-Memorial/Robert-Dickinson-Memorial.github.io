@@ -1354,3 +1354,28 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 }
 .manager-featured-quote-preview > strong { display: block; }
 .manager-featured-quote-preview > small { color: var(--muted); display: block; margin-top: 3px; }
+
+.legacy-voices-empty {
+  align-items: flex-start;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.13);
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / -1;
+  min-height: 190px;
+  justify-content: center;
+  padding: 34px;
+}
+.legacy-voices-empty p {
+  color: rgba(255,255,255,.62);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 720px;
+}
+.legacy-voices-empty a {
+  color: #ddb96f;
+  font-size: .76rem;
+  margin-top: 18px;
+}
