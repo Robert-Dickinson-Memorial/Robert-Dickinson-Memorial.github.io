@@ -13,7 +13,9 @@ const PUBLIC_MEMORIAL_URL = "https://robert-dickinson-memorial.github.io/";
 type PublishedMemory = {
   id: number;
   name: string;
+  relationship: string;
   title: string;
+  story: string;
   photoKey: string | null;
 };
 
@@ -27,7 +29,7 @@ export default async function ManagePage() {
     env.DB.prepare(`SELECT id, title, start_at AS startAt, end_at AS endAt, location, description, link_label AS linkLabel, link_url AS linkUrl FROM events ORDER BY start_at ASC`).all<MemorialEvent>(),
     env.DB.prepare(`SELECT id, kind, title, caption, object_key AS objectKey, external_url AS externalUrl, created_at AS createdAt FROM gallery_items ORDER BY created_at DESC`).all<GalleryItem>(),
     env.DB.prepare(`SELECT email, display_name AS displayName, created_at AS createdAt FROM memorial_editors ORDER BY created_at ASC`).all<{ email: string; displayName: string | null; createdAt: string }>(),
-    env.DB.prepare(`SELECT id, name, title, photo_key AS photoKey FROM memories WHERE status = 'approved' ORDER BY created_at DESC, id DESC`).all<PublishedMemory>(),
+    env.DB.prepare(`SELECT id, name, relationship, title, story, photo_key AS photoKey FROM memories WHERE status = 'approved' ORDER BY created_at DESC, id DESC`).all<PublishedMemory>(),
   ]) : [{ results: [] }, { results: [] }, { results: [] }, { results: [] }];
 
   return (
