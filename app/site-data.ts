@@ -82,14 +82,6 @@ export type CommunityQuote = {
   attribution: string;
 };
 
-export type FeaturedMemoryQuote = {
-  id: number;
-  name: string;
-  relationship: string;
-  title: string;
-  excerpt: string;
-};
-
 export type SiteAsset = {
   asset: string;
   objectKey: string | null;
@@ -596,21 +588,6 @@ export async function getPublishedEvents(): Promise<MemorialEvent[]> {
               link_label AS linkLabel, link_url AS linkUrl
        FROM events WHERE published = 1 ORDER BY start_at ASC, id ASC`
     ).all<MemorialEvent>();
-    return result.results ?? [];
-  } catch {
-    return [];
-  }
-}
-
-export async function getFeaturedMemoryQuotes(): Promise<FeaturedMemoryQuote[]> {
-  if (!env.DB) return [];
-  try {
-    const result = await env.DB.prepare(
-      `SELECT id, name, relationship, title, quote_excerpt AS excerpt
-       FROM memories
-       WHERE status = 'approved' AND featured_quote = 1 AND quote_excerpt IS NOT NULL AND trim(quote_excerpt) <> ''
-       ORDER BY created_at ASC, id ASC`
-    ).all<FeaturedMemoryQuote>();
     return result.results ?? [];
   } catch {
     return [];
