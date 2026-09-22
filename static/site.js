@@ -437,9 +437,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const homeLegacy = node("div", { className: "book-home-legacy" });
     homeLegacy.append(node("h3", { text: copy["home.legacyTitle"] || "Science that changed how we see Earth" }), node("p", { text: content.homeLegacyIntro || "" }));
     const themeGrid = node("div", { className: "book-theme-grid" });
-    (content.homeLegacyTopics || []).forEach((topic) => {
+    (content.legacyThreads || []).forEach((thread) => {
       const article = node("article");
-      article.append(node("strong", { text: topic.title || "" }), node("span", { text: topic.note || "" }));
+      article.append(node("strong", { text: thread.title || "" }), node("span", { text: thread.text || "" }));
       themeGrid.append(article);
     });
     homeLegacy.append(themeGrid);
@@ -489,7 +489,10 @@ document.addEventListener("DOMContentLoaded", () => {
       article.append(node("span", { text: String(index + 1).padStart(2, "0") }), node("h3", { text: thread.title || "" }), node("p", { text: thread.text || "" }));
       threadGrid.append(article);
     });
-    legacyOverview.append(threadGrid, node("span", { className: "book-page-number", text: copy["nav.legacy"] || "Scientific legacy" }));
+    legacyOverview.append(threadGrid);
+    const frontierList = node("div", { className: "book-frontier-list" });
+    (content.secondaryLegacyTopics || []).forEach((topic) => frontierList.append(node("span", { text: topic.title || "" })));
+    legacyOverview.append(frontierList, node("span", { className: "book-page-number", text: copy["nav.legacy"] || "Scientific legacy" }));
     pages.push(legacyOverview);
 
     (content.legacyChapters || []).forEach((chapter) => {
