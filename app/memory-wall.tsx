@@ -31,7 +31,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   return (
     <div className="memory-grid">
       {memories.map((memory) => (
-        <article className="memory-card" key={memory.id}>
+        <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
           {memory.photoKey && <img src={`/api/photos/${memory.photoKey}`} alt="" />}
           <Quote size={24} strokeWidth={1.4} aria-hidden="true" />
           <h3>{memory.title}</h3><p>{memory.story}</p>
