@@ -284,20 +284,28 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-all-copy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">All page text</p><h2>Edit every interface label & page heading</h2><p>This is the complete text registry for navigation, homepage headings, His Life, Scientific Legacy labels, Events, Gallery, Memories, the tree page, and the memory book. Changes are shared by the public site and private preview.</p></div>
-        <div className="manager-form manager-stack">
-          {Object.entries(contentValues.pageCopy).map(([key, value]) => {
-            const isUrl = key.toLowerCase().endsWith("url");
-            const longValue = value.length > 90 || /(?:Text|Intro|Message|Subtitle|Note|Caption)$/i.test(key);
-            return <div className="manager-copy-row" key={key}>
-              <label><span className="manager-copy-key">{key}</span>
-                {longValue && !isUrl
-                  ? <textarea rows={Math.min(6, Math.max(2, Math.ceil(value.length / 70)))} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />
-                  : <input type={isUrl ? "url" : "text"} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />}
-              </label>
-            </div>;
+        <div className="manager-panel-heading"><p className="section-kicker">Page headings, labels & buttons</p><h2>Text organized by public page</h2><p>Use the same page names as the public memorial. Open a page below to edit its headings, buttons, navigation labels, form labels, and other interface text.</p></div>
+        <div className="manager-form manager-stack manager-copy-groups">
+          {copyGroups.map((group) => {
+            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)));
+            return <details className="manager-copy-group" id={group.id} key={group.id} open={group.id === "copy-home"}>
+              <summary><span>{group.page}</span><strong>{group.title}</strong><small>{entries.length} editable text fields</small></summary>
+              <div className="manager-copy-group-body">
+                {entries.map(([key, value]) => {
+                  const isUrl = key.toLowerCase().endsWith("url");
+                  const longValue = value.length > 90 || /(?:Text|Intro|Message|Subtitle|Note|Caption|Story)$/i.test(key);
+                  return <div className="manager-copy-row" key={key}>
+                    <label><span className="manager-copy-label">{copyFieldLabel(key)}</span><small className="manager-copy-key">{key}</small>
+                      {longValue && !isUrl
+                        ? <textarea rows={Math.min(6, Math.max(2, Math.ceil(value.length / 70)))} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />
+                        : <input type={isUrl ? "url" : "text"} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />}
+                    </label>
+                  </div>;
+                })}
+              </div>
+            </details>;
           })}
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save all page text</button>
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save page headings & labels</button>
         </div>
       </section>
 
@@ -419,8 +427,12 @@ export default function Manager({ content, events, media, publishedMemories, edi
           {!media.length && <p>No gallery items have been added.</p>}
         </div>
 
-        <div className="manager-subsection">
-          <div className="manager-panel-heading"><h3>Published memories</h3><p>Remove only the text, only the attached photo, or permanently delete the complete contribution.</p></div>
+      </section>
+
+      <section id="edit-memories" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Stories that carry forward</h2><p>Edit published memories and their photographs exactly as they appear on the Memories page.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
+                <div className="manager-subsection manager-subsection-standalone">
+          
           <div className="manager-edit-list">
             {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" key={item.id} onSubmit={savePublishedMemory}>
               <input type="hidden" name="id" value={item.id} />
@@ -432,6 +444,18 @@ export default function Manager({ content, events, media, publishedMemories, edi
             </form>)}
             {!publishedMemories.length && <p>No memories are currently published.</p>}
           </div>
+        </div>
+
+      </section>
+
+
+
+      <section id="edit-tree-content" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Living tribute</p><h2>The Chippewa National Forest</h2><p>Edit the two narrative paragraphs used in the Minnesota connection section of the tree-dedication page.</p><a className="manager-section-link" href="#copy-tree">Edit Living tribute headings, FAQ & buttons ↓</a></div>
+        <div className="manager-form">
+          <label>Minnesota connection — tribute text<textarea rows={5} value={contentValues.treeTribute} onChange={(e) => setContentValues({ ...contentValues, treeTribute: e.target.value })} /></label>
+          <label>Chippewa project — restoration details<textarea rows={5} value={contentValues.treeDetail} onChange={(e) => setContentValues({ ...contentValues, treeDetail: e.target.value })} /></label>
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save Living tribute text</button>
         </div>
       </section>
 
