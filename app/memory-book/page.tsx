@@ -6,7 +6,7 @@ import PrintButton from "./print-button";
 
 export const dynamic = "force-dynamic";
 
-type BookMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; featuredQuote: number; quoteExcerpt: string | null };
+type BookMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
 
 function assetUrl(asset: SiteAsset) {
   if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
@@ -24,14 +24,11 @@ export default async function MemoryBookPage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
   const result = env.DB ? await env.DB.prepare(
-    `SELECT id, name, relationship, title, story, photo_key AS photoKey,
-            featured_quote AS featuredQuote, quote_excerpt AS quoteExcerpt
+    `SELECT id, name, relationship, title, story, photo_key AS photoKey
      FROM memories WHERE status = ? ORDER BY created_at ASC, id ASC`
   ).bind("approved").all<BookMemory>() : { results: [] };
   const memories = result.results ?? [];
   const memorySpreads = Array.from({ length: Math.ceil(memories.length / 2) }, (_, index) => memories.slice(index * 2, index * 2 + 2));
-  const featuredQuotes = memories.filter((memory) => Boolean(memory.featuredQuote) && Boolean(memory.quoteExcerpt?.trim()));
-  const featuredQuoteSpreads = Array.from({ length: Math.ceil(featuredQuotes.length / 4) }, (_, index) => featuredQuotes.slice(index * 4, index * 4 + 4));
   const honorSpreads = Array.from({ length: Math.ceil(content.honors.length / 12) }, (_, index) => content.honors.slice(index * 12, index * 12 + 12));
   const storyParagraphs = content.obituaryStory.split(/\n\s*\n/).filter(Boolean);
   const portrait = assetUrl(content.siteAssets.portrait);
@@ -98,13 +95,6 @@ export default async function MemoryBookPage() {
             <span className="book-page-number">{chapter.institution}</span>
           </section>;
         })}
-
-        {featuredQuoteSpreads.map((spread, index) => <section className="book-spread book-voices-spread" key={`voices-${index}`}>
-          <p className="book-running-title">{copy["nav.legacy"]} · {copy["legacy.voicesTitle"]}</p>
-          <div className="book-section-heading"><p className="book-label">{copy["legacy.voicesKicker"]}</p><h2>{copy["legacy.voicesTitle"]}</h2><p>{copy["legacy.voicesIntro"]}</p></div>
-          <div className="book-voice-grid">{spread.map((memory, quoteIndex) => <article className={quoteIndex === 0 && index === 0 ? "book-voice-featured" : ""} key={memory.id}><span aria-hidden="true">“</span><blockquote>{memory.quoteExcerpt}</blockquote><footer><strong>{memory.name}</strong><small>{memory.relationship}</small></footer></article>)}</div>
-          <span className="book-page-number">Voices {index + 1}</span>
-        </section>)}
 
         {honorSpreads.map((spread, index) => <section className="book-spread book-honors-spread" key={`honors-${index}`}>
           <p className="book-running-title">{copy["nav.legacy"]} · {copy["legacy.honorsKicker"]}</p>
