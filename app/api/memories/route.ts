@@ -13,7 +13,8 @@ export async function GET() {
     if (!env.DB) throw new Error("Database unavailable");
     const result = await env.DB.prepare(
       `SELECT id, name, relationship, title, story, photo_key AS photoKey,
-              featured_quote AS featuredQuote, quote_excerpt AS quoteExcerpt
+              featured_quote AS featuredQuote, quote_excerpt AS quoteExcerpt,
+              created_at AS createdAt
        FROM memories WHERE status = ? ORDER BY created_at DESC, id DESC LIMIT 50`
     ).bind("approved").all();
     return publicJson({ memories: result.results });
