@@ -52,6 +52,9 @@ const copyFieldNames: Record<string, string> = {
   tributeIntro: "Living tributes — introduction",
   legacyKicker: "Scientific legacy — kicker",
   legacyTitle: "Scientific legacy — heading",
+  legacyMapPrimary: "Home scientific map — primary label",
+  legacyMapSecondary: "Home scientific map — secondary label",
+  legacyMapHint: "Home scientific map — explanatory line",
   legacyCta: "Scientific legacy — button",
   communityKicker: "Explore the memorial — kicker",
   communityTitle: "Explore the memorial — heading",
@@ -309,7 +312,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
         <div className="manager-form manager-stack">
           <div className="manager-edit-card manager-book-sources">
             <strong>Included automatically</strong>
-            <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy overview, connected themes, and summary cards.</p>
+            <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy narrative highlights, shared enduring threads, and secondary scientific frontiers.</p>
             <p><b>His life</b> — full biography, education and career timeline, and mentorship reflection.</p>
             <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, and honors.</p>
             <p><b>Memories</b> — every approved community memory and its published photograph.</p>
