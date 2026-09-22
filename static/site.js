@@ -299,12 +299,96 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
+  async function hydrateMemoryBook() {
+    const target = document.querySelector("[data-memory-book]");
+    if (!(target instanceof HTMLElement)) return;
+    const [{ content }, { gallery = [] }, { memories = [] }] = await Promise.all([
+      getJson("/api/content"),
+      getJson("/api/gallery"),
+      getJson("/api/memories"),
+    ]);
+    const copy = content.pageCopy || {};
+    const siteAssetUrl = (id) => {
+      const asset = content.siteAssets?.[id];
+      if (!asset) return "";
+      return asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
+    };
+    const portrait = siteAssetUrl("portrait");
+    const horizon = siteAssetUrl("horizon");
+    const storyParagraphs = String(content.obituaryStory || "").split(/\n\s*\n/).filter(Boolean).slice(0, 3);
+    const photos = gallery.filter((item) => item.kind === "image" && item.objectKey);
+    const photoSpreads = Array.from({ length: Math.ceil(photos.length / 2) }, (_, index) => photos.slice(index * 2, index * 2 + 2));
+    const memorySpreads = Array.from({ length: Math.ceil(memories.length / 2) }, (_, index) => memories.slice(index * 2, index * 2 + 2));
+    const pages = [];
+
+    const cover = node("header", { className: "book-spread book-cover-spread" });
+    const coverCopy = node("div", { className: "book-cover-copy" });
+    const coverName = node("h1");
+    coverName.append(document.createTextNode(copy["book.coverNameLine1"] || "Robert E."), node("br"), document.createTextNode(copy["book.coverNameLine2"] || "Dickinson"));
+    coverCopy.append(node("p", { text: copy["book.coverKicker"] || "Community memories" }), coverName, node("span", { text: copy["book.coverDates"] || "1940–2026" }), node("small", { text: copy["book.coverSubtitle"] || "A life in science, mentorship, and friendship" }));
+    cover.append(coverCopy, node("img", { attrs: { src: portrait, alt: content.siteAssets?.portrait?.alt || "" } }));
+    pages.push(cover);
+
+    const profile = node("section", { className: "book-spread book-profile-spread" });
+    const profilePhotos = node("div", { className: "book-profile-photos" });
+    profilePhotos.append(node("img", { attrs: { src: horizon, alt: content.siteAssets?.horizon?.alt || "" } }), node("img", { attrs: { src: portrait, alt: content.siteAssets?.portrait?.alt || "" } }));
+    const profileCopy = node("div", { className: "book-profile-copy" });
+    profileCopy.append(node("p", { className: "book-running-title", text: copy["book.profileRunning"] || "" }), node("p", { className: "book-label", text: copy["book.profileLabel"] || "" }), node("h2", { text: copy["book.profileTitle"] || "" }));
+    const columns = node("div", { className: "book-columns" });
+    storyParagraphs.forEach((paragraph) => columns.append(node("p", { text: paragraph })));
+    profileCopy.append(columns);
+    profile.append(profilePhotos, profileCopy, node("span", { className: "book-page-number", text: "1–2" }));
+    pages.push(profile);
+
+    photoSpreads.forEach((spread, index) => {
+      const section = node("section", { className: "book-spread book-photo-spread" });
+      section.append(node("p", { className: "book-running-title", text: copy["book.galleryRunning"] || "" }));
+      const grid = node("div", { className: "book-photo-grid" });
+      spread.forEach((item) => {
+        const figure = node("figure");
+        figure.append(node("img", { attrs: { src: objectUrl("/api/gallery/photos", item.objectKey), alt: item.title || "" } }));
+        const caption = node("figcaption");
+        caption.append(node("strong", { text: item.title || "" }));
+        if (item.caption) caption.append(node("span", { text: item.caption }));
+        figure.append(caption); grid.append(figure);
+      });
+      section.append(grid, node("span", { className: "book-page-number", text: `${index * 2 + 3}–${index * 2 + 4}` }));
+      pages.push(section);
+    });
+
+    memorySpreads.forEach((spread, index) => {
+      const section = node("section", { className: "book-spread book-message-spread" });
+      section.append(node("p", { className: "book-running-title", text: copy["book.memoryRunning"] || "" }), node("h2", { text: copy["book.messagesTitle"] || "" }));
+      const grid = node("div", { className: "book-message-grid" });
+      spread.forEach((memory) => {
+        const article = node("article");
+        if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}` } }));
+        article.append(node("p", { className: "book-label", text: `${copy["book.memoryPrefix"] || "A memory from"} ${memory.relationship || ""}` }), node("h3", { text: memory.title || "" }), node("p", { className: "book-story", text: memory.story || "" }));
+        const footer = node("footer"); footer.append(node("strong", { text: memory.name || "" }), node("span", { text: memory.relationship || "" })); article.append(footer); grid.append(article);
+      });
+      const start = photoSpreads.length * 2 + index * 2 + 3;
+      section.append(grid, node("span", { className: "book-page-number", text: `${start}–${start + 1}` }));
+      pages.push(section);
+    });
+
+    if (!photos.length && !memories.length) {
+      const empty = node("section", { className: "book-spread book-empty" });
+      empty.append(node("h2", { text: copy["book.emptyTitle"] || "The book is ready to grow." }), node("p", { text: copy["book.emptyText"] || "Approved stories and gallery photographs will automatically appear here." }));
+      pages.push(empty);
+    }
+
+    const end = node("footer", { className: "book-spread book-end-spread" });
+    end.append(node("span", { text: "∞" }), node("h2", { text: copy["book.endTitle"] || "His questions continue." }), node("p", { text: copy["book.endFooter"] || "Robert E. Dickinson Memorial · 1940–2026" }));
+    pages.push(end);
+    target.replaceChildren(...pages);
+  }
+
   if (!apiBase) {
     if (form instanceof HTMLFormElement) form.addEventListener("submit", (event) => { event.preventDefault(); showMessage("Online submissions are temporarily paused while the private review service is being connected. No information was sent or stored."); });
     return;
   }
 
-  Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories()]);
+  Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook()]);
 
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();
