@@ -27,14 +27,144 @@ document.addEventListener("DOMContentLoaded", () => {
     return response.json();
   }
 
+  function applyTheme(content) {
+    const main = document.querySelector("main");
+    if (!(main instanceof HTMLElement)) return;
+    if (typeof content.bodyFont === "string") main.dataset.bodyFont = content.bodyFont;
+    if (typeof content.headingFont === "string") main.dataset.headingFont = content.headingFont;
+  }
+
+  function renderLifeTimeline(items) {
+    const target = document.querySelector("[data-life-timeline]");
+    if (!(target instanceof HTMLElement) || !Array.isArray(items)) return;
+    target.replaceChildren(...items.map((item) => {
+      const article = node("article");
+      article.append(node("span", { text: item.year || "" }), node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
+      return article;
+    }));
+  }
+
+  function renderHomeLegacy(topics) {
+    const target = document.querySelector("[data-home-legacy-topics]");
+    if (!(target instanceof HTMLElement) || !Array.isArray(topics)) return;
+    const cards = target.querySelectorAll(".home-legacy-node");
+    topics.forEach((topic, index) => {
+      const card = cards[index];
+      if (!(card instanceof HTMLElement)) return;
+      const strong = card.querySelector("strong");
+      const small = card.querySelector("small");
+      if (strong) strong.textContent = topic.title || "";
+      if (small) small.textContent = topic.note || "";
+    });
+  }
+
+  function chapterPhotoUrl(photo) {
+    if (!photo) return "";
+    if (photo.objectKey) return objectUrl("/api/chapter-photos", photo.objectKey);
+    if (photo.asset) return `/assets/${String(photo.asset).replace(/^\//, "")}`;
+    return "";
+  }
+
+  function renderLegacy(content) {
+    const chapters = Array.isArray(content.legacyChapters) ? content.legacyChapters : [];
+    if (!chapters.length) return;
+
+    const scale = document.querySelector("[data-legacy-scale]");
+    if (scale instanceof HTMLElement) {
+      scale.replaceChildren(...chapters.map((chapter) => {
+        const item = node("li");
+        item.append(node("span", { text: chapter.number || "" }), node("strong", { text: chapter.institution || "" }), node("small", { text: chapter.scale || "" }));
+        return item;
+      }));
+    }
+
+    const nav = document.querySelector("[data-legacy-nav]");
+    if (nav instanceof HTMLElement) {
+      nav.replaceChildren(...chapters.map((chapter) => {
+        const link = node("a", { attrs: { href: `#${chapter.id}` } });
+        link.append(node("span", { text: chapter.number || "" }), node("b", { text: chapter.institution || "" }), node("small", { text: chapter.years || "" }));
+        return link;
+      }));
+    }
+
+    const target = document.querySelector("[data-legacy-journey]");
+    if (target instanceof HTMLElement) {
+      target.replaceChildren(...chapters.map((chapter) => {
+        const article = node("article", { className: "journey-chapter", attrs: { id: chapter.id } });
+        const header = node("header");
+        const number = node("div", { className: "journey-number", text: chapter.number || "" });
+        const titleBlock = node("div");
+        const meta = node("p");
+        meta.append(document.createTextNode(chapter.institution || ""), node("span", { text: " · " }), document.createTextNode(chapter.years || ""));
+        titleBlock.append(meta, node("h3", { text: chapter.title || "" }));
+        const focus = node("div", { className: "journey-scale" });
+        focus.append(node("small", { text: "Scientific focus" }), node("strong", { text: chapter.scale || "" }));
+        header.append(number, titleBlock, focus);
+        article.append(header, node("p", { className: "journey-summary", text: chapter.summary || "" }));
+
+        const detail = node("div", { className: "journey-detail" });
+        const contributions = node("div");
+        contributions.append(node("p", { className: "journey-label", text: "Key contributions" }));
+        const list = node("ul");
+        (chapter.contributions || []).forEach((item) => list.append(node("li", { text: item })));
+        contributions.append(list);
+        const legacy = node("blockquote");
+        legacy.append(node("p", { className: "journey-label", text: "Legacy" }), node("span", { text: chapter.impact || "" }));
+        detail.append(contributions, legacy);
+        article.append(detail);
+
+        const imageSrc = chapterPhotoUrl(chapter.photo);
+        if (imageSrc || chapter.publication) {
+          const evidence = node("div", { className: "journey-evidence" });
+          if (imageSrc && chapter.photo) {
+            const figure = node("figure");
+            figure.append(node("img", { attrs: { src: imageSrc, alt: chapter.photo.alt || "", loading: "lazy" } }));
+            const caption = node("figcaption", { text: chapter.photo.caption || "" });
+            caption.append(node("small", { text: "Photo shared for the Robert E. Dickinson memorial." }));
+            figure.append(caption);
+            evidence.append(figure);
+          }
+          if (chapter.publication) {
+            const publication = node("article", { className: "landmark-publication" });
+            const label = node("p", { className: "journey-label" });
+            label.append(document.createTextNode("Landmark publication "), node("span", { text: "·" }), document.createTextNode(` ${chapter.publication.year || ""}`));
+            publication.append(label, node("h4", { text: chapter.publication.title || "" }), node("cite", { text: chapter.publication.citation || "" }), node("p", { text: chapter.publication.note || "" }));
+            evidence.append(publication);
+          }
+          article.append(evidence);
+        }
+
+        const tags = node("div", { className: "journey-tags" });
+        (chapter.threads || []).forEach((thread) => tags.append(node("span", { text: thread })));
+        article.append(tags);
+        return article;
+      }));
+    }
+
+    const honors = document.querySelector("[data-legacy-honors]");
+    if (honors instanceof HTMLElement && Array.isArray(content.honors)) {
+      honors.replaceChildren(...content.honors.map((honor) => {
+        const item = node("div", { className: "honor-item" });
+        item.append(node("span", { text: honor.year || "" }), node("strong", { text: honor.title || "" }), node("small", { text: honor.detail || "" }));
+        return item;
+      }));
+    }
+    const honorsNote = document.querySelector("[data-honors-note]");
+    if (honorsNote instanceof HTMLElement && typeof content.honorsNote === "string") honorsNote.textContent = content.honorsNote;
+  }
+
   async function hydrateContent() {
     const { content } = await getJson("/api/content");
-    Object.entries(content || {}).forEach(([key, value]) => {
-      const target = document.querySelector(`[data-content="${key}"]`);
-      if (target instanceof HTMLElement && typeof value === "string") {
+    if (!content || typeof content !== "object") return;
+    applyTheme(content);
+
+    Object.entries(content).forEach(([key, value]) => {
+      const targets = document.querySelectorAll(`[data-content="${key}"]`);
+      targets.forEach((target) => {
+        if (!(target instanceof HTMLElement) || typeof value !== "string") return;
         if (key === "obituaryStory") target.replaceChildren(...value.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph })));
         else target.textContent = value;
-      }
+      });
       const preview = document.querySelector(`[data-content-preview="${key}"]`);
       if (preview instanceof HTMLElement && typeof value === "string" && key === "obituaryStory") {
         const paragraphs = value.split(/\n\s*\n/).filter(Boolean).slice(0, 2).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph }));
@@ -42,6 +172,10 @@ document.addEventListener("DOMContentLoaded", () => {
         preview.replaceChildren(...paragraphs, link);
       }
     });
+
+    renderHomeLegacy(content.homeLegacyTopics);
+    renderLifeTimeline(content.lifeMilestones);
+    renderLegacy(content);
   }
 
   async function hydrateEvents() {
