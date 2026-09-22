@@ -1,9 +1,15 @@
-import { ArrowRight, BookOpen, CalendarDays, CloudSun, Compass, Images, MessageSquareText, Sprout, Users } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, Images, MessageSquareText, Sprout } from "lucide-react";
 import Link from "next/link";
 import { SiteFooter, SiteNav } from "./site-chrome";
-import { getPublishedEvents, getPublishedGallery, getSiteContent, type SiteAsset } from "./site-data";
-
-const legacyIcons = [CloudSun, Compass, Users];
+import {
+  getPublishedEvents,
+  getPublishedGallery,
+  getSiteContent,
+  type HomeLegacyCard,
+  type LegacyThread,
+  type SecondaryLegacyTopic,
+  type SiteAsset,
+} from "./site-data";
 
 export const dynamic = "force-dynamic";
 
@@ -12,27 +18,100 @@ function assetUrl(asset: SiteAsset) {
   return `/${asset.asset.replace(/^\//, "")}`;
 }
 
-function LegacyNetwork({ topics }: { topics: { title: string; note: string }[] }) {
-  return (
-    <div className="home-legacy-network" aria-label="Connected themes in Robert Dickinson's scientific legacy">
-      <svg className="home-legacy-network-lines" viewBox="0 0 1000 440" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M500 220 C390 180 275 110 165 95" />
-        <path d="M500 220 C610 165 735 105 850 100" />
-        <path d="M500 220 C380 255 270 330 155 350" />
-        <path d="M500 220 C625 260 735 330 855 350" />
-        <path d="M165 95 C280 155 360 155 500 220" />
-        <path d="M850 100 C790 205 785 285 855 350" />
-        <path d="M155 350 C360 405 655 410 855 350" />
-      </svg>
-      {topics.map((topic, index) => (
-        <article className={`home-legacy-node home-legacy-node-${index + 1}`} key={`${index}-${topic.title}`}>
-          <span>{String(index + 1).padStart(2, "0")}</span>
-          <strong>{topic.title}</strong>
-          <small>{topic.note}</small>
-        </article>
-      ))}
+const primaryPositions = [
+  { x: 59, y: 12 },
+  { x: 83, y: 16 },
+  { x: 71, y: 34 },
+  { x: 58, y: 57 },
+  { x: 86, y: 59 },
+  { x: 73, y: 80 },
+];
+
+const secondaryPositions = [
+  { x: 48, y: 4 },
+  { x: 48, y: 69 },
+  { x: 94, y: 35 },
+  { x: 66, y: 94 },
+  { x: 50, y: 88 },
+  { x: 96, y: 7 },
+  { x: 43, y: 78 },
+  { x: 94, y: 23 },
+];
+
+const highlightAnchors = [
+  { x: 38, y: 14 },
+  { x: 38, y: 36 },
+  { x: 38, y: 59 },
+  { x: 38, y: 82 },
+];
+
+function ScientificStoryMap({
+  threads,
+  highlights,
+  secondaryTopics,
+  primaryLabel,
+  secondaryLabel,
+  hint,
+}: {
+  threads: LegacyThread[];
+  highlights: HomeLegacyCard[];
+  secondaryTopics: SecondaryLegacyTopic[];
+  primaryLabel: string;
+  secondaryLabel: string;
+  hint: string;
+}) {
+  const positionById = new Map(threads.map((thread, index) => [thread.id, primaryPositions[index % primaryPositions.length]]));
+  const coreLinks = [
+    [0, 2], [1, 2], [2, 3], [2, 4], [3, 5], [4, 5], [1, 5],
+  ];
+
+  return <div className="home-science-story">
+    <svg className="science-story-lines" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true">
+      {coreLinks.map(([fromIndex, toIndex]) => {
+        const from = primaryPositions[fromIndex];
+        const to = primaryPositions[toIndex];
+        if (!from || !to || !threads[fromIndex] || !threads[toIndex]) return null;
+        return <path className="science-core-line" d={`M ${from.x * 10} ${from.y * 9} C ${(from.x + to.x) * 5} ${from.y * 9}, ${(from.x + to.x) * 5} ${to.y * 9}, ${to.x * 10} ${to.y * 9}`} key={`core-${fromIndex}-${toIndex}`} />;
+      })}
+      {highlights.slice(0, 4).flatMap((highlight, highlightIndex) => {
+        const anchor = highlightAnchors[highlightIndex];
+        if (!anchor) return [];
+        return highlight.threadIds.map((threadId) => {
+          const target = positionById.get(threadId);
+          if (!target) return null;
+          return <path className={`science-highlight-line science-highlight-line-${highlightIndex + 1}`} d={`M ${anchor.x * 10} ${anchor.y * 9} C 470 ${anchor.y * 9}, 500 ${target.y * 9}, ${target.x * 10} ${target.y * 9}`} key={`highlight-${highlightIndex}-${threadId}`} />;
+        });
+      })}
+      {secondaryTopics.map((topic, index) => {
+        const secondary = secondaryPositions[index % secondaryPositions.length];
+        const primary = topic.threadIds.map((id) => positionById.get(id)).find(Boolean);
+        if (!primary) return null;
+        return <path className="science-satellite-line" d={`M ${secondary.x * 10} ${secondary.y * 9} Q ${(secondary.x + primary.x) * 5} ${(secondary.y + primary.y) * 4.5} ${primary.x * 10} ${primary.y * 9}`} key={`satellite-${index}`} />;
+      })}
+    </svg>
+
+    <div className="science-highlight-stream">
+      {highlights.map((highlight, index) => <article className={`science-highlight science-highlight-${index + 1}`} key={`${index}-${highlight.title}`}>
+        <span className="science-highlight-dot" aria-hidden="true" />
+        <div><h3>{highlight.title}</h3><p>{highlight.text}</p></div>
+      </article>)}
     </div>
-  );
+
+    <div className="science-constellation" aria-label="Scientific themes connected across Robert Dickinson's work">
+      <div className="science-map-heading"><span>{primaryLabel}</span><p>{hint}</p></div>
+      {threads.map((thread, index) => {
+        const position = primaryPositions[index % primaryPositions.length];
+        return <article className="science-thread-node" key={thread.id} style={{ left: `${position.x}%`, top: `${position.y}%` }}>
+          <strong>{thread.title}</strong><small>{thread.text}</small>
+        </article>;
+      })}
+      <span className="science-secondary-label">{secondaryLabel}</span>
+      {secondaryTopics.map((topic, index) => {
+        const position = secondaryPositions[index % secondaryPositions.length];
+        return <span className="science-satellite-node" key={`${index}-${topic.title}`} style={{ left: `${position.x}%`, top: `${position.y}%` }} title={topic.text}>{topic.title}</span>;
+      })}
+    </div>
+  </div>;
 }
 
 export default async function Home() {
@@ -81,8 +160,14 @@ export default async function Home() {
 
       <section className="home-legacy-preview">
         <div className="home-preview-heading"><div><p className="section-kicker light">{copy["home.legacyKicker"]}</p><h2>{copy["home.legacyTitle"]}</h2></div><p>{content.homeLegacyIntro}</p></div>
-        <LegacyNetwork topics={content.homeLegacyTopics} />
-        <div className="chapter-grid home-chapter-grid">{content.homeLegacyCards.map((card, index) => { const Icon = legacyIcons[index] ?? CloudSun; const number = String(index + 1).padStart(2, "0"); return <article className="chapter-card" key={`${index}-${card.title}`}><div className="chapter-top"><Icon size={24} /><span>{number}</span></div><h3>{card.title}</h3><p>{card.text}</p></article>; })}</div>
+        <ScientificStoryMap
+          threads={content.legacyThreads}
+          highlights={content.homeLegacyCards}
+          secondaryTopics={content.secondaryLegacyTopics}
+          primaryLabel={copy["home.legacyMapPrimary"]}
+          secondaryLabel={copy["home.legacyMapSecondary"]}
+          hint={copy["home.legacyMapHint"]}
+        />
         <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
 
