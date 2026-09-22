@@ -67,6 +67,11 @@ export type HomeLegacyTopic = {
   note: string;
 };
 
+export type HomeLegacyCard = {
+  title: string;
+  text: string;
+};
+
 export type SiteContent = {
   heroIntro: string;
   obituaryStory: string;
@@ -76,6 +81,7 @@ export type SiteContent = {
   headingFont: string;
   homeLegacyIntro: string;
   homeLegacyTopics: HomeLegacyTopic[];
+  homeLegacyCards: HomeLegacyCard[];
   lifeMilestones: LifeMilestone[];
   legacyChapters: LegacyChapter[];
   honors: MemorialHonor[];
@@ -245,6 +251,12 @@ const homeLegacyTopics: HomeLegacyTopic[] = [
   { title: "Remote Sensing (Observation from Space)", note: "Observations that test and improve the models" },
 ];
 
+const homeLegacyCards: HomeLegacyCard[] = [
+  { title: "He changed climate models", text: "Robert helped transform land from a passive boundary into a living, dynamic part of the climate system." },
+  { title: "He connected the Earth system", text: "His work joined atmosphere, land, water, vegetation, and carbon into a more faithful picture of Earth." },
+  { title: "He multiplied possibility", text: "His deepest influence continues through the students, postdoctoral scholars, and collaborators he guided." },
+];
+
 export const defaultContent: SiteContent = {
   heroIntro: "Pioneering climate scientist, visionary Earth-system modeler, devoted teacher, and generous mentor.",
   obituaryStory: [
@@ -261,6 +273,7 @@ export const defaultContent: SiteContent = {
   headingFont: "classic-serif",
   homeLegacyIntro: "Rather than a single linear path, Bob’s work formed a connected scientific landscape: ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, and observations from space continually informed one another.",
   homeLegacyTopics,
+  homeLegacyCards,
   lifeMilestones,
   legacyChapters,
   honors,
@@ -291,6 +304,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       headingFont: values.headingFont || defaultContent.headingFont,
       homeLegacyIntro: values.homeLegacyIntro || defaultContent.homeLegacyIntro,
       homeLegacyTopics: parseJson(values.homeLegacyTopics, defaultContent.homeLegacyTopics),
+      homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
       lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
       legacyChapters: parseJson(values.legacyChapters, defaultContent.legacyChapters),
       honors: parseJson(values.honors, defaultContent.honors),
