@@ -640,3 +640,220 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
   margin: 0;
   padding: 28px 0;
 }
+
+
+/* Editor-synced typography */
+:root {
+  --font-body: Arial, Helvetica, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+}
+main[data-body-font="system-sans"] { --font-body: Arial, Helvetica, sans-serif; }
+main[data-body-font="humanist-sans"] { --font-body: "Trebuchet MS", "Segoe UI", Arial, sans-serif; }
+main[data-body-font="book-serif"] { --font-body: Georgia, "Times New Roman", serif; }
+main[data-heading-font="classic-serif"] { --font-display: Georgia, "Times New Roman", serif; }
+main[data-heading-font="book-serif"] { --font-display: "Palatino Linotype", Palatino, Georgia, serif; }
+main[data-heading-font="modern-sans"] { --font-display: "Avenir Next", "Segoe UI", Arial, sans-serif; }
+main { font-family: var(--font-body); }
+main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-aside, .prose .lead, .timeline h3, .chapter-card h3, .legacy-scale strong, .journey-chapter h3, .journey-number, .landmark-publication h4, .thread-grid h4, .mentor-quote blockquote, .memory-card h3, .event-card h3, .gallery-card figcaption strong) {
+  font-family: var(--font-display) !important;
+}
+
+/* Simplified navigation after removing the redundant top-level Share a memory button */
+.site-nav { grid-template-columns: auto minmax(0, 1fr); }
+.nav-links { justify-self: end; }
+
+/* Homepage scientific legacy: a connected constellation rather than a linear timeline */
+.home-legacy-network {
+  height: 520px;
+  margin: 62px auto 18px;
+  max-width: 1120px;
+  position: relative;
+}
+.home-legacy-network-lines {
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  position: absolute;
+  width: 100%;
+}
+.home-legacy-network-lines path {
+  fill: none;
+  stroke: rgba(221,185,111,.28);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+.home-legacy-node {
+  align-content: center;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(221,185,111,.36);
+  border-radius: 50%;
+  display: grid;
+  min-height: 158px;
+  padding: 25px;
+  position: absolute;
+  text-align: center;
+  width: 230px;
+  z-index: 1;
+}
+.home-legacy-node::after {
+  border: 1px solid rgba(221,185,111,.12);
+  border-radius: inherit;
+  content: "";
+  inset: 8px;
+  pointer-events: none;
+  position: absolute;
+}
+.home-legacy-node span {
+  color: #ddb96f;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+.home-legacy-node strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 400;
+  line-height: 1.18;
+  margin-top: 8px;
+}
+.home-legacy-node small {
+  color: rgba(255,255,255,.5);
+  display: block;
+  font-size: .68rem;
+  line-height: 1.42;
+  margin-top: 8px;
+}
+.home-legacy-node-1 { left: 2%; top: 2%; }
+.home-legacy-node-2 { right: 2%; top: 3%; }
+.home-legacy-node-3 {
+  background: rgba(221,185,111,.12);
+  border-color: #ddb96f;
+  box-shadow: 0 0 0 12px rgba(221,185,111,.035), 0 24px 70px rgba(0,0,0,.2);
+  left: 50%;
+  min-height: 195px;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 270px;
+}
+.home-legacy-node-3 strong { color: #f0d89e; font-size: 1.42rem; }
+.home-legacy-node-4 { bottom: 0; left: 1%; width: 255px; }
+.home-legacy-node-5 { bottom: 0; right: 1%; width: 280px; }
+
+/* Six career chapters now include UCLA explicitly. */
+.legacy-scale-six { grid-template-columns: repeat(6, 1fr); }
+.legacy-scale-six small { max-width: 150px; }
+
+/* Detailed honors list */
+.honors-grid-detailed .honor-item {
+  align-content: start;
+  display: grid;
+  gap: 5px;
+  min-height: 122px;
+}
+.honors-grid-detailed .honor-item span {
+  color: #ddb96f;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+.honors-grid-detailed .honor-item strong {
+  color: white;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.honors-grid-detailed .honor-item small {
+  color: rgba(255,255,255,.5);
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
+/* Rich backend content editor */
+.manager-stack { display: grid; gap: 18px; }
+.manager-edit-card {
+  background: #f5f1e9;
+  border: 1px solid #ddd5c8;
+  padding: 22px;
+}
+.manager-edit-card > strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+.manager-chapter-editor { padding: clamp(22px, 3vw, 34px); }
+.manager-chapter-heading {
+  align-items: baseline;
+  border-bottom: 1px solid #d7cdbf;
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+}
+.manager-chapter-heading span { color: #9a7433; font-family: Georgia, serif; font-size: 1.5rem; }
+.manager-chapter-heading strong { font-family: Georgia, serif; font-size: 1.45rem; font-weight: 400; }
+.manager-chapter-heading small { color: var(--muted); margin-left: auto; }
+.manager-subcard {
+  background: #fffdf8;
+  border-left: 3px solid #c7a35e;
+  margin: 24px 0;
+  padding: 20px;
+}
+.manager-subcard h3 {
+  font-family: Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0 0 16px;
+}
+.manager-photo-form { display: flex; flex-wrap: wrap; gap: 10px; }
+.manager-photo-form label { flex: 1 1 320px; margin-bottom: 0; }
+.manager-secondary, .manager-danger, .manager-text-button {
+  border: 1px solid #bfb5a7;
+  cursor: pointer;
+  padding: 10px 13px;
+}
+.manager-secondary { background: #eee7da; color: var(--ink); }
+.manager-danger { background: #f5e5e2; color: #7a2d28; }
+.manager-text-button { background: transparent; color: #765f2b; }
+.manager-panel-wide { grid-template-columns: minmax(210px,.45fr) minmax(540px,1.55fr); }
+
+@media (max-width: 900px) {
+  .site-nav { grid-template-columns: 1fr; }
+  .home-legacy-network {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    height: auto;
+    margin-top: 48px;
+  }
+  .home-legacy-network-lines { display: none; }
+  .home-legacy-node,
+  .home-legacy-node-1,
+  .home-legacy-node-2,
+  .home-legacy-node-3,
+  .home-legacy-node-4,
+  .home-legacy-node-5 {
+    border-radius: 2px;
+    left: auto;
+    min-height: 180px;
+    position: relative;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    transform: none;
+    width: auto;
+  }
+  .home-legacy-node-3 { grid-column: 1 / -1; grid-row: 1; }
+  .legacy-scale-six { grid-template-columns: repeat(6, minmax(175px, 1fr)); }
+  .manager-panel-wide { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .home-legacy-network { grid-template-columns: 1fr; }
+  .home-legacy-node-3 { grid-column: auto; }
+  .home-legacy-node { min-height: 150px; }
+  .manager-photo-form { flex-direction: column; }
+}
