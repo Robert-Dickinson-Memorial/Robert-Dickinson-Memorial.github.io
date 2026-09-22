@@ -16,10 +16,28 @@ export async function PATCH(request: Request) {
     return Response.json({ error: "The memorial archive is unavailable." }, { status: 503 });
   }
 
-  const body = await request.json() as { id?: unknown; action?: unknown };
+  const body = await request.json() as Record<string, unknown>;
   const id = Number(body.id);
   const action = body.action;
-  if (!Number.isInteger(id) || id < 1 || (action !== "approve" && action !== "reject")) {
+  if (!Number.isInteger(id) || id < 1) return Response.json({ error: "Invalid memory." }, { status: 400 });
+
+  if (action === "edit") {
+    const clean = (value: unknown, max: number) => typeof value === "string" ? value.trim().slice(0, max) : "";
+    const name = clean(body.name, 100);
+    const relationship = clean(body.relationship, 120);
+    const title = clean(body.title, 160);
+    const story = clean(body.story, 6000);
+    if (name.length < 2 || relationship.length < 2 || title.length < 2 || story.length < 20) {
+      return Response.json({ error: "Name, connection, title, and story are required." }, { status: 400 });
+    }
+    const result = await env.DB.prepare(
+      "UPDATE memories SET name = ?, relationship = ?, title = ?, story = ? WHERE id = ? AND status = 'approved'"
+    ).bind(name, relationship, title, story, id).run();
+    if (!result.meta.changes) return Response.json({ error: "Published memory not found." }, { status: 404 });
+    return Response.json({ ok: true, id, status: "approved" });
+  }
+
+  if (action !== "approve" && action !== "reject") {
     return Response.json({ error: "Invalid review action." }, { status: 400 });
   }
 
