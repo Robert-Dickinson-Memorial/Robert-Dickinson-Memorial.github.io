@@ -18,7 +18,7 @@ export default async function Home() {
   const introduction = content.obituaryStory.split(/\n\s*\n/).filter(Boolean).slice(0, 2);
   return (
     <main>
-      <SiteNav />
+            <SiteNav active="home" />
       <header id="top" className="hero">
         <img className="hero-art" src="/memorial-horizon.png" alt="" aria-hidden="true" />
         <div className="hero-shade" />
