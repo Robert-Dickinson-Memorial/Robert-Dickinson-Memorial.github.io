@@ -77,6 +77,11 @@ export type LegacyThread = {
   text: string;
 };
 
+export type CommunityQuote = {
+  quote: string;
+  attribution: string;
+};
+
 export type FeaturedMemoryQuote = {
   id: number;
   name: string;
@@ -109,6 +114,7 @@ export type SiteContent = {
   lifeMilestones: LifeMilestone[];
   legacyChapters: LegacyChapter[];
   legacyThreads: LegacyThread[];
+  communityQuotes: CommunityQuote[];
   honors: MemorialHonor[];
   honorsNote: string;
   pageCopy: Record<string, string>;
@@ -293,6 +299,18 @@ const legacyThreads: LegacyThread[] = [
   { title: "A coupled Earth", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
 ];
 
+const communityQuotes: CommunityQuote[] = [
+  { quote: "A way of thinking.", attribution: "Yongkang Xue" },
+  { quote: "Grand visions and attention to details.", attribution: "Fei Chen" },
+  { quote: "A towering figure.", attribution: "V. Ramaswamy" },
+  { quote: "A pioneer of Earth-system modeling and biosphere–atmosphere interaction.", attribution: "Richard Betts" },
+  { quote: "The world's authority on the understanding and modeling of the land component of the Earth system.", attribution: "2020 AMS Dickinson Symposium foreword" },
+  { quote: "A giant in the field and the kindest person he had met.", attribution: "Venkataraman Lakshmi" },
+  { quote: "An inspiration, mentor, and groundbreaking researcher.", attribution: "Christa Peters-Lidard" },
+  { quote: "A respected expert who was generous with his time.", attribution: "Mike Kuperberg" },
+  { quote: "A gentleman of uncommon humility, kindness, and intellectual generosity.", attribution: "Zong-Liang Yang" },
+];
+
 export const defaultPageCopy: Record<string, string> = {
   "global.wordmark": "Robert Dickinson",
   "global.footerName": "Robert E. Dickinson",
@@ -378,12 +396,6 @@ export const defaultPageCopy: Record<string, string> = {
   "legacy.threadsKicker": "Across every institution",
   "legacy.threadsTitle": "Enduring research threads",
   "legacy.threadsIntro": "The affiliations mark chapters in Robert’s career. These ideas reveal the deeper continuity running through them.",
-  "legacy.voicesKicker": "In the words of his colleagues",
-  "legacy.voicesTitle": "Voices from the scientific community",
-  "legacy.voicesIntro": "Selected reflections from Robert’s students, collaborators, and colleagues—drawn from the memorial’s community memories.",
-  "legacy.voicesReadMore": "Read the full reflection",
-  "legacy.voicesEmpty": "Selected reflections from Robert’s scientific community will appear here as they are curated from the Memories archive.",
-  "legacy.voicesBrowse": "Browse community memories",
   "legacy.honorsKicker": "Honors, awards & recognition",
 
   "events.heroKicker": "Gather together",
@@ -410,6 +422,9 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.sectionKicker": "Remembering Robert",
   "memories.sectionTitle": "Stories that carry forward",
   "memories.bookButton": "Open the memory book",
+  "memories.voicesKicker": "In the words of his colleagues",
+  "memories.voicesTitle": "Voices from the scientific community",
+  "memories.voicesIntro": "A few words from scientists whose work and lives were shaped by Robert.",
   "memories.shareKicker": "Add your voice",
   "memories.shareTitle": "Share a memory",
   "memories.shareText": "A conversation after seminar. A line of code he helped untangle. The question that changed your research. Small stories often reveal the truest measure of a mentor’s life.",
@@ -523,6 +538,7 @@ export const defaultContent: SiteContent = {
   lifeMilestones,
   legacyChapters,
   legacyThreads,
+  communityQuotes,
   honors,
   honorsNote: "Robert served as a Lead Author of the IPCC Fourth Assessment Report. The IPCC and Al Gore jointly received the 2007 Nobel Peace Prize.",
   pageCopy: defaultPageCopy,
@@ -557,9 +573,14 @@ export async function getSiteContent(): Promise<SiteContent> {
       lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
       legacyChapters: parseJson(values.legacyChapters, defaultContent.legacyChapters),
       legacyThreads: parseJson(values.legacyThreads, defaultContent.legacyThreads),
+      communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
       honors: parseJson(values.honors, defaultContent.honors),
       honorsNote: values.honorsNote || defaultContent.honorsNote,
-      pageCopy: { ...defaultContent.pageCopy, ...parseJson(values.pageCopy, {}) },
+      pageCopy: (() => {
+        const saved = parseJson<Record<string, string>>(values.pageCopy, {});
+        Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
+        return { ...defaultContent.pageCopy, ...saved };
+      })(),
       siteAssets: { ...defaultContent.siteAssets, ...parseJson(values.siteAssets, {}) },
     };
   } catch {
