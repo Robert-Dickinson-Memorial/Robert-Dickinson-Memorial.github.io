@@ -79,6 +79,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setContentValues((current) => ({ ...current, homeLegacyCards: current.homeLegacyCards.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
 
+  function updateLegacyThread(index: number, field: "title" | "text", value: string) {
+    setContentValues((current) => ({ ...current, legacyThreads: current.legacyThreads.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
+  }
+
   function updateHonor(index: number, field: "year" | "title" | "detail", value: string) {
     setContentValues((current) => ({ ...current, honors: current.honors.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
   }
@@ -273,6 +277,14 @@ export default function Manager({ content, events, media, publishedMemories, edi
             </div>
             <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save this chapter’s text</button>
           </div>)}
+        </div>
+      </section>
+
+      <section id="edit-legacy-threads" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Enduring research threads</h2><p>Edit every research-thread heading and description shown beneath the career chapters.</p></div>
+        <div className="manager-form manager-stack">
+          {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={`thread-${index}`}><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save research threads</button>
         </div>
       </section>
 
