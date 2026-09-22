@@ -90,15 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const summaryTarget = document.querySelector("[data-home-legacy-cards]");
     if (summaryTarget instanceof HTMLElement && Array.isArray(summaryItems)) {
-      const summaryCards = summaryTarget.querySelectorAll(".chapter-card");
-      summaryItems.forEach((item, index) => {
-        const card = summaryCards[index];
-        if (!(card instanceof HTMLElement)) return;
-        const heading = card.querySelector("h3");
-        const paragraph = card.querySelector("p");
-        if (heading) heading.textContent = item.title || "";
-        if (paragraph) paragraph.textContent = item.text || "";
-      });
+      const symbols = ["☁", "◎", "♢", "∞"];
+      summaryTarget.replaceChildren(...summaryItems.map((item, index) => {
+        const card = node("article", { className: "chapter-card" });
+        const top = node("div", { className: "chapter-top" });
+        top.append(
+          node("span", { text: symbols[index] || "•", attrs: { "aria-hidden": "true" } }),
+          node("span", { text: String(index + 1).padStart(2, "0") })
+        );
+        card.append(top, node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
+        return card;
+      }));
     }
   }
 
