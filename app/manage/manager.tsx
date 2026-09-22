@@ -306,8 +306,15 @@ export default function Manager({ content, events, media, publishedMemories, edi
           <div className="manager-row"><label>Link label<input name="linkLabel" placeholder="Register or view details" /></label><label>Event URL<input name="linkUrl" type="url" placeholder="https://…" /></label></div>
           <button className="manager-primary" disabled={busy}><CalendarPlus size={18} /> Add event</button>
         </form>
-        <div className="manager-items">
-          {events.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>{new Date(item.startAt).toLocaleString()}</span></div><button onClick={() => remove("events", item.id)} aria-label={`Remove ${item.title}`}><Trash2 size={17} /></button></article>)}
+        <div className="manager-edit-list">
+          {events.map((item) => <form className="manager-edit-card manager-form" key={item.id} onSubmit={addEvent}>
+            <input type="hidden" name="id" value={item.id} />
+            <div className="manager-row"><label>Event title<input name="title" defaultValue={item.title} required /></label><label>Date and time<input name="startAt" type="datetime-local" defaultValue={item.startAt.slice(0, 16)} required /></label></div>
+            <label>Location<input name="location" defaultValue={item.location ?? ""} /></label>
+            <label>Description<textarea name="description" rows={4} defaultValue={item.description ?? ""} /></label>
+            <div className="manager-row"><label>Link label<input name="linkLabel" defaultValue={item.linkLabel ?? ""} /></label><label>Event URL<input name="linkUrl" type="url" defaultValue={item.linkUrl ?? ""} /></label></div>
+            <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save event</button><button type="button" className="manager-danger" onClick={() => remove("events", item.id)}><Trash2 size={16} /> Delete event</button></div>
+          </form>)}
           {!events.length && <p>No events have been added.</p>}
         </div>
       </section>
@@ -322,15 +329,24 @@ export default function Manager({ content, events, media, publishedMemories, edi
           <label><Video size={18} /> YouTube or Vimeo URL<input name="externalUrl" type="url" placeholder="https://…" /></label>
           <button className="manager-primary" disabled={busy}><ImagePlus size={18} /> Add to gallery</button>
         </form>
-        <div className="manager-items">
-          {media.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>{item.kind === "image" ? "Gallery photo" : "Gallery video"}</span></div><button onClick={() => remove("media", item.id)} aria-label={`Remove ${item.title}`} title="Delete from gallery"><Trash2 size={17} /></button></article>)}
+        <div className="manager-edit-list">
+          {media.map((item) => <form className="manager-edit-card manager-form manager-media-editor" key={item.id} onSubmit={addMedia}>
+            <input type="hidden" name="id" value={item.id} />
+            {item.kind === "image" && item.objectKey && <img className="manager-image-preview" src={`/api/gallery/photos/${item.objectKey.split("/").map(encodeURIComponent).join("/")}`} alt={item.title} />}
+            <label>Media type<select name="kind" defaultValue={item.kind}><option value="image">Photo</option><option value="video">Video link</option></select></label>
+            <label>Title<input name="title" defaultValue={item.title} required /></label>
+            <label>Caption<textarea name="caption" rows={3} defaultValue={item.caption ?? ""} /></label>
+            <label><ImagePlus size={18} /> Replace photo <span>Leave empty to keep the current image.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" /></label>
+            <label><Video size={18} /> YouTube or Vimeo URL<input name="externalUrl" type="url" defaultValue={item.externalUrl ?? ""} placeholder="https://…" /></label>
+            <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save media</button><button type="button" className="manager-danger" onClick={() => remove("media", item.id)}><Trash2 size={16} /> Delete media</button></div>
+          </form>)}
           {!media.length && <p>No gallery items have been added.</p>}
         </div>
 
         <div className="manager-subsection">
           <div className="manager-panel-heading"><h3>Published memories</h3><p>Remove only the text, only the attached photo, or permanently delete the complete contribution.</p></div>
           <div className="manager-items">
-            {publishedMemories.map((item) => <article key={item.id}><div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><div className="manager-actions"><button onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))} aria-label={`Delete only the text for ${item.title}`} title="Delete text only"><FileX size={17} /><b>Text only</b></button>{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "photo")} aria-label={`Delete only the photo attached to ${item.title}`} title="Delete photo only"><ImageOff size={17} /><b>Photo only</b></button>}{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "all")} aria-label={`Delete published memory ${item.title}`} title="Delete text and photo"><Trash2 size={17} /><b>Text + photo</b></button>}</div></article>)}
+            {publishedMemories.map((item) => <article key={item.id}>{item.photoKey && <img className="manager-memory-thumb" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}<div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><div className="manager-actions"><button onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))} aria-label={`Delete only the text for ${item.title}`} title="Delete text only"><FileX size={17} /><b>Text only</b></button>{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "photo")} aria-label={`Delete only the photo attached to ${item.title}`} title="Delete photo only"><ImageOff size={17} /><b>Photo only</b></button>}{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "all")} aria-label={`Delete published memory ${item.title}`} title="Delete text and photo"><Trash2 size={17} /><b>Text + photo</b></button>}</div></article>)}
             {!publishedMemories.length && <p>No memories are currently published.</p>}
           </div>
         </div>
