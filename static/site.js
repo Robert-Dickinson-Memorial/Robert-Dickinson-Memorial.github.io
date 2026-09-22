@@ -283,21 +283,54 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function hydrateMemories() {
-    const target = document.querySelector("[data-memory-wall]");
-    if (!(target instanceof HTMLElement)) return;
-    const { memories = [] } = await getJson("/api/memories");
-    if (!memories.length) {
-      target.replaceChildren(node("p", { className: "memories-empty", text: editableCopy["memories.emptyText"] || "Approved community memories will appear here." }));
-      return;
+    const wallTarget = document.querySelector("[data-memory-wall]");
+    const voicesTarget = document.querySelector("[data-featured-quotes]");
+    if (!(wallTarget instanceof HTMLElement) && !(voicesTarget instanceof HTMLElement)) return;
+    const [{ memories = [] }, { content = {} }] = await Promise.all([
+      getJson("/api/memories"),
+      getJson("/api/content"),
+    ]);
+    const copy = content.pageCopy || editableCopy || {};
+
+    if (wallTarget instanceof HTMLElement) {
+      if (!memories.length) {
+        wallTarget.replaceChildren(node("p", { className: "memories-empty", text: copy["memories.emptyText"] || "Approved community memories will appear here." }));
+      } else {
+        wallTarget.replaceChildren(...memories.map((memory) => {
+          const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
+          if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }), node("p", { text: memory.story }));
+          const footer = node("footer");
+          footer.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
+          article.append(footer);
+          return article;
+        }));
+      }
     }
-    target.replaceChildren(...memories.map((memory) => {
-      const article = node("article", { className: "memory-card" });
-      if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
-      article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }), node("p", { text: memory.story }));
-      const footer = node("footer"); footer.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship })); article.append(footer);
-      return article;
-    }));
+
+    if (voicesTarget instanceof HTMLElement) {
+      const featured = memories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
+      const grid = voicesTarget.querySelector("[data-featured-quote-grid]");
+      if (!featured.length || !(grid instanceof HTMLElement)) {
+        voicesTarget.hidden = true;
+      } else {
+        grid.replaceChildren(...featured.map((memory, index) => {
+          const article = node("article", { className: index === 0 ? "legacy-voice-card legacy-voice-card-featured" : "legacy-voice-card" });
+          article.append(node("span", { text: "“", attrs: { "aria-hidden": "true" } }), node("blockquote", { text: memory.quoteExcerpt.trim() }));
+          const footer = node("footer");
+          footer.append(
+            node("strong", { text: memory.name || "" }),
+            node("small", { text: memory.relationship || "" }),
+            node("a", { text: (copy["legacy.voicesReadMore"] || "Read the full reflection") + " →", attrs: { href: `/memories/#memory-${memory.id}` } })
+          );
+          article.append(footer);
+          return article;
+        }));
+        voicesTarget.hidden = false;
+      }
+    }
   }
+
 
   async function hydrateMemoryBook() {
     const target = document.querySelector("[data-memory-book]");
