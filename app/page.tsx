@@ -1,24 +1,39 @@
-import { ArrowRight, BookOpen, CalendarDays, CloudSun, Compass, Images, MessageSquareText, Sprout, Users } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, Images, MessageSquareText, Sprout } from "lucide-react";
 import Link from "next/link";
 import { SiteFooter, SiteNav } from "./site-chrome";
 import { getPublishedEvents, getPublishedGallery, getSiteContent } from "./site-data";
 
-const legacyPreview = [
-  { icon: CloudSun, number: "01", title: "He changed climate models", text: "Robert helped transform land from a passive boundary into a living, dynamic part of the climate system." },
-  { icon: Compass, number: "02", title: "He connected the Earth system", text: "His work joined atmosphere, land, water, vegetation, and carbon into a more faithful picture of Earth." },
-  { icon: Users, number: "03", title: "He multiplied possibility", text: "His deepest influence continues through the students, postdoctoral scholars, and collaborators he guided." },
-];
-
-const scaleSteps = ["Planetary waves", "Atmosphere", "Climate", "Land–atmosphere", "Coupled Earth"];
-
 export const dynamic = "force-dynamic";
+
+function LegacyNetwork({ topics }: { topics: { title: string; note: string }[] }) {
+  return (
+    <div className="home-legacy-network" aria-label="Connected themes in Robert Dickinson's scientific legacy">
+      <svg className="home-legacy-network-lines" viewBox="0 0 1000 440" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M500 220 C390 180 275 110 165 95" />
+        <path d="M500 220 C610 165 735 105 850 100" />
+        <path d="M500 220 C380 255 270 330 155 350" />
+        <path d="M500 220 C625 260 735 330 855 350" />
+        <path d="M165 95 C280 155 360 155 500 220" />
+        <path d="M850 100 C790 205 785 285 855 350" />
+        <path d="M155 350 C360 405 655 410 855 350" />
+      </svg>
+      {topics.map((topic, index) => (
+        <article className={`home-legacy-node home-legacy-node-${index + 1}`} key={`${index}-${topic.title}`}>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <strong>{topic.title}</strong>
+          <small>{topic.note}</small>
+        </article>
+      ))}
+    </div>
+  );
+}
 
 export default async function Home() {
   const [content, events, gallery] = await Promise.all([getSiteContent(), getPublishedEvents(), getPublishedGallery()]);
   const introduction = content.obituaryStory.split(/\n\s*\n/).filter(Boolean).slice(0, 2);
   return (
-    <main>
-            <SiteNav active="home" />
+    <main data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+      <SiteNav active="home" />
       <header id="top" className="hero">
         <img className="hero-art" src="/memorial-horizon.png" alt="" aria-hidden="true" />
         <div className="hero-shade" />
@@ -50,22 +65,19 @@ export default async function Home() {
       </section>
 
       <section className="home-legacy-preview">
-        <div className="home-preview-heading"><div><p className="section-kicker light">Scientific legacy</p><h2>Science that changed how we see Earth</h2></div><p>Robert repeatedly changed the scale of the scientific problem—from atmospheric waves to the coupled Earth system.</p></div>
-        <ol className="home-scale" aria-label="The expanding scale of Robert Dickinson's science">{scaleSteps.map((step, index) => <li key={step}><span>0{index + 1}</span><strong>{step}</strong></li>)}</ol>
-        <div className="chapter-grid home-chapter-grid">{legacyPreview.map(({ icon: Icon, number, title, text }) => <article className="chapter-card" key={number}><div className="chapter-top"><Icon size={24} /><span>{number}</span></div><h3>{title}</h3><p>{text}</p></article>)}</div>
+        <div className="home-preview-heading"><div><p className="section-kicker light">Scientific legacy</p><h2>Science that changed how we see Earth</h2></div><p>{content.homeLegacyIntro}</p></div>
+        <LegacyNetwork topics={content.homeLegacyTopics} />
         <Link className="light-button" href="/legacy">Explore his scientific journey <ArrowRight size={17} /></Link>
       </section>
 
       <section className="home-community">
-        <div className="home-community-heading"><p className="section-kicker">Explore the memorial</p><h2>A life remembered in many forms</h2><p>Visit each collection when you are ready. The homepage now offers a quiet starting point rather than the entire archive at once.</p></div>
+        <div className="home-community-heading"><p className="section-kicker">Explore the memorial</p><h2>A life remembered in many forms</h2><p>Visit each collection when you are ready. The homepage offers a quiet starting point rather than the entire archive at once.</p></div>
         <div className="home-community-grid">
           <Link href="/events"><CalendarDays size={25} /><small>Gather together</small><h3>Events</h3><p>{events.length ? `${events.length} memorial ${events.length === 1 ? "event" : "events"} currently listed.` : "Memorial gatherings and scientific tributes will be shared here."}</p><b>View events →</b></Link>
           <Link href="/gallery"><Images size={25} /><small>Photos & film</small><h3>Gallery</h3><p>{gallery.length ? `${gallery.length} photographs or videos in the public collection.` : "Photographs and videos tracing a life in science and community."}</p><b>Open the gallery →</b></Link>
-          <Link href="/memories"><MessageSquareText size={25} /><small>From the community</small><h3>Memories</h3><p>Read approved stories from students, colleagues, friends, and family.</p><b>Read memories →</b></Link>
+          <Link href="/memories"><MessageSquareText size={25} /><small>From the community</small><h3>Memories</h3><p>Read approved stories from students, colleagues, friends, and family—and add your own.</p><b>Read or share memories →</b></Link>
         </div>
       </section>
-
-      <section className="home-share-cta"><div><p className="section-kicker light">Add your voice</p><h2>What do you remember?</h2><p>A conversation after seminar. A line of code he helped untangle. The question that changed your research.</p></div><Link href="/memories#share">Share a memory <ArrowRight size={18} /></Link></section>
       <SiteFooter />
     </main>
   );
