@@ -5,7 +5,7 @@ import { BookOpen, CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video
 import type { GalleryItem, LegacyChapter, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; featuredQuote: number; quoteExcerpt: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -419,7 +419,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-memories" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Stories that carry forward</h2><p>Edit published memories and their photographs exactly as they appear on the Memories page.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Stories that carry forward</h2><p>Edit published memories here. You can also select a short excerpt from a scientist’s reflection to feature editorially in Scientific Legacy—without creating a second submission system.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
                 <div className="manager-subsection manager-subsection-standalone">
           
           <div className="manager-edit-list">
@@ -429,6 +429,11 @@ export default function Manager({ content, events, media, publishedMemories, edi
               <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
               <label>Memory title<input name="title" defaultValue={item.title} required /></label>
               <label>Memory text<textarea name="story" rows={7} defaultValue={item.story} required /></label>
+              <div className="manager-subcard manager-quote-curation">
+                <h3>Scientific Legacy feature</h3>
+                <label className="manager-checkbox-label"><input name="featuredQuote" type="checkbox" value="1" defaultChecked={Boolean(item.featuredQuote)} /> Feature a quotation from this reflection in “Voices from the scientific community”</label>
+                <label>Selected quotation <span>Paste the exact sentence or short passage you want to feature. The full reflection remains on the Memories page.</span><textarea name="quoteExcerpt" rows={4} defaultValue={item.quoteExcerpt ?? ""} placeholder="Selected verbatim excerpt from this memory…" /></label>
+              </div>
               <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory text</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))}><FileX size={16} /> Delete text</button>{item.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
             </form>)}
             {!publishedMemories.length && <p>No memories are currently published.</p>}
