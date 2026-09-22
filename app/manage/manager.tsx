@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video } from "lucide-react";
+import { BookOpen, CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video } from "lucide-react";
 import type { GalleryItem, LegacyChapter, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
@@ -252,6 +252,20 @@ export default function Manager({ content, events, media, publishedMemories, edi
   return (
     <div className="manager-grid">
       {message && <p className="manager-message" role="status">{message}</p>}
+
+      <section id="edit-memory-book" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Memory book</p><h2>Dynamic memorial book</h2><p>The book is assembled automatically from the current Home, His life, Scientific legacy, and approved Memories content. Updating any of those sections updates the book the next time it is opened.</p><a className="manager-section-link" href="#copy-book">Edit Memory book cover & print labels ↓</a></div>
+        <div className="manager-form manager-stack">
+          <div className="manager-edit-card manager-book-sources">
+            <strong>Included automatically</strong>
+            <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy overview, connected themes, and summary cards.</p>
+            <p><b>His life</b> — full biography, education and career timeline, and mentorship reflection.</p>
+            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, and honors.</p>
+            <p><b>Memories</b> — every approved community memory and its published photograph.</p>
+          </div>
+          <a className="manager-primary manager-preview-book" href="/memory-book" target="_blank" rel="noopener noreferrer"><BookOpen size={18} /> Preview memory book</a>
+        </div>
+      </section>
 
       <section id="edit-style" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Site-wide settings</p><h2>Typography</h2><p>Choose the body and heading fonts used throughout the public memorial.</p></div>
