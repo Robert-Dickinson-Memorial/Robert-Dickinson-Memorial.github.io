@@ -31,9 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const { content } = await getJson("/api/content");
     Object.entries(content || {}).forEach(([key, value]) => {
       const target = document.querySelector(`[data-content="${key}"]`);
-      if (!(target instanceof HTMLElement) || typeof value !== "string") return;
-      if (key === "obituaryStory") target.replaceChildren(...value.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph })));
-      else target.textContent = value;
+      if (target instanceof HTMLElement && typeof value === "string") {
+        if (key === "obituaryStory") target.replaceChildren(...value.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph })));
+        else target.textContent = value;
+      }
+      const preview = document.querySelector(`[data-content-preview="${key}"]`);
+      if (preview instanceof HTMLElement && typeof value === "string" && key === "obituaryStory") {
+        const paragraphs = value.split(/\n\s*\n/).filter(Boolean).slice(0, 2).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph }));
+        const link = node("a", { className: "text-link", text: "Read Robert’s full story →", attrs: { href: "./life/" } });
+        preview.replaceChildren(...paragraphs, link);
+      }
     });
   }
 

@@ -28,8 +28,13 @@ jobs:
         env:
           MEMORIAL_API_BASE: ${{ vars.MEMORIAL_API_BASE }}
         run: |
-          mkdir -p _site/assets _site/memory-book _site/tree
+          mkdir -p _site/assets _site/memory-book _site/tree _site/life _site/legacy _site/events _site/gallery _site/memories
           cp static/index.html _site/index.html
+          cp static/sections.html _site/life/index.html
+          cp static/sections.html _site/legacy/index.html
+          cp static/sections.html _site/events/index.html
+          cp static/sections.html _site/gallery/index.html
+          cp static/sections.html _site/memories/index.html
           cp static/site.js _site/site.js
           cp static/config.js _site/config.js
           cp static/memory-book.html _site/memory-book/index.html
