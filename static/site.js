@@ -355,6 +355,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const horizon = siteAssetUrl("horizon");
     const storyParagraphs = String(content.obituaryStory || "").split(/\n\s*\n/).filter(Boolean);
     const memorySpreads = Array.from({ length: Math.ceil(memories.length / 2) }, (_, index) => memories.slice(index * 2, index * 2 + 2));
+    const featuredQuotes = memories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
+    const featuredQuoteSpreads = Array.from({ length: Math.ceil(featuredQuotes.length / 4) }, (_, index) => featuredQuotes.slice(index * 4, index * 4 + 4));
     const pages = [];
 
     const cover = node("header", { className: "book-spread book-cover-spread" });
@@ -462,6 +464,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const tags = node("div", { className: "book-tags" });
       (chapter.threads || []).forEach((thread) => tags.append(node("span", { text: thread })));
       section.append(tags, node("span", { className: "book-page-number", text: chapter.institution || "" }));
+      pages.push(section);
+    });
+
+    featuredQuoteSpreads.forEach((spread, index) => {
+      const section = node("section", { className: "book-spread book-voices-spread" });
+      section.append(node("p", { className: "book-running-title", text: (copy["nav.legacy"] || "Scientific legacy") + " · " + (copy["legacy.voicesTitle"] || "Voices from the scientific community") }));
+      const heading = node("div", { className: "book-section-heading" });
+      heading.append(
+        node("p", { className: "book-label", text: copy["legacy.voicesKicker"] || "In the words of his colleagues" }),
+        node("h2", { text: copy["legacy.voicesTitle"] || "Voices from the scientific community" }),
+        node("p", { text: copy["legacy.voicesIntro"] || "Selected reflections from Robert’s students, collaborators, and colleagues—drawn from the memorial’s community memories." })
+      );
+      section.append(heading);
+      const grid = node("div", { className: "book-voice-grid" });
+      spread.forEach((memory, quoteIndex) => {
+        const article = node("article", { className: quoteIndex === 0 && index === 0 ? "book-voice-featured" : "" });
+        article.append(node("span", { text: "“", attrs: { "aria-hidden": "true" } }), node("blockquote", { text: memory.quoteExcerpt || "" }));
+        const footer = node("footer");
+        footer.append(node("strong", { text: memory.name || "" }), node("small", { text: memory.relationship || "" }));
+        article.append(footer);
+        grid.append(article);
+      });
+      section.append(grid, node("span", { className: "book-page-number", text: "Voices " + (index + 1) }));
       pages.push(section);
     });
 
