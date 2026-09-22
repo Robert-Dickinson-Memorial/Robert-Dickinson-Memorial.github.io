@@ -254,7 +254,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       {message && <p className="manager-message" role="status">{message}</p>}
 
       <section id="edit-style" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Typography</p><h2>Edit the site fonts</h2><p>Choose the body and display typefaces used across the public memorial.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Site-wide settings</p><h2>Typography</h2><p>Choose the body and heading fonts used throughout the public memorial.</p></div>
         <div className="manager-form">
           <label>Body font<select value={contentValues.bodyFont} onChange={(e) => setContentValues({ ...contentValues, bodyFont: e.target.value })}><option value="system-sans">Clean sans serif</option><option value="humanist-sans">Humanist sans serif</option><option value="book-serif">Book serif</option></select></label>
           <label>Heading font<select value={contentValues.headingFont} onChange={(e) => setContentValues({ ...contentValues, headingFont: e.target.value })}><option value="classic-serif">Classic serif</option><option value="book-serif">Book serif</option><option value="modern-sans">Modern sans serif</option></select></label>
@@ -262,8 +262,8 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-images" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Site images</p><h2>Edit homepage & book images</h2><p>The homepage headshot and horizon artwork are now managed here and reused wherever they appear, including the memory book.</p></div>
+      <section id="edit-home" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Hero images</h2><p>Edit the portrait and Earth-horizon artwork used in the Home hero and reused in the Memory book.</p><a className="manager-section-link" href="#copy-home">Edit Home headings, buttons & labels ↓</a></div>
         <div className="manager-form manager-stack">
           {(["portrait", "horizon"] as const).map((assetId) => {
             const asset = contentValues.siteAssets[assetId];
@@ -301,19 +301,17 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Memorial text</p><h2>Edit the story</h2><p>These fields are shared by the homepage and His Life page.</p></div>
+      <section id="edit-home-story" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">Home · His story / His life</p><h2>Biography & homepage introduction</h2><p>The short introduction appears on Home; the full biography appears on His life and is also used in the Memory book.</p></div>
         <div className="manager-form">
-          <label>Homepage introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
-          <label>Full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
-          <label>Tree tribute<textarea rows={4} value={contentValues.treeTribute} onChange={(e) => setContentValues({ ...contentValues, treeTribute: e.target.value })} /></label>
-          <label>Forest project details<textarea rows={4} value={contentValues.treeDetail} onChange={(e) => setContentValues({ ...contentValues, treeDetail: e.target.value })} /></label>
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save story text</button>
+          <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
+          <label>His life — full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save biography</button>
         </div>
       </section>
 
       <section id="edit-home-legacy" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Homepage</p><h2>Scientific legacy network</h2><p>Edit the five connected themes shown on the homepage.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy</h2><p>Edit the connected scientific themes and summary cards in the Home section titled “Science that changed how we see Earth.”</p></div>
         <div className="manager-form manager-stack">
           <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
           {contentValues.homeLegacyTopics.map((topic, index) => <div className="manager-edit-card" key={`topic-${index}`}><strong>Network theme {index + 1}</strong><label>Title<input value={topic.title} onChange={(e) => updateTopic(index, "title", e.target.value)} /></label><label>Supporting line<input value={topic.note} onChange={(e) => updateTopic(index, "note", e.target.value)} /></label></div>)}
@@ -323,7 +321,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-life" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">His Life</p><h2>Education & affiliations</h2><p>Edit the periods and affiliations. These now follow Robert’s CV from Harvard through UCLA.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">His life</p><h2>Education & career timeline</h2><p>Edit the institutions, periods, and descriptions shown beneath Robert’s biography.</p><a className="manager-section-link" href="#copy-life">Edit His life headings & source links ↓</a></div>
         <div className="manager-form manager-stack">
           {contentValues.lifeMilestones.map((item, index) => <div className="manager-edit-card" key={index}><div className="manager-row"><label>Period<input value={item.year} onChange={(e) => updateMilestone(index, "year", e.target.value)} /></label><label>Institution / affiliation<input value={item.title} onChange={(e) => updateMilestone(index, "title", e.target.value)} /></label></div><label>Description<textarea rows={4} value={item.text} onChange={(e) => updateMilestone(index, "text", e.target.value)} /></label></div>)}
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save life timeline</button>
@@ -331,7 +329,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-legacy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Edit career chapters</h2><p>Every chapter is driven by these fields. Text, labels, publication details, captions, and photographs all flow directly to the public site.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Career chapters</h2><p>Edit each institutional chapter, including its scientific focus, key contributions, legacy statement, landmark publication, and photograph.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific legacy headings & labels ↓</a></div>
         <div className="manager-form manager-stack">
           {contentValues.legacyChapters.map((chapter, index) => <div className="manager-edit-card manager-chapter-editor" key={chapter.id}>
             <div className="manager-chapter-heading"><span>{chapter.number}</span><strong>{chapter.institution}</strong><small>{chapter.years}</small></div>
@@ -367,7 +365,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-honors" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Honors & awards</h2><p>Edit the complete honors list shown at the end of the Scientific Legacy page.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Honors, awards & recognition</h2><p>Edit the honors section shown at the end of the Scientific legacy page.</p></div>
         <div className="manager-form manager-stack">
           {contentValues.honors.map((honor, index) => <div className="manager-edit-card" key={index}><div className="manager-row"><label>Year<input value={honor.year} onChange={(e) => updateHonor(index, "year", e.target.value)} /></label><label>Honor / award<input value={honor.title} onChange={(e) => updateHonor(index, "title", e.target.value)} /></label></div><label>Institution / detail<input value={honor.detail} onChange={(e) => updateHonor(index, "detail", e.target.value)} /></label></div>)}
           <label>Recognition note<textarea rows={4} value={contentValues.honorsNote} onChange={(e) => setContentValues({ ...contentValues, honorsNote: e.target.value })} /></label>
@@ -376,7 +374,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-events" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Events</p><h2>Add an event</h2><p>Events are displayed chronologically on the memorial site.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Events</p><h2>Memorial events</h2><p>Add or edit the services, gatherings, lectures, and scientific tributes listed on the Events page.</p><a className="manager-section-link" href="#copy-events">Edit Events headings & messages ↓</a></div>
         <form className="manager-form" onSubmit={addEvent}>
           <div className="manager-row"><label>Event title<input name="title" required /></label><label>Date and time<input name="startAt" type="datetime-local" required /></label></div>
           <label>Location<input name="location" placeholder="Venue, campus, or online" /></label>
@@ -398,7 +396,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-gallery" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Gallery</p><h2>Add and manage photos and videos</h2><p>Upload photographs directly, add a YouTube or Vimeo link, or remove published media below.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Gallery</p><h2>Photo & video gallery</h2><p>Add or edit the photographs, captions, and videos shown on the Gallery page.</p><a className="manager-section-link" href="#copy-gallery">Edit Gallery headings & buttons ↓</a></div>
         <form className="manager-form" onSubmit={addMedia}>
           <label>Media type<select name="kind" defaultValue="image"><option value="image">Photo</option><option value="video">Video link</option></select></label>
           <label>Title<input name="title" required /></label>
