@@ -3,7 +3,7 @@ import { getChatGPTUser } from "./chatgpt-auth";
 import { isEditorEmail, isOwnerEmail } from "./moderation";
 
 const links = [
-    { href: "/", label: "Home", key: "home" },
+  { href: "/", label: "Home", key: "home" },
   { href: "/life", label: "His life", key: "life" },
   { href: "/legacy", label: "Scientific legacy", key: "legacy" },
   { href: "/events", label: "Events", key: "events" },
@@ -16,7 +16,6 @@ export function SiteNav({ active }: { active?: string }) {
     <nav className="site-nav" aria-label="Main navigation">
             <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark">∞</span><span>Robert Dickinson</span></Link>
       <div className="nav-links">{links.map((link) => <Link className={active === link.key ? "active" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
-      <Link className="nav-cta" href="/memories#share">Share a memory</Link>
     </nav>
   );
 }
