@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const apiBase = String(window.MEMORIAL_API_BASE || "").replace(/\/$/, "");
   const form = document.querySelector("[data-migration-form]");
+  let editableCopy = {};
   const message = document.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;
   const objectUrl = (path, key) => apiUrl(`${path}/${String(key).split("/").map(encodeURIComponent).join("/")}`);
@@ -184,6 +185,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
     }
 
+    const threadTarget = document.querySelector("[data-legacy-threads]");
+    if (threadTarget instanceof HTMLElement && Array.isArray(content.legacyThreads)) {
+      threadTarget.replaceChildren(...content.legacyThreads.map((thread, index) => {
+        const article = node("article");
+        article.append(node("span", { text: String(index + 1).padStart(2, "0") }), node("h4", { text: thread.title || "" }), node("p", { text: thread.text || "" }));
+        return article;
+      }));
+    }
+
     const honors = document.querySelector("[data-legacy-honors]");
     if (honors instanceof HTMLElement && Array.isArray(content.honors)) {
       honors.replaceChildren(...content.honors.map((honor) => {
@@ -199,8 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
   async function hydrateContent() {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
+    editableCopy = content.pageCopy || {};
     applyTheme(content);
-    applyPageCopy(content.pageCopy);
+    applyPageCopy(editableCopy);
     applySiteAssets(content);
 
     Object.entries(content).forEach(([key, value]) => {
@@ -213,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const preview = document.querySelector(`[data-content-preview="${key}"]`);
       if (preview instanceof HTMLElement && typeof value === "string" && key === "obituaryStory") {
         const paragraphs = value.split(/\n\s*\n/).filter(Boolean).slice(0, 2).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph }));
-        const link = node("a", { className: "text-link", text: "Read Robert’s full story →", attrs: { href: "./life/" } });
+        const link = node("a", { className: "text-link", text: `${editableCopy["home.storyReadLink"] || "Read Robert’s full story"} →`, attrs: { href: "./life/" } });
         preview.replaceChildren(...paragraphs, link);
       }
     });
@@ -234,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
       article.append(node("time", { text: new Date(event.startAt).toLocaleString(), attrs: { datetime: event.startAt } }), node("h3", { text: event.title }));
       if (event.location) article.append(node("p", { className: "event-location", text: event.location }));
       if (event.description) article.append(node("p", { text: event.description }));
-      if (event.linkUrl) article.append(node("a", { text: event.linkLabel || "View details", attrs: { href: event.linkUrl, target: "_blank", rel: "noopener noreferrer" } }));
+      if (event.linkUrl) article.append(node("a", { text: event.linkLabel || editableCopy["events.defaultLink"] || "Event details", attrs: { href: event.linkUrl, target: "_blank", rel: "noopener noreferrer" } }));
       list.append(article);
     });
     target.replaceChildren(list);
@@ -262,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item.kind === "video" && item.externalUrl) {
         const embed = videoEmbedUrl(item.externalUrl);
         if (embed) figure.append(node("iframe", { attrs: { src: embed, title: item.title, loading: "lazy", allowfullscreen: "" } }));
-        else figure.append(node("a", { className: "video-link", text: "Watch video ↗", attrs: { href: item.externalUrl, target: "_blank", rel: "noopener noreferrer" } }));
+        else figure.append(node("a", { className: "video-link", text: editableCopy["gallery.watchVideo"] || "Watch video ↗", attrs: { href: item.externalUrl, target: "_blank", rel: "noopener noreferrer" } }));
       }
       const caption = node("figcaption"); caption.append(node("strong", { text: item.title }));
       if (item.caption) caption.append(node("span", { text: item.caption }));
@@ -276,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!(target instanceof HTMLElement)) return;
     const { memories = [] } = await getJson("/api/memories");
     if (!memories.length) {
-      target.replaceChildren(node("p", { className: "memories-empty", text: "Approved community memories will appear here." }));
+      target.replaceChildren(node("p", { className: "memories-empty", text: editableCopy["memories.emptyText"] || "Approved community memories will appear here." }));
       return;
     }
     target.replaceChildren(...memories.map((memory) => {
@@ -298,16 +309,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const button = form.querySelector("button[type=submit]");
-    if (button instanceof HTMLButtonElement) { button.disabled = true; button.textContent = "Submitting…"; }
+    if (button instanceof HTMLButtonElement) { button.disabled = true; button.textContent = editableCopy["memories.formSending"] || "Sending…"; }
     try {
       const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: new FormData(form) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to submit this memory.");
-      form.reset(); showMessage("Thank you. Your memory and photograph were sent privately for review.", true);
+      form.reset(); showMessage(editableCopy["memories.successMessage"] || "Thank you. Your memory has been received for review.", true);
     } catch (error) {
-      showMessage(error instanceof Error ? error.message : "Unable to submit this memory. Please try again.");
+      showMessage(error instanceof Error ? error.message : (editableCopy["memories.formError"] || "Please try again."));
     } finally {
-      if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = "Submit for review →"; }
+      if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = `${editableCopy["memories.formSubmit"] || "Submit for review"} →`; }
     }
   });
 });
