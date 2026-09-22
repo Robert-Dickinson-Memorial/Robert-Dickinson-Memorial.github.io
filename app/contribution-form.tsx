@@ -22,7 +22,7 @@ async function submitMemory(input: { name: string; relationship: string; email?:
   return data;
 }
 
-export default function ContributionForm() {
+export default function ContributionForm({ copy }: { copy: Record<string, string> }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -67,11 +67,11 @@ export default function ContributionForm() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to submit this memory.");
       setStatus("success");
-      setMessage("Thank you. Your memory has been received for review.");
+      setMessage(copy["memories.successMessage"]);
       formRef.current?.reset();
     } catch (error) {
       setStatus("error");
-      setMessage(error instanceof Error ? error.message : "Please try again.");
+      setMessage(error instanceof Error ? error.message : copy["memories.formError"]);
     }
   }
 
@@ -79,9 +79,9 @@ export default function ContributionForm() {
     return (
       <div className="success-card" role="status">
         <span><Check size={30} aria-hidden="true" /></span>
-        <h3>Your story is safely with us.</h3>
+        <h3>{copy["memories.successTitle"]}</h3>
         <p>{message}</p>
-        <button type="button" onClick={() => setStatus("idle")}>Share another memory</button>
+        <button type="button" onClick={() => setStatus("idle")}>{copy["memories.shareAnother"]}</button>
       </div>
     );
   }
@@ -89,23 +89,23 @@ export default function ContributionForm() {
   return (
     <form ref={formRef} className="memory-form" onSubmit={onSubmit}>
       <div className="field-row">
-        <label>Your name<input name="name" required minLength={2} maxLength={100} placeholder="Full name" /></label>
-        <label>Your connection<input name="relationship" required maxLength={120} placeholder="Student, colleague, friend…" /></label>
+        <label>{copy["memories.formName"]}<input name="name" required minLength={2} maxLength={100} placeholder={copy["memories.formNamePlaceholder"]} /></label>
+        <label>{copy["memories.formRelationship"]}<input name="relationship" required maxLength={120} placeholder={copy["memories.formRelationshipPlaceholder"]} /></label>
       </div>
-      <label>Email <span>(kept private)</span><input name="email" type="email" maxLength={200} placeholder="you@example.edu" /></label>
-      <label>A title for your memory<input name="title" required minLength={2} maxLength={160} placeholder="The lesson I still carry" /></label>
-      <label>Your story<textarea name="story" required minLength={20} maxLength={6000} rows={7} placeholder="Tell us what you remember…" /></label>
+      <label>{copy["memories.formEmail"]} <span>{copy["memories.formEmailNote"]}</span><input name="email" type="email" maxLength={200} placeholder={copy["memories.formEmailPlaceholder"]} /></label>
+      <label>{copy["memories.formTitle"]}<input name="title" required minLength={2} maxLength={160} placeholder={copy["memories.formTitlePlaceholder"]} /></label>
+      <label>{copy["memories.formStory"]}<textarea name="story" required minLength={20} maxLength={6000} rows={7} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
       <label className="photo-field">
         <ImagePlus size={22} aria-hidden="true" />
-        <span><strong>Add a photo</strong><small>JPG, PNG or WebP · up to 8 MB</small></span>
+        <span><strong>{copy["memories.formPhoto"]}</strong><small>{copy["memories.formPhotoHelp"]}</small></span>
         <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" />
       </label>
       <label className="consent-field">
         <input name="consent" type="checkbox" required />
-        <span>I give permission for this story and photo to be published on this memorial site after review.</span>
+        <span>{copy["memories.formConsent"]}</span>
       </label>
       <button className="submit-button" type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Sending…" : "Submit for review"} <Send size={17} aria-hidden="true" />
+        {status === "sending" ? copy["memories.formSending"] : copy["memories.formSubmit"]} <Send size={17} aria-hidden="true" />
       </button>
       {status === "error" && <p className="form-error" role="alert">{message}</p>}
     </form>
