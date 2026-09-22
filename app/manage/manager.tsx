@@ -15,6 +15,73 @@ async function responseData(response: Response) {
 
 const toLines = (value: string) => value.split(/\n/).map((item) => item.trim()).filter(Boolean);
 
+const copyGroups = [
+  { id: "copy-sitewide", prefix: ["global.", "nav."], page: "Site-wide", title: "Navigation & footer" },
+  { id: "copy-home", prefix: ["home."], page: "Home", title: "Headings, buttons & labels" },
+  { id: "copy-life", prefix: ["life."], page: "His life", title: "Headings, source links & labels" },
+  { id: "copy-legacy", prefix: ["legacy."], page: "Scientific legacy", title: "Headings & section labels" },
+  { id: "copy-events", prefix: ["events."], page: "Events", title: "Headings, messages & links" },
+  { id: "copy-gallery", prefix: ["gallery."], page: "Gallery", title: "Headings, buttons & messages" },
+  { id: "copy-memories", prefix: ["memories."], page: "Memories", title: "Headings, form labels & messages" },
+  { id: "copy-tree", prefix: ["tree."], page: "Living tribute", title: "Tree dedication page" },
+  { id: "copy-book", prefix: ["book."], page: "Memory book", title: "Cover, headings & print labels" },
+] as const;
+
+const copyFieldNames: Record<string, string> = {
+  wordmark: "Navigation site name",
+  footerName: "Footer name",
+  footerText: "Footer text",
+  footerHome: "Footer home link",
+  heroEyebrow: "Hero eyebrow",
+  heroKicker: "Hero kicker",
+  heroTitle: "Hero title",
+  heroIntro: "Hero introduction",
+  heroNameLine1: "Name — line 1",
+  heroNameLine2: "Name — line 2",
+  lifeDates: "Life dates",
+  readStory: "Read his story link",
+  portraitQuote: "Portrait quote",
+  portraitCaption: "Portrait caption",
+  storyKicker: "His story — kicker",
+  storyTitleLine1: "His story — title line 1",
+  storyTitleLine2: "His story — title line 2",
+  storyYears: "His story — years",
+  storyReadLink: "His story — read link",
+  tributeKicker: "Living tributes — kicker",
+  tributeTitle: "Living tributes — heading",
+  tributeIntro: "Living tributes — introduction",
+  legacyKicker: "Scientific legacy — kicker",
+  legacyTitle: "Scientific legacy — heading",
+  legacyCta: "Scientific legacy — button",
+  communityKicker: "Explore the memorial — kicker",
+  communityTitle: "Explore the memorial — heading",
+  communityIntro: "Explore the memorial — introduction",
+  sectionKicker: "Section kicker",
+  sectionTitle: "Section heading",
+  sectionIntro: "Section introduction",
+  threadsKicker: "Enduring research threads — kicker",
+  threadsTitle: "Enduring research threads — heading",
+  threadsIntro: "Enduring research threads — introduction",
+  honorsKicker: "Honors, awards & recognition — heading",
+  shareKicker: "Share a memory — kicker",
+  shareTitle: "Share a memory — heading",
+  shareText: "Share a memory — introduction",
+  moderation: "Submission review note",
+  dedicationUrl: "Tree dedication link",
+  projectUrl: "Chippewa project link",
+  toolbarReturn: "Return to memorial label",
+  print: "Print / save PDF button",
+};
+
+function copyFieldLabel(key: string) {
+  const tail = key.split(".").pop() || key;
+  if (copyFieldNames[tail]) return copyFieldNames[tail];
+  return tail
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/faq/gi, "FAQ")
+    .replace(/^./, (letter) => letter.toUpperCase());
+}
+
 export default function Manager({ content, events, media, publishedMemories, editors, owner }: { content: SiteContent; events: MemorialEvent[]; media: GalleryItem[]; publishedMemories: PublishedMemory[]; editors: MemorialEditor[]; owner: boolean }) {
   const [contentValues, setContentValues] = useState(content);
   const [message, setMessage] = useState("");
