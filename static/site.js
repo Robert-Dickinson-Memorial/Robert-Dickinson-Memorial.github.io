@@ -432,17 +432,23 @@ document.addEventListener("DOMContentLoaded", () => {
       pages.push(section);
     });
 
-    const honors = node("section", { className: "book-spread book-honors-spread" });
-    honors.append(node("p", { className: "book-running-title", text: `${copy["nav.legacy"] || "Scientific legacy"} · ${copy["legacy.honorsKicker"] || "Honors, awards & recognition"}` }), node("h2", { text: copy["legacy.honorsKicker"] || "Honors, awards & recognition" }));
-    const honorsGrid = node("div", { className: "book-honors-grid" });
-    (content.honors || []).forEach((honor) => {
-      const article = node("article");
-      article.append(node("span", { text: honor.year || "" }), node("h3", { text: honor.title || "" }), node("p", { text: honor.detail || "" }));
-      honorsGrid.append(article);
+    const allHonors = content.honors || [];
+    const honorSpreads = Array.from({ length: Math.ceil(allHonors.length / 12) }, (_, index) => allHonors.slice(index * 12, index * 12 + 12));
+    honorSpreads.forEach((spread, index) => {
+      const honors = node("section", { className: "book-spread book-honors-spread" });
+      const honorsTitle = copy["legacy.honorsKicker"] || "Honors, awards & recognition";
+      honors.append(node("p", { className: "book-running-title", text: (copy["nav.legacy"] || "Scientific legacy") + " · " + honorsTitle }), node("h2", { text: honorsTitle + (honorSpreads.length > 1 ? " · " + (index + 1) : "") }));
+      const honorsGrid = node("div", { className: "book-honors-grid" });
+      spread.forEach((honor) => {
+        const article = node("article");
+        article.append(node("span", { text: honor.year || "" }), node("h3", { text: honor.title || "" }), node("p", { text: honor.detail || "" }));
+        honorsGrid.append(article);
+      });
+      honors.append(honorsGrid);
+      if (index === honorSpreads.length - 1) honors.append(node("p", { className: "book-honors-note", text: content.honorsNote || "" }));
+      honors.append(node("span", { className: "book-page-number", text: "Honors " + (index + 1) }));
+      pages.push(honors);
     });
-    honors.append(honorsGrid, node("p", { className: "book-honors-note", text: content.honorsNote || "" }), node("span", { className: "book-page-number", text: "Honors" }));
-    pages.push(honors);
-
     memorySpreads.forEach((spread, index) => {
       const section = node("section", { className: "book-spread book-message-spread" });
       section.append(node("p", { className: "book-running-title", text: `${copy["nav.memories"] || "Memories"} · ${copy["global.footerName"] || "Robert E. Dickinson"}` }), node("h2", { text: copy["memories.sectionTitle"] || copy["book.messagesTitle"] || "Stories that carry forward" }));
