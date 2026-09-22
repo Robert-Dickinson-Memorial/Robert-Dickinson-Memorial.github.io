@@ -33,14 +33,17 @@ export default async function ManagePage() {
   ]) : [{ results: [] }, { results: [] }, { results: [] }, { results: [] }];
 
   return (
-    <main className="manage-shell">
+    <main id="manage-top" className="manage-shell">
       <header className="manage-header">
         <Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link>
         <p className="section-kicker">Private memorial editor</p><h1>Manage the memorial</h1>
         <p>Use the same page names and section names as the public memorial below. Choose a public page first, then edit its text, images, or structured content.</p>
-        <nav className="manager-nav"><a href="#edit-home">Home</a><a href="#edit-life">His life</a><a href="#edit-legacy">Scientific legacy</a><a href="#edit-events">Events</a><a href="#edit-gallery">Gallery</a><a href="#edit-memories">Memories</a><a href="#edit-tree-content">Living tribute</a><a href="#copy-book">Memory book</a><a href="#edit-style">Site-wide settings</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a><a href="/memory-book"><BookOpen size={16} /> Preview memory book</a></nav>
       </header>
+      <div className="manager-nav-dock" aria-label="Management sections">
+        <nav className="manager-nav"><a href="#edit-home">Home</a><a href="#edit-life">His life</a><a href="#edit-legacy">Scientific legacy</a><a href="#edit-events">Events</a><a href="#edit-gallery">Gallery</a><a href="#edit-memories">Memories</a><a href="#edit-tree-content">Living tribute</a><a href="#edit-memory-book"><BookOpen size={16} /> Memory book</a><a href="#edit-style">Site-wide settings</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a></nav>
+      </div>
       <Manager content={content} events={eventResult.results ?? []} media={mediaResult.results ?? []} publishedMemories={memoryResult.results ?? []} editors={editorResult.results ?? []} owner={isOwnerEmail(user.email)} />
+      <a className="manager-return-top" href="#manage-top">Return to top ↑</a>
     </main>
   );
 }
