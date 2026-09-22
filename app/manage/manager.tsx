@@ -5,7 +5,7 @@ import { CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video } from "l
 import type { GalleryItem, LegacyChapter, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; title: string; photoKey: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -156,6 +156,17 @@ export default function Manager({ content, events, media, publishedMemories, edi
       await responseData(await fetch(`/api/admin/editors?email=${encodeURIComponent(email)}`, { method: "DELETE" }));
       window.location.reload();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
+  async function savePublishedMemory(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setMessage("");
+    const form = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(form.entries());
+    try {
+      await responseData(await fetch("/api/admin/memories", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...payload, action: "edit" }) }));
+      setMessage("Published memory updated.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
+    finally { setBusy(false); }
   }
 
   async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "all", hasPhoto = true) {
@@ -345,8 +356,15 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
         <div className="manager-subsection">
           <div className="manager-panel-heading"><h3>Published memories</h3><p>Remove only the text, only the attached photo, or permanently delete the complete contribution.</p></div>
-          <div className="manager-items">
-            {publishedMemories.map((item) => <article key={item.id}>{item.photoKey && <img className="manager-memory-thumb" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}<div><strong>{item.title}</strong><span>Shared by {item.name} · {item.photoKey ? "Includes photo" : "Text only"}</span></div><div className="manager-actions"><button onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))} aria-label={`Delete only the text for ${item.title}`} title="Delete text only"><FileX size={17} /><b>Text only</b></button>{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "photo")} aria-label={`Delete only the photo attached to ${item.title}`} title="Delete photo only"><ImageOff size={17} /><b>Photo only</b></button>}{item.photoKey && <button onClick={() => removePublishedMemory(item.id, item.title, "all")} aria-label={`Delete published memory ${item.title}`} title="Delete text and photo"><Trash2 size={17} /><b>Text + photo</b></button>}</div></article>)}
+          <div className="manager-edit-list">
+            {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" key={item.id} onSubmit={savePublishedMemory}>
+              <input type="hidden" name="id" value={item.id} />
+              {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}
+              <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
+              <label>Memory title<input name="title" defaultValue={item.title} required /></label>
+              <label>Memory text<textarea name="story" rows={7} defaultValue={item.story} required /></label>
+              <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory text</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))}><FileX size={16} /> Delete text</button>{item.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
+            </form>)}
             {!publishedMemories.length && <p>No memories are currently published.</p>}
           </div>
         </div>
