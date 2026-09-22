@@ -29,6 +29,7 @@ export default async function MemoryBookPage() {
   ).bind("approved").all<BookMemory>() : { results: [] };
   const memories = result.results ?? [];
   const memorySpreads = Array.from({ length: Math.ceil(memories.length / 2) }, (_, index) => memories.slice(index * 2, index * 2 + 2));
+  const honorSpreads = Array.from({ length: Math.ceil(content.honors.length / 12) }, (_, index) => content.honors.slice(index * 12, index * 12 + 12));
   const storyParagraphs = content.obituaryStory.split(/\n\s*\n/).filter(Boolean);
   const portrait = assetUrl(content.siteAssets.portrait);
   const horizon = assetUrl(content.siteAssets.horizon);
@@ -95,13 +96,13 @@ export default async function MemoryBookPage() {
           </section>;
         })}
 
-        <section className="book-spread book-honors-spread">
+        {honorSpreads.map((spread, index) => <section className="book-spread book-honors-spread" key={`honors-${index}`}>
           <p className="book-running-title">{copy["nav.legacy"]} · {copy["legacy.honorsKicker"]}</p>
-          <h2>{copy["legacy.honorsKicker"]}</h2>
-          <div className="book-honors-grid">{content.honors.map((honor) => <article key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><h3>{honor.title}</h3><p>{honor.detail}</p></article>)}</div>
-          <p className="book-honors-note">{content.honorsNote}</p>
-          <span className="book-page-number">Honors</span>
-        </section>
+          <h2>{copy["legacy.honorsKicker"]}{honorSpreads.length > 1 ? ` · ${index + 1}` : ""}</h2>
+          <div className="book-honors-grid">{spread.map((honor) => <article key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><h3>{honor.title}</h3><p>{honor.detail}</p></article>)}</div>
+          {index === honorSpreads.length - 1 && <p className="book-honors-note">{content.honorsNote}</p>}
+          <span className="book-page-number">Honors {index + 1}</span>
+        </section>)}
 
         {memorySpreads.map((spread, index) => <section className="book-spread book-message-spread" key={`memory-spread-${index}`}><p className="book-running-title">{copy["nav.memories"]} · {copy["global.footerName"]}</p><h2>{copy["memories.sectionTitle"]}</h2><div className="book-message-grid">{spread.map((memory) => <article key={memory.id}>{memory.photoKey && <img src={`/api/photos/${memory.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={`Shared by ${memory.name}`} />}<p className="book-label">{copy["book.memoryPrefix"]} {memory.relationship}</p><h3>{memory.title}</h3><p className="book-story">{memory.story}</p><footer><strong>{memory.name}</strong><span>{memory.relationship}</span></footer></article>)}</div><span className="book-page-number">Memories {index + 1}</span></section>)}
 
