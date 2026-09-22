@@ -264,7 +264,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <strong>Included automatically</strong>
             <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy overview, connected themes, and summary cards.</p>
             <p><b>His life</b> — full biography, education and career timeline, and mentorship reflection.</p>
-            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, and honors.</p>
+            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, curated community voices, and honors.</p>
             <p><b>Memories</b> — every approved community memory and its published photograph.</p>
           </div>
           <a className="manager-primary manager-preview-book" href="/memory-book" target="_blank" rel="noopener noreferrer"><BookOpen size={18} /> Preview memory book</a>
