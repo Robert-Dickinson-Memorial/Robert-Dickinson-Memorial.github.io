@@ -1,12 +1,16 @@
 import { ArrowRight, BookOpen, CalendarDays, CloudSun, Compass, Images, MessageSquareText, Sprout, Users } from "lucide-react";
 import Link from "next/link";
 import { SiteFooter, SiteNav } from "./site-chrome";
-import { getPublishedEvents, getPublishedGallery, getSiteContent } from "./site-data";
+import { getPublishedEvents, getPublishedGallery, getSiteContent, type SiteAsset } from "./site-data";
 
 const legacyIcons = [CloudSun, Compass, Users];
 
-
 export const dynamic = "force-dynamic";
+
+function assetUrl(asset: SiteAsset) {
+  if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
+  return `/${asset.asset.replace(/^\//, "")}`;
+}
 
 function LegacyNetwork({ topics }: { topics: { title: string; note: string }[] }) {
   return (
@@ -33,53 +37,61 @@ function LegacyNetwork({ topics }: { topics: { title: string; note: string }[] }
 
 export default async function Home() {
   const [content, events, gallery] = await Promise.all([getSiteContent(), getPublishedEvents(), getPublishedGallery()]);
+  const copy = content.pageCopy;
   const introduction = content.obituaryStory.split(/\n\s*\n/).filter(Boolean).slice(0, 2);
+  const eventsText = events.length
+    ? (events.length === 1 ? copy["home.eventsCountOne"] : copy["home.eventsCountMany"].replace("{count}", String(events.length)))
+    : copy["home.eventsEmpty"];
+  const galleryText = gallery.length
+    ? (gallery.length === 1 ? copy["home.galleryCountOne"] : copy["home.galleryCountMany"].replace("{count}", String(gallery.length)))
+    : copy["home.galleryEmpty"];
+
   return (
     <main data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="home" />
       <header id="top" className="hero">
-        <img className="hero-art" src="/memorial-horizon.png" alt="" aria-hidden="true" />
+        <img className="hero-art" src={assetUrl(content.siteAssets.horizon)} alt={content.siteAssets.horizon.alt} aria-hidden={!content.siteAssets.horizon.alt} />
         <div className="hero-shade" />
         <div className="hero-copy">
-          <p className="eyebrow">Celebrating a life in science</p>
-          <h1>Robert E.<br /><em>Dickinson</em></h1>
-          <p className="life-dates">March 26, 1940 – September 11, 2026</p>
+          <p className="eyebrow">{copy["home.heroEyebrow"]}</p>
+          <h1>{copy["home.heroNameLine1"]}<br /><em>{copy["home.heroNameLine2"]}</em></h1>
+          <p className="life-dates">{copy["home.lifeDates"]}</p>
           <p className="hero-intro">{content.heroIntro}</p>
-          <Link className="scroll-cue" href="/life">Read his story <ArrowRight size={17} aria-hidden="true" /></Link>
+          <Link className="scroll-cue" href="/life">{copy["home.readStory"]} <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
         <figure className="portrait-card">
-          <img src="/robert-dickinson.jpg" alt="Robert E. Dickinson outdoors" />
-          <blockquote>“The wonderful people I collaborated with” were among the great highlights of his career.</blockquote>
-          <figcaption>Portrait courtesy of the Jackson School of Geosciences</figcaption>
+          <img src={assetUrl(content.siteAssets.portrait)} alt={content.siteAssets.portrait.alt} />
+          <blockquote>{copy["home.portraitQuote"]}</blockquote>
+          <figcaption>{copy["home.portraitCaption"]}</figcaption>
         </figure>
       </header>
 
       <section className="home-story-preview">
-        <div><p className="section-kicker">His story</p><h2>A curious mind.<br />A generous spirit.</h2><span>1940–2026</span></div>
-        <div className="home-story-copy">{introduction.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={paragraph.slice(0, 30)}>{paragraph}</p>)}<Link className="text-link" href="/life">Read Robert’s full story <ArrowRight size={16} /></Link></div>
+        <div><p className="section-kicker">{copy["home.storyKicker"]}</p><h2>{copy["home.storyTitleLine1"]}<br />{copy["home.storyTitleLine2"]}</h2><span>{copy["home.storyYears"]}</span></div>
+        <div className="home-story-copy">{introduction.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={paragraph.slice(0, 30)}>{paragraph}</p>)}<Link className="text-link" href="/life">{copy["home.storyReadLink"]} <ArrowRight size={16} /></Link></div>
       </section>
 
       <section className="tribute-actions" aria-labelledby="tribute-actions-title">
-        <div className="tribute-actions-copy"><p className="section-kicker">Living tributes</p><h2 id="tribute-actions-title">Two lasting ways to remember Robert</h2><p>Carry his memory into a living landscape, or preserve the community’s stories in a keepsake collection.</p></div>
+        <div className="tribute-actions-copy"><p className="section-kicker">{copy["home.tributeKicker"]}</p><h2 id="tribute-actions-title">{copy["home.tributeTitle"]}</h2><p>{copy["home.tributeIntro"]}</p></div>
         <div className="tribute-action-grid">
-          <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>Living tribute</small><strong>Plant a tree in his memory</strong><em>Dedicate trees, add a message, and receive a personalized certificate.</em><b>Begin a dedication →</b></span></Link>
-          <Link className="tribute-action-card book-card" href="/memory-book"><span className="tribute-action-icon"><BookOpen size={28} /></span><span><small>Community keepsake</small><strong>Turn memories into a book</strong><em>Read or print an editorial collection of approved stories and photographs.</em><b>Open the memory book →</b></span></Link>
+          <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>{copy["home.treeKicker"]}</small><strong>{copy["home.treeTitle"]}</strong><em>{copy["home.treeText"]}</em><b>{copy["home.treeCta"]}</b></span></Link>
+          <Link className="tribute-action-card book-card" href="/memory-book"><span className="tribute-action-icon"><BookOpen size={28} /></span><span><small>{copy["home.bookKicker"]}</small><strong>{copy["home.bookTitle"]}</strong><em>{copy["home.bookText"]}</em><b>{copy["home.bookCta"]}</b></span></Link>
         </div>
       </section>
 
       <section className="home-legacy-preview">
-        <div className="home-preview-heading"><div><p className="section-kicker light">Scientific legacy</p><h2>Science that changed how we see Earth</h2></div><p>{content.homeLegacyIntro}</p></div>
+        <div className="home-preview-heading"><div><p className="section-kicker light">{copy["home.legacyKicker"]}</p><h2>{copy["home.legacyTitle"]}</h2></div><p>{content.homeLegacyIntro}</p></div>
         <LegacyNetwork topics={content.homeLegacyTopics} />
         <div className="chapter-grid home-chapter-grid">{content.homeLegacyCards.map((card, index) => { const Icon = legacyIcons[index] ?? CloudSun; const number = String(index + 1).padStart(2, "0"); return <article className="chapter-card" key={`${index}-${card.title}`}><div className="chapter-top"><Icon size={24} /><span>{number}</span></div><h3>{card.title}</h3><p>{card.text}</p></article>; })}</div>
-        <Link className="light-button" href="/legacy">Explore his scientific journey <ArrowRight size={17} /></Link>
+        <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
 
       <section className="home-community">
-        <div className="home-community-heading"><p className="section-kicker">Explore the memorial</p><h2>A life remembered in many forms</h2><p>Visit each collection when you are ready. The homepage offers a quiet starting point rather than the entire archive at once.</p></div>
+        <div className="home-community-heading"><p className="section-kicker">{copy["home.communityKicker"]}</p><h2>{copy["home.communityTitle"]}</h2><p>{copy["home.communityIntro"]}</p></div>
         <div className="home-community-grid">
-          <Link href="/events"><CalendarDays size={25} /><small>Gather together</small><h3>Events</h3><p>{events.length ? `${events.length} memorial ${events.length === 1 ? "event" : "events"} currently listed.` : "Memorial gatherings and scientific tributes will be shared here."}</p><b>View events →</b></Link>
-          <Link href="/gallery"><Images size={25} /><small>Photos & film</small><h3>Gallery</h3><p>{gallery.length ? `${gallery.length} photographs or videos in the public collection.` : "Photographs and videos tracing a life in science and community."}</p><b>Open the gallery →</b></Link>
-          <Link href="/memories"><MessageSquareText size={25} /><small>From the community</small><h3>Memories</h3><p>Read approved stories from students, colleagues, friends, and family—and add your own.</p><b>Read or share memories →</b></Link>
+          <Link href="/events"><CalendarDays size={25} /><small>{copy["home.eventsKicker"]}</small><h3>{copy["home.eventsTitle"]}</h3><p>{eventsText}</p><b>{copy["home.eventsCta"]}</b></Link>
+          <Link href="/gallery"><Images size={25} /><small>{copy["home.galleryKicker"]}</small><h3>{copy["home.galleryTitle"]}</h3><p>{galleryText}</p><b>{copy["home.galleryCta"]}</b></Link>
+          <Link href="/memories"><MessageSquareText size={25} /><small>{copy["home.memoriesKicker"]}</small><h3>{copy["home.memoriesTitle"]}</h3><p>{copy["home.memoriesText"]}</p><b>{copy["home.memoriesCta"]}</b></Link>
         </div>
       </section>
       <SiteFooter />
