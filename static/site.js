@@ -354,8 +354,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const portrait = siteAssetUrl("portrait");
     const horizon = siteAssetUrl("horizon");
     const storyParagraphs = String(content.obituaryStory || "").split(/\n\s*\n/).filter(Boolean);
-    const memorySpreads = Array.from({ length: Math.ceil(memories.length / 2) }, (_, index) => memories.slice(index * 2, index * 2 + 2));
-    const featuredQuotes = memories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
+    const bookMemories = [...memories].sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || Number(a.id || 0) - Number(b.id || 0));
+    const memorySpreads = Array.from({ length: Math.ceil(bookMemories.length / 2) }, (_, index) => bookMemories.slice(index * 2, index * 2 + 2));
+    const featuredQuotes = bookMemories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
     const featuredQuoteSpreads = Array.from({ length: Math.ceil(featuredQuotes.length / 4) }, (_, index) => featuredQuotes.slice(index * 4, index * 4 + 4));
     const pages = [];
 
