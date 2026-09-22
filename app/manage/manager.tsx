@@ -48,6 +48,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
   async function uploadChapterPhoto(event: FormEvent<HTMLFormElement>, chapterId: string) {
     event.preventDefault(); setBusy(true); setMessage("");
     try {
+      await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
       const form = new FormData(event.currentTarget);
       form.set("chapterId", chapterId);
       await responseData(await fetch("/api/admin/chapter-photo", { method: "POST", body: form }));
@@ -59,6 +60,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
     if (!window.confirm("Remove this photograph from the scientific chapter?")) return;
     setBusy(true); setMessage("");
     try {
+      await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
       await responseData(await fetch(`/api/admin/chapter-photo?chapterId=${encodeURIComponent(chapterId)}`, { method: "DELETE" }));
       window.location.reload();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
