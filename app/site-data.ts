@@ -277,9 +277,22 @@ const homeLegacyTopics: HomeLegacyTopic[] = [
 ];
 
 const homeLegacyCards: HomeLegacyCard[] = [
-  { title: "He changed climate models", text: "Robert helped transform land from a passive boundary into a living, dynamic part of the climate system." },
-  { title: "He connected the Earth system", text: "His work joined atmosphere, land, water, vegetation, and carbon into a more faithful picture of Earth." },
-  { title: "He multiplied possibility", text: "His deepest influence continues through the students, postdoctoral scholars, and collaborators he guided." },
+  {
+    title: "He opened new frontiers in planetary-atmosphere science",
+    text: "Robert advanced the theory of planetary waves and developed pioneering global models of upper-atmospheric dynamics and radiation, extending from Earth’s stratosphere and thermosphere to the atmospheres of Venus and Mars.",
+  },
+  {
+    title: "He established a quantitative foundation for understanding global warming",
+    text: "Robert’s seminal work on radiative forcing, climate sensitivity, and greenhouse gases helped establish how changes in Earth’s energy balance translate into global temperature change, a foundation for modern assessments of greenhouse warming and global change.",
+  },
+  {
+    title: "He pioneered integration of land processes into global climate models",
+    text: "Robert transformed the land process from a passive boundary into an active, interacting component of global climate models. He connected atmosphere, biosphere, and hydrosphere into a fuller and faithful picture of the Earth system.",
+  },
+  {
+    title: "He inspired generations of scientists",
+    text: "Robert passed on more than knowledge. His rigor, curiosity, breadth of vision, and generosity live on through generations of students, postdocs, collaborators, and scientific communities.",
+  },
 ];
 
 const legacyThreads: LegacyThread[] = [
