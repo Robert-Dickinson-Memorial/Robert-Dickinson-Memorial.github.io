@@ -35,8 +35,8 @@ export default async function ManagePage() {
       <header className="manage-header">
         <Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link>
         <p className="section-kicker">Private memorial editor</p><h1>Manage the memorial</h1>
-        <p>Edit the obituary, publish events, and add photographs or videos without changing the website code.</p>
-        <nav className="manager-nav"><a href="#edit-story">Edit story</a><a href="#edit-events">Events</a><a href="#edit-gallery">Photos & videos</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a><a href="/memory-book"><BookOpen size={16} /> Preview book</a></nav>
+        <p>Edit the public memorial directly: typography, biographical text, affiliations, scientific chapters, chapter photographs, honors, events, and gallery media.</p>
+        <nav className="manager-nav"><a href="#edit-style">Typography</a><a href="#edit-story">Story</a><a href="#edit-home-legacy">Homepage legacy</a><a href="#edit-life">His Life</a><a href="#edit-legacy">Scientific chapters</a><a href="#edit-honors">Honors</a><a href="#edit-events">Events</a><a href="#edit-gallery">Photos & videos</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a><a href="/memory-book"><BookOpen size={16} /> Preview book</a></nav>
       </header>
       <Manager content={content} events={eventResult.results ?? []} media={mediaResult.results ?? []} publishedMemories={memoryResult.results ?? []} editors={editorResult.results ?? []} owner={isOwnerEmail(user.email)} />
     </main>
