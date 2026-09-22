@@ -3,11 +3,8 @@ import Link from "next/link";
 import { SiteFooter, SiteNav } from "./site-chrome";
 import { getPublishedEvents, getPublishedGallery, getSiteContent } from "./site-data";
 
-const legacyPreview = [
-  { icon: CloudSun, number: "01", title: "He changed climate models", text: "Robert helped transform land from a passive boundary into a living, dynamic part of the climate system." },
-  { icon: Compass, number: "02", title: "He connected the Earth system", text: "His work joined atmosphere, land, water, vegetation, and carbon into a more faithful picture of Earth." },
-  { icon: Users, number: "03", title: "He multiplied possibility", text: "His deepest influence continues through the students, postdoctoral scholars, and collaborators he guided." },
-];
+const legacyIcons = [CloudSun, Compass, Users];
+
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +70,7 @@ export default async function Home() {
       <section className="home-legacy-preview">
         <div className="home-preview-heading"><div><p className="section-kicker light">Scientific legacy</p><h2>Science that changed how we see Earth</h2></div><p>{content.homeLegacyIntro}</p></div>
         <LegacyNetwork topics={content.homeLegacyTopics} />
-        <div className="chapter-grid home-chapter-grid">{legacyPreview.map(({ icon: Icon, number, title, text }) => <article className="chapter-card" key={number}><div className="chapter-top"><Icon size={24} /><span>{number}</span></div><h3>{title}</h3><p>{text}</p></article>)}</div>
+        <div className="chapter-grid home-chapter-grid">{content.homeLegacyCards.map((card, index) => { const Icon = legacyIcons[index] ?? CloudSun; const number = String(index + 1).padStart(2, "0"); return <article className="chapter-card" key={`${index}-${card.title}`}><div className="chapter-top"><Icon size={24} /><span>{number}</span></div><h3>{card.title}</h3><p>{card.text}</p></article>; })}</div>
         <Link className="light-button" href="/legacy">Explore his scientific journey <ArrowRight size={17} /></Link>
       </section>
 
