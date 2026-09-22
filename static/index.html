@@ -9,11 +9,10 @@
     <link rel="stylesheet" href="./assets/styles.css" />
     <script src="./config.js"></script><script src="./site.js" defer></script>
   </head>
-  <body><main>
+  <body><main data-body-font="system-sans" data-heading-font="classic-serif">
     <nav class="site-nav" aria-label="Main navigation">
-            <a class="wordmark" href="./" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span class="wordmark-mark">∞</span><span>Robert Dickinson</span></a>
-            <div class="nav-links"><a class="active" href="./">Home</a><a href="./life/">His life</a><a href="./legacy/">Scientific legacy</a><a href="./events/">Events</a><a href="./gallery/">Gallery</a><a href="./memories/">Memories</a></div>
-      <a class="nav-cta" href="./memories/#share">Share a memory</a>
+      <a class="wordmark" href="./" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span class="wordmark-mark">∞</span><span>Robert Dickinson</span></a>
+      <div class="nav-links"><a class="active" href="./">Home</a><a href="./life/">His life</a><a href="./legacy/">Scientific legacy</a><a href="./events/">Events</a><a href="./gallery/">Gallery</a><a href="./memories/">Memories</a></div>
     </nav>
 
     <header id="top" class="hero">
@@ -32,19 +31,27 @@
       <a class="tribute-action-card book-card" href="./memory-book/"><span class="tribute-action-icon">▥</span><span><small>Community keepsake</small><strong>Turn memories into a book</strong><em>Read or print an editorial collection of approved stories and photographs.</em><b>Open the memory book →</b></span></a>
     </div></section>
 
-    <section class="home-legacy-preview"><div class="home-preview-heading"><div><p class="section-kicker light">Scientific legacy</p><h2>Science that changed how we see Earth</h2></div><p>Robert repeatedly changed the scale of the scientific problem—from atmospheric waves to the coupled Earth system.</p></div>
-      <ol class="home-scale"><li><span>01</span><strong>Planetary waves</strong></li><li><span>02</span><strong>Atmosphere</strong></li><li><span>03</span><strong>Climate</strong></li><li><span>04</span><strong>Land–atmosphere</strong></li><li><span>05</span><strong>Coupled Earth</strong></li></ol>
-      <div class="chapter-grid home-chapter-grid"><article class="chapter-card"><div class="chapter-top"><span>☁</span><span>01</span></div><h3>He changed climate models</h3><p>Robert helped transform land from a passive boundary into a living, dynamic part of the climate system.</p></article><article class="chapter-card"><div class="chapter-top"><span>◎</span><span>02</span></div><h3>He connected the Earth system</h3><p>His work joined atmosphere, land, water, vegetation, and carbon into a more faithful picture of Earth.</p></article><article class="chapter-card"><div class="chapter-top"><span>♢</span><span>03</span></div><h3>He multiplied possibility</h3><p>His influence continues through the students, postdoctoral scholars, and collaborators he guided.</p></article></div>
+    <section class="home-legacy-preview">
+      <div class="home-preview-heading"><div><p class="section-kicker light">Scientific legacy</p><h2>Science that changed how we see Earth</h2></div><p data-content="homeLegacyIntro">Rather than a single linear path, Bob’s work formed a connected scientific landscape: ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, and observations from space continually informed one another.</p></div>
+      <div class="home-legacy-network" data-home-legacy-topics aria-label="Connected themes in Robert Dickinson's scientific legacy">
+        <svg class="home-legacy-network-lines" viewBox="0 0 1000 440" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M500 220 C390 180 275 110 165 95"></path><path d="M500 220 C610 165 735 105 850 100"></path><path d="M500 220 C380 255 270 330 155 350"></path><path d="M500 220 C625 260 735 330 855 350"></path><path d="M165 95 C280 155 360 155 500 220"></path><path d="M850 100 C790 205 785 285 855 350"></path><path d="M155 350 C360 405 655 410 855 350"></path>
+        </svg>
+        <article class="home-legacy-node home-legacy-node-1"><span>01</span><strong>Atmospheric Dynamics</strong><small>Waves, circulation, and the physics of the atmosphere</small></article>
+        <article class="home-legacy-node home-legacy-node-2"><span>02</span><strong>Climate Change</strong><small>How a changing atmosphere reshapes the planet</small></article>
+        <article class="home-legacy-node home-legacy-node-3"><span>03</span><strong>Climate Models</strong><small>A common framework connecting processes and scales</small></article>
+        <article class="home-legacy-node home-legacy-node-4"><span>04</span><strong>Land–Atmosphere Interactions</strong><small>Water, energy, vegetation, and carbon in exchange</small></article>
+        <article class="home-legacy-node home-legacy-node-5"><span>05</span><strong>Remote Sensing (Observation from Space)</strong><small>Observations that test and improve the models</small></article>
+      </div>
       <a class="light-button" href="./legacy/">Explore his scientific journey →</a>
     </section>
 
-    <section class="home-community"><div class="home-community-heading"><p class="section-kicker">Explore the memorial</p><h2>A life remembered in many forms</h2><p>Visit each collection when you are ready. The homepage now offers a quiet starting point rather than the entire archive at once.</p></div><div class="home-community-grid">
+    <section class="home-community"><div class="home-community-heading"><p class="section-kicker">Explore the memorial</p><h2>A life remembered in many forms</h2><p>Visit each collection when you are ready. The homepage offers a quiet starting point rather than the entire archive at once.</p></div><div class="home-community-grid">
       <a href="./events/"><span aria-hidden="true">□</span><small>Gather together</small><h3>Events</h3><p>Memorial gatherings and scientific tributes will be shared here.</p><b>View events →</b></a>
       <a href="./gallery/"><span aria-hidden="true">▧</span><small>Photos &amp; film</small><h3>Gallery</h3><p>Photographs and videos tracing a life in science and community.</p><b>Open the gallery →</b></a>
-      <a href="./memories/"><span aria-hidden="true">❝</span><small>From the community</small><h3>Memories</h3><p>Read approved stories from students, colleagues, friends, and family.</p><b>Read memories →</b></a>
+      <a href="./memories/"><span aria-hidden="true">❝</span><small>From the community</small><h3>Memories</h3><p>Read approved stories from students, colleagues, friends, and family—and add your own.</p><b>Read or share memories →</b></a>
     </div></section>
 
-    <section class="home-share-cta"><div><p class="section-kicker light">Add your voice</p><h2>What do you remember?</h2><p>A conversation after seminar. A line of code he helped untangle. The question that changed your research.</p></div><a href="./memories/#share">Share a memory →</a></section>
     <footer class="site-footer"><a class="wordmark footer-mark" href="./"><span class="wordmark-mark">∞</span><span>Robert E. Dickinson</span></a><p>Created with love by his academic community.</p><div class="footer-links"><a href="#top">Return to top ↑</a></div></footer>
   </main></body>
 </html>
