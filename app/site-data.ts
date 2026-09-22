@@ -382,6 +382,8 @@ export const defaultPageCopy: Record<string, string> = {
   "legacy.voicesTitle": "Voices from the scientific community",
   "legacy.voicesIntro": "Selected reflections from Robert’s students, collaborators, and colleagues—drawn from the memorial’s community memories.",
   "legacy.voicesReadMore": "Read the full reflection",
+  "legacy.voicesEmpty": "Selected reflections from Robert’s scientific community will appear here as they are curated from the Memories archive.",
+  "legacy.voicesBrowse": "Browse community memories",
   "legacy.honorsKicker": "Honors, awards & recognition",
 
   "events.heroKicker": "Gather together",
