@@ -62,19 +62,22 @@ export type MemorialHonor = {
   detail: string;
 };
 
-export type HomeLegacyTopic = {
-  title: string;
-  note: string;
-};
-
 export type HomeLegacyCard = {
   title: string;
   text: string;
+  threadIds: string[];
 };
 
 export type LegacyThread = {
+  id: string;
   title: string;
   text: string;
+};
+
+export type SecondaryLegacyTopic = {
+  title: string;
+  text: string;
+  threadIds: string[];
 };
 
 export type CommunityQuote = {
@@ -101,8 +104,8 @@ export type SiteContent = {
   bodyFont: string;
   headingFont: string;
   homeLegacyIntro: string;
-  homeLegacyTopics: HomeLegacyTopic[];
   homeLegacyCards: HomeLegacyCard[];
+  secondaryLegacyTopics: SecondaryLegacyTopic[];
   lifeMilestones: LifeMilestone[];
   legacyChapters: LegacyChapter[];
   legacyThreads: LegacyThread[];
@@ -268,40 +271,47 @@ const honors: MemorialHonor[] = [
   { year: "2014", title: "Honorary Member", detail: "American Meteorological Society" },
 ];
 
-const homeLegacyTopics: HomeLegacyTopic[] = [
-  { title: "Atmospheric Dynamics", note: "Waves, circulation, and the physics of the atmosphere" },
-  { title: "Climate Change", note: "How a changing atmosphere reshapes the planet" },
-  { title: "Climate Models", note: "A common framework connecting processes and scales" },
-  { title: "Land–Atmosphere Interactions", note: "Water, energy, vegetation, and carbon in exchange" },
-  { title: "Remote Sensing (Observation from Space)", note: "Observations that test and improve the models" },
+const legacyThreads: LegacyThread[] = [
+  { id: "atmospheric-dynamics", title: "Atmospheric dynamics", text: "Planetary waves, circulation, radiation, and the physics that set atmospheres in motion." },
+  { id: "climate-change", title: "Climate change", text: "Physical understanding of radiative forcing, greenhouse warming, climate sensitivity, and feedbacks." },
+  { id: "climate-modeling", title: "Climate modeling", text: "Models used not merely to predict, but to reveal how interacting processes create climate." },
+  { id: "land-atmosphere", title: "Land–atmosphere interactions", text: "Vegetation, soils, water, snow, roots, and surface energy made active parts of the climate system." },
+  { id: "observation-space", title: "Observation from space", text: "Remote sensing used to confront models with the changing temperature and condition of land." },
+  { id: "coupled-earth", title: "A coupled Earth", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
 ];
 
 const homeLegacyCards: HomeLegacyCard[] = [
   {
     title: "He opened new frontiers in planetary-atmosphere science",
     text: "Robert advanced the theory of planetary waves and developed pioneering global models of upper-atmospheric dynamics and radiation, extending from Earth’s stratosphere and thermosphere to the atmospheres of Venus and Mars.",
+    threadIds: ["atmospheric-dynamics", "climate-modeling"],
   },
   {
     title: "He established a quantitative foundation for understanding global warming",
     text: "Robert’s seminal work on radiative forcing, climate sensitivity, and greenhouse gases helped establish how changes in Earth’s energy balance translate into global temperature change, a foundation for modern assessments of greenhouse warming and global change.",
+    threadIds: ["climate-change", "atmospheric-dynamics", "climate-modeling"],
   },
   {
     title: "He pioneered integration of land processes into global climate models",
     text: "Robert transformed the land process from a passive boundary into an active, interacting component of global climate models. He connected atmosphere, biosphere, and hydrosphere into a fuller and faithful picture of the Earth system.",
+    threadIds: ["land-atmosphere", "climate-modeling", "observation-space", "coupled-earth"],
   },
   {
     title: "He inspired generations of scientists",
     text: "Robert passed on more than knowledge. His rigor, curiosity, breadth of vision, and generosity live on through generations of students, postdocs, collaborators, and scientific communities.",
+    threadIds: ["atmospheric-dynamics", "climate-change", "climate-modeling", "land-atmosphere", "observation-space", "coupled-earth"],
   },
 ];
 
-const legacyThreads: LegacyThread[] = [
-  { title: "Atmospheric dynamics", text: "Planetary waves, circulation, radiation, and the physics that set atmospheres in motion." },
-  { title: "Climate change", text: "Physical understanding of how greenhouse gases and feedbacks reshape the climate system." },
-  { title: "Climate modeling", text: "Models used not merely to predict, but to reveal how interacting processes create climate." },
-  { title: "Land–atmosphere interactions", text: "Vegetation, soils, water, snow, roots, and surface energy made active parts of the climate system." },
-  { title: "Observation from space", text: "Remote sensing used to confront models with the changing temperature and condition of land." },
-  { title: "A coupled Earth", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
+const secondaryLegacyTopics: SecondaryLegacyTopic[] = [
+  { title: "Planetary atmospheres", text: "Global circulation, radiation, and upper-atmosphere modeling for Earth, Venus, and Mars.", threadIds: ["atmospheric-dynamics", "climate-modeling"] },
+  { title: "Tropical deforestation", text: "How land-cover change in the Amazon reshapes regional energy, water, and climate.", threadIds: ["land-atmosphere", "climate-change", "coupled-earth"] },
+  { title: "Regional climate modeling", text: "Early development of regional models for resolving climate processes below the global scale.", threadIds: ["climate-modeling", "climate-change"] },
+  { title: "Carbon & nitrogen cycles", text: "Coupling biogeochemistry with water and energy cycles in land and Earth-system models.", threadIds: ["land-atmosphere", "coupled-earth"] },
+  { title: "Dynamic vegetation", text: "Representing vegetation change as an active part of climate and Earth-system feedbacks.", threadIds: ["land-atmosphere", "coupled-earth"] },
+  { title: "Solar geoengineering", text: "Early analysis of deliberate changes to Earth’s energy balance and their climatic implications.", threadIds: ["climate-change", "climate-modeling"] },
+  { title: "Hydrology & drought", text: "Soil moisture, evapotranspiration, groundwater, drought, and land–climate feedbacks.", threadIds: ["land-atmosphere", "coupled-earth"] },
+  { title: "Aerosols & radiation", text: "Radiative effects of aerosols, greenhouse gases, and atmospheric composition across climate scales.", threadIds: ["atmospheric-dynamics", "climate-change"] },
 ];
 
 const communityQuotes: CommunityQuote[] = [
@@ -353,6 +363,9 @@ export const defaultPageCopy: Record<string, string> = {
   "home.bookCta": "Open the memory book →",
   "home.legacyKicker": "Scientific legacy",
   "home.legacyTitle": "Science that changed how we see Earth",
+  "home.legacyMapPrimary": "Enduring threads",
+  "home.legacyMapSecondary": "Other frontiers",
+  "home.legacyMapHint": "The same scientific threads reappear, combine, and widen across Robert’s work.",
   "home.legacyCta": "Explore his scientific journey",
   "home.communityKicker": "Explore the memorial",
   "home.communityTitle": "A life remembered in many forms",
@@ -401,6 +414,9 @@ export const defaultPageCopy: Record<string, string> = {
   "legacy.threadsKicker": "Across every institution",
   "legacy.threadsTitle": "Enduring research threads",
   "legacy.threadsIntro": "The affiliations mark chapters in Robert’s career. These ideas reveal the deeper continuity running through them.",
+  "legacy.frontiersKicker": "Beyond the central threads",
+  "legacy.frontiersTitle": "Other frontiers he helped open",
+  "legacy.frontiersIntro": "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.",
   "legacy.honorsKicker": "Honors, awards & recognition",
 
   "events.heroKicker": "Gather together",
@@ -537,9 +553,9 @@ export const defaultContent: SiteContent = {
   treeDetail: "Reforestation projects in the Chippewa restore native trees, strengthen wildlife habitat—including habitat for bald eagles—and improve the forest’s resilience to wind damage, insects, disease, and a changing climate.",
   bodyFont: "system-sans",
   headingFont: "classic-serif",
-  homeLegacyIntro: "Rather than a single linear path, Bob’s work formed a connected scientific landscape: ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, and observations from space continually informed one another.",
-  homeLegacyTopics,
+  homeLegacyIntro: "Rather than a single linear path, Bob’s work formed a connected scientific landscape. Foundational ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, observations from space, and the coupled Earth repeatedly converged as the scale of his questions widened.",
   homeLegacyCards,
+  secondaryLegacyTopics,
   lifeMilestones,
   legacyChapters,
   legacyThreads,
@@ -573,8 +589,8 @@ export async function getSiteContent(): Promise<SiteContent> {
       bodyFont: values.bodyFont || defaultContent.bodyFont,
       headingFont: values.headingFont || defaultContent.headingFont,
       homeLegacyIntro: values.homeLegacyIntro || defaultContent.homeLegacyIntro,
-      homeLegacyTopics: parseJson(values.homeLegacyTopics, defaultContent.homeLegacyTopics),
       homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
+      secondaryLegacyTopics: parseJson(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics),
       lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
       legacyChapters: parseJson(values.legacyChapters, defaultContent.legacyChapters),
       legacyThreads: parseJson(values.legacyThreads, defaultContent.legacyThreads),
