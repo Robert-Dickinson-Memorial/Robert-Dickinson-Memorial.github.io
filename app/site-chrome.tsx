@@ -1,20 +1,22 @@
 import Link from "next/link";
 import { getChatGPTUser } from "./chatgpt-auth";
 import { isEditorEmail, isOwnerEmail } from "./moderation";
+import { getSiteContent } from "./site-data";
 
-const links = [
-  { href: "/", label: "Home", key: "home" },
-  { href: "/life", label: "His life", key: "life" },
-  { href: "/legacy", label: "Scientific legacy", key: "legacy" },
-  { href: "/events", label: "Events", key: "events" },
-  { href: "/gallery", label: "Gallery", key: "gallery" },
-  { href: "/memories", label: "Memories", key: "memories" },
-];
-
-export function SiteNav({ active }: { active?: string }) {
+export async function SiteNav({ active }: { active?: string }) {
+  const content = await getSiteContent();
+  const copy = content.pageCopy;
+  const links = [
+    { href: "/", label: copy["nav.home"], key: "home" },
+    { href: "/life", label: copy["nav.life"], key: "life" },
+    { href: "/legacy", label: copy["nav.legacy"], key: "legacy" },
+    { href: "/events", label: copy["nav.events"], key: "events" },
+    { href: "/gallery", label: copy["nav.gallery"], key: "gallery" },
+    { href: "/memories", label: copy["nav.memories"], key: "memories" },
+  ];
   return (
     <nav className="site-nav" aria-label="Main navigation">
-            <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark">∞</span><span>Robert Dickinson</span></Link>
+      <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark">∞</span><span>{copy["global.wordmark"]}</span></Link>
       <div className="nav-links">{links.map((link) => <Link className={active === link.key ? "active" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
     </nav>
   );
@@ -30,11 +32,13 @@ async function ReviewLink() {
 }
 
 export async function SiteFooter() {
+  const content = await getSiteContent();
+  const copy = content.pageCopy;
   return (
     <footer className="site-footer">
-      <Link className="wordmark footer-mark" href="/"><span className="wordmark-mark">∞</span><span>Robert E. Dickinson</span></Link>
-      <p>Created with love by his academic community.</p>
-      <div className="footer-links"><ReviewLink /><Link href="/">Memorial home ↑</Link></div>
+      <Link className="wordmark footer-mark" href="/"><span className="wordmark-mark">∞</span><span>{copy["global.footerName"]}</span></Link>
+      <p>{copy["global.footerText"]}</p>
+      <div className="footer-links"><ReviewLink /><Link href="/">{copy["global.footerHome"]}</Link></div>
     </footer>
   );
 }
