@@ -311,8 +311,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (voicesTarget instanceof HTMLElement) {
       const featured = memories.filter((memory) => Boolean(memory.featuredQuote) && typeof memory.quoteExcerpt === "string" && memory.quoteExcerpt.trim());
       const grid = voicesTarget.querySelector("[data-featured-quote-grid]");
-      if (!featured.length || !(grid instanceof HTMLElement)) {
-        voicesTarget.hidden = true;
+      if (!(grid instanceof HTMLElement)) {
+        return;
+      }
+      if (!featured.length) {
+        const empty = node("div", { className: "legacy-voices-empty" });
+        empty.append(
+          node("p", { text: copy["legacy.voicesEmpty"] || "Selected reflections from Robert’s scientific community will appear here as they are curated from the Memories archive." }),
+          node("a", { text: (copy["legacy.voicesBrowse"] || "Browse community memories") + " →", attrs: { href: "/memories/" } })
+        );
+        grid.replaceChildren(empty);
+        voicesTarget.hidden = false;
       } else {
         grid.replaceChildren(...featured.map((memory, index) => {
           const article = node("article", { className: index === 0 ? "legacy-voice-card legacy-voice-card-featured" : "legacy-voice-card" });
