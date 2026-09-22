@@ -27,17 +27,12 @@ export async function PATCH(request: Request) {
     const relationship = clean(body.relationship, 120);
     const title = clean(body.title, 160);
     const story = clean(body.story, 6000);
-    const featuredQuote = body.featuredQuote === true || body.featuredQuote === "1" || body.featuredQuote === "on";
-    const quoteExcerpt = clean(body.quoteExcerpt, 900);
     if (name.length < 2 || relationship.length < 2 || title.length < 2 || story.length < 20) {
       return Response.json({ error: "Name, connection, title, and story are required." }, { status: 400 });
     }
-    if (featuredQuote && quoteExcerpt.length < 12) {
-      return Response.json({ error: "Choose a short quotation before featuring this reflection in Scientific Legacy." }, { status: 400 });
-    }
     const result = await env.DB.prepare(
-      "UPDATE memories SET name = ?, relationship = ?, title = ?, story = ?, featured_quote = ?, quote_excerpt = ? WHERE id = ? AND status = 'approved'"
-    ).bind(name, relationship, title, story, featuredQuote ? 1 : 0, quoteExcerpt || null, id).run();
+      "UPDATE memories SET name = ?, relationship = ?, title = ?, story = ? WHERE id = ? AND status = 'approved'"
+    ).bind(name, relationship, title, story, id).run();
     if (!result.meta.changes) return Response.json({ error: "Published memory not found." }, { status: 404 });
     return Response.json({ ok: true, id, status: "approved" });
   }
