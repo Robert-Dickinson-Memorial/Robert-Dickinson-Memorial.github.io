@@ -283,31 +283,6 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-all-copy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Page headings, labels & buttons</p><h2>Text organized by public page</h2><p>Use the same page names as the public memorial. Open a page below to edit its headings, buttons, navigation labels, form labels, and other interface text.</p></div>
-        <div className="manager-form manager-stack manager-copy-groups">
-          {copyGroups.map((group) => {
-            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)));
-            return <details className="manager-copy-group" id={group.id} key={group.id} open={group.id === "copy-home"}>
-              <summary><span>{group.page}</span><strong>{group.title}</strong><small>{entries.length} editable text fields</small></summary>
-              <div className="manager-copy-group-body">
-                {entries.map(([key, value]) => {
-                  const isUrl = key.toLowerCase().endsWith("url");
-                  const longValue = value.length > 90 || /(?:Text|Intro|Message|Subtitle|Note|Caption|Story)$/i.test(key);
-                  return <div className="manager-copy-row" key={key}>
-                    <label><span className="manager-copy-label">{copyFieldLabel(key)}</span><small className="manager-copy-key">{key}</small>
-                      {longValue && !isUrl
-                        ? <textarea rows={Math.min(6, Math.max(2, Math.ceil(value.length / 70)))} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />
-                        : <input type={isUrl ? "url" : "text"} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />}
-                    </label>
-                  </div>;
-                })}
-              </div>
-            </details>;
-          })}
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save page headings & labels</button>
-        </div>
-      </section>
 
       <section id="edit-home-story" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Home · His story / His life</p><h2>Biography & homepage introduction</h2><p>The short introduction appears on Home; the full biography appears on His life and is also used in the Memory book.</p></div>
@@ -458,6 +433,33 @@ export default function Manager({ content, events, media, publishedMemories, edi
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save Living tribute text</button>
         </div>
       </section>
+
+      <section id="edit-all-copy" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">Page headings, labels & buttons</p><h2>Text organized by public page</h2><p>Use the same page names as the public memorial. Open a page below to edit its headings, buttons, navigation labels, form labels, and other interface text.</p></div>
+        <div className="manager-form manager-stack manager-copy-groups">
+          {copyGroups.map((group) => {
+            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)));
+            return <details className="manager-copy-group" id={group.id} key={group.id} open={group.id === "copy-home"}>
+              <summary><span>{group.page}</span><strong>{group.title}</strong><small>{entries.length} editable text fields</small></summary>
+              <div className="manager-copy-group-body">
+                {entries.map(([key, value]) => {
+                  const isUrl = key.toLowerCase().endsWith("url");
+                  const longValue = value.length > 90 || /(?:Text|Intro|Message|Subtitle|Note|Caption|Story)$/i.test(key);
+                  return <div className="manager-copy-row" key={key}>
+                    <label><span className="manager-copy-label">{copyFieldLabel(key)}</span><small className="manager-copy-key">{key}</small>
+                      {longValue && !isUrl
+                        ? <textarea rows={Math.min(6, Math.max(2, Math.ceil(value.length / 70)))} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />
+                        : <input type={isUrl ? "url" : "text"} value={value} onChange={(e) => updatePageCopy(key, e.target.value)} />}
+                    </label>
+                  </div>;
+                })}
+              </div>
+            </details>;
+          })}
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save page headings & labels</button>
+        </div>
+      </section>
+
 
       {owner && <section id="edit-access" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Family & trusted editors</p><h2>Manage editor access</h2><p>Editors can update text, events, gallery items, scientific chapters, and chapter photographs. Only you can add or remove editors.</p></div>
