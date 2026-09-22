@@ -27,6 +27,36 @@ document.addEventListener("DOMContentLoaded", () => {
     return response.json();
   }
 
+  function applyPageCopy(copy) {
+    if (!copy || typeof copy !== "object") return;
+    document.querySelectorAll("[data-copy]").forEach((element) => {
+      if (!(element instanceof HTMLElement)) return;
+      const key = element.dataset.copy;
+      if (key && typeof copy[key] === "string") element.textContent = copy[key];
+    });
+    document.querySelectorAll("[data-copy-href]").forEach((element) => {
+      const key = element.getAttribute("data-copy-href");
+      if (key && typeof copy[key] === "string") element.setAttribute("href", copy[key]);
+    });
+    document.querySelectorAll("[data-copy-placeholder]").forEach((element) => {
+      const key = element.getAttribute("data-copy-placeholder");
+      if (key && typeof copy[key] === "string") element.setAttribute("placeholder", copy[key]);
+    });
+  }
+
+  function applySiteAssets(content) {
+    const assets = content && content.siteAssets;
+    if (!assets || typeof assets !== "object") return;
+    document.querySelectorAll("[data-site-asset]").forEach((element) => {
+      if (!(element instanceof HTMLImageElement)) return;
+      const id = element.dataset.siteAsset;
+      const asset = id && assets[id];
+      if (!asset) return;
+      element.src = asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
+      element.alt = asset.alt || "";
+    });
+  }
+
   function applyTheme(content) {
     const main = document.querySelector("main");
     if (!(main instanceof HTMLElement)) return;
@@ -78,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
-  function renderLegacy(content) {
+  function renderLegacy(content, copy) {
     const chapters = Array.isArray(content.legacyChapters) ? content.legacyChapters : [];
     if (!chapters.length) return;
 
@@ -111,18 +141,18 @@ document.addEventListener("DOMContentLoaded", () => {
         meta.append(document.createTextNode(chapter.institution || ""), node("span", { text: " · " }), document.createTextNode(chapter.years || ""));
         titleBlock.append(meta, node("h3", { text: chapter.title || "" }));
         const focus = node("div", { className: "journey-scale" });
-        focus.append(node("small", { text: "Scientific focus" }), node("strong", { text: chapter.scale || "" }));
+        focus.append(node("small", { text: copy?.["legacy.focusLabel"] || "Scientific focus" }), node("strong", { text: chapter.scale || "" }));
         header.append(number, titleBlock, focus);
         article.append(header, node("p", { className: "journey-summary", text: chapter.summary || "" }));
 
         const detail = node("div", { className: "journey-detail" });
         const contributions = node("div");
-        contributions.append(node("p", { className: "journey-label", text: "Key contributions" }));
+        contributions.append(node("p", { className: "journey-label", text: copy?.["legacy.contributionsLabel"] || "Key contributions" }));
         const list = node("ul");
         (chapter.contributions || []).forEach((item) => list.append(node("li", { text: item })));
         contributions.append(list);
         const legacy = node("blockquote");
-        legacy.append(node("p", { className: "journey-label", text: "Legacy" }), node("span", { text: chapter.impact || "" }));
+        legacy.append(node("p", { className: "journey-label", text: copy?.["legacy.impactLabel"] || "Legacy" }), node("span", { text: chapter.impact || "" }));
         detail.append(contributions, legacy);
         article.append(detail);
 
@@ -133,14 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const figure = node("figure");
             figure.append(node("img", { attrs: { src: imageSrc, alt: chapter.photo.alt || "", loading: "lazy" } }));
             const caption = node("figcaption", { text: chapter.photo.caption || "" });
-            caption.append(node("small", { text: "Photo shared for the Robert E. Dickinson memorial." }));
+            caption.append(node("small", { text: copy?.["legacy.photoCredit"] || "Photo shared for the Robert E. Dickinson memorial." }));
             figure.append(caption);
             evidence.append(figure);
           }
           if (chapter.publication) {
             const publication = node("article", { className: "landmark-publication" });
             const label = node("p", { className: "journey-label" });
-            label.append(document.createTextNode("Landmark publication "), node("span", { text: "·" }), document.createTextNode(` ${chapter.publication.year || ""}`));
+            label.append(document.createTextNode((copy?.["legacy.publicationLabel"] || "Landmark publication") + " "), node("span", { text: "·" }), document.createTextNode(` ${chapter.publication.year || ""}`));
             publication.append(label, node("h4", { text: chapter.publication.title || "" }), node("cite", { text: chapter.publication.citation || "" }), node("p", { text: chapter.publication.note || "" }));
             evidence.append(publication);
           }
@@ -170,6 +200,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
     applyTheme(content);
+    applyPageCopy(content.pageCopy);
+    applySiteAssets(content);
 
     Object.entries(content).forEach(([key, value]) => {
       const targets = document.querySelectorAll(`[data-content="${key}"]`);
@@ -188,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderHomeLegacy(content.homeLegacyTopics, content.homeLegacyCards);
     renderLifeTimeline(content.lifeMilestones);
-    renderLegacy(content);
+    renderLegacy(content, content.pageCopy);
   }
 
   async function hydrateEvents() {
