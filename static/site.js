@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
-  function renderHomeLegacy(topics) {
+  function renderHomeLegacy(topics, cards) {
     const target = document.querySelector("[data-home-legacy-topics]");
     if (!(target instanceof HTMLElement) || !Array.isArray(topics)) return;
     const cards = target.querySelectorAll(".home-legacy-node");
@@ -56,6 +56,19 @@ document.addEventListener("DOMContentLoaded", () => {
       if (strong) strong.textContent = topic.title || "";
       if (small) small.textContent = topic.note || "";
     });
+
+    const summaryTarget = document.querySelector("[data-home-legacy-cards]");
+    if (summaryTarget instanceof HTMLElement && Array.isArray(cards)) {
+      const summaryCards = summaryTarget.querySelectorAll(".chapter-card");
+      cards.forEach((item, index) => {
+        const card = summaryCards[index];
+        if (!(card instanceof HTMLElement)) return;
+        const heading = card.querySelector("h3");
+        const paragraph = card.querySelector("p");
+        if (heading) heading.textContent = item.title || "";
+        if (paragraph) paragraph.textContent = item.text || "";
+      });
+    }
   }
 
   function chapterPhotoUrl(photo) {
@@ -173,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    renderHomeLegacy(content.homeLegacyTopics);
+    renderHomeLegacy(content.homeLegacyTopics, content.homeLegacyCards);
     renderLifeTimeline(content.lifeMilestones);
     renderLegacy(content);
   }
