@@ -342,7 +342,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-home-legacy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The Home page places the six-thread illustration beside the introductory text, followed by four editorial highlights and a quieter band of other scientific frontiers. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The Home page places the six-thread illustration beside the introductory text, with other frontiers directly below the illustration and four editorial highlights below the heading area. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
         <div className="manager-form manager-stack">
           <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
           <div className="manager-subcard">

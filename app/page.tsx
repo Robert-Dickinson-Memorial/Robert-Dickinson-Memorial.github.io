@@ -20,12 +20,8 @@ function assetUrl(asset: SiteAsset) {
 
 function ScientificLegacyStory({
   highlights,
-  secondaryTopics,
-  secondaryLabel,
 }: {
   highlights: HomeLegacyCard[];
-  secondaryTopics: SecondaryLegacyTopic[];
-  secondaryLabel: string;
 }) {
   return <div className="home-science-story">
     <div className="science-highlight-stream">
@@ -36,11 +32,14 @@ function ScientificLegacyStory({
       </article>)}
     </div>
 
-    <div className="science-secondary-band science-secondary-band-home">
-      <div className="science-secondary-intro"><span className="science-secondary-label">{secondaryLabel}</span><p>He also made important contributions in many additional areas, including:</p></div>
-      <div className="science-secondary-terms">
-        {secondaryTopics.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
-      </div>
+  </div>;
+}
+
+function OtherFrontiers({ topics, label }: { topics: SecondaryLegacyTopic[]; label: string }) {
+  return <div className="science-secondary-band science-secondary-band-home">
+    <div className="science-secondary-intro"><span className="science-secondary-label">{label}</span><p>He also made important contributions in many additional areas, including:</p></div>
+    <div className="science-secondary-terms">
+      {topics.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
     </div>
   </div>;
 }
@@ -99,13 +98,10 @@ export default async function Home() {
           <div className="home-thread-visual">
             <div className="home-thread-art" role="img" aria-label={`Six connected research threads: ${content.legacyThreads.map((thread) => thread.title).join(", ")}`} style={{ backgroundImage: 'url("/legacy-science-reference.webp")' }} />
             <ul className="home-thread-mobile-list" aria-label="Six enduring scientific threads">{content.legacyThreads.map((thread) => <li key={thread.id}>{thread.title}</li>)}</ul>
+            <OtherFrontiers topics={content.secondaryLegacyTopics} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>
-        <ScientificLegacyStory
-          highlights={content.homeLegacyCards}
-          secondaryTopics={content.secondaryLegacyTopics}
-          secondaryLabel={copy["home.legacyMapSecondary"]}
-        />
+        <ScientificLegacyStory highlights={content.homeLegacyCards} />
         <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
 

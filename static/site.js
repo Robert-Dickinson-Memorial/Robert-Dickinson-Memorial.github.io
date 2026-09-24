@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderHomeLegacy(threads, highlights, secondaryTopics, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
+    const secondaryTarget = document.querySelector("[data-home-secondary]");
     const headingThreads = document.querySelector("[data-home-heading-threads]");
     const threadList = document.querySelector("[data-home-thread-list]");
     if (!Array.isArray(threads) || !Array.isArray(highlights)) return;
@@ -100,15 +101,13 @@ document.addEventListener("DOMContentLoaded", () => {
       stream.append(article);
     });
 
-    const secondaryBand = node("div", { className: "science-secondary-band science-secondary-band-home" });
     const secondaryIntro = node("div", { className: "science-secondary-intro" });
     secondaryIntro.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }), node("p", { text: "He also made important contributions in many additional areas, including:" }));
-    secondaryBand.append(secondaryIntro);
     const secondaryTerms = node("div", { className: "science-secondary-terms" });
     secondary.forEach((topic) => secondaryTerms.append(node("span", { text: topic.title || "", attrs: { title: topic.text || "" } })));
-    secondaryBand.append(secondaryTerms);
 
-    target.replaceChildren(stream, secondaryBand);
+    target.replaceChildren(stream);
+    if (secondaryTarget instanceof HTMLElement) secondaryTarget.replaceChildren(secondaryIntro, secondaryTerms);
   }
 
   function chapterPhotoUrl(photo) {
