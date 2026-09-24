@@ -1,6 +1,5 @@
 import { ArrowRight, BookOpen, CalendarDays, Images, MessageSquareText, Sprout } from "lucide-react";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { SiteFooter, SiteNav } from "./site-chrome";
 import {
   getPublishedEvents,
@@ -36,26 +35,23 @@ function ScientificLegacyStory({
   </div>;
 }
 
-function OtherFrontiers({ topics, label }: { topics: SecondaryLegacyTopic[]; label: string }) {
-  return <div className="science-secondary-band science-secondary-band-home">
-    <div className="science-secondary-intro"><span className="science-secondary-label">{label}</span></div>
-    <div className="science-secondary-terms">
-      {topics.map((topic, index) => <span key={`${index}-${topic.title}`} title={topic.text}>{topic.title}</span>)}
-    </div>
-  </div>;
-}
+const homeFrontiers = [
+  { source: "Tropical deforestation", title: "Tropical Deforestation" },
+  { source: "Carbon & nitrogen cycles", title: "Carbon & Nitrogen cycling" },
+  { source: "Regional climate modeling", title: "Regional Climate Modeling" },
+  { source: "Solar geoengineering", title: "Solar Geoengineering" },
+];
 
-function ScienceImpactDiagram({ threads, title, artwork }: { threads: LegacyThread[]; title: string; artwork: string }) {
-  return <div className="science-impact-diagram" role="group" aria-label="Connected scientific impacts" style={{ "--impact-art": `url("${artwork}")`, "--impact-photos": 'url("/legacy-science-reference.webp")' } as CSSProperties}>
-    <svg className="science-impact-lines" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M 210 110 Q 390 30 585 85 Q 810 20 1000 120 Q 1130 270 1000 375 Q 790 470 590 410 Q 350 485 205 375 Q 90 255 210 110 Z" />
-      <path d="M 210 110 Q 395 280 590 410 M 585 85 Q 740 320 1000 375 M 205 375 Q 590 130 1000 120 M 210 110 Q 715 420 1000 375" />
-    </svg>
-    <strong className="science-impact-center">{title}</strong>
-    {threads.map((thread) => <div className={`science-impact-node science-impact-node--${thread.id}`} key={thread.id} title={thread.text}>
-      <span className={`science-impact-photo science-impact-photo--${thread.id}`} aria-hidden="true" />
-      <span className="science-impact-node-label">{thread.title}</span>
-    </div>)}
+function OtherFrontiers({ topics, label }: { topics: SecondaryLegacyTopic[]; label: string }) {
+  const selected = homeFrontiers.map(({ source, title }) => ({
+    title,
+    text: topics.find((item) => item.title.toLowerCase().startsWith(source.toLowerCase().replace("cycles", "cycl")))?.text ?? "",
+  }));
+  return <div className="science-secondary-band science-secondary-band-home">
+    <div className="science-secondary-intro"><span className="science-secondary-label">{label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label}</span></div>
+    <div className="science-secondary-terms">
+      {selected.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
+    </div>
   </div>;
 }
 
@@ -111,8 +107,9 @@ export default async function Home() {
             <div className="home-legacy-intro-block"><p>{content.homeLegacyIntro}</p></div>
           </div>
           <div className="home-thread-visual">
-            <ScienceImpactDiagram threads={content.legacyThreads} title={copy["home.legacyMapPrimary"]} artwork={assetUrl(content.siteAssets.horizon)} />
-            <OtherFrontiers topics={content.homeFrontiers} label={copy["home.legacyMapSecondary"]} />
+            <div className="home-thread-art" role="img" aria-label={`Six connected research threads: ${content.legacyThreads.map((thread) => thread.title).join(", ")}`} style={{ backgroundImage: 'url("/legacy-science-reference.webp")' }} />
+            <ul className="home-thread-mobile-list" aria-label="Six enduring scientific threads">{content.legacyThreads.map((thread) => <li key={thread.id}>{thread.title}</li>)}</ul>
+            <OtherFrontiers topics={content.secondaryLegacyTopics} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>
         <ScientificLegacyStory highlights={content.homeLegacyCards} />

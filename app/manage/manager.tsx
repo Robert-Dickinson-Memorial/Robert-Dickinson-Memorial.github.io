@@ -52,7 +52,7 @@ const copyFieldNames: Record<string, string> = {
   tributeIntro: "Living tributes — introduction",
   legacyKicker: "Scientific legacy — kicker",
   legacyTitle: "Scientific legacy — heading",
-  legacyMapPrimary: "Home diagram — center title",
+  legacyMapPrimary: "Home scientific map — primary label",
   legacyMapSecondary: "Home scientific map — secondary label",
   legacyMapHint: "Home scientific map — explanatory line",
   legacyCta: "Scientific legacy — button",
@@ -162,18 +162,6 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
   function updateSecondaryLegacyTopic(index: number, field: "title" | "text", value: string) {
     setContentValues((current) => ({ ...current, secondaryLegacyTopics: current.secondaryLegacyTopics.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
-  }
-
-  function updateHomeFrontier(index: number, field: "title" | "text", value: string) {
-    setContentValues((current) => ({ ...current, homeFrontiers: current.homeFrontiers.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
-  }
-
-  function addHomeFrontier() {
-    setContentValues((current) => ({ ...current, homeFrontiers: [...current.homeFrontiers, { title: "", text: "", threadIds: [] }] }));
-  }
-
-  function removeHomeFrontier(index: number) {
-    setContentValues((current) => ({ ...current, homeFrontiers: current.homeFrontiers.filter((_, itemIndex) => itemIndex !== index) }));
   }
 
   function addSecondaryLegacyTopic() {
@@ -354,20 +342,9 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-home-legacy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The introduction, connected diagram, frontiers, and four editorial highlights are editable here. The six diagram labels use the shared research threads below.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit six research thread labels ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The full-width heading sits above the introductory text and six-thread illustration. Home shows four selected frontiers beneath the illustration, then four editorial highlights. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
         <div className="manager-form manager-stack">
           <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
-          <label>Diagram center title<input value={contentValues.pageCopy["home.legacyMapPrimary"] || ""} onChange={(e) => updatePageCopy("home.legacyMapPrimary", e.target.value)} /></label>
-          <label>Frontiers heading<input value={contentValues.pageCopy["home.legacyMapSecondary"] || ""} onChange={(e) => updatePageCopy("home.legacyMapSecondary", e.target.value)} /></label>
-          <div className="manager-subcard"><h3>Frontiers beneath the diagram</h3><p className="manager-help">Edit titles and descriptions, or add and remove frontiers. Their order here is their order on Home.</p>
-            {contentValues.homeFrontiers.map((topic, index) => <div className="manager-edit-card manager-secondary-topic-editor" key={`home-frontier-${index}`}>
-              <strong>Frontier {index + 1}</strong>
-              <label>Title<input value={topic.title} onChange={(e) => updateHomeFrontier(index, "title", e.target.value)} /></label>
-              <label>Short explanation<textarea rows={2} value={topic.text} onChange={(e) => updateHomeFrontier(index, "text", e.target.value)} /></label>
-              <button type="button" className="manager-danger" onClick={() => removeHomeFrontier(index)}><Trash2 size={16} /> Remove frontier</button>
-            </div>)}
-            <button type="button" className="manager-secondary" onClick={addHomeFrontier}>Add frontier</button>
-          </div>
           <div className="manager-subcard">
             <h3>Major editorial highlights</h3>
             <p className="manager-help">These are the four large editorial rows beneath the six-thread illustration on Home.</p>
@@ -420,12 +397,12 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-legacy-threads" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific landscape</h2><p>These six titles appear in the connected Home diagram and structure the deeper Scientific Legacy section. Editing a title changes its diagram label without changing the imagery. The supporting frontier topics below appear on the deeper page.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific landscape</h2><p>These six enduring threads structure the deeper Scientific Legacy section. The Home illustration shows the original six names as part of the image; update the artwork if you rename them. “Other frontiers” remain smaller supporting topics.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
         <div className="manager-form manager-stack">
           <div className="manager-subcard"><h3>Six enduring research threads</h3>
             {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={thread.id}><strong>Primary thread {index + 1}</strong><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
           </div>
-          <div className="manager-subcard"><h3>Other scientific frontiers on the deeper page</h3><p className="manager-help">These entries appear on the Scientific Legacy page. Use the Home editor above for the separate list beneath the diagram.</p>
+          <div className="manager-subcard"><h3>Other scientific frontiers</h3><p className="manager-help">Home shows tropical deforestation, carbon and nitrogen cycles, regional climate modeling, and solar geoengineering beneath the illustration. The fuller list appears on Scientific Legacy. Edit the descriptions here; the four Home labels and order are set in the page design.</p>
             {contentValues.secondaryLegacyTopics.map((topic, index) => <div className="manager-edit-card manager-secondary-topic-editor" key={`secondary-${index}`}>
               <label>Topic<input value={topic.title} onChange={(e) => updateSecondaryLegacyTopic(index, "title", e.target.value)} /></label>
               <label>Short explanation<textarea rows={3} value={topic.text} onChange={(e) => updateSecondaryLegacyTopic(index, "text", e.target.value)} /></label>
