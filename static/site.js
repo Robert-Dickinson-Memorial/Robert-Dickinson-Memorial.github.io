@@ -78,11 +78,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderHomeLegacy(threads, highlights, secondaryTopics, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
     const headingThreads = document.querySelector("[data-home-heading-threads]");
+    const threadList = document.querySelector("[data-home-thread-list]");
     if (!Array.isArray(threads) || !Array.isArray(highlights)) return;
     const secondary = Array.isArray(secondaryTopics) ? secondaryTopics : [];
 
     if (headingThreads instanceof HTMLElement) {
       headingThreads.replaceChildren(...threads.map((thread) => node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
+    }
+    if (threadList instanceof HTMLElement) {
+      threadList.replaceChildren(...threads.map((thread) => node("li", { text: thread.title || "" })));
+      const art = document.querySelector(".home-thread-art");
+      if (art instanceof HTMLElement) art.setAttribute("aria-label", `Six connected research threads: ${threads.map((thread) => thread.title || "").join(", ")}`);
     }
 
     if (!(target instanceof HTMLElement)) return;
@@ -95,7 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const secondaryBand = node("div", { className: "science-secondary-band science-secondary-band-home" });
-    secondaryBand.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }));
+    const secondaryIntro = node("div", { className: "science-secondary-intro" });
+    secondaryIntro.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }), node("p", { text: "He also made important contributions in many additional areas, including:" }));
+    secondaryBand.append(secondaryIntro);
     const secondaryTerms = node("div", { className: "science-secondary-terms" });
     secondary.forEach((topic) => secondaryTerms.append(node("span", { text: topic.title || "", attrs: { title: topic.text || "" } })));
     secondaryBand.append(secondaryTerms);

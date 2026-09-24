@@ -342,12 +342,12 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-home-legacy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The Home page integrates the six enduring threads directly into the introductory heading area, followed by four editorial highlights and a quieter band of other scientific frontiers. Edit the story here; edit the shared thread vocabulary below.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The Home page places the six-thread illustration beside the introductory text, followed by four editorial highlights and a quieter band of other scientific frontiers. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
         <div className="manager-form manager-stack">
           <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
           <div className="manager-subcard">
             <h3>Major editorial highlights</h3>
-            <p className="manager-help">These are the four large editorial highlights on Home. They sit above the compact scientific landscape rather than inside cards or a network diagram.</p>
+            <p className="manager-help">These are the four large editorial rows beneath the six-thread illustration on Home.</p>
             {contentValues.homeLegacyCards.map((card, index) => <div className="manager-edit-card manager-home-legacy-card-editor" key={`card-${index}`}>
               <strong>Highlight {index + 1}</strong>
               <label>Heading<input value={card.title} onChange={(e) => updateHomeLegacyCard(index, "title", e.target.value)} /></label>
@@ -397,7 +397,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-legacy-threads" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific landscape</h2><p>These six enduring threads appear beside the Home introduction and also structure the deeper Scientific Legacy section. “Other frontiers” remain smaller supporting topics with less visual emphasis.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific landscape</h2><p>These six enduring threads structure the deeper Scientific Legacy section. The Home illustration shows the original six names as part of the image; update the artwork if you rename them. “Other frontiers” remain smaller supporting topics.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
         <div className="manager-form manager-stack">
           <div className="manager-subcard"><h3>Six enduring research threads</h3>
             {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={thread.id}><strong>Primary thread {index + 1}</strong><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
