@@ -364,7 +364,7 @@ export const defaultPageCopy: Record<string, string> = {
   "home.legacyKicker": "Scientific legacy",
   "home.legacyTitle": "Science that changed how we see Earth",
   "home.legacyMapPrimary": "Enduring threads",
-  "home.legacyMapSecondary": "Other frontiers",
+  "home.legacyMapSecondary": "Other frontiers with pioneer contribution",
   "home.legacyMapHint": "The same scientific threads reappear, combine, and widen across Robert’s work.",
   "home.legacyCta": "Explore his scientific journey",
   "home.communityKicker": "Explore the memorial",

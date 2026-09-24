@@ -35,11 +35,22 @@ function ScientificLegacyStory({
   </div>;
 }
 
+const homeFrontiers = [
+  { source: "Tropical deforestation", title: "Tropical Deforestation" },
+  { source: "Carbon & nitrogen cycles", title: "Carbon & Nitrogen cycling" },
+  { source: "Regional climate modeling", title: "Regional Climate Modeling" },
+  { source: "Solar geoengineering", title: "Solar Geoengineering" },
+];
+
 function OtherFrontiers({ topics, label }: { topics: SecondaryLegacyTopic[]; label: string }) {
+  const selected = homeFrontiers.map(({ source, title }) => ({
+    title,
+    text: topics.find((item) => item.title.toLowerCase().startsWith(source.toLowerCase().replace("cycles", "cycl")))?.text ?? "",
+  }));
   return <div className="science-secondary-band science-secondary-band-home">
-    <div className="science-secondary-intro"><span className="science-secondary-label">{label}</span><p>He also made important contributions in many additional areas, including:</p></div>
+    <div className="science-secondary-intro"><span className="science-secondary-label">{label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label}</span></div>
     <div className="science-secondary-terms">
-      {topics.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
+      {selected.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
     </div>
   </div>;
 }
@@ -91,8 +102,8 @@ export default async function Home() {
 
       <section className="home-legacy-preview">
         <div className="home-preview-heading home-preview-heading-integrated">
+          <div className="home-legacy-title-block"><p className="section-kicker light">{copy["home.legacyKicker"]}</p><h2>{copy["home.legacyTitle"]}</h2></div>
           <div className="home-legacy-copy-block">
-            <div className="home-legacy-title-block"><p className="section-kicker light">{copy["home.legacyKicker"]}</p><h2>{copy["home.legacyTitle"]}</h2></div>
             <div className="home-legacy-intro-block"><p>{content.homeLegacyIntro}</p></div>
           </div>
           <div className="home-thread-visual">

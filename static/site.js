@@ -102,9 +102,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const secondaryIntro = node("div", { className: "science-secondary-intro" });
-    secondaryIntro.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }), node("p", { text: "He also made important contributions in many additional areas, including:" }));
+    const label = copy?.["home.legacyMapSecondary"];
+    secondaryIntro.append(node("span", { className: "science-secondary-label", text: !label || label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label }));
     const secondaryTerms = node("div", { className: "science-secondary-terms" });
-    secondary.forEach((topic) => secondaryTerms.append(node("span", { text: topic.title || "", attrs: { title: topic.text || "" } })));
+    [
+      ["Tropical deforestation", "Tropical Deforestation"],
+      ["Carbon & nitrogen cycles", "Carbon & Nitrogen cycling"],
+      ["Regional climate modeling", "Regional Climate Modeling"],
+      ["Solar geoengineering", "Solar Geoengineering"],
+    ].forEach(([source, title]) => {
+      const topic = secondary.find((item) => item.title?.toLowerCase().startsWith(source.toLowerCase().replace("cycles", "cycl")));
+      secondaryTerms.append(node("span", { text: title, attrs: { title: topic?.text || "" } }));
+    });
 
     target.replaceChildren(stream);
     if (secondaryTarget instanceof HTMLElement) secondaryTarget.replaceChildren(secondaryIntro, secondaryTerms);
