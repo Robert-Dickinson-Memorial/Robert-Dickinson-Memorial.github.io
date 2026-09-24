@@ -19,19 +19,13 @@ function assetUrl(asset: SiteAsset) {
 }
 
 function ScientificLegacyStory({
-  threads,
   highlights,
   secondaryTopics,
-  primaryLabel,
   secondaryLabel,
-  hint,
 }: {
-  threads: LegacyThread[];
   highlights: HomeLegacyCard[];
   secondaryTopics: SecondaryLegacyTopic[];
-  primaryLabel: string;
   secondaryLabel: string;
-  hint: string;
 }) {
   return <div className="home-science-story">
     <div className="science-highlight-stream">
@@ -42,18 +36,10 @@ function ScientificLegacyStory({
       </article>)}
     </div>
 
-    <div className="science-landscape" aria-label="Enduring scientific threads and other frontiers across Robert Dickinson's work">
-      <div className="science-landscape-heading">
-        <div><span>{primaryLabel}</span><p>{hint}</p></div>
-      </div>
-      <div className="science-primary-terms">
-        {threads.map((thread) => <span key={thread.id} title={thread.text}>{thread.title}</span>)}
-      </div>
-      <div className="science-secondary-band">
-        <span className="science-secondary-label">{secondaryLabel}</span>
-        <div className="science-secondary-terms">
-          {secondaryTopics.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
-        </div>
+    <div className="science-secondary-band science-secondary-band-home">
+      <span className="science-secondary-label">{secondaryLabel}</span>
+      <div className="science-secondary-terms">
+        {secondaryTopics.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
       </div>
     </div>
   </div>;
@@ -105,14 +91,22 @@ export default async function Home() {
       </section>
 
       <section className="home-legacy-preview">
-        <div className="home-preview-heading"><div><p className="section-kicker light">{copy["home.legacyKicker"]}</p><h2>{copy["home.legacyTitle"]}</h2></div><p>{content.homeLegacyIntro}</p></div>
+        <div className="home-preview-heading home-preview-heading-integrated">
+          <div className="home-legacy-title-block"><p className="section-kicker light">{copy["home.legacyKicker"]}</p><h2>{copy["home.legacyTitle"]}</h2></div>
+          <div className="home-legacy-intro-block">
+            <p>{content.homeLegacyIntro}</p>
+            <div className="home-heading-threads" aria-label="Enduring scientific threads">
+              <div className="home-heading-threads-label"><span>{copy["home.legacyMapPrimary"]}</span><small>{copy["home.legacyMapHint"]}</small></div>
+              <div className="home-heading-thread-cloud">
+                {content.legacyThreads.map((thread) => <span key={thread.id} title={thread.text}>{thread.title}</span>)}
+              </div>
+            </div>
+          </div>
+        </div>
         <ScientificLegacyStory
-          threads={content.legacyThreads}
           highlights={content.homeLegacyCards}
           secondaryTopics={content.secondaryLegacyTopics}
-          primaryLabel={copy["home.legacyMapPrimary"]}
           secondaryLabel={copy["home.legacyMapSecondary"]}
-          hint={copy["home.legacyMapHint"]}
         />
         <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
