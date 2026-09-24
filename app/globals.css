@@ -1282,33 +1282,37 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   align-items: start;
   border-bottom: 1px solid rgba(255,255,255,.14);
   display: grid;
-  gap: 22px;
-  grid-template-columns: 16px minmax(260px,.85fr) minmax(320px,1.15fr);
-  padding: 27px 0 29px;
+  gap: 11px 18px;
+  grid-template-columns: 16px minmax(0, 1fr);
+  padding: 29px 0 32px;
 }
 .science-highlight-dot {
   background: #ddb96f;
   border-radius: 50%;
   box-shadow: 0 0 0 6px rgba(221,185,111,.08);
+  grid-column: 1;
+  grid-row: 1;
   height: 9px;
-  margin-top: 9px;
+  margin-top: 10px;
   width: 9px;
 }
 .science-highlight h3 {
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2vw, 2.05rem);
+  font-size: clamp(1.45rem, 2.15vw, 2.15rem);
   font-weight: 400;
+  grid-column: 2;
   letter-spacing: -.025em;
-  line-height: 1.14;
+  line-height: 1.15;
   margin: 0;
-  max-width: 530px;
+  max-width: 880px;
 }
 .science-highlight p {
-  color: rgba(255,255,255,.58);
-  font-size: .88rem;
-  line-height: 1.68;
+  color: rgba(255,255,255,.7);
+  font-size: clamp(1rem, 1.12vw, 1.14rem);
+  grid-column: 2;
+  line-height: 1.72;
   margin: 0;
-  max-width: 650px;
+  max-width: 900px;
 }
 .science-landscape {
   border-bottom: 1px solid rgba(255,255,255,.18);
@@ -1562,13 +1566,14 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 
 @media (max-width: 900px) {
   .science-highlight { grid-template-columns: 14px 1fr; }
-  .science-highlight p { grid-column: 2; }
+  .science-highlight p { grid-column: 2; font-size: 1.03rem; }
   .science-primary-terms { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
 @media (max-width: 600px) {
   .home-science-story { margin-top: 50px; }
-  .science-highlight { gap: 12px; padding: 24px 0 26px; }
-  .science-highlight h3 { font-size: 1.42rem; }
+  .science-highlight { gap: 10px 12px; padding: 24px 0 27px; }
+  .science-highlight h3 { font-size: 1.48rem; }
+  .science-highlight p { font-size: 1rem; line-height: 1.68; }
   .science-primary-terms { gap: 16px; grid-template-columns: 1fr; }
   .science-primary-terms span { font-size: 1.3rem; }
   .science-secondary-band { grid-template-columns: 1fr; }
