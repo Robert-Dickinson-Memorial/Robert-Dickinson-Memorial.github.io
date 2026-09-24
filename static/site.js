@@ -77,9 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderHomeLegacy(threads, highlights, secondaryTopics, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
-    if (!(target instanceof HTMLElement) || !Array.isArray(threads) || !Array.isArray(highlights)) return;
+    const headingThreads = document.querySelector("[data-home-heading-threads]");
+    if (!Array.isArray(threads) || !Array.isArray(highlights)) return;
     const secondary = Array.isArray(secondaryTopics) ? secondaryTopics : [];
 
+    if (headingThreads instanceof HTMLElement) {
+      headingThreads.replaceChildren(...threads.map((thread) => node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
+    }
+
+    if (!(target instanceof HTMLElement)) return;
     const stream = node("div", { className: "science-highlight-stream" });
     highlights.forEach((highlight) => {
       const article = node("article", { className: "science-highlight" });
@@ -88,28 +94,13 @@ document.addEventListener("DOMContentLoaded", () => {
       stream.append(article);
     });
 
-    const landscape = node("div", { className: "science-landscape", attrs: { "aria-label": "Enduring scientific threads and other frontiers across Robert Dickinson's work" } });
-    const heading = node("div", { className: "science-landscape-heading" });
-    const headingCopy = node("div");
-    headingCopy.append(
-      node("span", { text: copy?.["home.legacyMapPrimary"] || "Enduring threads" }),
-      node("p", { text: copy?.["home.legacyMapHint"] || "The same scientific threads reappear, combine, and widen across Robert’s work." })
-    );
-    heading.append(headingCopy);
-    landscape.append(heading);
-
-    const primaryTerms = node("div", { className: "science-primary-terms" });
-    threads.forEach((thread) => primaryTerms.append(node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
-    landscape.append(primaryTerms);
-
-    const secondaryBand = node("div", { className: "science-secondary-band" });
+    const secondaryBand = node("div", { className: "science-secondary-band science-secondary-band-home" });
     secondaryBand.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }));
     const secondaryTerms = node("div", { className: "science-secondary-terms" });
     secondary.forEach((topic) => secondaryTerms.append(node("span", { text: topic.title || "", attrs: { title: topic.text || "" } })));
     secondaryBand.append(secondaryTerms);
-    landscape.append(secondaryBand);
 
-    target.replaceChildren(stream, landscape);
+    target.replaceChildren(stream, secondaryBand);
   }
 
   function chapterPhotoUrl(photo) {
