@@ -75,22 +75,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
-  function renderHomeLegacy(threads, highlights, secondaryTopics, copy) {
+  function renderHomeLegacy(threads, highlights, homeFrontiers, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
     const secondaryTarget = document.querySelector("[data-home-secondary]");
-    const headingThreads = document.querySelector("[data-home-heading-threads]");
-    const threadList = document.querySelector("[data-home-thread-list]");
     if (!Array.isArray(threads) || !Array.isArray(highlights)) return;
-    const secondary = Array.isArray(secondaryTopics) ? secondaryTopics : [];
-
-    if (headingThreads instanceof HTMLElement) {
-      headingThreads.replaceChildren(...threads.map((thread) => node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
-    }
-    if (threadList instanceof HTMLElement) {
-      threadList.replaceChildren(...threads.map((thread) => node("li", { text: thread.title || "" })));
-      const art = document.querySelector(".home-thread-art");
-      if (art instanceof HTMLElement) art.setAttribute("aria-label", `Six connected research threads: ${threads.map((thread) => thread.title || "").join(", ")}`);
-    }
+    const secondary = Array.isArray(homeFrontiers) ? homeFrontiers : [
+      { title: "Tropical Deforestation" }, { title: "Carbon & Nitrogen cycling" },
+      { title: "Regional Climate Modeling" }, { title: "Solar Geoengineering" },
+      { title: "3D radiative transfer" },
+    ];
+    threads.forEach((thread) => {
+      const target = document.querySelector(`[data-impact-thread="${thread.id}"]`);
+      if (!(target instanceof HTMLElement)) return;
+      const label = target.querySelector(".science-impact-node-label");
+      if (label) label.textContent = thread.id === "coupled-earth" && thread.title === "A coupled Earth" ? "the coupled Earth System" : thread.title || "";
+      target.title = thread.text || "";
+    });
 
     if (!(target instanceof HTMLElement)) return;
     const stream = node("div", { className: "science-highlight-stream" });
@@ -105,15 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const label = copy?.["home.legacyMapSecondary"];
     secondaryIntro.append(node("span", { className: "science-secondary-label", text: !label || label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label }));
     const secondaryTerms = node("div", { className: "science-secondary-terms" });
-    [
-      ["Tropical deforestation", "Tropical Deforestation"],
-      ["Carbon & nitrogen cycles", "Carbon & Nitrogen cycling"],
-      ["Regional climate modeling", "Regional Climate Modeling"],
-      ["Solar geoengineering", "Solar Geoengineering"],
-    ].forEach(([source, title]) => {
-      const topic = secondary.find((item) => item.title?.toLowerCase().startsWith(source.toLowerCase().replace("cycles", "cycl")));
-      secondaryTerms.append(node("span", { text: title, attrs: { title: topic?.text || "" } }));
-    });
+    secondary.forEach((topic) => secondaryTerms.append(node("span", { text: topic.title || "", attrs: { title: topic.text || "" } })));
 
     target.replaceChildren(stream);
     if (secondaryTarget instanceof HTMLElement) secondaryTarget.replaceChildren(secondaryIntro, secondaryTerms);
@@ -238,7 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
   async function hydrateContent() {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
-    editableCopy = content.pageCopy || {};
+    editableCopy = { ...(content.pageCopy || {}) };
+    if (editableCopy["home.legacyMapPrimary"] === "Enduring threads") editableCopy["home.legacyMapPrimary"] = "Enduring Impacts";
     applyTheme(content);
     applyPageCopy(editableCopy);
     applySiteAssets(content);
@@ -248,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
       targets.forEach((target) => {
         if (!(target instanceof HTMLElement) || typeof value !== "string") return;
         if (key === "obituaryStory") target.replaceChildren(...value.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph })));
-        else target.textContent = value;
+        else target.textContent = key === "homeLegacyIntro" ? value.replace(/Bob([’'])s work/g, "Robert’s work") : value;
       });
       const preview = document.querySelector(`[data-content-preview="${key}"]`);
       if (preview instanceof HTMLElement && typeof value === "string" && key === "obituaryStory") {
@@ -258,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    renderHomeLegacy(content.legacyThreads, content.homeLegacyCards, content.secondaryLegacyTopics, content.pageCopy);
+    renderHomeLegacy(content.legacyThreads, content.homeLegacyCards, content.homeFrontiers, editableCopy);
     renderLifeTimeline(content.lifeMilestones);
     renderLegacy(content, content.pageCopy);
   }

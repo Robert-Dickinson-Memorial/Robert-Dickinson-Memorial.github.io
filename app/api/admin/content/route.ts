@@ -17,6 +17,7 @@ const stringKeys = new Set([
 const jsonKeys = new Set([
   "homeLegacyTopics",
   "homeLegacyCards",
+  "homeFrontiers",
   "secondaryLegacyTopics",
   "lifeMilestones",
   "legacyThreads",

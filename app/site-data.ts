@@ -105,6 +105,7 @@ export type SiteContent = {
   headingFont: string;
   homeLegacyIntro: string;
   homeLegacyCards: HomeLegacyCard[];
+  homeFrontiers: SecondaryLegacyTopic[];
   secondaryLegacyTopics: SecondaryLegacyTopic[];
   lifeMilestones: LifeMilestone[];
   legacyChapters: LegacyChapter[];
@@ -277,7 +278,7 @@ const legacyThreads: LegacyThread[] = [
   { id: "climate-modeling", title: "Climate modeling", text: "Models used not merely to predict, but to reveal how interacting processes create climate." },
   { id: "land-atmosphere", title: "Land–atmosphere interactions", text: "Vegetation, soils, water, snow, roots, and surface energy made active parts of the climate system." },
   { id: "observation-space", title: "Observation from space", text: "Remote sensing used to confront models with the changing temperature and condition of land." },
-  { id: "coupled-earth", title: "A coupled Earth", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
+  { id: "coupled-earth", title: "the coupled Earth System", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
 ];
 
 const homeLegacyCards: HomeLegacyCard[] = [
@@ -312,6 +313,14 @@ const secondaryLegacyTopics: SecondaryLegacyTopic[] = [
   { title: "Solar geoengineering", text: "Early analysis of deliberate changes to Earth’s energy balance and their climatic implications.", threadIds: ["climate-change", "climate-modeling"] },
   { title: "Hydrology & drought", text: "Soil moisture, evapotranspiration, groundwater, drought, and land–climate feedbacks.", threadIds: ["land-atmosphere", "coupled-earth"] },
   { title: "Aerosols & radiation", text: "Radiative effects of aerosols, greenhouse gases, and atmospheric composition across climate scales.", threadIds: ["atmospheric-dynamics", "climate-change"] },
+];
+
+const homeFrontiers: SecondaryLegacyTopic[] = [
+  { title: "Tropical Deforestation", text: "How land-cover change in the Amazon reshapes regional energy, water, and climate.", threadIds: ["land-atmosphere", "climate-change", "coupled-earth"] },
+  { title: "Carbon & Nitrogen cycling", text: "Coupling biogeochemistry with water and energy cycles in land and Earth-system models.", threadIds: ["land-atmosphere", "coupled-earth"] },
+  { title: "Regional Climate Modeling", text: "Resolving climate processes below the global scale.", threadIds: ["climate-modeling", "climate-change"] },
+  { title: "Solar Geoengineering", text: "Studying deliberate changes to Earth’s energy balance and their climate implications.", threadIds: ["climate-change", "climate-modeling"] },
+  { title: "3D radiative transfer", text: "Understanding how three-dimensional clouds and landscapes shape the flow of radiation.", threadIds: ["atmospheric-dynamics", "climate-modeling"] },
 ];
 
 const communityQuotes: CommunityQuote[] = [
@@ -363,7 +372,7 @@ export const defaultPageCopy: Record<string, string> = {
   "home.bookCta": "Open the memory book →",
   "home.legacyKicker": "Scientific legacy",
   "home.legacyTitle": "Science that changed how we see Earth",
-  "home.legacyMapPrimary": "Enduring threads",
+  "home.legacyMapPrimary": "Enduring Impacts",
   "home.legacyMapSecondary": "Other frontiers with pioneer contribution",
   "home.legacyMapHint": "The same scientific threads reappear, combine, and widen across Robert’s work.",
   "home.legacyCta": "Explore his scientific journey",
@@ -553,8 +562,9 @@ export const defaultContent: SiteContent = {
   treeDetail: "Reforestation projects in the Chippewa restore native trees, strengthen wildlife habitat—including habitat for bald eagles—and improve the forest’s resilience to wind damage, insects, disease, and a changing climate.",
   bodyFont: "system-sans",
   headingFont: "classic-serif",
-  homeLegacyIntro: "Rather than a single linear path, Bob’s work formed a connected scientific landscape. Foundational ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, observations from space, and the coupled Earth repeatedly converged as the scale of his questions widened.",
+  homeLegacyIntro: "Rather than a single linear path, Robert’s work formed a connected scientific landscape. Foundational ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, observations from space, and the coupled Earth repeatedly converged as the scale of his questions widened.",
   homeLegacyCards,
+  homeFrontiers,
   secondaryLegacyTopics,
   lifeMilestones,
   legacyChapters,
@@ -588,18 +598,20 @@ export async function getSiteContent(): Promise<SiteContent> {
       treeDetail: values.treeDetail || defaultContent.treeDetail,
       bodyFont: values.bodyFont || defaultContent.bodyFont,
       headingFont: values.headingFont || defaultContent.headingFont,
-      homeLegacyIntro: values.homeLegacyIntro || defaultContent.homeLegacyIntro,
+      homeLegacyIntro: (values.homeLegacyIntro || defaultContent.homeLegacyIntro).replace(/Bob([’'])s work/g, "Robert’s work"),
       homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
+      homeFrontiers: parseJson(values.homeFrontiers, defaultContent.homeFrontiers),
       secondaryLegacyTopics: parseJson(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics),
       lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
       legacyChapters: parseJson(values.legacyChapters, defaultContent.legacyChapters),
-      legacyThreads: parseJson(values.legacyThreads, defaultContent.legacyThreads),
+      legacyThreads: parseJson(values.legacyThreads, defaultContent.legacyThreads).map((thread) => thread.id === "coupled-earth" && thread.title === "A coupled Earth" ? { ...thread, title: "the coupled Earth System" } : thread),
       communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
       honors: parseJson(values.honors, defaultContent.honors),
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
+        if (saved["home.legacyMapPrimary"] === "Enduring threads") saved["home.legacyMapPrimary"] = "Enduring Impacts";
         return { ...defaultContent.pageCopy, ...saved };
       })(),
       siteAssets: { ...defaultContent.siteAssets, ...parseJson(values.siteAssets, {}) },
