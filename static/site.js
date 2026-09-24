@@ -78,88 +78,38 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderHomeLegacy(threads, highlights, secondaryTopics, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
     if (!(target instanceof HTMLElement) || !Array.isArray(threads) || !Array.isArray(highlights)) return;
-
-    const primaryPositions = [
-      { x: 59, y: 12 }, { x: 83, y: 16 }, { x: 71, y: 34 },
-      { x: 58, y: 57 }, { x: 86, y: 59 }, { x: 73, y: 80 },
-    ];
-    const secondaryPositions = [
-      { x: 48, y: 4 }, { x: 48, y: 69 }, { x: 94, y: 35 }, { x: 66, y: 94 },
-      { x: 50, y: 88 }, { x: 96, y: 7 }, { x: 43, y: 78 }, { x: 94, y: 23 },
-    ];
-    const highlightAnchors = [
-      { x: 38, y: 14 }, { x: 38, y: 36 }, { x: 38, y: 59 }, { x: 38, y: 82 },
-    ];
     const secondary = Array.isArray(secondaryTopics) ? secondaryTopics : [];
-    const positionsById = new Map(threads.map((thread, index) => [thread.id, primaryPositions[index % primaryPositions.length]]));
-
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "science-story-lines");
-    svg.setAttribute("viewBox", "0 0 1000 900");
-    svg.setAttribute("preserveAspectRatio", "none");
-    svg.setAttribute("aria-hidden", "true");
-    const addPath = (className, d) => {
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("class", className);
-      path.setAttribute("d", d);
-      svg.append(path);
-    };
-    [[0,2],[1,2],[2,3],[2,4],[3,5],[4,5],[1,5]].forEach(([a,b]) => {
-      const from = primaryPositions[a], to = primaryPositions[b];
-      if (!from || !to || !threads[a] || !threads[b]) return;
-      addPath("science-core-line", `M ${from.x * 10} ${from.y * 9} C ${(from.x + to.x) * 5} ${from.y * 9}, ${(from.x + to.x) * 5} ${to.y * 9}, ${to.x * 10} ${to.y * 9}`);
-    });
-    highlights.slice(0,4).forEach((highlight, highlightIndex) => {
-      const anchor = highlightAnchors[highlightIndex];
-      if (!anchor) return;
-      (highlight.threadIds || []).forEach((threadId) => {
-        const point = positionsById.get(threadId);
-        if (!point) return;
-        addPath(`science-highlight-line science-highlight-line-${highlightIndex + 1}`, `M ${anchor.x * 10} ${anchor.y * 9} C 470 ${anchor.y * 9}, 500 ${point.y * 9}, ${point.x * 10} ${point.y * 9}`);
-      });
-    });
-    secondary.forEach((topic, index) => {
-      const from = secondaryPositions[index % secondaryPositions.length];
-      const to = (topic.threadIds || []).map((id) => positionsById.get(id)).find(Boolean);
-      if (!to) return;
-      addPath("science-satellite-line", `M ${from.x * 10} ${from.y * 9} Q ${(from.x + to.x) * 5} ${(from.y + to.y) * 4.5} ${to.x * 10} ${to.y * 9}`);
-    });
 
     const stream = node("div", { className: "science-highlight-stream" });
-    highlights.forEach((highlight, index) => {
-      const article = node("article", { className: `science-highlight science-highlight-${index + 1}` });
+    highlights.forEach((highlight) => {
+      const article = node("article", { className: "science-highlight" });
       article.append(node("span", { className: "science-highlight-dot", attrs: { "aria-hidden": "true" } }));
-      const body = node("div");
-      body.append(node("h3", { text: highlight.title || "" }), node("p", { text: highlight.text || "" }));
-      article.append(body);
+      article.append(node("h3", { text: highlight.title || "" }), node("p", { text: highlight.text || "" }));
       stream.append(article);
     });
 
-    const constellation = node("div", { className: "science-constellation", attrs: { "aria-label": "Scientific themes connected across Robert Dickinson's work" } });
-    const heading = node("div", { className: "science-map-heading" });
-    heading.append(
+    const landscape = node("div", { className: "science-landscape", attrs: { "aria-label": "Enduring scientific threads and other frontiers across Robert Dickinson's work" } });
+    const heading = node("div", { className: "science-landscape-heading" });
+    const headingCopy = node("div");
+    headingCopy.append(
       node("span", { text: copy?.["home.legacyMapPrimary"] || "Enduring threads" }),
       node("p", { text: copy?.["home.legacyMapHint"] || "The same scientific threads reappear, combine, and widen across Robert’s work." })
     );
-    constellation.append(heading);
-    threads.forEach((thread, index) => {
-      const position = primaryPositions[index % primaryPositions.length];
-      const article = node("article", { className: "science-thread-node" });
-      article.style.left = position.x + "%";
-      article.style.top = position.y + "%";
-      article.append(node("strong", { text: thread.title || "" }), node("small", { text: thread.text || "" }));
-      constellation.append(article);
-    });
-    constellation.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }));
-    secondary.forEach((topic, index) => {
-      const position = secondaryPositions[index % secondaryPositions.length];
-      const item = node("span", { className: "science-satellite-node", text: topic.title || "", attrs: { title: topic.text || "" } });
-      item.style.left = position.x + "%";
-      item.style.top = position.y + "%";
-      constellation.append(item);
-    });
+    heading.append(headingCopy);
+    landscape.append(heading);
 
-    target.replaceChildren(svg, stream, constellation);
+    const primaryTerms = node("div", { className: "science-primary-terms" });
+    threads.forEach((thread) => primaryTerms.append(node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
+    landscape.append(primaryTerms);
+
+    const secondaryBand = node("div", { className: "science-secondary-band" });
+    secondaryBand.append(node("span", { className: "science-secondary-label", text: copy?.["home.legacyMapSecondary"] || "Other frontiers" }));
+    const secondaryTerms = node("div", { className: "science-secondary-terms" });
+    secondary.forEach((topic) => secondaryTerms.append(node("span", { text: topic.title || "", attrs: { title: topic.text || "" } })));
+    secondaryBand.append(secondaryTerms);
+    landscape.append(secondaryBand);
+
+    target.replaceChildren(stream, landscape);
   }
 
   function chapterPhotoUrl(photo) {
