@@ -933,6 +933,8 @@ export async function getSiteContent(): Promise<SiteContent> {
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
         if (saved["legacy.chaptersLabel"] === "Scientific contributions") saved["legacy.chaptersLabel"] = "Scientific Contribution Chronicle";
         if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
+        if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";
+        if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.";
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
