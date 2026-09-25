@@ -244,6 +244,15 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 .landmark-paper-copy > p:not(.journey-label) { border-top: 1px solid rgba(11,34,57,.15); color: rgba(11,34,57,.76); font-size: .8rem; line-height: 1.58; margin: 18px 0 0; padding-top: 17px; }
 .landmark-paper-link { color: #6c5220; font-size: .72rem; font-weight: 700; letter-spacing: .03em; margin-top: auto; padding-top: 20px; }
 
+.landmark-paper-caption { display: flex; flex: 1; flex-direction: column; padding: 18px 22px 20px; }
+.landmark-paper-caption p { color: rgba(11,34,57,.76); font-size: .8rem; line-height: 1.58; margin: 0; }
+.landmark-paper-caption .landmark-paper-link { margin-top: 14px; padding-top: 0; }
+.landmark-paper-fallback { background: white; display: flex; flex-direction: column; min-height: 280px; padding: 34px; }
+.landmark-paper-fallback span { color: #7a673d; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.landmark-paper-fallback strong { font-family: Georgia, serif; font-size: 1.5rem; font-weight: 400; line-height: 1.2; margin-top: 54px; }
+.landmark-paper-fallback small { border-top: 1px solid rgba(11,34,57,.14); color: rgba(11,34,57,.58); line-height: 1.5; margin-top: 22px; padding-top: 18px; }
+
+
 .journey-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 36px 0 0 71px; }
 .journey-tags span { border: 1px solid rgba(255,255,255,.18); border-radius: 999px; color: rgba(255,255,255,.55); font-size: .63rem; letter-spacing: .04em; padding: 7px 10px; }
 .enduring-threads { margin-top: 120px; }

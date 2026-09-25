@@ -467,7 +467,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             </div>
 
             <div className="manager-subcard">
-              <h3>Landmark work</h3>
+              <h3>Landmark Publication</h3>
               <p className="manager-help">One or more highlighted publications can appear beneath this chapter’s contribution bullets. The publication preview image is a built-in archival-style title card.</p>
               {chapterPublications(chapter).map((publication, publicationIndex) => <div className="manager-edit-card" key={`publication-${chapter.id}-${publicationIndex}`}>
                 <div className="manager-row"><label>Year / edition<input value={publication.year} onChange={(e) => updateChapterPublication(index, publicationIndex, { year: e.target.value })} /></label><label>Citation<input value={publication.citation} onChange={(e) => updateChapterPublication(index, publicationIndex, { citation: e.target.value })} /></label></div>

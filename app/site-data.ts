@@ -155,12 +155,7 @@ const legacyChapters: LegacyChapter[] = [
     ],
     impact: "His early work helped establish the dynamical language still used to understand how planetary waves shape the stratosphere and large-scale atmospheric circulation.",
     threads: ["Planetary waves", "Stratospheric dynamics", "Wave–mean-flow interaction", "Atmospheric dynamics"],
-    photo: {
-      asset: "dickinson-1967-mit-phd.jpg",
-      objectKey: null,
-      alt: "Robert E. Dickinson seated with a notebook in 1967, during his MIT period",
-      caption: "Robert Dickinson during his MIT years, 1967.",
-    },
+    photo: null,
     publication: null,
     publications: [
       {
@@ -179,7 +174,7 @@ const legacyChapters: LegacyChapter[] = [
     number: "02",
     years: "1968–1990",
     institution: "NCAR",
-    scale: "Planetary atmospheres, climate & land",
+    scale: "Climate change, Land surface models",
     title: "From global atmospheres to global climate — and then down to the land",
     summary: "At NCAR, Robert’s scientific range expanded from upper-atmospheric and planetary dynamics into global climate modeling, greenhouse change, and finally the physics of the land surface.",
     contributions: [
@@ -257,17 +252,17 @@ const legacyChapters: LegacyChapter[] = [
     number: "04",
     years: "1999–2008",
     institution: "Georgia Tech",
-    scale: "Community land modeling & remote sensing",
+    scale: "IPCC, remote sensing, and radiative transfer",
     title: "From land model to Earth-system component",
-    summary: "At Georgia Tech, Robert’s land science matured into community Earth-system modeling, joining water, energy, vegetation, carbon, biogeochemistry, and observations from space.",
+    summary: "At Georgia Tech, Robert connected land-surface science with broader Earth-system questions through community modeling, remote sensing, radiative transfer, and his role as a Lead Author of the IPCC Fourth Assessment Report.",
     contributions: [
       "Helped develop the Common Land Model, bringing soil, snow, runoff, vegetation, photosynthesis, energy balance, and water exchange into a modular community modeling framework.",
-      "Advanced the integration of plant physiology, carbon, nitrogen, hydrology, and vegetation dynamics, moving land models further toward full Earth-system models.",
-      "Pioneered the use of MODIS observations to evaluate and improve land boundary conditions, albedo, leaf area, vegetation properties, and surface states in climate models.",
-      "Extended land hydrology through work on soil moisture, runoff, groundwater, snow, evapotranspiration, and their interactions with atmospheric variability.",
+      "Served as a Lead Author of IPCC AR4 Working Group I, Chapter 7, synthesizing how land, carbon, biogeochemical cycles, atmospheric composition, and climate interact.",
+      "Advanced the use of satellite remote sensing to evaluate land-surface properties and model behavior, including vegetation, albedo, and surface energy exchange.",
+      "Advanced canopy and land-surface radiative-transfer treatments, connecting vegetation structure and optical properties to climate-model energy balance.",
     ],
-    impact: "The physical land model became a community Earth-system component, increasingly joining hydrology, vegetation, carbon and biogeochemistry with observations from space.",
-    threads: ["Community Land Model", "Biogeochemistry", "MODIS", "Land hydrology"],
+    impact: "This period connected detailed land processes to the larger Earth system: community models, observations from space, radiative transfer, and the climate–biogeochemistry synthesis reflected in IPCC AR4.",
+    threads: ["IPCC", "Remote sensing", "Radiative transfer", "Community Land Model"],
     photo: null,
     publication: null,
     publications: [
@@ -281,13 +276,13 @@ const legacyChapters: LegacyChapter[] = [
         alt: "Publication preview for The Common Land Model by Dai and colleagues, 2003",
       },
       {
-        year: "2004",
-        title: "Land Boundary Conditions from MODIS Data and Consequences for the Albedo of a Climate Model",
-        citation: "Tian, Y. et al. · Geophysical Research Letters, 31, L05504",
-        note: "Used MODIS-derived land states to diagnose and substantially reduce land-model albedo biases, directly connecting satellite observations with climate-model improvement.",
-        url: "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2003GL019104",
-        image: "landmarks/georgia-modis-albedo.svg",
-        alt: "Publication preview for Land Boundary Conditions from MODIS Data and Consequences for the Albedo of a Climate Model, 2004",
+        year: "2007",
+        title: "Couplings Between Changes in the Climate System and Biogeochemistry",
+        citation: "Denman, K. L., G. Brasseur, A. Chidthaisong, P. Ciais, P. M. Cox, R. E. Dickinson, et al. · IPCC AR4 Working Group I, Chapter 7, 499–587",
+        note: "Robert served as a Lead Author of this chapter, which synthesized interactions among climate, terrestrial and ocean carbon cycles, atmospheric chemistry, aerosols, and biogeochemical feedbacks.",
+        url: "https://www.ipcc.ch/report/ar4/wg1/coupling-between-changes-in-the-climate-system-and-biogeochemistry/",
+        image: "landmarks/georgia-ipcc-ar4-ch7.svg",
+        alt: "Publication preview for IPCC AR4 Working Group I Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry, 2007",
       },
     ],
   },
@@ -296,7 +291,7 @@ const legacyChapters: LegacyChapter[] = [
     number: "05",
     years: "2008–2018",
     institution: "UT Austin",
-    scale: "Water, vegetation physiology & observations",
+    scale: "Drought, ET, and vegetation physiology",
     title: "From the globe to the leaf — and back again",
     summary: "Robert worked simultaneously across scales: from global evapotranspiration and hydroclimate to processes within leaves, while using satellite observations to test how the living land behaves.",
     contributions: [
@@ -319,6 +314,15 @@ const legacyChapters: LegacyChapter[] = [
         image: "landmarks/ut-evapotranspiration.svg",
         alt: "Publication preview for the global terrestrial evapotranspiration review by Wang and Dickinson, 2012",
       },
+      {
+        year: "2014",
+        title: "Impact of Mesophyll Diffusion on Estimated Global Land CO₂ Fertilization",
+        citation: "Sun, Y., L. Gu, R. E. Dickinson, R. J. Norby, S. G. Pallardy & F. M. Hoffman · Proceedings of the National Academy of Sciences, 111, 15774–15779",
+        note: "Showed that explicitly representing CO₂ diffusion inside leaves materially changes estimates of the global terrestrial CO₂ fertilization effect, linking leaf-scale physiology to the global carbon cycle.",
+        url: "https://doi.org/10.1073/pnas.1418075111",
+        image: "landmarks/ut-sun-pnas-2014.svg",
+        alt: "Publication preview for Impact of Mesophyll Diffusion on Estimated Global Land CO2 Fertilization by Sun and colleagues, PNAS, 2014",
+      },
     ],
   },
   {
@@ -326,7 +330,7 @@ const legacyChapters: LegacyChapter[] = [
     number: "06",
     years: "2018–2026",
     institution: "UCLA",
-    scale: "Synthesis, impacts & tropical hydroclimate",
+    scale: "Synthesis and mentoring",
     title: "Curious about everything — still connecting the system",
     summary: "Even after retirement, Robert continued to apply connected Earth-system thinking to new climate questions and to synthesize the land–atmosphere science he had helped build.",
     contributions: [
@@ -594,7 +598,7 @@ export const defaultPageCopy: Record<string, string> = {
   "legacy.focusLabel": "Scientific focus",
   "legacy.contributionsLabel": "Key contributions",
   "legacy.impactLabel": "Legacy",
-  "legacy.publicationLabel": "Landmark publication",
+  "legacy.publicationLabel": "Landmark Publication",
   "legacy.photoCredit": "Photo shared for the Robert E. Dickinson memorial.",
   "legacy.threadsKicker": "Ideas that connect his work",
   "legacy.threadsTitle": "Enduring research threads",
@@ -825,14 +829,57 @@ function alignLegacyFrontiers(items: SecondaryLegacyTopic[]): SecondaryLegacyTop
 }
 
 function alignLegacyChapters(items: LegacyChapter[]): LegacyChapter[] {
-  const hasNewPublicationSchema = items.every((chapter) => Array.isArray(chapter.publications));
-  if (hasNewPublicationSchema) return items;
+  const previousScales: Record<string, string> = {
+    "legacy-ncar": "Planetary atmospheres, climate & land",
+    "legacy-georgia-tech": "Community land modeling & remote sensing",
+    "legacy-ut": "Water, vegetation physiology & observations",
+    "legacy-ucla": "Synthesis, impacts & tropical hydroclimate",
+  };
+  const oldGeorgiaContributions = [
+    "Helped develop the Common Land Model, bringing soil, snow, runoff, vegetation, photosynthesis, energy balance, and water exchange into a modular community modeling framework.",
+    "Advanced the integration of plant physiology, carbon, nitrogen, hydrology, and vegetation dynamics, moving land models further toward full Earth-system models.",
+    "Pioneered the use of MODIS observations to evaluate and improve land boundary conditions, albedo, leaf area, vegetation properties, and surface states in climate models.",
+    "Extended land hydrology through work on soil moisture, runoff, groundwater, snow, evapotranspiration, and their interactions with atmospheric variability.",
+  ];
+
   return legacyChapters.map((template) => {
     const saved = items.find((chapter) => chapter.id === template.id);
-    return {
-      ...template,
-      photo: saved?.photo ?? template.photo,
-    };
+    if (!saved) return template;
+    const next: LegacyChapter = { ...saved };
+
+    if (!Array.isArray(saved.publications)) {
+      next.publication = null;
+      next.publications = template.publications;
+    }
+
+    if (previousScales[saved.id] && saved.scale === previousScales[saved.id]) {
+      next.scale = template.scale;
+    }
+
+    if (saved.id === "legacy-mit" && saved.photo?.asset === "dickinson-1967-mit-phd.jpg" && !saved.photo.objectKey) {
+      next.photo = null;
+    }
+
+    if (saved.id === "legacy-georgia-tech") {
+      if (saved.summary === "At Georgia Tech, Robert’s land science matured into community Earth-system modeling, joining water, energy, vegetation, carbon, biogeochemistry, and observations from space.") next.summary = template.summary;
+      if (JSON.stringify(saved.contributions) === JSON.stringify(oldGeorgiaContributions)) next.contributions = template.contributions;
+      if (saved.impact === "The physical land model became a community Earth-system component, increasingly joining hydrology, vegetation, carbon and biogeochemistry with observations from space.") next.impact = template.impact;
+      if (JSON.stringify(saved.threads) === JSON.stringify(["Community Land Model", "Biogeochemistry", "MODIS", "Land hydrology"])) next.threads = template.threads;
+      const publications = Array.isArray(next.publications) ? next.publications : [];
+      if (publications.some((publication) => publication.title === "Land Boundary Conditions from MODIS Data and Consequences for the Albedo of a Climate Model")) {
+        next.publications = template.publications;
+      }
+    }
+
+    if (saved.id === "legacy-ut") {
+      const publications = Array.isArray(next.publications) ? next.publications : [];
+      if (publications.some((publication) => publication.title === "A Review of Global Terrestrial Evapotranspiration: Observation, Modeling, Climatology, and Climatic Variability") &&
+          !publications.some((publication) => publication.title === "Impact of Mesophyll Diffusion on Estimated Global Land CO₂ Fertilization")) {
+        next.publications = template.publications;
+      }
+    }
+
+    return next;
   });
 }
 
@@ -868,6 +915,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
         if (saved["legacy.chaptersLabel"] === "Scientific contributions") saved["legacy.chaptersLabel"] = "Scientific Contribution Chronicle";
+        if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));

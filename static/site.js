@@ -206,8 +206,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const imageSrc = chapterPhotoUrl(chapter.photo);
         if (publications.length) {
-          const landmarkWork = node("section", { className: "landmark-work", attrs: { "aria-label": `Landmark work from ${chapter.institution || ""}` } });
-          landmarkWork.append(node("p", { className: "journey-label", text: "Landmark work" }));
+          const landmarkWork = node("section", { className: "landmark-work", attrs: { "aria-label": `Landmark publications from ${chapter.institution || ""}` } });
+          landmarkWork.append(node("p", { className: "journey-label", text: "Landmark Publication" }));
           const grid = node("div", { className: `landmark-grid ${publications.length === 1 ? "single" : ""}` });
           publications.forEach((publication) => {
             const card = node(publication.url ? "a" : "article", {
@@ -215,13 +215,17 @@ document.addEventListener("DOMContentLoaded", () => {
               attrs: publication.url ? { href: publication.url, target: "_blank", rel: "noopener noreferrer" } : {},
             });
             const preview = publicationImageUrl(publication.image);
-            if (preview) card.append(node("img", { attrs: { src: preview, alt: publication.alt || `Publication preview for ${publication.title || ""}`, loading: "lazy" } }));
-            const body = node("div", { className: "landmark-paper-copy" });
-            const label = node("p", { className: "journey-label" });
-            label.append(document.createTextNode((copy?.["legacy.publicationLabel"] || "Landmark publication") + " "), node("span", { text: "·" }), document.createTextNode(` ${publication.year || ""}`));
-            body.append(label, node("h4", { text: publication.title || "" }), node("cite", { text: publication.citation || "" }), node("p", { text: publication.note || "" }));
-            if (publication.url) body.append(node("span", { className: "landmark-paper-link", text: "Read the publication ↗" }));
-            card.append(body);
+            if (preview) {
+              card.append(node("img", { attrs: { src: preview, alt: publication.alt || `Publication preview for ${publication.title || ""}`, loading: "lazy" } }));
+            } else {
+              const fallback = node("div", { className: "landmark-paper-fallback" });
+              fallback.append(node("span", { text: publication.year || "" }), node("strong", { text: publication.title || "" }), node("small", { text: publication.citation || "" }));
+              card.append(fallback);
+            }
+            const caption = node("div", { className: "landmark-paper-caption" });
+            caption.append(node("p", { text: publication.note || "" }));
+            if (publication.url) caption.append(node("span", { className: "landmark-paper-link", text: "Read the publication ↗" }));
+            card.append(caption);
             grid.append(card);
           });
           landmarkWork.append(grid);
@@ -521,7 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
       section.append(details);
       publications.forEach((item) => {
         const publication = node("div", { className: "book-publication" });
-        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark publication"} · ${item.year || ""}` }), node("h3", { text: item.title || "" }), node("cite", { text: item.citation || "" }), node("p", { text: item.note || "" }));
+        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark Publication"} · ${item.year || ""}` }), node("h3", { text: item.title || "" }), node("cite", { text: item.citation || "" }), node("p", { text: item.note || "" }));
         section.append(publication);
       });
 
