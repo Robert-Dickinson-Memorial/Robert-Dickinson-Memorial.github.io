@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function publicationImageUrl(value) {
-    return value ? `/assets/${String(value).replace(/^\\/+/, "")}` : "";
+    return value ? `/assets/${String(value).replace(/^[/]+/, "")}` : "";
   }
 
   function renderLegacy(content, copy) {
