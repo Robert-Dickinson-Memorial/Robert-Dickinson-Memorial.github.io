@@ -78,6 +78,8 @@ const copyFieldNames: Record<string, string> = {
   formSocialPlaceholder: "Public post placeholder",
   formPdf: "PDF upload label",
   formPdfHelp: "PDF upload guidance",
+  pdfLink: "Published PDF link label",
+  socialLink: "Published public-post link label",
   moderation: "Submission review note",
   dedicationUrl: "Tree dedication link",
   projectUrl: "Chippewa project link",
