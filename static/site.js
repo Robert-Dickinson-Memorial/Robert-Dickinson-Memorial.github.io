@@ -390,7 +390,14 @@ document.addEventListener("DOMContentLoaded", () => {
         wallTarget.replaceChildren(...memories.map((memory) => {
           const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
           if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
-          article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }), node("p", { text: memory.story }));
+          article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }));
+          if (memory.story) article.append(node("p", { text: memory.story }));
+          if (memory.pdfKey || memory.socialUrl) {
+            const attachments = node("div", { className: "memory-attachments" });
+            if (memory.pdfKey) attachments.append(node("a", { text: "▤ Read the shared PDF", attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
+            if (memory.socialUrl) attachments.append(node("a", { text: "↗ View the shared public post", attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer" } }));
+            article.append(attachments);
+          }
           const footer = node("footer");
           footer.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
           article.append(footer);
@@ -564,7 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
       spread.forEach((memory) => {
         const article = node("article");
         if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}` } }));
-        article.append(node("p", { className: "book-label", text: `${copy["book.memoryPrefix"] || "A memory from"} ${memory.relationship || ""}` }), node("h3", { text: memory.title || "" }), node("p", { className: "book-story", text: memory.story || "" }));
+        article.append(node("p", { className: "book-label", text: `${copy["book.memoryPrefix"] || "A memory from"} ${memory.relationship || ""}` }), node("h3", { text: memory.title || "" }));
+        if (memory.story) article.append(node("p", { className: "book-story", text: memory.story }));
+        if (memory.pdfKey || memory.socialUrl) {
+          const links = node("p", { className: "book-memory-links" });
+          if (memory.pdfKey) links.append(node("a", { text: "Shared PDF ↗", attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
+          if (memory.socialUrl) links.append(node("a", { text: "Shared public post ↗", attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer" } }));
+          article.append(links);
+        }
         const footer = node("footer");
         footer.append(node("strong", { text: memory.name || "" }), node("span", { text: memory.relationship || "" }));
         article.append(footer);
