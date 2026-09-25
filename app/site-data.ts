@@ -561,6 +561,7 @@ export const defaultPageCopy: Record<string, string> = {
   "life.photosKicker": "Childhood in MN",
   "life.photosTitle": "Early life in photographs",
   "life.photosEmpty": "Photographs from Robert’s early years will be shared here.",
+  "life.timelineChildhoodLabel": "Childhood",
   "life.childhoodSummary": "Born in Millersburg, Ohio, and raised in Minnesota, Robert brought an early curiosity about the natural world into a lifetime of discovery.",
   "life.storyHeading": "Robert’s story",
   "life.heroKicker": "His Life",

@@ -40,7 +40,7 @@ export default async function LifePage() {
       <LifeTimelineMotion />
       <div className="life-reference-track">
         <article className="life-scroll-entry life-reference-entry">
-          <div className="life-reference-date"><span>{copy["life.photosKicker"]}</span></div>
+          <div className="life-reference-date"><span>{copy["life.timelineChildhoodLabel"]}</span></div>
           <div className="life-reference-card life-reference-childhood">
             <div className="life-reference-card-copy">
               <h3>{copy["life.photosKicker"]}</h3>
