@@ -213,7 +213,7 @@ const legacyChapters: LegacyChapter[] = [
     number: "03",
     years: "1990–1999",
     institution: "University of Arizona",
-    scale: "Land-model intercomparison & interactive vegetation",
+    scale: "Land-model intercomparison & land–atmosphere interaction",
     title: "The Age of Intercomparison — broader and deeper",
     summary: "At Arizona, the land model became a laboratory for comparison, observation, and biological realism. Robert helped make its processes testable while vegetation itself became increasingly interactive.",
     contributions: [
@@ -830,6 +830,7 @@ function alignLegacyFrontiers(items: SecondaryLegacyTopic[]): SecondaryLegacyTop
 
 function alignLegacyChapters(items: LegacyChapter[]): LegacyChapter[] {
   const previousScales: Record<string, string> = {
+    "legacy-arizona": "Land-model intercomparison & interactive vegetation",
     "legacy-ncar": "Planetary atmospheres, climate & land",
     "legacy-georgia-tech": "Community land modeling & remote sensing",
     "legacy-ut": "Water, vegetation physiology & observations",
