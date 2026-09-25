@@ -18,7 +18,7 @@ const toLines = (value: string) => value.split(/\n/).map((item) => item.trim()).
 const copyGroups = [
   { id: "copy-sitewide", prefix: ["global.", "nav."], page: "Site-wide", title: "Navigation & footer" },
   { id: "copy-home", prefix: ["home."], page: "Home", title: "Headings, buttons & labels" },
-  { id: "copy-life", prefix: ["life."], page: "His life", title: "Personal portrait, headings & links" },
+  { id: "copy-life", prefix: ["life."], page: "His life", title: "Six qualities, headings & links" },
   { id: "copy-legacy", prefix: ["legacy."], page: "Scientific legacy", title: "Headings & section labels" },
   { id: "copy-events", prefix: ["events."], page: "Events", title: "Headings, messages & links" },
   { id: "copy-gallery", prefix: ["gallery."], page: "Gallery", title: "Headings, buttons & messages" },
@@ -47,6 +47,13 @@ const copyFieldNames: Record<string, string> = {
   storyTitleLine2: "His story — title line 2",
   storyYears: "His story — years",
   storyReadLink: "His story — read link",
+  qualitiesHeading: "Six qualities — heading",
+  qualityCuriosity: "Six qualities — curiosity",
+  qualityHumility: "Six qualities — humility",
+  qualityKindness: "Six qualities — kindness",
+  qualityMentorship: "Six qualities — mentorship",
+  qualityLeadership: "Six qualities — leadership",
+  qualityFriendship: "Six qualities — friendship",
   personalPortraitIntro: "Personal portrait — opening paragraph",
   personalPortraitText: "Personal portrait — mentorship paragraph",
   fullStoryLink: "Full story — memory book link",
@@ -421,10 +428,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · Memory book</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The complete biography is preserved in the Memory book; its first two paragraphs also appear on Home. His Life uses a separate short personal portrait beside the timeline.</p><a className="manager-section-link" href="#copy-life">Edit the His Life personal portrait ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · Memory book</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The complete biography is preserved in the Memory book; its first two paragraphs also appear on Home. His Life displays six editable qualities beside the timeline.</p><a className="manager-section-link" href="#copy-life">Edit the six qualities on His Life ↓</a></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
-          <label>Memory book — full biographical story <span>Separate paragraphs with a blank line. This is independent of the shorter His Life personal portrait.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
+          <label>Memory book — full biographical story <span>Separate paragraphs with a blank line. The six qualities on His Life are edited separately.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save biography</button>
         </div>
       </section>
@@ -640,7 +647,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
         <div className="manager-panel-heading"><p className="section-kicker">Page headings, labels & buttons</p><h2>Text organized by public page</h2><p>Use the same page names as the public memorial. Open a page below to edit its headings, buttons, navigation labels, form labels, and other interface text.</p></div>
         <div className="manager-form manager-stack manager-copy-groups">
           {copyGroups.map((group) => {
-            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)) && !/^legacy\.(?:scale|threads|frontiers)/.test(key) && key !== "legacy.heroTitle");
+            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)) && !/^legacy\.(?:scale|threads|frontiers)/.test(key) && key !== "legacy.heroTitle" && !["life.storyHeading", "life.personalPortraitIntro", "life.personalPortraitText"].includes(key));
             return <details className="manager-copy-group" id={group.id} key={group.id} open={group.id === "copy-home"}>
               <summary><span>{group.page}</span><strong>{group.title}</strong><small>{entries.length} editable text fields</small></summary>
               <div className="manager-copy-group-body">

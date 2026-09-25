@@ -35,9 +35,9 @@ export default async function LifePage() {
       </div>
     </header>
     <div className="life-reference-body">
-    <aside className="life-reference-story">
-      <h2>{copy["life.storyHeading"]}</h2>
-      <div className="prose"><p className="lead">{copy["life.personalPortraitIntro"]}</p><p>{copy["life.personalPortraitText"]}</p></div>
+    <aside className="life-reference-qualities" aria-labelledby="life-qualities-heading">
+      <h2 id="life-qualities-heading">{copy["life.qualitiesHeading"]}</h2>
+      <ul><li>{copy["life.qualityCuriosity"]}</li><li>{copy["life.qualityHumility"]}</li><li>{copy["life.qualityKindness"]}</li><li>{copy["life.qualityMentorship"]}</li><li>{copy["life.qualityLeadership"]}</li><li>{copy["life.qualityFriendship"]}</li></ul>
       <a className="text-link" href="/memory-book/">{copy["life.fullStoryLink"]}</a>
     </aside>
     <section className="life-reference-timeline" aria-label="Robert Dickinson's life in chronological order">
