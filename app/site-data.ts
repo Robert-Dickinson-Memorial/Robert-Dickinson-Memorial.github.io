@@ -96,6 +96,7 @@ export type SiteAsset = {
   asset: string;
   objectKey: string | null;
   alt: string;
+  layout?: "portrait" | "landscape";
 };
 
 export type SiteAssets = {
@@ -761,7 +762,7 @@ export const defaultPageCopy: Record<string, string> = {
 
 export const defaultSiteAssets: SiteAssets = {
   lifePortrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors" },
-  portrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors" },
+  portrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors", layout: "landscape" },
   horizon: { asset: "memorial-horizon.png", objectKey: null, alt: "Earth horizon artwork" },
 };
 
@@ -795,6 +796,15 @@ function parseJson<T>(value: string | undefined, fallback: T): T {
   } catch {
     return fallback;
   }
+}
+
+function alignSiteAssets(value: string | undefined): SiteAssets {
+  const saved = parseJson<Partial<SiteAssets>>(value, {});
+  return {
+    lifePortrait: { ...defaultSiteAssets.lifePortrait, ...(saved.lifePortrait ?? {}) },
+    portrait: { ...defaultSiteAssets.portrait, ...(saved.portrait ?? {}), layout: saved.portrait?.layout === "portrait" ? "portrait" : "landscape" },
+    horizon: { ...defaultSiteAssets.horizon, ...(saved.horizon ?? {}) },
+  };
 }
 
 // Requested childhood display sequence; keep career-photo positions and all metadata intact.
@@ -921,7 +931,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
       })(),
-      siteAssets: { ...defaultContent.siteAssets, ...parseJson(values.siteAssets, {}) },
+      siteAssets: alignSiteAssets(values.siteAssets),
     };
   } catch {
     return defaultContent;

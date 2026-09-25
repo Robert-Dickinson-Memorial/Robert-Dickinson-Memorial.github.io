@@ -56,6 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
       element.src = asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
       element.alt = asset.alt || "";
     });
+    const hero = document.querySelector(".hero");
+    if (hero instanceof HTMLElement) {
+      hero.classList.remove("hero-portrait-landscape", "hero-portrait-portrait");
+      hero.classList.add(assets.portrait?.layout === "portrait" ? "hero-portrait-portrait" : "hero-portrait-landscape");
+    }
   }
 
   function applyTheme(content) {
