@@ -345,6 +345,19 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 .memory-card > p { color: #53606a; white-space: pre-wrap; }
 .memory-card footer { border-top: 1px solid #e2ddd4; display: flex; flex-direction: column; margin-top: 24px; padding-top: 16px; }
 .memory-card footer span { color: var(--muted); font-size: .78rem; }
+.memory-attachments { display: grid; gap: 8px; margin-top: 18px; }
+.memory-attachments a { align-items: center; border: 1px solid #d7d0c4; color: #765f2b; display: flex; font-size: .76rem; font-weight: 700; gap: 8px; padding: 10px 12px; text-decoration: none; }
+.memory-attachments a:hover { background: #f4efe5; border-color: #b99a5b; }
+.memory-link-input { align-items: center; border-bottom: 1px solid #cfc9bf; display: flex; gap: 9px; margin-top: 7px; }
+.memory-link-input svg { color: #9a7433; flex: 0 0 auto; }
+.memory-link-input input { border: 0 !important; box-shadow: none !important; margin: 0 !important; }
+.review-attachments { background: #f4efe5; display: grid; gap: 8px; margin-top: 22px; padding: 15px 17px; }
+.review-attachments a { align-items: center; color: #765f2b; display: flex; font-size: .82rem; font-weight: 700; gap: 8px; overflow-wrap: anywhere; }
+.manager-memory-attachment { background: #f4efe5; margin: 0 0 18px; padding: 12px 14px; }
+.manager-memory-attachment a { color: #765f2b; font-size: .8rem; font-weight: 700; overflow-wrap: anywhere; }
+.book-memory-links { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.book-memory-links a { color: #795b27; font-size: .75rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
 
 .share-section { background: #c9aa6e; display: grid; gap: clamp(50px, 8vw, 130px); grid-template-columns: minmax(260px, .75fr) minmax(420px, 1.25fr); padding: 110px clamp(26px, 8vw, 130px); }
 .share-copy { align-self: start; }
@@ -505,6 +518,7 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 .review-list { display: grid; gap: 28px; margin: 0 auto; max-width: 1040px; }
 .review-card { background: var(--white); border: 1px solid #ddd7cc; display: grid; grid-template-columns: minmax(220px, 340px) 1fr; overflow: hidden; }
 .review-card > img { height: 100%; min-height: 390px; object-fit: cover; width: 100%; }
+.review-card:not(:has(> img)) .review-card-body { grid-column: 1 / -1; }
 .review-card-body { padding: clamp(26px, 4vw, 46px); }
 .review-meta { color: #8b6c35; display: flex; flex-wrap: wrap; font-size: .76rem; font-weight: 700; gap: 15px; justify-content: space-between; letter-spacing: .07em; text-transform: uppercase; }
 .review-card h2 { font-size: clamp(1.8rem, 3vw, 2.8rem); margin-top: 24px; }

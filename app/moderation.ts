@@ -110,6 +110,8 @@ export async function sendReviewNotification(input: {
       `Submitted by: ${input.name}`,
       `Connection: ${input.relationship}`,
       "",
+      "The submission may include written text, a photo, a PDF, and/or a public link.",
+      "",
       `Review it here: ${input.reviewUrl}`,
     ].join("\n"),
   });

@@ -390,7 +390,14 @@ document.addEventListener("DOMContentLoaded", () => {
         wallTarget.replaceChildren(...memories.map((memory) => {
           const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
           if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
-          article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }), node("p", { text: memory.story }));
+          article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }));
+          if (memory.story) article.append(node("p", { text: memory.story }));
+          if (memory.pdfKey || memory.socialUrl) {
+            const attachments = node("div", { className: "memory-attachments" });
+            if (memory.pdfKey) attachments.append(node("a", { text: `▤ ${copy["memories.pdfLink"] || "Read the shared PDF"}`, attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
+            if (memory.socialUrl) attachments.append(node("a", { text: `↗ ${copy["memories.socialLink"] || "View the shared public post"}`, attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer nofollow ugc" } }));
+            article.append(attachments);
+          }
           const footer = node("footer");
           footer.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
           article.append(footer);
@@ -564,7 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
       spread.forEach((memory) => {
         const article = node("article");
         if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}` } }));
-        article.append(node("p", { className: "book-label", text: `${copy["book.memoryPrefix"] || "A memory from"} ${memory.relationship || ""}` }), node("h3", { text: memory.title || "" }), node("p", { className: "book-story", text: memory.story || "" }));
+        article.append(node("p", { className: "book-label", text: `${copy["book.memoryPrefix"] || "A memory from"} ${memory.relationship || ""}` }), node("h3", { text: memory.title || "" }));
+        if (memory.story) article.append(node("p", { className: "book-story", text: memory.story }));
+        if (memory.pdfKey || memory.socialUrl) {
+          const links = node("p", { className: "book-memory-links" });
+          if (memory.pdfKey) links.append(node("a", { text: `${copy["memories.pdfLink"] || "Read the shared PDF"} ↗`, attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
+          if (memory.socialUrl) links.append(node("a", { text: `${copy["memories.socialLink"] || "View the shared public post"} ↗`, attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer nofollow ugc" } }));
+          article.append(links);
+        }
         const footer = node("footer");
         footer.append(node("strong", { text: memory.name || "" }), node("span", { text: memory.relationship || "" }));
         article.append(footer);
@@ -595,10 +609,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const data = new FormData(form);
+    const story = String(data.get("story") || "").trim();
+    const socialUrl = String(data.get("socialUrl") || "").trim();
+    const pdf = data.get("pdf");
+    if (!story && !socialUrl && !(pdf instanceof File && pdf.size > 0)) {
+      showMessage("Please share your story as written text, a PDF, or a public post.");
+      return;
+    }
     const button = form.querySelector("button[type=submit]");
     if (button instanceof HTMLButtonElement) { button.disabled = true; button.textContent = editableCopy["memories.formSending"] || "Sending…"; }
     try {
-      const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: new FormData(form) });
+      const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: data });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to submit this memory.");
       form.reset(); showMessage(editableCopy["memories.successMessage"] || "Thank you. Your memory has been received for review.", true);

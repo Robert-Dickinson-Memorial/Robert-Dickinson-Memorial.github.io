@@ -6,7 +6,7 @@ import PrintButton from "./print-button";
 
 export const dynamic = "force-dynamic";
 
-type BookMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
+type BookMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
 
 function assetUrl(asset: SiteAsset) {
   if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
@@ -24,7 +24,8 @@ export default async function MemoryBookPage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
   const result = env.DB ? await env.DB.prepare(
-    `SELECT id, name, relationship, title, story, photo_key AS photoKey
+    `SELECT id, name, relationship, title, story, photo_key AS photoKey,
+            pdf_key AS pdfKey, pdf_name AS pdfName, social_url AS socialUrl
      FROM memories WHERE status = ? ORDER BY created_at ASC, id ASC`
   ).bind("approved").all<BookMemory>() : { results: [] };
   const memories = result.results ?? [];
@@ -106,7 +107,7 @@ export default async function MemoryBookPage() {
           <span className="book-page-number">Honors {index + 1}</span>
         </section>)}
 
-        {memorySpreads.map((spread, index) => <section className="book-spread book-message-spread" key={`memory-spread-${index}`}><p className="book-running-title">{copy["nav.memories"]} · {copy["global.footerName"]}</p><h2>{copy["memories.sectionTitle"]}</h2><div className="book-message-grid">{spread.map((memory) => <article key={memory.id}>{memory.photoKey && <img src={`/api/photos/${memory.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={`Shared by ${memory.name}`} />}<p className="book-label">{copy["book.memoryPrefix"]} {memory.relationship}</p><h3>{memory.title}</h3><p className="book-story">{memory.story}</p><footer><strong>{memory.name}</strong><span>{memory.relationship}</span></footer></article>)}</div><span className="book-page-number">Memories {index + 1}</span></section>)}
+        {memorySpreads.map((spread, index) => <section className="book-spread book-message-spread" key={`memory-spread-${index}`}><p className="book-running-title">{copy["nav.memories"]} · {copy["global.footerName"]}</p><h2>{copy["memories.sectionTitle"]}</h2><div className="book-message-grid">{spread.map((memory) => <article key={memory.id}>{memory.photoKey && <img src={`/api/photos/${memory.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={`Shared by ${memory.name}`} />}<p className="book-label">{copy["book.memoryPrefix"]} {memory.relationship}</p><h3>{memory.title}</h3>{memory.story && <p className="book-story">{memory.story}</p>}{(memory.pdfKey || memory.socialUrl) && <p className="book-memory-links">{memory.pdfKey && <a href={`/api/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer nofollow ugc">{copy["memories.pdfLink"] || "Read the shared PDF"} ↗</a>}{memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer nofollow ugc">{copy["memories.socialLink"] || "View the shared public post"} ↗</a>}</p>}<footer><strong>{memory.name}</strong><span>{memory.relationship}</span></footer></article>)}</div><span className="book-page-number">Memories {index + 1}</span></section>)}
 
         {!memories.length && <section className="book-spread book-empty"><h2>{copy["book.emptyTitle"]}</h2><p>{copy["memories.emptyText"]}</p></section>}
         <footer className="book-spread book-end-spread"><span>∞</span><h2>{copy["book.endTitle"]}</h2><p>{copy["book.endFooter"]}</p></footer>

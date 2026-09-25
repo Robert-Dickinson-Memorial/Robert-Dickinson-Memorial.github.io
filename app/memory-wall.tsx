@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Quote } from "lucide-react";
+import { ExternalLink, FileText, Quote } from "lucide-react";
 
-type Memory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
+type Memory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; pdfKey: string | null; socialUrl: string | null };
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -34,7 +34,11 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
           {memory.photoKey && <img src={`/api/photos/${memory.photoKey}`} alt="" />}
           <Quote size={24} strokeWidth={1.4} aria-hidden="true" />
-          <h3>{memory.title}</h3><p>{memory.story}</p>
+          <h3>{memory.title}</h3>{memory.story && <p>{memory.story}</p>}
+          {(memory.pdfKey || memory.socialUrl) && <div className="memory-attachments">
+            {memory.pdfKey && <a href={`/api/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer nofollow ugc"><FileText size={16} /> {copy["memories.pdfLink"] || "Read the shared PDF"}</a>}
+            {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer nofollow ugc"><ExternalLink size={16} /> {copy["memories.socialLink"] || "View the shared public post"}</a>}
+          </div>}
           <footer><strong>{memory.name}</strong><span>{memory.relationship}</span></footer>
         </article>
       ))}

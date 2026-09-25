@@ -639,7 +639,7 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.shareKicker": "Add your voice",
   "memories.shareTitle": "Share a memory",
   "memories.shareText": "A conversation after seminar. A line of code he helped untangle. The question that changed your research. Small stories often reveal the truest measure of a mentor’s life.",
-  "memories.moderation": "Every submission and photograph is reviewed before appearing publicly.",
+  "memories.moderation": "Every submission, attachment, and link is reviewed before appearing publicly.",
   "memories.loading": "Gathering stories…",
   "memories.emptyTitle": "The first stories are being gathered.",
   "memories.emptyText": "Be among the first to share a memory with the community.",
@@ -654,10 +654,18 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formTitle": "A title for your memory",
   "memories.formTitlePlaceholder": "The lesson I still carry",
   "memories.formStory": "Your story",
+  "memories.formStoryNote": "(optional if you share a PDF or public post)",
   "memories.formStoryPlaceholder": "Tell us what you remember…",
+  "memories.formSocial": "Public social-media or web post",
+  "memories.formSocialNote": "(optional)",
+  "memories.formSocialPlaceholder": "https://…",
+  "memories.formPdf": "Upload your story as a PDF",
+  "memories.formPdfHelp": "PDF · up to 12 MB",
   "memories.formPhoto": "Add a photo",
   "memories.formPhotoHelp": "JPG, PNG or WebP · up to 8 MB",
-  "memories.formConsent": "I give permission for this story and photo to be published on this memorial site after review.",
+  "memories.pdfLink": "Read the shared PDF",
+  "memories.socialLink": "View the shared public post",
+  "memories.formConsent": "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.",
   "memories.formSubmit": "Submit for review",
   "memories.formSending": "Sending…",
   "memories.successTitle": "Your story is safely with us.",
@@ -927,6 +935,8 @@ export async function getSiteContent(): Promise<SiteContent> {
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
         if (saved["legacy.chaptersLabel"] === "Scientific contributions") saved["legacy.chaptersLabel"] = "Scientific Contribution Chronicle";
         if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
+        if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";
+        if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.";
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
