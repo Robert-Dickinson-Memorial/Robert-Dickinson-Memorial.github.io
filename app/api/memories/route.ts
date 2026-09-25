@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     }
     if (!env.DB) throw new Error("The memorial archive is temporarily unavailable.");
     const contentType = request.headers.get("content-type") || "";
-    let name = "", relationship = "", email = "", title = "", story = "", website = "", socialUrl = "";
+    let name = "", relationship = "", email = "", title = "", story = "", website = "", socialUrl = "", socialUrlRaw = "";
     let consent = false;
     let photo: File | null = null;
     let pdf: File | null = null;
@@ -58,7 +58,8 @@ export async function POST(request: Request) {
       title = clean(form.get("title"), 160);
       story = clean(form.get("story"), 6000);
       website = clean(form.get("website"), 200);
-      socialUrl = cleanPublicUrl(form.get("socialUrl"));
+      socialUrlRaw = clean(form.get("socialUrl"), 1000);
+      socialUrl = cleanPublicUrl(socialUrlRaw);
       consent = form.get("consent") === "on";
       const candidate = form.get("photo");
       photo = candidate instanceof File && candidate.size > 0 ? candidate : null;
@@ -71,7 +72,8 @@ export async function POST(request: Request) {
       email = clean(body.email, 200);
       title = clean(body.title, 160);
       story = clean(body.story, 6000);
-      socialUrl = cleanPublicUrl(body.socialUrl);
+      socialUrlRaw = clean(body.socialUrl, 1000);
+      socialUrl = cleanPublicUrl(socialUrlRaw);
       consent = true;
     }
 
@@ -79,6 +81,9 @@ export async function POST(request: Request) {
 
     if (name.length < 2 || relationship.length < 2 || title.length < 2) {
       return publicJson({ error: "Please complete your name, connection, and title." }, { status: 400 });
+    }
+    if (socialUrlRaw && !socialUrl) {
+      return publicJson({ error: "Please enter a valid HTTPS link to the public post." }, { status: 400 });
     }
     if (story && story.length < 20) {
       return publicJson({ error: "Please write at least 20 characters, or leave the story field blank and share a PDF or public post instead." }, { status: 400 });
@@ -114,7 +119,6 @@ export async function POST(request: Request) {
         return publicJson({ error: "Please choose a PDF file under 12 MB." }, { status: 400 });
       }
       if (!env.BUCKET) {
-        if (photoKey) await env.BUCKET?.delete(photoKey);
         throw new Error("File storage is temporarily unavailable.");
       }
       pdfKey = `pending-pdfs/${crypto.randomUUID()}`;
