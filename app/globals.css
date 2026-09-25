@@ -1767,3 +1767,81 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .home-thread-mobile-list { font-size: .85rem; }
   .science-secondary-terms { grid-template-columns: 1fr; }
 }
+
+
+/* Shared public-site palette. Screen-only so the printed memory book stays unchanged. */
+@media screen {
+  :root {
+    --memorial-navy: #0b2031;
+    --memorial-deep: #081b2a;
+    --memorial-raised: #142f43;
+    --memorial-ivory: #f4f0e8;
+    --memorial-surface: #faf7f0;
+    --memorial-stone: #e9e2d6;
+    --memorial-gold: #d5b879;
+    --memorial-bronze: #806335;
+    --memorial-muted: #586571;
+    --memorial-light-text: #c5ced4;
+    --memorial-rule: #d7cebd;
+  }
+  .site-nav { background: rgba(8, 27, 42, .96); color: var(--memorial-ivory); border-bottom-color: rgba(213, 184, 121, .23); }
+  .wordmark-mark, .nav-links a.active,
+  html[data-page] .nav-links a.active { color: var(--memorial-gold); }
+  .interior-page, .tree-page, .home-story-preview, .home-community,
+  .events-section, .memories-section { background: var(--memorial-ivory); color: var(--memorial-navy); }
+  .tribute-actions, .memory-card, .memory-form, .success-card { background: var(--memorial-surface); color: var(--memorial-navy); }
+  .mentor-quote, .share-section, .tree-final-cta, .sources-section { background: var(--memorial-stone); color: var(--memorial-navy); }
+  .interior-hero, .tree-page-hero, .gallery-section, .site-footer {
+    background: var(--memorial-deep); color: var(--memorial-ivory);
+  }
+  .legacy-section, .tree-section, .tree-project, .home-share-cta {
+    background: var(--memorial-navy); color: var(--memorial-ivory);
+  }
+  .home-legacy-preview {
+    background: radial-gradient(ellipse at 85% 13%, #142f43 0, transparent 45%), var(--memorial-navy);
+    color: var(--memorial-ivory);
+  }
+  .hero h1 em, .life-dates, .science-highlight h3,
+  .home-legacy-title-block .section-kicker, .science-secondary-label,
+  .home-thread-mobile-list, .tree-project-note strong, .tree-hero-card em,
+  .tree-project a { color: var(--memorial-gold); }
+  .science-highlight-dot { background: var(--memorial-gold); }
+  .science-secondary-terms span::before, .home-thread-mobile-list li::before { color: var(--memorial-gold); }
+  .science-highlight, .science-highlight:first-child, .science-secondary-band-home { border-color: rgba(213, 184, 121, .32); }
+  .home-legacy-preview .light-button { border-color: rgba(213, 184, 121, .55); color: var(--memorial-ivory); }
+  .home-legacy-preview .light-button:hover { background: var(--memorial-raised); }
+  .home-legacy-intro-block > p, .science-highlight p,
+  .science-secondary-terms span, .tribute-action-card.tree-card em { color: var(--memorial-light-text); }
+  .tribute-action-card { background: var(--memorial-stone); color: var(--memorial-navy); }
+  .tribute-action-card:hover { background: #e0d7c8; }
+  .tribute-action-card.tree-card { background: var(--memorial-navy); color: var(--memorial-ivory); }
+  .tribute-action-card.tree-card:hover { background: var(--memorial-raised); }
+  .tribute-action-card.tree-card small, .tribute-action-card.tree-card .tribute-action-icon,
+  .interior-hero .section-kicker, .tree-page-hero .section-kicker, .gallery-section .section-kicker,
+  .legacy-section .section-kicker, .tree-project .section-kicker, .tree-section .section-kicker,
+  .light, .eyebrow { color: var(--memorial-gold); }
+  .home-story-preview .section-kicker, .home-community .section-kicker,
+  .tribute-actions-copy .section-kicker, .events-section .section-kicker,
+  .memories-section .section-kicker, .share-copy .section-kicker,
+  .tribute-action-card small, .tribute-action-icon,
+  .home-community-grid svg, .home-community-grid small,
+  .home-story-preview > div:first-child > span, .story-aside, .timeline span,
+  .event-card time, .tree-step-grid span, .text-link, .event-card > a { color: var(--memorial-bronze); }
+  .home-story-copy p, .prose p, .memory-card > p,
+  .home-community-grid p, .home-community-heading > p:last-child,
+  .tribute-actions-copy > p:last-child, .tribute-action-card em,
+  .events-heading > p:last-child, .event-card p { color: var(--memorial-muted); }
+  .home-story-copy .lead, .prose .lead { color: var(--memorial-navy); }
+  .home-community-grid, .home-community-grid > a, .home-community-grid > a + a,
+  .event-card, .event-card + .event-card { border-color: var(--memorial-rule); }
+  .tree-button, .tree-primary-action, .home-share-cta > a { background: var(--memorial-gold); color: var(--memorial-navy); }
+  .submit-button, .success-card button, .dark-book-button { background: var(--memorial-navy); color: var(--memorial-ivory); }
+  .landmark-publication { background: var(--memorial-stone); color: var(--memorial-navy); }
+  .landmark-publication .journey-label { color: var(--memorial-bronze); }
+  .journey-label, .journey-chapter header p, .journey-number,
+  .journey-rail a span, .thread-grid article > span { color: var(--memorial-gold); }
+  .journey-rail { background: var(--memorial-navy); }
+}
+@media screen and (max-width: 1000px) {
+  .nav-links { background: rgba(8, 27, 42, .98); }
+}
