@@ -65,30 +65,37 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof content.headingFont === "string") main.dataset.headingFont = content.headingFont;
   }
 
+  function lifePhotoFigure(photo) {
+    const figure = node("figure", { className: "life-photo" });
+    figure.append(node("img", { attrs: { src: objectUrl("/api/life-photos", photo.objectKey), alt: photo.alt || "", loading: "lazy" } }));
+    if (photo.date || photo.caption) {
+      const caption = node("figcaption");
+      if (photo.date) caption.append(node("span", { text: photo.date }));
+      if (photo.caption) caption.append(node("p", { text: photo.caption }));
+      figure.append(caption);
+    }
+    return figure;
+  }
   function renderLifePhotos(photos) {
     const target = document.querySelector("[data-life-photos]");
-    if (!(target instanceof HTMLElement) || !Array.isArray(photos) || !photos.length) return;
-    const grid = node("div", { className: "life-photo-grid" });
-    photos.forEach((photo) => {
-      const figure = node("figure");
-      figure.append(node("img", { attrs: { src: objectUrl("/api/life-photos", photo.objectKey), alt: photo.alt || "", loading: "lazy" } }));
-      if (photo.date || photo.caption) {
-        const caption = node("figcaption");
-        if (photo.date) caption.append(node("span", { text: photo.date }));
-        if (photo.caption) caption.append(node("p", { text: photo.caption }));
-        figure.append(caption);
-      }
-      grid.append(figure);
-    });
-    target.replaceChildren(grid);
+    if (!(target instanceof HTMLElement)) return;
+    const early = (Array.isArray(photos) ? photos : []).filter((photo) => !photo.milestoneId);
+    if (!early.length) {
+      target.replaceChildren(node("p", { className: "life-photos-empty", text: editableCopy["life.photosEmpty"] || "Photographs from Robert’s early years will be shared here." }));
+      return;
+    }
+    const stack = node("div", { className: "life-photo-stack" });
+    stack.append(...early.map(lifePhotoFigure));
+    target.replaceChildren(stack);
   }
-
-  function renderLifeTimeline(items) {
+  function renderLifeTimeline(items, photos = []) {
     const target = document.querySelector("[data-life-timeline]");
     if (!(target instanceof HTMLElement) || !Array.isArray(items)) return;
-    target.replaceChildren(...items.map((item) => {
+    target.replaceChildren(...items.map((item, index) => {
       const article = node("article");
       article.append(node("span", { text: item.year || "" }), node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
+      const photo = photos.find((photo) => photo.milestoneId === (item.id || `life-period-${index}`));
+      if (photo) article.append(lifePhotoFigure(photo));
       return article;
     }));
   }
@@ -272,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     renderHomeLegacy(content.legacyThreads, content.homeLegacyCards, content.homeFrontierLabels, content.pageCopy);
-    renderLifeTimeline(content.lifeMilestones);
+    renderLifeTimeline(content.lifeMilestones, content.lifePhotos || []);
     renderLifePhotos(content.lifePhotos);
     renderLegacy(content, content.pageCopy);
   }

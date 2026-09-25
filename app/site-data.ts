@@ -23,6 +23,7 @@ export type GalleryItem = {
 };
 
 export type LifeMilestone = {
+  id?: string;
   year: string;
   title: string;
   text: string;
@@ -98,7 +99,7 @@ export type SiteAssets = {
   horizon: SiteAsset;
 };
 
-export type LifePhoto = { id: string; objectKey: string; caption: string; date: string; alt: string };
+export type LifePhoto = { milestoneId?: string; id: string; objectKey: string; caption: string; date: string; alt: string };
 
 export type SiteContent = {
   lifePhotos: LifePhoto[];

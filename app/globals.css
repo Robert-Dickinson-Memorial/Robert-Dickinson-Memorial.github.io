@@ -1865,3 +1865,22 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 .life-portrait { display: block; width: 100%; max-width: 360px; height: auto; border: 1px solid var(--memorial-rule, #d7cebd); padding: 10px; background: var(--memorial-surface, #faf7f0); }
 .life-portrait-column .story-aside { margin-top: 18px; }
 @media (max-width: 700px) { .life-portrait { max-width: 290px; } }
+
+/* Personal photo column and optional affiliation photographs. */
+.life-photo-column { align-self: start; min-width: 0; }
+.life-photo-column .section-kicker { color: var(--memorial-bronze, #806335); margin-bottom: 12px; }
+.life-photo-column h2 { font-size: clamp(1.4rem, 2vw, 2rem); line-height: 1.2; margin: 0 0 24px; }
+.life-photo-stack { display: grid; gap: 26px; }
+.life-photo { margin: 0; min-width: 0; }
+.life-photo img { display: block; width: 100%; max-height: 340px; object-fit: contain; background: var(--memorial-stone, #e9e2d6); }
+.life-photo figcaption { padding: 12px 0; color: var(--memorial-muted, #586571); font-size: .88rem; line-height: 1.5; }
+.life-photo figcaption span { display: block; color: var(--memorial-bronze, #806335); font-size: .76rem; }
+.life-photo figcaption p { margin: 5px 0 0; white-space: pre-line; }
+.life-photo-timeline .life-photo { margin-top: 22px; }
+.life-photo-timeline .life-photo img { max-height: 250px; }
+@media (max-width: 1000px) {
+  .life-story-grid .prose { grid-row: 1; }
+  .life-story-grid .life-photo-column { grid-row: 2; }
+  .life-photo-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) { .life-photo-stack { grid-template-columns: 1fr; } }

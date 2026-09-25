@@ -206,11 +206,11 @@ export default function Manager({ content, events, media, publishedMemories, edi
       const response = upload
         ? await fetch("/api/admin/life-photos", { method: "POST", body: form })
         : await fetch("/api/admin/life-photos", { method: "PATCH", headers: { "content-type": "application/json" },
-            body: JSON.stringify({ id, caption: form.get("caption"), date: form.get("date"), alt: form.get("alt") }) });
+            body: JSON.stringify({ id, caption: form.get("caption"), date: form.get("date"), alt: form.get("alt"), milestoneId: form.get("milestoneId") }) });
       const data = await responseData(response);
       setLifePhotos(data.photos);
       if (!id) formElement.reset();
-      setMessage("Early-life photograph saved.");
+      setMessage("Photograph saved.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
     finally { setBusy(false); }
   }
@@ -366,7 +366,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-portrait">Edit His Life headshot ↓</a><a className="manager-section-link" href="#edit-life-photos">Manage early-life photographs ↓</a><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
           <label>His life — full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
@@ -394,25 +394,12 @@ export default function Manager({ content, events, media, publishedMemories, edi
         </div>
       </section>
 
-      <section id="edit-life-portrait" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">His Life</p><h2>Headshot</h2><p>This portrait appears beside Robert’s biography. Replace it here independently of the homepage portrait.</p></div>
-        <div className="manager-form manager-stack">
-          <img className="manager-image-preview" src={siteAssetSrc("lifePortrait")} alt={contentValues.siteAssets.lifePortrait.alt} />
-          <label>Image description<input value={contentValues.siteAssets.lifePortrait.alt} onChange={(event) => updateSiteAssetAlt("lifePortrait", event.target.value)} /></label>
-          <form className="manager-photo-form" onSubmit={(event) => uploadSiteAsset(event, "lifePortrait")}>
-            <label><ImagePlus size={17} /> Replace headshot <span>JPG, PNG, or WebP, up to 12 MB.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
-            <button className="manager-secondary" disabled={busy}>Upload replacement</button>
-            {contentValues.siteAssets.lifePortrait.objectKey && <button type="button" className="manager-danger" disabled={busy} onClick={() => resetSiteAsset("lifePortrait")}>Restore original</button>}
-          </form>
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save image description</button>
-        </div>
-      </section>
-
       <section id="edit-life-photos" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">His Life</p><h2>Early-life photographs</h2><p>Add photographs from Robert’s childhood, school years, and early adulthood. They appear between his biography and career timeline. Dates are optional and may be approximate.</p><a className="manager-section-link" href="#copy-life">Edit the photo section heading ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">His Life</p><h2>Biography & career photographs</h2><p>Choose Early life to place photographs beside the biography, or select a career period for its timeline photo. Each period supports one photo. Dates and captions are optional and editable.</p><a className="manager-section-link" href="#copy-life">Edit the photo section heading ↓</a></div>
         <div className="manager-form manager-stack">
           {lifePhotos.map((photo) => <form className="manager-edit-card" key={photo.id + photo.objectKey} onSubmit={(event) => saveLifePhoto(event, photo.id)}>
             <img className="manager-image-preview" src={`/api/life-photos/${photo.objectKey.split("/").map(encodeURIComponent).join("/")}`} alt={photo.alt} />
+            <label>Placement<select name="milestoneId" defaultValue={photo.milestoneId || ""}><option value="">Early life — beside biography</option>{contentValues.lifeMilestones.map((item, index) => <option key={item.id || index} value={item.id || `life-period-${index}`}>{item.title} · {item.year}</option>)}</select></label>
             <label>Date or period<input name="date" defaultValue={photo.date} placeholder="For example: circa 1955" maxLength={100} /></label>
             <label>Caption<textarea name="caption" rows={3} defaultValue={photo.caption} maxLength={2000} /></label>
             <label>Image description <span>Describe the photograph for visitors using screen readers.</span><input name="alt" defaultValue={photo.alt} maxLength={500} /></label>
@@ -421,7 +408,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <button type="button" className="manager-danger" disabled={busy} onClick={() => deleteLifePhoto(photo.id)}><Trash2 size={16} /> Delete photograph</button>
           </form>)}
           <form className="manager-edit-card" onSubmit={(event) => saveLifePhoto(event)}>
-            <h3>Add an early-life photograph</h3>
+            <h3>Add a photograph</h3><label>Placement<select name="milestoneId" defaultValue=""><option value="">Early life — beside biography</option>{contentValues.lifeMilestones.map((item, index) => <option key={item.id || index} value={item.id || `life-period-${index}`}>{item.title} · {item.year}</option>)}</select></label>
             <label>Photograph <span>JPG, PNG, or WebP, up to 12 MB.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
             <label>Date or period<input name="date" placeholder="For example: Childhood in Minnesota" maxLength={100} /></label>
             <label>Caption<textarea name="caption" rows={3} maxLength={2000} /></label>
