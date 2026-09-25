@@ -411,9 +411,10 @@ document.addEventListener("DOMContentLoaded", () => {
   async function hydrateMemoryBook() {
     const target = document.querySelector("[data-memory-book]");
     if (!(target instanceof HTMLElement)) return;
-    const [{ content }, { memories = [] }] = await Promise.all([
+    const [{ content }, { memories = [] }, { gallery = [] }] = await Promise.all([
       getJson("/api/content"),
       getJson("/api/memories"),
+      getJson("/api/gallery"),
     ]);
     const copy = content.pageCopy || {};
     const siteAssetUrl = (id) => {
@@ -427,11 +428,19 @@ document.addEventListener("DOMContentLoaded", () => {
       if (photo.asset) return `/assets/${String(photo.asset).replace(/^\//, "")}`;
       return "";
     };
+    const lifePhotoUrl = (photo) => photo?.objectKey ? objectUrl("/api/life-photos", photo.objectKey) : "";
+    const galleryPhotoUrl = (item) => item?.objectKey ? objectUrl("/api/gallery/photos", item.objectKey) : "";
+    const publicationPreviewUrl = (publication) => publication?.image ? `/assets/${String(publication.image).replace(/^\//, "")}` : "";
+    const chunk = (items, size) => Array.from({ length: Math.ceil(items.length / size) }, (_, index) => items.slice(index * size, index * size + size));
     const portrait = siteAssetUrl("portrait");
     const horizon = siteAssetUrl("horizon");
     const storyParagraphs = String(content.obituaryStory || "").split(/\n\s*\n/).filter(Boolean);
     const bookMemories = [...memories].sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || Number(a.id || 0) - Number(b.id || 0));
-    const memorySpreads = Array.from({ length: Math.ceil(bookMemories.length / 2) }, (_, index) => bookMemories.slice(index * 2, index * 2 + 2));
+    const memorySpreads = chunk(bookMemories, 2);
+    const lifePhotoSpreads = chunk(Array.isArray(content.lifePhotos) ? content.lifePhotos : [], 3);
+    const galleryPhotos = (Array.isArray(gallery) ? gallery : []).filter((item) => item.kind === "image" && item.objectKey);
+    const gallerySpreads = chunk(galleryPhotos, 4);
+    const honorSpreads = chunk(Array.isArray(content.honors) ? content.honors : [], 12);
     const pages = [];
 
     const cover = node("header", { className: "book-spread book-cover-spread" });
@@ -447,10 +456,9 @@ document.addEventListener("DOMContentLoaded", () => {
     homeImage.append(node("img", { attrs: { src: horizon, alt: content.siteAssets?.horizon?.alt || "" } }), node("img", { attrs: { src: portrait, alt: content.siteAssets?.portrait?.alt || "" } }));
     const homeCopy = node("div", { className: "book-home-copy" });
     homeCopy.append(node("p", { className: "book-running-title", text: `${copy["nav.home"] || "Home"} · ${copy["global.footerName"] || "Robert E. Dickinson"}` }), node("p", { className: "book-label", text: copy["home.heroEyebrow"] || "" }), node("h2", { text: `${copy["home.heroNameLine1"] || "Robert E."} ${copy["home.heroNameLine2"] || "Dickinson"}` }), node("p", { className: "book-lead", text: content.heroIntro || "" }));
-    const quote = node("blockquote", { text: copy["home.portraitQuote"] || "" });
-    homeCopy.append(quote);
+    homeCopy.append(node("blockquote", { text: copy["home.portraitQuote"] || "" }));
     const homeLegacy = node("div", { className: "book-home-legacy" });
-    homeLegacy.append(node("h3", { text: copy["home.legacyTitle"] || "Science that changed how we see Earth" }), node("p", { text: content.homeLegacyIntro || "" }));
+    homeLegacy.append(node("h3", { text: copy["home.legacyTitle"] || "" }), node("p", { text: content.homeLegacyIntro || "" }));
     const themeGrid = node("div", { className: "book-theme-grid" });
     (content.legacyThreads || []).forEach((thread) => {
       const article = node("article");
@@ -466,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     homeLegacy.append(cardGrid);
     homeCopy.append(homeLegacy);
-    home.append(homeImage, homeCopy, node("span", { className: "book-page-number", text: copy["nav.home"] || "Home" }));
+    home.append(homeImage, homeCopy, node("span", { className: "book-page-number", text: "Home" }));
     pages.push(home);
 
     const life = node("section", { className: "book-spread book-life-spread" });
@@ -482,6 +490,30 @@ document.addEventListener("DOMContentLoaded", () => {
     life.append(mentor, node("span", { className: "book-page-number", text: copy["nav.life"] || "His life" }));
     pages.push(life);
 
+    lifePhotoSpreads.forEach((spread, index) => {
+      const section = node("section", { className: "book-spread book-life-photo-spread" });
+      section.append(node("p", { className: "book-running-title", text: `${copy["nav.life"] || "His life"} · Photographs` }));
+      const heading = node("div", { className: "book-photo-heading" });
+      const titleWrap = node("div");
+      titleWrap.append(node("p", { className: "book-label", text: copy["life.photosKicker"] || "His life in photographs" }), node("h2", { text: index === 0 ? "A life beyond the timeline" : "His life, continued" }));
+      heading.append(titleWrap, node("p", { text: "Photographs shared on the His Life page, carried into the memory book." }));
+      section.append(heading);
+      const grid = node("div", { className: `book-life-photo-grid count-${spread.length}` });
+      spread.forEach((photo) => {
+        const figure = node("figure");
+        figure.append(node("img", { attrs: { src: lifePhotoUrl(photo), alt: photo.alt || "", loading: "lazy" } }));
+        if (photo.date || photo.caption) {
+          const caption = node("figcaption");
+          if (photo.date) caption.append(node("strong", { text: photo.date }));
+          if (photo.caption) caption.append(node("span", { text: photo.caption }));
+          figure.append(caption);
+        }
+        grid.append(figure);
+      });
+      section.append(grid, node("span", { className: "book-page-number", text: `His life · Photos ${index + 1}` }));
+      pages.push(section);
+    });
+
     const timeline = node("section", { className: "book-spread book-timeline-spread" });
     timeline.append(node("p", { className: "book-running-title", text: `${copy["nav.life"] || "His life"} · Education & career` }), node("h2", { text: "Education & career timeline" }));
     const timelineGrid = node("div", { className: "book-timeline-grid" });
@@ -493,38 +525,46 @@ document.addEventListener("DOMContentLoaded", () => {
     timeline.append(timelineGrid, node("span", { className: "book-page-number", text: "Timeline" }));
     pages.push(timeline);
 
-    const legacyOverview = node("section", { className: "book-spread book-legacy-overview-spread" });
-    legacyOverview.append(node("p", { className: "book-running-title", text: `${copy["nav.legacy"] || "Scientific legacy"} · ${copy["global.footerName"] || "Robert E. Dickinson"}` }));
-    const legacyHeading = node("div", { className: "book-section-heading" });
-    legacyHeading.append(node("p", { className: "book-label", text: copy["legacy.heroKicker"] || "" }), node("h2", { text: copy["legacy.heroTitle"] || "" }), node("p", { text: copy["legacy.heroIntro"] || "" }));
-    legacyOverview.append(legacyHeading);
-    const threadGrid = node("div", { className: "book-thread-grid" });
-    (content.legacyThreads || []).forEach((thread, index) => {
+    const legacy = node("section", { className: "book-spread book-legacy-overview-spread book-legacy-map-spread" });
+    legacy.append(node("p", { className: "book-running-title", text: `${copy["nav.legacy"] || "Scientific legacy"} · ${copy["global.footerName"] || "Robert E. Dickinson"}` }));
+    const legacyHeading = node("div", { className: "book-legacy-map-heading" });
+    const legacyTitle = node("div");
+    const legacyH2 = node("h2");
+    legacyH2.append(document.createTextNode("Broader "), node("em", { text: "and" }), document.createTextNode(" deeper"));
+    legacyTitle.append(node("p", { className: "book-label", text: copy["legacy.chaptersLabel"] || "Scientific Contribution Chronicle" }), legacyH2);
+    legacyHeading.append(legacyTitle, node("p", { text: copy["legacy.heroIntro"] || "" }));
+    legacy.append(legacyHeading);
+    const arc = node("div", { className: "book-legacy-arc", attrs: { "aria-label": "Robert Dickinson scientific contribution chronicle" } });
+    (content.legacyChapters || []).forEach((chapter) => {
       const article = node("article");
-      article.append(node("span", { text: String(index + 1).padStart(2, "0") }), node("h3", { text: thread.title || "" }), node("p", { text: thread.text || "" }));
-      threadGrid.append(article);
+      article.append(node("span", { text: chapter.number || "" }), node("small", { text: chapter.years || "" }), node("h3", { text: chapter.institution || "" }), node("p", { text: chapter.scale || "" }));
+      arc.append(article);
     });
-    legacyOverview.append(threadGrid);
-    const frontierList = node("div", { className: "book-frontier-list" });
-    (content.secondaryLegacyTopics || []).forEach((topic) => frontierList.append(node("span", { text: topic.title || "" })));
-    legacyOverview.append(frontierList, node("span", { className: "book-page-number", text: copy["nav.legacy"] || "Scientific legacy" }));
-    pages.push(legacyOverview);
+    legacy.append(arc);
+    const direction = node("div", { className: "book-legacy-direction" });
+    direction.append(node("strong", { text: "Broadening the scientific question →" }), node("span", { text: "atmosphere · climate · land · vegetation · coupled Earth system" }));
+    legacy.append(direction);
+    const ribbon = node("div", { className: "book-legacy-thread-ribbon" });
+    (content.legacyThreads || []).forEach((thread) => ribbon.append(node("span", { text: thread.title || "" })));
+    legacy.append(ribbon, node("span", { className: "book-page-number", text: "Scientific legacy" }));
+    pages.push(legacy);
 
     (content.legacyChapters || []).forEach((chapter) => {
       const publications = chapterPublications(chapter);
       const section = node("section", { className: "book-spread book-legacy-chapter-spread" });
       section.append(node("p", { className: "book-running-title", text: `${copy["nav.legacy"] || "Scientific legacy"} · ${chapter.institution || ""}` }));
-      const header = node("header");
-      const heading = node("div");
-      heading.append(node("p", { className: "book-label", text: `${chapter.number || ""} · ${chapter.years || ""}` }), node("h2", { text: chapter.title || "" }), node("strong", { text: `${chapter.institution || ""} · ${chapter.scale || ""}` }));
-      header.append(heading);
-      const photoSrc = chapterPhotoUrl(chapter.photo);
-      if (photoSrc && chapter.photo) {
+      const hero = node("header", { className: "book-legacy-chapter-hero" });
+      hero.append(node("div", { className: "book-legacy-number", text: chapter.number || "" }));
+      const title = node("div", { className: "book-legacy-chapter-title" });
+      title.append(node("p", { className: "book-label", text: `${chapter.years || ""} · ${chapter.institution || ""}` }), node("h2", { text: chapter.title || "" }), node("strong", { text: chapter.scale || "" }));
+      hero.append(title);
+      const photo = chapterPhotoUrl(chapter.photo);
+      if (photo && chapter.photo) {
         const figure = node("figure");
-        figure.append(node("img", { attrs: { src: photoSrc, alt: chapter.photo.alt || "" } }), node("figcaption", { text: chapter.photo.caption || "" }));
-        header.append(figure);
+        figure.append(node("img", { attrs: { src: photo, alt: chapter.photo.alt || "" } }), node("figcaption", { text: chapter.photo.caption || "" }));
+        hero.append(figure);
       }
-      section.append(header, node("p", { className: "book-legacy-summary", text: chapter.summary || "" }));
+      section.append(hero, node("p", { className: "book-legacy-summary", text: chapter.summary || "" }));
       const details = node("div", { className: "book-legacy-details" });
       const contributions = node("div");
       contributions.append(node("h3", { text: copy["legacy.contributionsLabel"] || "Key contributions" }));
@@ -532,27 +572,31 @@ document.addEventListener("DOMContentLoaded", () => {
       (chapter.contributions || []).forEach((item) => list.append(node("li", { text: item })));
       contributions.append(list);
       const impact = node("blockquote");
-      impact.append(node("h3", { text: copy["legacy.impactLabel"] || "Legacy" }), node("p", { text: chapter.impact || "" }));
+      impact.append(node("span", { text: "Enduring legacy" }), node("p", { text: chapter.impact || "" }));
       details.append(contributions, impact);
       section.append(details);
-      publications.forEach((item) => {
-        const publication = node("div", { className: "book-publication" });
-        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark Publication"} · ${item.year || ""}` }), node("h3", { text: item.title || "" }), node("cite", { text: item.citation || "" }), node("p", { text: item.note || "" }));
-        section.append(publication);
-      });
 
-      const tags = node("div", { className: "book-tags" });
-      (chapter.threads || []).forEach((thread) => tags.append(node("span", { text: thread })));
-      section.append(tags, node("span", { className: "book-page-number", text: chapter.institution || "" }));
+      if (publications.length) {
+        const landmarkGrid = node("div", { className: `book-landmark-grid count-${publications.length}` });
+        publications.forEach((publication) => {
+          const card = node("article", { className: "book-landmark-card" });
+          const preview = publicationPreviewUrl(publication);
+          if (preview) card.append(node("img", { attrs: { src: preview, alt: publication.alt || `Publication preview for ${publication.title || ""}` } }));
+          const body = node("div");
+          body.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark Publication"} · ${publication.year || ""}` }), node("h3", { text: publication.title || "" }), node("cite", { text: publication.citation || "" }), node("p", { text: publication.note || "" }));
+          card.append(body);
+          landmarkGrid.append(card);
+        });
+        section.append(landmarkGrid);
+      }
+      section.append(node("span", { className: "book-page-number", text: chapter.institution || "" }));
       pages.push(section);
     });
 
-    const allHonors = content.honors || [];
-    const honorSpreads = Array.from({ length: Math.ceil(allHonors.length / 12) }, (_, index) => allHonors.slice(index * 12, index * 12 + 12));
     honorSpreads.forEach((spread, index) => {
       const honors = node("section", { className: "book-spread book-honors-spread" });
       const honorsTitle = copy["legacy.honorsKicker"] || "Honors, awards & recognition";
-      honors.append(node("p", { className: "book-running-title", text: (copy["nav.legacy"] || "Scientific legacy") + " · " + honorsTitle }), node("h2", { text: honorsTitle + (honorSpreads.length > 1 ? " · " + (index + 1) : "") }));
+      honors.append(node("p", { className: "book-running-title", text: `${copy["nav.legacy"] || "Scientific legacy"} · ${honorsTitle}` }), node("h2", { text: honorsTitle + (honorSpreads.length > 1 ? " · " + (index + 1) : "") }));
       const honorsGrid = node("div", { className: "book-honors-grid" });
       spread.forEach((honor) => {
         const article = node("article");
@@ -561,9 +605,34 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       honors.append(honorsGrid);
       if (index === honorSpreads.length - 1) honors.append(node("p", { className: "book-honors-note", text: content.honorsNote || "" }));
-      honors.append(node("span", { className: "book-page-number", text: "Honors " + (index + 1) }));
+      honors.append(node("span", { className: "book-page-number", text: `Honors ${index + 1}` }));
       pages.push(honors);
     });
+
+    gallerySpreads.forEach((spread, index) => {
+      const section = node("section", { className: "book-spread book-gallery-photo-spread" });
+      section.append(node("p", { className: "book-running-title", text: `${copy["nav.gallery"] || "Gallery"} · ${copy["global.footerName"] || "Robert E. Dickinson"}` }));
+      const heading = node("div", { className: "book-photo-heading" });
+      const titleWrap = node("div");
+      titleWrap.append(node("p", { className: "book-label", text: copy["gallery.sectionKicker"] || "Images and voices" }), node("h2", { text: index === 0 ? (copy["gallery.sectionTitle"] || "Photo & video gallery") : `${copy["gallery.sectionTitle"] || "Photo & video gallery"} · ${index + 1}` }));
+      heading.append(titleWrap, node("p", { text: copy["gallery.heroIntro"] || "" }));
+      section.append(heading);
+      const grid = node("div", { className: `book-gallery-photo-grid count-${spread.length}` });
+      spread.forEach((item) => {
+        const src = galleryPhotoUrl(item);
+        if (!src) return;
+        const figure = node("figure");
+        figure.append(node("img", { attrs: { src, alt: item.title || "", loading: "lazy" } }));
+        const caption = node("figcaption");
+        caption.append(node("strong", { text: item.title || "" }));
+        if (item.caption) caption.append(node("span", { text: item.caption }));
+        figure.append(caption);
+        grid.append(figure);
+      });
+      section.append(grid, node("span", { className: "book-page-number", text: `Gallery · ${index + 1}` }));
+      pages.push(section);
+    });
+
     memorySpreads.forEach((spread, index) => {
       const section = node("section", { className: "book-spread book-message-spread" });
       section.append(node("p", { className: "book-running-title", text: `${copy["nav.memories"] || "Memories"} · ${copy["global.footerName"] || "Robert E. Dickinson"}` }), node("h2", { text: copy["memories.sectionTitle"] || copy["book.messagesTitle"] || "Stories that carry forward" }));

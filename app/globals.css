@@ -2028,3 +2028,376 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .landmark-grid, .landmark-grid.single { grid-template-columns: 1fr; }
   .landmark-paper-card img { aspect-ratio: 11 / 8.1; }
 }
+
+
+/* Memory Book: photographs from His Life and Gallery */
+.book-life-photo-spread,
+.book-gallery-photo-spread {
+  display: flex;
+  flex-direction: column;
+  padding: 44px 54px 55px;
+}
+.book-photo-heading {
+  align-items: end;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(230px, .8fr);
+  margin: 0 0 24px;
+}
+.book-photo-heading h2 {
+  font-size: clamp(2.5rem, 4.2vw, 4.6rem);
+  line-height: .98;
+  margin: 8px 0 0;
+}
+.book-photo-heading > p {
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.55;
+  margin: 0;
+}
+.book-life-photo-grid {
+  display: grid;
+  flex: 1;
+  gap: 12px;
+  grid-template-columns: 1.35fr .65fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  min-height: 0;
+}
+.book-life-photo-grid figure,
+.book-gallery-photo-grid figure {
+  margin: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+.book-life-photo-grid figure:first-child { grid-row: 1 / 3; }
+.book-life-photo-grid.count-1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+.book-life-photo-grid.count-1 figure:first-child { grid-row: auto; }
+.book-life-photo-grid.count-2 { grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr; }
+.book-life-photo-grid.count-2 figure:first-child { grid-row: auto; }
+.book-life-photo-grid img,
+.book-gallery-photo-grid img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+.book-life-photo-grid figcaption,
+.book-gallery-photo-grid figcaption {
+  background: linear-gradient(transparent, rgba(5,18,30,.86));
+  bottom: 0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  padding: 42px 18px 16px;
+  position: absolute;
+  right: 0;
+}
+.book-life-photo-grid figcaption strong,
+.book-gallery-photo-grid figcaption strong {
+  font-family: var(--font-display);
+  font-size: .95rem;
+  font-weight: 400;
+}
+.book-life-photo-grid figcaption span,
+.book-gallery-photo-grid figcaption span {
+  color: rgba(255,255,255,.76);
+  font-size: .66rem;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+.book-gallery-photo-grid {
+  display: grid;
+  flex: 1;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  min-height: 0;
+}
+.book-gallery-photo-grid.count-1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+.book-gallery-photo-grid.count-2 { grid-template-rows: 1fr; }
+.book-gallery-photo-grid.count-3 figure:first-child { grid-row: 1 / 3; }
+
+/* Memory Book: a more visual Scientific Legacy */
+.book-legacy-map-spread {
+  background:
+    radial-gradient(circle at 82% 14%, rgba(207,171,97,.18), transparent 28%),
+    linear-gradient(145deg, #071827 0%, #0b2538 58%, #102f40 100%);
+  color: white;
+  padding: 44px 54px 55px;
+}
+.book-legacy-map-spread .book-running-title { color: #d5b66f; margin-bottom: 34px; }
+.book-legacy-map-heading {
+  align-items: end;
+  display: grid;
+  gap: 36px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
+}
+.book-legacy-map-heading .book-label { color: #d5b66f; }
+.book-legacy-map-heading h2 {
+  font-size: clamp(4.2rem, 7.5vw, 7.2rem);
+  font-weight: 400;
+  letter-spacing: -.065em;
+  line-height: .86;
+  margin: 10px 0 0;
+}
+.book-legacy-map-heading h2 em {
+  color: #d5b66f;
+  font-size: .46em;
+  font-style: italic;
+  letter-spacing: 0;
+  vertical-align: .28em;
+}
+.book-legacy-map-heading > p {
+  color: rgba(255,255,255,.72);
+  font-family: var(--font-display);
+  font-size: .98rem;
+  line-height: 1.55;
+  margin: 0 0 4px;
+}
+.book-legacy-arc {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-top: 62px;
+  position: relative;
+}
+.book-legacy-arc::before {
+  background: linear-gradient(90deg, rgba(213,182,111,.25), #d5b66f, rgba(213,182,111,.35));
+  content: "";
+  height: 1px;
+  left: 5%;
+  position: absolute;
+  right: 5%;
+  top: 24px;
+}
+.book-legacy-arc article {
+  min-width: 0;
+  padding-top: 52px;
+  position: relative;
+}
+.book-legacy-arc article > span {
+  align-items: center;
+  background: #0b2538;
+  border: 1px solid #d5b66f;
+  border-radius: 50%;
+  color: #f4dfaa;
+  display: flex;
+  font-size: .67rem;
+  font-weight: 800;
+  height: 48px;
+  justify-content: center;
+  left: 0;
+  letter-spacing: .08em;
+  position: absolute;
+  top: 0;
+  width: 48px;
+  z-index: 1;
+}
+.book-legacy-arc small {
+  color: #d5b66f;
+  display: block;
+  font-size: .58rem;
+  letter-spacing: .06em;
+  margin-top: 9px;
+}
+.book-legacy-arc h3 {
+  color: white;
+  font-size: .92rem;
+  margin: 6px 0;
+}
+.book-legacy-arc p {
+  color: rgba(255,255,255,.6);
+  font-size: .62rem;
+  line-height: 1.4;
+  margin: 0;
+}
+.book-legacy-direction {
+  border-top: 1px solid rgba(255,255,255,.14);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 16px;
+}
+.book-legacy-direction strong {
+  color: #f0d48f;
+  font-size: .7rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.book-legacy-direction span {
+  color: rgba(255,255,255,.48);
+  font-size: .64rem;
+}
+.book-legacy-thread-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+.book-legacy-thread-ribbon span {
+  border: 1px solid rgba(255,255,255,.17);
+  color: rgba(255,255,255,.72);
+  font-size: .59rem;
+  padding: 6px 9px;
+}
+.book-legacy-map-spread .book-page-number { color: #d5b66f; }
+
+.book-legacy-chapter-spread {
+  background:
+    linear-gradient(90deg, rgba(201,170,110,.075), transparent 22%),
+    #fff;
+  padding: 42px 54px 55px;
+}
+.book-legacy-chapter-spread .book-running-title { margin-bottom: 24px; }
+.book-legacy-chapter-hero {
+  align-items: start;
+  border-bottom: 1px solid #d8d0c4;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 96px minmax(0, 1fr) minmax(0, 250px);
+  margin: 0 0 18px;
+  padding-bottom: 20px;
+}
+.book-legacy-chapter-hero:not(:has(figure)) { grid-template-columns: 96px minmax(0, 1fr); }
+.book-legacy-number {
+  color: rgba(141,103,43,.16);
+  font-family: var(--font-display);
+  font-size: 6.3rem;
+  letter-spacing: -.08em;
+  line-height: .78;
+}
+.book-legacy-chapter-title h2 {
+  font-size: clamp(2.15rem, 3.4vw, 3.65rem);
+  line-height: .98;
+  margin: 8px 0 11px;
+}
+.book-legacy-chapter-title > strong {
+  color: #8b6932;
+  font-size: .74rem;
+  letter-spacing: .035em;
+}
+.book-legacy-chapter-hero figure { margin: 0; }
+.book-legacy-chapter-hero figure img { height: 150px; object-fit: cover; width: 100%; }
+.book-legacy-chapter-hero figure figcaption { color: var(--muted); font-size: .58rem; line-height: 1.35; padding-top: 6px; }
+.book-legacy-summary {
+  border-left: 3px solid #c8a55f;
+  color: #3e4a54;
+  font-size: .88rem;
+  line-height: 1.5;
+  margin: 0 0 18px;
+  max-width: 930px;
+  padding: 2px 0 2px 16px;
+}
+.book-legacy-details {
+  align-items: stretch;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1.22fr) minmax(250px, .78fr);
+}
+.book-legacy-details > div { padding: 4px 0; }
+.book-legacy-details h3 {
+  color: #8b6932;
+  font-size: .68rem;
+  letter-spacing: .09em;
+  margin: 0 0 9px;
+  text-transform: uppercase;
+}
+.book-legacy-details ul {
+  columns: 2;
+  column-gap: 26px;
+  margin: 0;
+  padding-left: 17px;
+}
+.book-legacy-details li {
+  break-inside: avoid;
+  color: #4a5560;
+  font-size: .64rem;
+  line-height: 1.42;
+  margin: 0 0 6px;
+}
+.book-legacy-details blockquote {
+  background: #0d283a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 18px 20px;
+}
+.book-legacy-details blockquote > span {
+  color: #d6b66f;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.book-legacy-details blockquote p {
+  color: rgba(255,255,255,.86);
+  font-family: var(--font-display);
+  font-size: .82rem;
+  line-height: 1.48;
+  margin: 24px 0 0;
+}
+.book-landmark-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+.book-landmark-grid.count-1 { grid-template-columns: minmax(0, 760px); }
+.book-landmark-card {
+  background: #f4f0e8;
+  display: grid;
+  grid-template-columns: 38% minmax(0, 1fr);
+  min-height: 132px;
+  overflow: hidden;
+}
+.book-landmark-card > img {
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  width: 100%;
+}
+.book-landmark-card > div { padding: 12px 14px; }
+.book-landmark-card .book-label { font-size: .54rem; margin: 0; }
+.book-landmark-card h3 { font-size: .84rem; line-height: 1.25; margin: 6px 0 5px; }
+.book-landmark-card cite { color: #785d2e; display: block; font-size: .54rem; font-style: normal; line-height: 1.35; }
+.book-landmark-card > div > p:last-child {
+  color: var(--muted);
+  font-size: .56rem;
+  line-height: 1.36;
+  margin: 7px 0 0;
+}
+
+@media (max-width: 900px) {
+  .book-photo-heading, .book-legacy-map-heading { grid-template-columns: 1fr; }
+  .book-life-photo-grid, .book-gallery-photo-grid { height: auto; min-height: 620px; }
+  .book-legacy-arc { grid-template-columns: repeat(3, 1fr); }
+  .book-legacy-arc::before { display: none; }
+  .book-legacy-chapter-hero, .book-legacy-chapter-hero:not(:has(figure)) { grid-template-columns: 72px 1fr; }
+  .book-legacy-chapter-hero figure { grid-column: 2; }
+  .book-legacy-number { font-size: 4.8rem; }
+  .book-legacy-details { grid-template-columns: 1fr; }
+  .book-legacy-details ul { columns: 1; }
+  .book-landmark-grid, .book-landmark-grid.count-1 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .book-life-photo-spread, .book-gallery-photo-spread, .book-legacy-map-spread, .book-legacy-chapter-spread { padding: 36px 24px 55px; }
+  .book-life-photo-grid, .book-life-photo-grid.count-2, .book-gallery-photo-grid { display: grid; grid-template-columns: 1fr; grid-template-rows: none; min-height: 0; }
+  .book-life-photo-grid figure:first-child, .book-gallery-photo-grid.count-3 figure:first-child { grid-row: auto; }
+  .book-life-photo-grid figure, .book-gallery-photo-grid figure { height: 340px; }
+  .book-legacy-map-heading h2 { font-size: 4rem; }
+  .book-legacy-arc { grid-template-columns: repeat(2, 1fr); margin-top: 42px; }
+  .book-legacy-direction { align-items: flex-start; flex-direction: column; }
+  .book-legacy-chapter-hero, .book-legacy-chapter-hero:not(:has(figure)) { grid-template-columns: 58px 1fr; }
+  .book-legacy-number { font-size: 3.9rem; }
+  .book-landmark-card { grid-template-columns: 1fr; }
+  .book-landmark-card > img { max-height: 220px; }
+}
+
+@media print {
+  .book-life-photo-spread, .book-gallery-photo-spread, .book-legacy-map-spread, .book-legacy-chapter-spread { padding: .42in .5in; }
+}
