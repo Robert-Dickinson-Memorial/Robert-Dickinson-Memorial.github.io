@@ -118,6 +118,7 @@ export async function DELETE(request: Request) {
     } else {
       await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
     }
+    if (memory.pdfKey) await env.BUCKET.delete(memory.pdfKey);
     return Response.json({ ok: true, id, deleted: "text" });
   }
 
