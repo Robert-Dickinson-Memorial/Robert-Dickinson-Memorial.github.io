@@ -327,7 +327,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <strong>Included automatically</strong>
             <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy narrative highlights, shared enduring threads, and secondary scientific frontiers.</p>
             <p><b>His life</b> — full biography, education and career timeline, and mentorship reflection.</p>
-            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, enduring research threads, and honors.</p>
+            <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, Robert’s reflections, community service, and honors. Edit the quotes and service text under Scientific Legacy headings & text.</p>
             <p><b>Memories</b> — every approved community memory and its published photograph.</p>
           </div>
           <a className="manager-primary manager-preview-book" href="/memory-book" target="_blank" rel="noopener noreferrer"><BookOpen size={18} /> Preview memory book</a>
@@ -455,12 +455,12 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-legacy-threads" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific landscape</h2><p>These six enduring threads structure the deeper Scientific Legacy section. The Home illustration shows the original six names as part of the image; update the artwork if you rename them. “Other frontiers” remain smaller supporting topics.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Shared scientific landscape</h2><p>These research notes are retained for reference; their separate sections are no longer displayed on Scientific Legacy. The Home illustration shows the original six names as part of the image; update the artwork if you rename them. “Other frontiers” remain smaller supporting topics.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific Legacy section headings ↓</a></div>
         <div className="manager-form manager-stack">
           <div className="manager-subcard"><h3>Six enduring research threads</h3>
             {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={thread.id}><strong>Primary thread {index + 1}</strong><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
           </div>
-          <div className="manager-subcard"><h3>Other scientific frontiers</h3><p className="manager-help">This fuller list appears on Scientific Legacy. Edit the homepage bullets separately under Scientific legacy story → Other frontiers — homepage bullets.</p>
+          <div className="manager-subcard"><h3>Other scientific frontiers</h3><p className="manager-help">This fuller list is retained for reference and is no longer displayed on Scientific Legacy. Edit the homepage bullets separately under Scientific legacy story → Other frontiers — homepage bullets.</p>
             {contentValues.secondaryLegacyTopics.map((topic, index) => <div className="manager-edit-card manager-secondary-topic-editor" key={`secondary-${index}`}>
               <label>Topic<input value={topic.title} onChange={(e) => updateSecondaryLegacyTopic(index, "title", e.target.value)} /></label>
               <label>Short explanation<textarea rows={3} value={topic.text} onChange={(e) => updateSecondaryLegacyTopic(index, "text", e.target.value)} /></label>
@@ -574,7 +574,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
         <div className="manager-panel-heading"><p className="section-kicker">Page headings, labels & buttons</p><h2>Text organized by public page</h2><p>Use the same page names as the public memorial. Open a page below to edit its headings, buttons, navigation labels, form labels, and other interface text.</p></div>
         <div className="manager-form manager-stack manager-copy-groups">
           {copyGroups.map((group) => {
-            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)));
+            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)) && !/^legacy\.(?:scale|threads|frontiers)/.test(key) && key !== "legacy.heroTitle");
             return <details className="manager-copy-group" id={group.id} key={group.id} open={group.id === "copy-home"}>
               <summary><span>{group.page}</span><strong>{group.title}</strong><small>{entries.length} editable text fields</small></summary>
               <div className="manager-copy-group-body">

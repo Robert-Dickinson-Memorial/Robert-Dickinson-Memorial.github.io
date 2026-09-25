@@ -1953,3 +1953,19 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .site-nav .wordmark { font-size: .9rem; letter-spacing: .015em; }
 }
 @media (max-width: 900px) { .tree-page-intro { padding-top: 150px; } }
+
+/* Scientific Legacy: personal reflections and service */
+.legacy-personal-quotes { display: grid; gap: 26px; margin: 0 0 64px; max-width: 1040px; }
+.legacy-personal-quotes blockquote { margin: 0; padding: 4px 0 4px 24px; border-left: 2px solid var(--memorial-gold, #c7a66b); }
+.legacy-personal-quotes blockquote p { margin: 0; color: inherit; font-family: Georgia, serif; font-size: clamp(1.15rem, 1.8vw, 1.5rem); line-height: 1.6; }
+.legacy-personal-quotes blockquote p::before { content: "“"; }
+.legacy-personal-quotes blockquote p::after { content: "”"; }
+.legacy-personal-quotes footer { margin-top: 12px; font-size: .85rem; color: #b8c4cd; }
+.legacy-service { margin: 64px 0; padding-top: 40px; border-top: 1px solid rgba(199,166,107,.35); }
+.legacy-service h3 { font-family: Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 400; margin: 12px 0; }
+.legacy-service-intro, .legacy-service li p { color: #b8c4cd; line-height: 1.8; }
+.legacy-service ul { list-style: none; padding: 0; margin: 28px 0; }
+.legacy-service li { padding: 22px 0; border-bottom: 1px solid rgba(199,166,107,.2); }
+.legacy-service h4 { font-family: Georgia, serif; font-size: 1.3rem; font-weight: 400; margin: 0 0 8px; }
+.legacy-service li p { margin: 0; max-width: 1000px; }
+.legacy-service-sources { color: #b8c4cd; font-size: .8rem; line-height: 1.6; }

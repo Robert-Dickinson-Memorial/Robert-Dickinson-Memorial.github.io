@@ -431,7 +431,7 @@ export const defaultPageCopy: Record<string, string> = {
   "home.bookText": "Read or print an editorial collection of approved stories and photographs.",
   "home.bookCta": "Open the memory book →",
   "home.legacyKicker": "Scientific Legacy",
-  "home.legacyTitle": "Science that changed how we see Earth",
+  "home.legacyTitle": "Science that transformed how we understand and model the Earth system",
   "home.legacyMapPrimary": "Enduring threads",
   "home.legacyMapSecondary": "Other frontiers with pioneer contribution",
   "home.legacyMapHint": "The same scientific threads reappear, combine, and widen across Robert’s work.",
@@ -471,8 +471,24 @@ export const defaultPageCopy: Record<string, string> = {
   "life.sourceNasLabel": "National Academy of Sciences",
   "life.sourceNasUrl": "https://www.nasonline.org/directory-entry/robert-e-dickinson-75xqut/",
 
+  "legacy.quote2018Text": "I found climate a fascinating issue and continued to learn about it",
+  "legacy.quote2018Attribution": "Robert E. Dickinson · 2018",
+  "legacy.quote1996Text": "Perhaps my most profound personal insight is that this has all been a response to the dynamics of exchanging ideas with the large number of people with whom I have interacted over the course of my career",
+  "legacy.quote1996Attribution": "Robert E. Dickinson · 1996",
+  "legacy.serviceKicker": "Community service",
+  "legacy.serviceTitle": "Serving the scientific community",
+  "legacy.serviceIntro": "Robert helped shape the institutions, collaborations, and journals through which Earth science advances.",
+  "legacy.serviceLeadershipTitle": "Leading scientific societies",
+  "legacy.serviceLeadershipText": "He served as President of the American Geophysical Union (2002–2004), following his presidency of its Atmospheric Sciences Section (1988–1992). He also chaired the AAAS Section on Atmospheric and Hydrospheric Sciences (2001–2002).",
+  "legacy.serviceAdviceTitle": "Bringing science to national decisions",
+  "legacy.serviceAdviceText": "As chair of the National Research Council’s Climate Research Committee (1990–1992) and a member of numerous later committees, he advised on climate modeling, prediction, global change research, and continuity of satellite observations. He also served on the UCAR Board of Trustees (2006–2009).",
+  "legacy.serviceCollaborationTitle": "Connecting international research",
+  "legacy.serviceCollaborationText": "Robert was a Lead Author of Chapter 7 of the IPCC Fourth Assessment Report (2004–2007). He co-chaired the IGBP–IHDP–WCRP Joint Carbon Project Committee (2001–2006) and U.S. CLIVAR (2001–2002), helping connect research across disciplines and institutions.",
+  "legacy.servicePublishingTitle": "Stewarding scientific publishing",
+  "legacy.servicePublishingText": "His editorial service included Editor of the Journal of the Atmospheric Sciences (1991–1993), Associate Editor of the Journal of Climate (1993–1995), and Editor-in-Chief of Carbon Balance and Management (2005–2010). He also served on the PNAS Editorial Board.",
+  "legacy.serviceSources": "Sources: Robert E. Dickinson’s curriculum vitae; foreword to the 2020 AMS Robert E. Dickinson Symposium, prepared by Xubin Zeng, Leo Donner, Ricky Rood, and Alan Robock.",
   "legacy.heroKicker": "Scientific Legacy",
-  "legacy.heroTitle": "Science that changed how we see Earth",
+  "legacy.heroTitle": "Science that transformed how we understand and model the Earth system",
   "legacy.heroIntro": "The questions Robert asked, the ideas he advanced, and the ways his work changed our understanding of Earth.",
   "legacy.scaleKicker": "A widening scientific horizon",
   "legacy.scaleTitle": "He repeatedly changed the scale of the problem.",
@@ -742,7 +758,9 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["legacy.frontiersIntro"] === "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.") saved["legacy.frontiersIntro"] = "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.";
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
-        return Object.fromEntries(Object.entries({ ...defaultContent.pageCopy, ...saved }).map(([key, value]) => [key, reviseEditorialText(value)]));
+        const merged = { ...defaultContent.pageCopy, ...saved };
+        merged["legacy.heroTitle"] = merged["home.legacyTitle"];
+        return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
       })(),
       siteAssets: { ...defaultContent.siteAssets, ...parseJson(values.siteAssets, {}) },
     };

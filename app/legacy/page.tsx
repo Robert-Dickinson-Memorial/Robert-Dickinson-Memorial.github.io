@@ -15,10 +15,9 @@ export default async function LegacyPage() {
   const copy = content.pageCopy;
   return <main className="interior-page legacy-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="legacy" />
-    <InteriorHero kicker={copy["legacy.heroKicker"]} title={copy["legacy.heroTitle"]} intro={copy["legacy.heroIntro"]} />
+    <InteriorHero kicker={copy["legacy.heroKicker"]} title={copy["home.legacyTitle"]} intro={copy["legacy.heroIntro"]} />
     <section className="legacy-section legacy-page-content">
-      <div className="legacy-scale-intro"><p className="section-kicker light">{copy["legacy.scaleKicker"]}</p><h3>{copy["legacy.scaleTitle"]}</h3><p>{copy["legacy.scaleIntro"]}</p></div>
-      <ol className="legacy-scale legacy-scale-six" aria-label="Robert Dickinson's scientific journey">{content.legacyChapters.map((chapter) => <li key={chapter.id}><span>{chapter.number}</span><strong>{chapter.scale}</strong><small>{chapter.institution}</small></li>)}</ol>
+      <div className="legacy-personal-quotes">{["2018", "1996"].map((year) => <blockquote key={year}><p>{copy[`legacy.quote${year}Text`]}</p><footer>{copy[`legacy.quote${year}Attribution`]}</footer></blockquote>)}</div>
 
       <div className="legacy-journey"><aside className="journey-rail"><p className="section-kicker light">{copy["legacy.chaptersLabel"]}</p><nav>{content.legacyChapters.map((chapter) => <a href={`#${chapter.id}`} key={chapter.id}><span>{chapter.number}</span><b>{chapter.scale}</b><small>{chapter.institution} · {chapter.years}</small></a>)}</nav></aside>
         <div className="journey-chapters">{content.legacyChapters.map((chapter) => {
@@ -36,15 +35,7 @@ export default async function LegacyPage() {
         })}</div>
       </div>
 
-      <div className="enduring-threads">
-        <div className="threads-heading"><div><p className="section-kicker light">{copy["legacy.threadsKicker"]}</p><h3>{copy["legacy.threadsTitle"]}</h3></div><p>{copy["legacy.threadsIntro"]}</p></div>
-        <div className="thread-ledger">{content.legacyThreads.map((thread, index) => <article key={thread.id}><span>{String(index + 1).padStart(2, "0")}</span><h4>{thread.title}</h4><p>{thread.text}</p></article>)}</div>
-      </div>
-
-      <div className="legacy-frontiers">
-        <div className="threads-heading"><div><p className="section-kicker light">{copy["legacy.frontiersKicker"]}</p><h3>{copy["legacy.frontiersTitle"]}</h3></div><p>{copy["legacy.frontiersIntro"]}</p></div>
-        <div className="frontier-cloud">{content.secondaryLegacyTopics.map((topic) => <article key={topic.title}><span aria-hidden="true">•</span><div><h4>{topic.title}</h4><p>{topic.text}</p></div></article>)}</div>
-      </div>
+      <section className="legacy-service" aria-labelledby="legacy-service-title"><p className="section-kicker light">{copy["legacy.serviceKicker"]}</p><h3 id="legacy-service-title">{copy["legacy.serviceTitle"]}</h3><p className="legacy-service-intro">{copy["legacy.serviceIntro"]}</p><ul>{["Leadership", "Advice", "Collaboration", "Publishing"].map((area) => <li key={area}><h4>{copy[`legacy.service${area}Title`]}</h4><p>{copy[`legacy.service${area}Text`]}</p></li>)}</ul><p className="legacy-service-sources">{copy["legacy.serviceSources"]}</p></section>
 
       <div className="honors-block"><p className="section-kicker light">{copy["legacy.honorsKicker"]}</p><div className="honors-grid honors-grid-detailed">{content.honors.map((honor) => <div className="honor-item" key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.detail}</small></div>)}</div><p className="honors-note">{content.honorsNote}</p></div>
     </section>
