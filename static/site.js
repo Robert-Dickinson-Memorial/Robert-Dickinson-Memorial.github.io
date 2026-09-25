@@ -609,10 +609,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const data = new FormData(form);
-    const story = String(data.get("story") || "").trim();
-    const socialUrl = String(data.get("socialUrl") || "").trim();
-    const pdf = data.get("pdf");
+    const formData = new FormData(form);
+    const story = String(formData.get("story") || "").trim();
+    const socialUrl = String(formData.get("socialUrl") || "").trim();
+    const pdf = formData.get("pdf");
     if (!story && !socialUrl && !(pdf instanceof File && pdf.size > 0)) {
       showMessage("Please share your story as written text, a PDF, or a public post.");
       return;
@@ -620,9 +620,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const button = form.querySelector("button[type=submit]");
     if (button instanceof HTMLButtonElement) { button.disabled = true; button.textContent = editableCopy["memories.formSending"] || "Sending…"; }
     try {
-      const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: data });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to submit this memory.");
+      const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: formData });
+      const responseData = await response.json();
+      if (!response.ok) throw new Error(responseData.error || "Unable to submit this memory.");
       form.reset(); showMessage(editableCopy["memories.successMessage"] || "Thank you. Your memory has been received for review.", true);
     } catch (error) {
       showMessage(error instanceof Error ? error.message : (editableCopy["memories.formError"] || "Please try again."));
