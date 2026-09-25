@@ -2625,3 +2625,78 @@ html[data-page="life"] .site-footer, .life-page-active .site-footer { background
   .memory-verse-card { grid-template-columns: 1fr; gap: 15px; }
   .memory-verse-card cite { grid-column: 1; }
 }
+
+/* Larger archival photographs, with their dates and captions beside the print. */
+.life-reference-page .life-reference-card {
+  grid-template-columns: minmax(0, 1fr) 49%;
+  min-height: 247px;
+}
+.life-reference-page .life-reference-card-media { background: #eeeae2; }
+.life-reference-page .life-reference-card-media .life-photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  align-items: center;
+  height: 235px;
+  min-height: 235px;
+  background: #eeeae2;
+}
+.life-reference-page .life-reference-card-media .life-photo img {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  width: 200px;
+  height: 235px;
+  object-fit: contain;
+  background: #e4ded4;
+}
+.life-reference-page .life-reference-card-media .life-photo figcaption {
+  position: static;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  padding: 14px 14px 14px 18px;
+  color: #384b56;
+  background: none;
+  font-family: Georgia, serif;
+  font-size: .9rem;
+  line-height: 1.35;
+}
+.life-reference-page .life-reference-card-media .life-photo figcaption span {
+  display: block;
+  color: #8c6d43;
+  font-family: Arial, sans-serif;
+  font-size: .66rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.life-reference-page .life-reference-card-media .life-photo figcaption p { display: block; margin: 7px 0 0; }
+.life-reference-page .life-reference-card-media--ucla .life-photo img {
+  object-fit: cover;
+  object-position: 43% 51%;
+}
+.life-reference-page .life-reference-early-photos { gap: 7px; }
+.life-reference-page .life-reference-early-photos .life-photo {
+  grid-template-columns: minmax(0, 1fr) 144px;
+  height: 210px;
+  min-height: 210px;
+}
+.life-reference-page .life-reference-early-photos .life-photo img { width: 144px; height: 210px; }
+
+@media (max-width: 1050px) {
+  .life-reference-page .life-reference-card { grid-template-columns: minmax(0, 1fr) 51%; }
+  .life-reference-page .life-reference-card-media .life-photo { grid-template-columns: minmax(0, 1fr) minmax(140px, 45%); }
+  .life-reference-page .life-reference-card-media .life-photo img { width: 100%; }
+  .life-reference-page .life-reference-early-photos .life-photo { grid-template-columns: minmax(0, 1fr) 144px; }
+}
+@media (max-width: 560px) {
+  .life-reference-page .life-reference-card { grid-template-columns: 1fr; }
+  .life-reference-page .life-reference-card-copy { padding: 20px 16px; }
+  .life-reference-page .life-reference-card-media .life-photo { grid-template-columns: minmax(0, 1fr) minmax(136px, 44%); height: 215px; min-height: 215px; }
+  .life-reference-page .life-reference-card-media .life-photo img { height: 215px; }
+  .life-reference-page .life-reference-early-photos .life-photo { grid-template-columns: minmax(0, 1fr) 144px; height: 210px; min-height: 210px; }
+  .life-reference-page .life-reference-early-photos .life-photo img { width: 144px; height: 210px; }
+}
+@media (max-width: 380px) {
+  .life-reference-page .life-reference-card:not(.life-reference-childhood) .life-reference-card-media,
+  .life-reference-page .life-reference-card:not(.life-reference-childhood) .life-reference-card-media .life-photo { height: 215px; }
+}

@@ -60,8 +60,8 @@ export default async function LifePage() {
           return <article className="life-scroll-entry life-reference-entry" key={item.id || index}>
             <div className="life-reference-date"><span>{item.year}</span></div>
             <div className={`life-reference-card${photo ? "" : " life-reference-no-photo"}`}>
-              <div className="life-reference-card-copy"><h3>{item.title}</h3><p>{item.text}</p>{photo && (photo.date || photo.caption) && <p className="life-reference-photo-note">{[photo.date, photo.caption].filter(Boolean).join(" · ")}</p>}</div>
-              {photo && <div className="life-reference-card-media"><LifePhotograph photo={photo} caption={false} /></div>}
+              <div className="life-reference-card-copy"><h3>{item.title}</h3><p>{item.text}</p></div>
+              {photo && <div className={`life-reference-card-media${(item.id || `life-period-${index}`) === "life-period-6" ? " life-reference-card-media--ucla" : ""}`}><LifePhotograph photo={photo} /></div>}
             </div>
           </article>;
         })}

@@ -119,11 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = node("div", { className: photo ? "life-reference-card" : "life-reference-card life-reference-no-photo" });
       const copy = node("div", { className: "life-reference-card-copy" });
       copy.append(node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
-      if (photo && (photo.date || photo.caption)) copy.append(node("p", { className: "life-reference-photo-note", text: [photo.date, photo.caption].filter(Boolean).join(" · ") }));
       card.append(copy);
       if (photo) {
-        const media = node("div", { className: "life-reference-card-media" });
-        media.append(lifePhotoFigure(photo, false));
+        const media = node("div", { className: `life-reference-card-media${(item.id || `life-period-${index}`) === "life-period-6" ? " life-reference-card-media--ucla" : ""}` });
+        media.append(lifePhotoFigure(photo));
         card.append(media);
       }
       article.append(date, card);
