@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, FileText, Quote } from "lucide-react";
 
-type Memory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
+type Memory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; pdfKey: string | null; socialUrl: string | null };
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
