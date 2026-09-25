@@ -2401,3 +2401,34 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 @media print {
   .book-life-photo-spread, .book-gallery-photo-spread, .book-legacy-map-spread, .book-legacy-chapter-spread { padding: .42in .5in; }
 }
+
+/* His Life experiment: a continuous, progressively illuminated chronology. */
+.life-scroll-track { --life-line: #c7bda9; --life-active: #a58346; position: relative; margin: 0 auto; max-width: 1120px; }
+.life-scroll-entry { position: relative; margin: 0; padding: 0 0 64px 56px; border-left: 2px solid var(--life-line); }
+.life-scroll-entry::before { content: ""; position: absolute; width: 12px; height: 12px; left: -7px; top: 4px; border: 2px solid var(--life-line); border-radius: 50%; background: var(--memorial-ivory, #f5f1e9); transition: background .6s, border-color .6s, box-shadow .6s; }
+.life-scroll-entry::after { content: ""; position: absolute; top: 6px; bottom: 0; left: -2px; width: 2px; background: var(--life-active); transform: scaleY(0); transform-origin: top; transition: transform .9s ease; }
+.life-scroll-entry.is-reached::before { background: var(--life-active); border-color: var(--life-active); box-shadow: 0 0 0 5px rgba(165,131,70,.12); }
+.life-scroll-entry.is-reached::after { transform: scaleY(1); }
+.life-scroll-periods > .life-scroll-entry:last-child { border-color: transparent; padding-bottom: 0; }
+.life-scroll-periods > .life-scroll-entry:last-child::after { display: none; }
+.life-scroll-story .life-story-grid { display: flex; flex-direction: column; gap: 30px; }
+.life-scroll-story .life-photo-column { order: 2; width: 100%; }
+.life-scroll-story .life-photo-stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.life-scroll-story .life-photo-column .life-photo img { height: 280px; max-height: 280px; }
+.life-scroll-story .prose { max-width: 850px; }
+.life-scroll-year { color: var(--memorial-bronze, #806335); font-size: .82rem; letter-spacing: .1em; font-weight: 600; }
+.life-scroll-periods h3 { margin: 12px 0 16px; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-family: Georgia, serif; font-weight: 400; }
+.life-scroll-periods article > p { max-width: 760px; color: var(--memorial-muted, #586571); line-height: 1.8; }
+.life-scroll-periods .life-photo { margin-top: 26px; max-width: 660px; }
+.life-scroll-periods .life-photo img { max-height: 420px; width: 100%; object-fit: contain; background: transparent; }
+@media (max-width: 700px) {
+  .life-scroll-entry { padding-left: 27px; padding-bottom: 44px; }
+  .life-scroll-story .life-photo-stack { grid-template-columns: 1fr; }
+  .life-scroll-story .life-photo-column .life-photo img { height: auto; max-height: 340px; }
+  .life-scroll-track { margin-left: 6px; }
+}
+@media (prefers-reduced-motion: reduce), print {
+  .life-scroll-entry::before, .life-scroll-entry::after { transition: none; }
+  .life-scroll-entry::before { background: var(--life-active); border-color: var(--life-active); }
+  .life-scroll-entry::after { transform: none; }
+}

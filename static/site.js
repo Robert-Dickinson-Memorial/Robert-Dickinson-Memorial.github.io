@@ -93,16 +93,34 @@ document.addEventListener("DOMContentLoaded", () => {
     stack.append(...early.map(lifePhotoFigure));
     target.replaceChildren(stack);
   }
+  function illuminateLifeTimeline() {
+    const entries = document.querySelectorAll(".life-scroll-entry");
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      entries.forEach((entry) => entry.classList.add("is-reached"));
+      return;
+    }
+    const observer = new IntersectionObserver((changes) => {
+      changes.forEach((change) => {
+        if (change.isIntersecting) {
+          change.target.classList.add("is-reached");
+          observer.unobserve(change.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -18% 0px", threshold: 0 });
+    entries.forEach((entry) => observer.observe(entry));
+    return () => observer.disconnect();
+  }
   function renderLifeTimeline(items, photos = []) {
     const target = document.querySelector("[data-life-timeline]");
     if (!(target instanceof HTMLElement) || !Array.isArray(items)) return;
     target.replaceChildren(...items.map((item, index) => {
-      const article = node("article");
-      article.append(node("span", { text: item.year || "" }), node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
+      const article = node("article", { className: "life-scroll-entry" });
+      article.append(node("span", { className: "life-scroll-year", text: item.year || "" }), node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
       const photo = photos.find((photo) => photo.milestoneId === (item.id || `life-period-${index}`));
       if (photo) article.append(lifePhotoFigure(photo));
       return article;
     }));
+    illuminateLifeTimeline();
   }
 
   function renderHomeLegacy(threads, highlights, frontierLabels, copy) {
@@ -284,6 +302,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const honorsNote = document.querySelector("[data-honors-note]");
     if (honorsNote instanceof HTMLElement && typeof content.honorsNote === "string") honorsNote.textContent = content.honorsNote;
   }
+
+  illuminateLifeTimeline();
 
   async function hydrateContent() {
     const { content } = await getJson("/api/content");
