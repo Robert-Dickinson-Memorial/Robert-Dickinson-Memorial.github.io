@@ -41,7 +41,11 @@ export async function PATCH(request: Request) {
     const relationship = clean(body.relationship, 120);
     const title = clean(body.title, 160);
     const story = clean(body.story, 6000);
-    const socialUrl = cleanPublicUrl(body.socialUrl);
+    const socialUrlRaw = clean(body.socialUrl, 1000);
+    const socialUrl = cleanPublicUrl(socialUrlRaw);
+    if (socialUrlRaw && !socialUrl) {
+      return Response.json({ error: "Please enter a valid HTTPS public link." }, { status: 400 });
+    }
     const current = await env.DB.prepare(
       "SELECT pdf_key AS pdfKey FROM memories WHERE id = ? AND status = 'approved'"
     ).bind(id).first<{ pdfKey: string | null }>();
@@ -100,8 +104,8 @@ export async function DELETE(request: Request) {
   }
 
   const memory = await env.DB.prepare(
-    "SELECT photo_key AS photoKey, pdf_key AS pdfKey, social_url AS socialUrl FROM memories WHERE id = ? AND status = 'approved'"
-  ).bind(id).first<{ photoKey: string | null; pdfKey: string | null; socialUrl: string | null }>();
+    "SELECT story, photo_key AS photoKey, pdf_key AS pdfKey, social_url AS socialUrl FROM memories WHERE id = ? AND status = 'approved'"
+  ).bind(id).first<{ story: string; photoKey: string | null; pdfKey: string | null; socialUrl: string | null }>();
   if (!memory) {
     return Response.json({ error: "Published memory not found." }, { status: 404 });
   }
@@ -131,6 +135,7 @@ export async function DELETE(request: Request) {
 
   if (mode === "pdf") {
     if (!memory.pdfKey) return Response.json({ error: "This memory has no PDF." }, { status: 404 });
+    if (!memory.story && !memory.socialUrl) return Response.json({ error: "This PDF is the only story content. Use Delete all to remove the memory." }, { status: 409 });
     await env.BUCKET.delete(memory.pdfKey);
     await env.DB.prepare("UPDATE memories SET pdf_key = NULL, pdf_name = NULL WHERE id = ? AND status = 'approved'").bind(id).run();
     return Response.json({ ok: true, id, deleted: "pdf" });
@@ -138,6 +143,7 @@ export async function DELETE(request: Request) {
 
   if (mode === "link") {
     if (!memory.socialUrl) return Response.json({ error: "This memory has no public link." }, { status: 404 });
+    if (!memory.story && !memory.pdfKey) return Response.json({ error: "This link is the only story content. Use Delete all to remove the memory." }, { status: 409 });
     await env.DB.prepare("UPDATE memories SET social_url = NULL WHERE id = ? AND status = 'approved'").bind(id).run();
     return Response.json({ ok: true, id, deleted: "link" });
   }
