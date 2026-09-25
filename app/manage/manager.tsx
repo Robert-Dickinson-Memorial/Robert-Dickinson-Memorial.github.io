@@ -504,7 +504,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-gallery" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Gallery</p><h2>Photo & video gallery</h2><p>Add or edit the photographs, captions, and videos shown on the Gallery page.</p><a className="manager-section-link" href="#copy-gallery">Edit Gallery headings & buttons ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Gallery</p><h2>Photo & video gallery</h2><p>Add or edit the photographs, captions, and videos shown on the Gallery page. Include the photo’s year in its title (for example, Amazon, 1980s or Boston, 2020). The gallery automatically sorts oldest to newest, using a year in the caption if the title has none. Undated items appear last.</p><a className="manager-section-link" href="#copy-gallery">Edit Gallery headings & buttons ↓</a></div>
         <form className="manager-form" onSubmit={addMedia}>
           <label>Media type<select name="kind" defaultValue="image"><option value="image">Photo</option><option value="video">Video link</option></select></label>
           <label>Title<input name="title" required /></label>

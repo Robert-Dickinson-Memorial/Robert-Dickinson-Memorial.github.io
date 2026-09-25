@@ -1,3 +1,4 @@
+import { sortGalleryByYear } from "./gallery-order";
 import { reviseEditorialText } from "./editorial-revision";
 import { env } from "cloudflare:workers";
 
@@ -772,7 +773,7 @@ export async function getPublishedGallery(): Promise<GalleryItem[]> {
               external_url AS externalUrl, created_at AS createdAt
        FROM gallery_items WHERE published = 1 ORDER BY created_at DESC, id DESC`
     ).all<GalleryItem>();
-    return result.results ?? [];
+    return sortGalleryByYear(result.results ?? []);
   } catch {
     return [];
   }
