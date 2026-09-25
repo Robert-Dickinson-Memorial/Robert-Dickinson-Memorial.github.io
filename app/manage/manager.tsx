@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { BookOpen, CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video } from "lucide-react";
-import type { GalleryItem, LegacyChapter, MemorialEvent, SiteContent } from "../site-data";
+import type { GalleryItem, LegacyChapter, LegacyPublication, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
 type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
@@ -191,6 +191,27 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
   function updateChapter(index: number, patch: Partial<LegacyChapter>) {
     setContentValues((current) => ({ ...current, legacyChapters: current.legacyChapters.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item) }));
+  }
+
+  function chapterPublications(chapter: LegacyChapter): LegacyPublication[] {
+    if (chapter.publications?.length) return chapter.publications;
+    return chapter.publication ? [chapter.publication] : [];
+  }
+
+  function updateChapterPublication(chapterIndex: number, publicationIndex: number, patch: Partial<LegacyPublication>) {
+    const chapter = contentValues.legacyChapters[chapterIndex];
+    const publications = chapterPublications(chapter).map((publication, index) => index === publicationIndex ? { ...publication, ...patch } : publication);
+    updateChapter(chapterIndex, { publication: null, publications });
+  }
+
+  function addChapterPublication(chapterIndex: number) {
+    const chapter = contentValues.legacyChapters[chapterIndex];
+    updateChapter(chapterIndex, { publication: null, publications: [...chapterPublications(chapter), { year: "", title: "", citation: "", note: "", url: "", image: "", alt: "" }] });
+  }
+
+  function removeChapterPublication(chapterIndex: number, publicationIndex: number) {
+    const chapter = contentValues.legacyChapters[chapterIndex];
+    updateChapter(chapterIndex, { publication: null, publications: chapterPublications(chapter).filter((_, index) => index !== publicationIndex) });
   }
 
   async function saveLifePhoto(event: FormEvent<HTMLFormElement>, id?: string) {
@@ -446,8 +467,17 @@ export default function Manager({ content, events, media, publishedMemories, edi
             </div>
 
             <div className="manager-subcard">
-              <h3>Landmark publication</h3>
-              {chapter.publication ? <><div className="manager-row"><label>Year<input value={chapter.publication.year} onChange={(e) => updateChapter(index, { publication: { ...chapter.publication!, year: e.target.value } })} /></label><label>Citation<input value={chapter.publication.citation} onChange={(e) => updateChapter(index, { publication: { ...chapter.publication!, citation: e.target.value } })} /></label></div><label>Title<input value={chapter.publication.title} onChange={(e) => updateChapter(index, { publication: { ...chapter.publication!, title: e.target.value } })} /></label><label>Why it matters<textarea rows={4} value={chapter.publication.note} onChange={(e) => updateChapter(index, { publication: { ...chapter.publication!, note: e.target.value } })} /></label><button type="button" className="manager-text-button" onClick={() => updateChapter(index, { publication: null })}>Remove landmark publication</button></> : <button type="button" className="manager-secondary" onClick={() => updateChapter(index, { publication: { year: "", title: "", citation: "", note: "" } })}>Add landmark publication</button>}
+              <h3>Landmark work</h3>
+              <p className="manager-help">One or more highlighted publications can appear beneath this chapter’s contribution bullets. The publication preview image is a built-in archival-style title card.</p>
+              {chapterPublications(chapter).map((publication, publicationIndex) => <div className="manager-edit-card" key={`publication-${chapter.id}-${publicationIndex}`}>
+                <div className="manager-row"><label>Year / edition<input value={publication.year} onChange={(e) => updateChapterPublication(index, publicationIndex, { year: e.target.value })} /></label><label>Citation<input value={publication.citation} onChange={(e) => updateChapterPublication(index, publicationIndex, { citation: e.target.value })} /></label></div>
+                <label>Title<input value={publication.title} onChange={(e) => updateChapterPublication(index, publicationIndex, { title: e.target.value })} /></label>
+                <label>Publication URL<input value={publication.url || ""} onChange={(e) => updateChapterPublication(index, publicationIndex, { url: e.target.value })} /></label>
+                <label>Preview image path<input value={publication.image || ""} onChange={(e) => updateChapterPublication(index, publicationIndex, { image: e.target.value })} /></label>
+                <label>Why it matters<textarea rows={4} value={publication.note} onChange={(e) => updateChapterPublication(index, publicationIndex, { note: e.target.value })} /></label>
+                <button type="button" className="manager-text-button" onClick={() => removeChapterPublication(index, publicationIndex)}>Remove landmark publication</button>
+              </div>)}
+              <button type="button" className="manager-secondary" onClick={() => addChapterPublication(index)}>Add landmark publication</button>
             </div>
             <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save this chapter’s text</button>
           </div>)}

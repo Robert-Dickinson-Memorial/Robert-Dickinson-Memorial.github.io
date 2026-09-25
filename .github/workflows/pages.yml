@@ -28,7 +28,7 @@ jobs:
         env:
           MEMORIAL_API_BASE: ${{ vars.MEMORIAL_API_BASE }}
         run: |
-          mkdir -p _site/assets _site/memory-book _site/tree _site/life _site/legacy _site/events _site/gallery _site/memories
+          mkdir -p _site/assets/landmarks _site/memory-book _site/tree _site/life _site/legacy _site/events _site/gallery _site/memories
           cp static/index.html _site/index.html
           cp static/sections.html _site/life/index.html
           cp static/sections.html _site/legacy/index.html
@@ -54,6 +54,7 @@ jobs:
           cp public/memorial-horizon.png _site/assets/memorial-horizon.png
           cp public/legacy-science-reference.webp _site/assets/legacy-science-reference.webp
           cp public/legacy-threads-large-labels.webp _site/assets/legacy-threads-large-labels.webp
+          cp public/landmarks/*.svg _site/assets/landmarks/
           cp public/favicon.svg _site/favicon.svg
           touch _site/.nojekyll
           node -e 'require("node:fs").writeFileSync("_site/config.js", `window.MEMORIAL_API_BASE = ${JSON.stringify(process.env.MEMORIAL_API_BASE || "")};\n`)'

@@ -22,14 +22,28 @@ export default async function LegacyPage() {
       <div className="legacy-journey"><aside className="journey-rail"><p className="section-kicker light">{copy["legacy.chaptersLabel"]}</p><nav>{content.legacyChapters.map((chapter) => <a href={`#${chapter.id}`} key={chapter.id}><span>{chapter.number}</span><b>{chapter.scale}</b><small>{chapter.institution} · {chapter.years}</small></a>)}</nav></aside>
         <div className="journey-chapters">{content.legacyChapters.map((chapter) => {
           const image = photoSrc(chapter.photo);
+          const publications = chapter.publications?.length ? chapter.publications : chapter.publication ? [chapter.publication] : [];
           return <article className="journey-chapter" id={chapter.id} key={chapter.id}>
             <header><div className="journey-number">{chapter.number}</div><div><p>{chapter.institution} <span>·</span> {chapter.years}</p><h3>{chapter.title}</h3></div><div className="journey-scale"><small>{copy["legacy.focusLabel"]}</small><strong>{chapter.scale}</strong></div></header>
             <p className="journey-summary">{chapter.summary}</p>
             <div className="journey-detail"><div><p className="journey-label">{copy["legacy.contributionsLabel"]}</p><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><p className="journey-label">{copy["legacy.impactLabel"]}</p><span>{chapter.impact}</span></blockquote></div>
-            {(image || chapter.publication) && <div className="journey-evidence">
-              {image && chapter.photo && <figure><img src={image} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>{copy["legacy.photoCredit"]}</small></figcaption></figure>}
-              {chapter.publication && <article className="landmark-publication"><p className="journey-label">{copy["legacy.publicationLabel"]} <span>·</span> {chapter.publication.year}</p><h4>{chapter.publication.title}</h4><cite>{chapter.publication.citation}</cite><p>{chapter.publication.note}</p></article>}
-            </div>}
+            {publications.length > 0 && <section className="landmark-work" aria-label={`Landmark work from ${chapter.institution}`}>
+              <p className="journey-label">Landmark work</p>
+              <div className={`landmark-grid ${publications.length === 1 ? "single" : ""}`}>
+                {publications.map((publication) => <a className="landmark-paper-card" href={publication.url || "#"} target={publication.url ? "_blank" : undefined} rel={publication.url ? "noopener noreferrer" : undefined} key={`${publication.year}-${publication.title}`}>
+                  {publication.image && <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt={publication.alt || `Publication preview for ${publication.title}`} loading="lazy" />}
+                  <div className="landmark-paper-copy">
+                    <p className="journey-label">{copy["legacy.publicationLabel"] || "Landmark publication"} <span>·</span> {publication.year}</p>
+                    <h4>{publication.title}</h4>
+                    <cite>{publication.citation}</cite>
+                    <p>{publication.note}</p>
+                    {publication.url && <span className="landmark-paper-link">Read the publication ↗</span>}
+                  </div>
+                </a>)}
+              </div>
+            </section>}
+            {image && chapter.photo && <figure className="journey-chapter-photo"><img src={image} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>{copy["legacy.photoCredit"]}</small></figcaption></figure>}
+            
             <div className="journey-tags">{chapter.threads.map((thread) => <span key={thread}>{thread}</span>)}</div>
           </article>;
         })}</div>

@@ -146,6 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
+  function chapterPublications(chapter) {
+    if (Array.isArray(chapter?.publications) && chapter.publications.length) return chapter.publications;
+    return chapter?.publication ? [chapter.publication] : [];
+  }
+
+  function publicationImageUrl(value) {
+    return value ? `/assets/${String(value).replace(/^[/]+/, "")}` : "";
+  }
+
   function renderLegacy(content, copy) {
     const chapters = Array.isArray(content.legacyChapters) ? content.legacyChapters : [];
     if (!chapters.length) return;
@@ -171,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = document.querySelector("[data-legacy-journey]");
     if (target instanceof HTMLElement) {
       target.replaceChildren(...chapters.map((chapter) => {
+        const publications = chapterPublications(chapter);
         const article = node("article", { className: "journey-chapter", attrs: { id: chapter.id } });
         const header = node("header");
         const number = node("div", { className: "journey-number", text: chapter.number || "" });
@@ -195,24 +205,35 @@ document.addEventListener("DOMContentLoaded", () => {
         article.append(detail);
 
         const imageSrc = chapterPhotoUrl(chapter.photo);
-        if (imageSrc || chapter.publication) {
-          const evidence = node("div", { className: "journey-evidence" });
-          if (imageSrc && chapter.photo) {
-            const figure = node("figure");
-            figure.append(node("img", { attrs: { src: imageSrc, alt: chapter.photo.alt || "", loading: "lazy" } }));
-            const caption = node("figcaption", { text: chapter.photo.caption || "" });
-            caption.append(node("small", { text: copy?.["legacy.photoCredit"] || "Photo shared for the Robert E. Dickinson memorial." }));
-            figure.append(caption);
-            evidence.append(figure);
-          }
-          if (chapter.publication) {
-            const publication = node("article", { className: "landmark-publication" });
+        if (publications.length) {
+          const landmarkWork = node("section", { className: "landmark-work", attrs: { "aria-label": `Landmark work from ${chapter.institution || ""}` } });
+          landmarkWork.append(node("p", { className: "journey-label", text: "Landmark work" }));
+          const grid = node("div", { className: `landmark-grid ${publications.length === 1 ? "single" : ""}` });
+          publications.forEach((publication) => {
+            const card = node(publication.url ? "a" : "article", {
+              className: "landmark-paper-card",
+              attrs: publication.url ? { href: publication.url, target: "_blank", rel: "noopener noreferrer" } : {},
+            });
+            const preview = publicationImageUrl(publication.image);
+            if (preview) card.append(node("img", { attrs: { src: preview, alt: publication.alt || `Publication preview for ${publication.title || ""}`, loading: "lazy" } }));
+            const body = node("div", { className: "landmark-paper-copy" });
             const label = node("p", { className: "journey-label" });
-            label.append(document.createTextNode((copy?.["legacy.publicationLabel"] || "Landmark publication") + " "), node("span", { text: "·" }), document.createTextNode(` ${chapter.publication.year || ""}`));
-            publication.append(label, node("h4", { text: chapter.publication.title || "" }), node("cite", { text: chapter.publication.citation || "" }), node("p", { text: chapter.publication.note || "" }));
-            evidence.append(publication);
-          }
-          article.append(evidence);
+            label.append(document.createTextNode((copy?.["legacy.publicationLabel"] || "Landmark publication") + " "), node("span", { text: "·" }), document.createTextNode(` ${publication.year || ""}`));
+            body.append(label, node("h4", { text: publication.title || "" }), node("cite", { text: publication.citation || "" }), node("p", { text: publication.note || "" }));
+            if (publication.url) body.append(node("span", { className: "landmark-paper-link", text: "Read the publication ↗" }));
+            card.append(body);
+            grid.append(card);
+          });
+          landmarkWork.append(grid);
+          article.append(landmarkWork);
+        }
+        if (imageSrc && chapter.photo) {
+          const figure = node("figure", { className: "journey-chapter-photo" });
+          figure.append(node("img", { attrs: { src: imageSrc, alt: chapter.photo.alt || "", loading: "lazy" } }));
+          const caption = node("figcaption", { text: chapter.photo.caption || "" });
+          caption.append(node("small", { text: copy?.["legacy.photoCredit"] || "Photo shared for the Robert E. Dickinson memorial." }));
+          figure.append(caption);
+          article.append(figure);
         }
 
         const tags = node("div", { className: "journey-tags" });
@@ -474,6 +495,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pages.push(legacyOverview);
 
     (content.legacyChapters || []).forEach((chapter) => {
+      const publications = chapterPublications(chapter);
       const section = node("section", { className: "book-spread book-legacy-chapter-spread" });
       section.append(node("p", { className: "book-running-title", text: `${copy["nav.legacy"] || "Scientific legacy"} · ${chapter.institution || ""}` }));
       const header = node("header");
@@ -497,11 +519,12 @@ document.addEventListener("DOMContentLoaded", () => {
       impact.append(node("h3", { text: copy["legacy.impactLabel"] || "Legacy" }), node("p", { text: chapter.impact || "" }));
       details.append(contributions, impact);
       section.append(details);
-      if (chapter.publication) {
+      publications.forEach((item) => {
         const publication = node("div", { className: "book-publication" });
-        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark publication"} · ${chapter.publication.year || ""}` }), node("h3", { text: chapter.publication.title || "" }), node("cite", { text: chapter.publication.citation || "" }), node("p", { text: chapter.publication.note || "" }));
+        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark publication"} · ${item.year || ""}` }), node("h3", { text: item.title || "" }), node("cite", { text: item.citation || "" }), node("p", { text: item.note || "" }));
         section.append(publication);
-      }
+      });
+
       const tags = node("div", { className: "book-tags" });
       (chapter.threads || []).forEach((thread) => tags.append(node("span", { text: thread })));
       section.append(tags, node("span", { className: "book-page-number", text: chapter.institution || "" }));
