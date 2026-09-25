@@ -20,7 +20,6 @@ export default async function LifePage() {
   const portraitSrc = portrait.objectKey
     ? `/api/site-assets/${portrait.objectKey.split("/").map(encodeURIComponent).join("/")}`
     : `/assets/${portrait.asset.replace(/^\//, "")}`;
-  const paragraphs = content.obituaryStory.split(/\n\s*\n/).filter(Boolean);
 
   return <main className="interior-page life-reference-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="life" />
@@ -38,7 +37,8 @@ export default async function LifePage() {
     <div className="life-reference-body">
     <aside className="life-reference-story">
       <h2>{copy["life.storyHeading"]}</h2>
-      <div className="prose">{paragraphs.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={index}>{paragraph}</p>)}</div>
+      <div className="prose"><p className="lead">{copy["life.personalPortraitIntro"]}</p><p>{copy["life.personalPortraitText"]}</p></div>
+      <a className="text-link" href="/memory-book/">{copy["life.fullStoryLink"]}</a>
     </aside>
     <section className="life-reference-timeline" aria-label="Robert Dickinson's life in chronological order">
       <LifeTimelineMotion />

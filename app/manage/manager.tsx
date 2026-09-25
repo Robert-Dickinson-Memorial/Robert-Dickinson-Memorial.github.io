@@ -18,7 +18,7 @@ const toLines = (value: string) => value.split(/\n/).map((item) => item.trim()).
 const copyGroups = [
   { id: "copy-sitewide", prefix: ["global.", "nav."], page: "Site-wide", title: "Navigation & footer" },
   { id: "copy-home", prefix: ["home."], page: "Home", title: "Headings, buttons & labels" },
-  { id: "copy-life", prefix: ["life."], page: "His life", title: "Headings, source links & labels" },
+  { id: "copy-life", prefix: ["life."], page: "His life", title: "Personal portrait, headings & links" },
   { id: "copy-legacy", prefix: ["legacy."], page: "Scientific legacy", title: "Headings & section labels" },
   { id: "copy-events", prefix: ["events."], page: "Events", title: "Headings, messages & links" },
   { id: "copy-gallery", prefix: ["gallery."], page: "Gallery", title: "Headings, buttons & messages" },
@@ -47,6 +47,9 @@ const copyFieldNames: Record<string, string> = {
   storyTitleLine2: "His story — title line 2",
   storyYears: "His story — years",
   storyReadLink: "His story — read link",
+  personalPortraitIntro: "Personal portrait — opening paragraph",
+  personalPortraitText: "Personal portrait — mentorship paragraph",
+  fullStoryLink: "Full story — memory book link",
   tributeKicker: "Living tributes — kicker",
   tributeTitle: "Living tributes — heading",
   tributeIntro: "Living tributes — introduction",
@@ -418,10 +421,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · Memory book</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The complete biography is preserved in the Memory book; its first two paragraphs also appear on Home. His Life uses a separate short personal portrait beside the timeline.</p><a className="manager-section-link" href="#copy-life">Edit the His Life personal portrait ↓</a></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
-          <label>His life — full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
+          <label>Memory book — full biographical story <span>Separate paragraphs with a blank line. This is independent of the shorter His Life personal portrait.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save biography</button>
         </div>
       </section>
