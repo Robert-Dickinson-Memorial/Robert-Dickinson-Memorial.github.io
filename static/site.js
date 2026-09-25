@@ -394,8 +394,8 @@ document.addEventListener("DOMContentLoaded", () => {
           if (memory.story) article.append(node("p", { text: memory.story }));
           if (memory.pdfKey || memory.socialUrl) {
             const attachments = node("div", { className: "memory-attachments" });
-            if (memory.pdfKey) attachments.append(node("a", { text: "▤ Read the shared PDF", attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
-            if (memory.socialUrl) attachments.append(node("a", { text: "↗ View the shared public post", attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer" } }));
+            if (memory.pdfKey) attachments.append(node("a", { text: `▤ ${copy["memories.pdfLink"] || "Read the shared PDF"}`, attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
+            if (memory.socialUrl) attachments.append(node("a", { text: `↗ ${copy["memories.socialLink"] || "View the shared public post"}`, attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer" } }));
             article.append(attachments);
           }
           const footer = node("footer");
