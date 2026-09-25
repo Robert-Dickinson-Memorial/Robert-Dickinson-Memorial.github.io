@@ -19,7 +19,9 @@ export async function GET(request: Request, context: { params: Promise<{ key: st
   const headers = new Headers();
   object.writeHttpMetadata(headers);
   headers.set("content-type", "application/pdf");
-  headers.set("content-disposition", `inline; filename="${(pending.pdfName || "shared-memory.pdf").replace(/["\\]/g, "_")}"`);
+  const safeName = (pending.pdfName || "shared-memory.pdf").replace(/[^A-Za-z0-9._ -]/g, "_").slice(0, 180);
+  headers.set("content-disposition", `inline; filename="${safeName}"`);
+  headers.set("x-content-type-options", "nosniff");
   headers.set("cache-control", "private, no-store");
   return new Response(object.body, { headers });
 }
