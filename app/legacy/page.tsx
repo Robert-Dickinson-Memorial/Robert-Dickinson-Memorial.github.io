@@ -27,18 +27,12 @@ export default async function LegacyPage() {
             <header><div className="journey-number">{chapter.number}</div><div><p>{chapter.institution} <span>·</span> {chapter.years}</p><h3>{chapter.title}</h3></div><div className="journey-scale"><small>{copy["legacy.focusLabel"]}</small><strong>{chapter.scale}</strong></div></header>
             <p className="journey-summary">{chapter.summary}</p>
             <div className="journey-detail"><div><p className="journey-label">{copy["legacy.contributionsLabel"]}</p><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><p className="journey-label">{copy["legacy.impactLabel"]}</p><span>{chapter.impact}</span></blockquote></div>
-            {publications.length > 0 && <section className="landmark-work" aria-label={`Landmark work from ${chapter.institution}`}>
-              <p className="journey-label">Landmark work</p>
+            {publications.length > 0 && <section className="landmark-work" aria-label={`Landmark publications from ${chapter.institution}`}>
+              <p className="journey-label">Landmark Publication</p>
               <div className={`landmark-grid ${publications.length === 1 ? "single" : ""}`}>
                 {publications.map((publication) => <a className="landmark-paper-card" href={publication.url || "#"} target={publication.url ? "_blank" : undefined} rel={publication.url ? "noopener noreferrer" : undefined} key={`${publication.year}-${publication.title}`}>
-                  {publication.image && <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt={publication.alt || `Publication preview for ${publication.title}`} loading="lazy" />}
-                  <div className="landmark-paper-copy">
-                    <p className="journey-label">{copy["legacy.publicationLabel"] || "Landmark publication"} <span>·</span> {publication.year}</p>
-                    <h4>{publication.title}</h4>
-                    <cite>{publication.citation}</cite>
-                    <p>{publication.note}</p>
-                    {publication.url && <span className="landmark-paper-link">Read the publication ↗</span>}
-                  </div>
+                  {publication.image ? <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt={publication.alt || `Publication preview for ${publication.title}`} loading="lazy" /> : <div className="landmark-paper-fallback"><span>{publication.year}</span><strong>{publication.title}</strong><small>{publication.citation}</small></div>}
+                  <div className="landmark-paper-caption"><p>{publication.note}</p>{publication.url && <span className="landmark-paper-link">Read the publication ↗</span>}</div>
                 </a>)}
               </div>
             </section>}
