@@ -562,7 +562,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-tree-content" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Living tribute</p><h2>The Chippewa National Forest</h2><p>Edit the two narrative paragraphs used in the Minnesota connection section of the tree-dedication page.</p><a className="manager-section-link" href="#copy-tree">Edit Living tribute headings, FAQ & buttons ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Living tribute</p><h2>Restoration projects</h2><p>Edit the two narrative paragraphs used in the featured Chippewa National Forest section. The researched regional project cards and their official donation/source links are maintained in the site code; headings, guidance, FAQ text, and buttons remain editable below.</p><a className="manager-section-link" href="#copy-tree">Edit Living tribute headings, guidance & FAQ ↓</a></div>
         <div className="manager-form">
           <label>Minnesota connection — tribute text<textarea rows={5} value={contentValues.treeTribute} onChange={(e) => setContentValues({ ...contentValues, treeTribute: e.target.value })} /></label>
           <label>Chippewa project — restoration details<textarea rows={5} value={contentValues.treeDetail} onChange={(e) => setContentValues({ ...contentValues, treeDetail: e.target.value })} /></label>
