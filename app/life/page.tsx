@@ -25,7 +25,7 @@ export default async function LifePage() {
         <aside className="life-photo-column" aria-labelledby="life-photos-title">
           <p className="section-kicker" id="life-photos-title">{copy["life.photosKicker"]}</p>
           {earlyPhotos.length ? <div className="life-photo-stack">{earlyPhotos.map((photo) => <LifePhotograph key={photo.id} photo={photo} />)}</div> : <p className="life-photos-empty">{copy["life.photosEmpty"]}</p>}
-          <p className="story-aside">{copy["life.years"]}</p>
+          
         </aside>
         <div className="prose">{paragraphs.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={index}>{paragraph}</p>)}</div>
       </div>

@@ -1925,39 +1925,12 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .tree-project-actions { align-items: flex-start; flex-direction: column; }
 }
 
-/* Let the biography set the height of the adjacent childhood photo stack. */
-@media (min-width: 1001px) {
-  .life-story-grid > .life-photo-column {
-    align-self: stretch;
-    contain: size;
-    min-height: 480px;
-    display: flex;
-    flex-direction: column;
-  }
-  .life-photo-column .life-photo-stack {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    gap: 12px;
-  }
-  .life-photo-column .life-photo {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-  }
-  .life-photo-column .life-photo img {
-    flex: 1;
-    min-height: 0;
-    height: 0;
-    max-height: 180px;
-    object-fit: contain;
-    background: transparent;
-  }
-  .life-photo-column .life-photo figcaption { flex-shrink: 0; padding: 6px 0; }
-  .life-photo-column .story-aside { margin: 12px 0 0; }
+/* Medium-size childhood photographs, between the original and compact layouts. */
+.life-photo-column .life-photo-stack { gap: 16px; }
+.life-photo-column .life-photo img {
+  height: clamp(200px, 16vw, 240px);
+  max-height: 240px;
+  object-fit: contain;
+  background: transparent;
 }
-@media (max-width: 1000px) {
-  .life-photo-column .life-photo img { max-height: 220px; }
-}
+.life-photo-column .life-photo figcaption { padding: 6px 0; }
