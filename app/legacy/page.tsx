@@ -32,7 +32,7 @@ export default async function LegacyPage() {
               <p className="journey-label">Landmark work</p>
               <div className={`landmark-grid ${publications.length === 1 ? "single" : ""}`}>
                 {publications.map((publication) => <a className="landmark-paper-card" href={publication.url || "#"} target={publication.url ? "_blank" : undefined} rel={publication.url ? "noopener noreferrer" : undefined} key={`${publication.year}-${publication.title}`}>
-                  {publication.image && <img src={`/${publication.image.replace(/^\\/+/, "")}`} alt={publication.alt || `Publication preview for ${publication.title}`} loading="lazy" />}
+                  {publication.image && <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt={publication.alt || `Publication preview for ${publication.title}`} loading="lazy" />}
                   <div className="landmark-paper-copy">
                     <p className="journey-label">{copy["legacy.publicationLabel"] || "Landmark publication"} <span>·</span> {publication.year}</p>
                     <h4>{publication.title}</h4>
