@@ -518,6 +518,7 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 .review-list { display: grid; gap: 28px; margin: 0 auto; max-width: 1040px; }
 .review-card { background: var(--white); border: 1px solid #ddd7cc; display: grid; grid-template-columns: minmax(220px, 340px) 1fr; overflow: hidden; }
 .review-card > img { height: 100%; min-height: 390px; object-fit: cover; width: 100%; }
+.review-card:not(:has(> img)) .review-card-body { grid-column: 1 / -1; }
 .review-card-body { padding: clamp(26px, 4vw, 46px); }
 .review-meta { color: #8b6c35; display: flex; flex-wrap: wrap; font-size: .76rem; font-weight: 700; gap: 15px; justify-content: space-between; letter-spacing: .07em; text-transform: uppercase; }
 .review-card h2 { font-size: clamp(1.8rem, 3vw, 2.8rem); margin-top: 24px; }
