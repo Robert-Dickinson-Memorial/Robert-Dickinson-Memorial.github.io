@@ -78,6 +78,10 @@ html[data-page="life"] [data-nav="life"], html[data-page="legacy"] [data-nav="le
 .scroll-cue { align-items: center; border-bottom: 1px solid rgba(255,255,255,.45); display: inline-flex; font-size: .86rem; gap: 9px; padding-bottom: 5px; }
 .portrait-card { align-self: center; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.24); margin: 0 0 0 50px; padding: 14px 14px 18px; position: relative; z-index: 2; }
 .portrait-card > img { aspect-ratio: 4/5; display: block; filter: saturate(.75) contrast(1.03); object-fit: cover; object-position: center; width: 100%; }
+.hero-portrait-landscape { grid-template-columns: minmax(0, 1fr) minmax(360px, 520px); }
+.hero-portrait-landscape .portrait-card { margin-left: clamp(28px, 4vw, 58px); }
+.hero-portrait-landscape .portrait-card > img { aspect-ratio: 16/10; }
+.hero-portrait-landscape .portrait-card blockquote { font-size: 1.02rem; }
 .portrait-card blockquote { font-family: Georgia, serif; font-size: 1.1rem; font-style: italic; line-height: 1.45; margin: 18px 8px 8px; }
 .portrait-card figcaption { font-size: .66rem; line-height: 1.4; margin: 0 8px; opacity: .55; }
 
@@ -523,7 +527,7 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
   .nav-links { background: rgba(7,24,39,.98); border-top: 1px solid rgba(255,255,255,.1); bottom: 0; gap: 26px; left: 0; overflow-x: auto; padding: 12px 22px; position: absolute; right: 0; scrollbar-width: none; }
   .nav-links::-webkit-scrollbar { display: none; }
   .hero { padding-top: 185px; }
-  .hero { grid-template-columns: 1fr; }
+  .hero, .hero-portrait-landscape { grid-template-columns: 1fr; }
   .portrait-card { display: none; }
   .home-story-preview, .home-preview-heading { grid-template-columns: 1fr; }
   .home-preview-heading > p { justify-self: start; }
@@ -915,6 +919,11 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   width: 100%;
 }
 .manager-asset-editor .manager-image-preview { max-height: 360px; }
+.manager-asset-editor .manager-image-preview-landscape { aspect-ratio: 16/10; object-fit: cover; }
+.manager-site-asset-form { align-items: end; }
+.manager-site-asset-form label { flex: 1 1 100%; }
+.manager-site-asset-form input[type="file"] { cursor: pointer; }
+.manager-site-asset-form .manager-secondary { align-items: center; display: inline-flex; gap: 7px; }
 .manager-edit-list {
   display: grid;
   gap: 16px;
