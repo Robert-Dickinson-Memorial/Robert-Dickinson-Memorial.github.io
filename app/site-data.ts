@@ -42,6 +42,9 @@ export type LegacyPublication = {
   title: string;
   citation: string;
   note: string;
+  url?: string;
+  image?: string;
+  alt?: string;
 };
 
 export type LegacyChapter = {
@@ -56,7 +59,8 @@ export type LegacyChapter = {
   impact: string;
   threads: string[];
   photo: LegacyChapterPhoto | null;
-  publication: LegacyPublication | null;
+  publication?: LegacyPublication | null;
+  publications?: LegacyPublication[];
 };
 
 export type MemorialHonor = {
@@ -140,121 +144,214 @@ const legacyChapters: LegacyChapter[] = [
     number: "01",
     years: "1961–1968",
     institution: "MIT",
-    scale: "Atmospheric dynamics",
-    title: "Finding order in planetary-scale motion",
-    summary: "How do planetary-scale waves move through the atmosphere and interact with its circulation? Robert showed why Earth’s spherical geometry matters for wave propagation, and how atmospheric waveguides direct energy and momentum toward critical lines where they are absorbed.",
+    scale: "Planetary waves & stratospheric dynamics",
+    title: "Dynamics was the key",
+    summary: "Robert’s earliest work asked how planetary-scale waves move through the atmosphere and reshape its circulation. The result was a set of theories that made wave propagation, critical lines, and wave–mean-flow interaction physically intelligible.",
     contributions: [
-      "Showed why Earth’s spherical geometry must be included in theories of vertically propagating planetary Rossby waves.",
-      "Developed the first theory of Rossby-wave critical-line absorption and demonstrated the role of atmospheric waveguides.",
-      "Helped establish the conceptual foundations for modern understanding of planetary-wave propagation and wave–mean-flow interaction in the stratosphere.",
+      "Developed fundamental theory for the vertical propagation of planetary-scale Rossby waves through a rotating, stratified atmosphere.",
+      "Clarified how waveguides, critical lines, and radiative damping control where planetary-wave energy can propagate and where it is absorbed.",
+      "Developed a fundamental framework for planetary wave–zonal-flow interaction, showing how waves can alter the mean atmospheric circulation through dissipation and critical-line processes.",
+      "Helped lay foundations for modern stratospheric dynamics; later assessments noted that this work anticipated concepts underlying EP-flux diagnostics and two-dimensional refractive-index analysis.",
     ],
-    impact: "This early work already reveals Bob’s characteristic scientific style: begin with a fundamental physical question, reduce it to its essential dynamics, and then uncover consequences that reshape how the larger system is understood.",
-    threads: ["Atmospheric dynamics", "Planetary waves", "Stratosphere", "Wave–mean-flow interaction"],
+    impact: "His early work helped establish the dynamical language still used to understand how planetary waves shape the stratosphere and large-scale atmospheric circulation.",
+    threads: ["Planetary waves", "Stratospheric dynamics", "Wave–mean-flow interaction", "Atmospheric dynamics"],
     photo: {
       asset: "dickinson-1967-mit-phd.jpg",
       objectKey: null,
       alt: "Robert E. Dickinson seated with a notebook in 1967, during his MIT period",
       caption: "Robert Dickinson during his MIT years, 1967.",
     },
-    publication: {
-      year: "1968",
-      title: "Planetary Rossby Waves Propagating Vertically Through Weak Westerly Wind Wave Guides",
-      citation: "Journal of the Atmospheric Sciences, 25, 984–1002",
-      note: "This landmark paper developed the first theory of Rossby-wave critical-line absorption, extended the atmospheric refractive-index concept into two dimensions, and introduced a group-velocity framework that anticipated later Eliassen–Palm flux thinking.",
-    },
+    publication: null,
+    publications: [
+      {
+        year: "1969",
+        title: "Theory of Planetary Wave–Zonal Flow Interaction",
+        citation: "Journal of the Atmospheric Sciences, 26, 73–81",
+        note: "A major step toward a generalized theory of wave–mean-flow interaction, growing directly from Robert’s MIT-era work on planetary-wave propagation and critical lines.",
+        url: "https://doi.org/10.1175/1520-0469(1969)026%3C0073:TOPWZF%3E2.0.CO;2",
+        image: "landmarks/mit-wave-zonal.svg",
+        alt: "Publication preview for Theory of Planetary Wave–Zonal Flow Interaction by Robert E. Dickinson, 1969",
+      },
+    ],
   },
   {
     id: "legacy-ncar",
     number: "02",
     years: "1968–1990",
     institution: "NCAR",
-    scale: "Climate change and climate modeling",
-    title: "Expanding from atmospheric theory to climate",
-    summary: "Robert connected atmospheric circulation and radiation with the problem of climate change. His work helped make climate models a way to investigate interacting physical processes, while bringing soils, water, and vegetation into their representation of land.",
+    scale: "Planetary atmospheres, climate & land",
+    title: "From global atmospheres to global climate — and then down to the land",
+    summary: "At NCAR, Robert’s scientific range expanded from upper-atmospheric and planetary dynamics into global climate modeling, greenhouse change, and finally the physics of the land surface.",
     contributions: [
-      "Advanced understanding of atmospheric circulation, radiation, and the upper atmospheres of Earth, Venus, and Mars.",
-      "Helped establish climate modeling as a framework for studying the interacting processes that govern global change, including service on the 1979 Charney assessment of carbon dioxide and climate.",
-      "Pioneered land-surface representations that brought soil, water, and vegetation into global climate models.",
+      "Extended atmospheric dynamics and radiative physics into global models of the thermosphere and planetary atmospheres, including Earth, Venus, and Mars.",
+      "Moved into global climate modeling and helped frame climate as a coupled physical system governed by energy balance, feedbacks, circulation, and interacting processes.",
+      "Made seminal contributions to understanding greenhouse forcing, climate sensitivity, CO₂ and other trace gases, helping establish the quantitative basis for assessing anthropogenic climate change.",
+      "Brought the climate model down to the ground: vegetation, soils, snow, albedo, evapotranspiration, and hydrology became active physical processes, culminating in BATS and pioneering studies of tropical deforestation.",
     ],
-    impact: "Land was no longer merely the lower boundary of an atmospheric model. It became an active, living participant in climate.",
-    threads: ["Climate change", "Climate modeling", "Atmospheric dynamics", "BATS"],
+    impact: "At NCAR, Robert’s science widened dramatically: from atmospheric circulation to global climate and then to the biosphere. The land was beginning to become an active part of the climate system rather than simply its lower boundary.",
+    threads: ["Planetary atmospheres", "Climate modeling", "Climate change", "BATS"],
     photo: null,
     publication: null,
+    publications: [
+      {
+        year: "1974",
+        title: "Climate Modeling",
+        citation: "Schneider, S. H. & Dickinson, R. E. · Reviews of Geophysics and Space Physics, 12, 447–493",
+        note: "A foundational synthesis of climate-model hierarchy, physical feedbacks, energy balance, and the emerging challenge of understanding and predicting climate change.",
+        url: "https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/RG012i003p00447",
+        image: "landmarks/ncar-climate-modeling.svg",
+        alt: "Publication preview for Climate Modeling by Stephen H. Schneider and Robert E. Dickinson, 1974",
+      },
+      {
+        year: "1986",
+        title: "Biosphere–Atmosphere Transfer Scheme (BATS) for the NCAR Community Climate Model",
+        citation: "Dickinson, R. E., Henderson-Sellers, A., Kennedy, P. J. & Wilson, M. F. · NCAR Technical Note NCAR/TN-275+STR",
+        note: "A landmark in physically representing vegetation, soils, water, snow, and surface exchange within a global climate model.",
+        url: "https://doi.org/10.5065/D6668B58",
+        image: "landmarks/ncar-bats.svg",
+        alt: "Publication preview for the Biosphere–Atmosphere Transfer Scheme BATS technical note, 1986",
+      },
+    ],
   },
   {
     id: "legacy-arizona",
     number: "03",
     years: "1990–1999",
     institution: "University of Arizona",
-    scale: "Land–atmosphere interactions",
-    title: "Making the living land visible to climate models",
-    summary: "Robert deepened the physical description of the land surface and helped make land models testable against observations. Vegetation, soil moisture, and surface energy exchange became processes that could be measured, compared, and improved.",
+    scale: "Land-model intercomparison & interactive vegetation",
+    title: "The Age of Intercomparison — broader and deeper",
+    summary: "At Arizona, the land model became a laboratory for comparison, observation, and biological realism. Robert helped make its processes testable while vegetation itself became increasingly interactive.",
     contributions: [
-      "Linked vegetation, evapotranspiration, soil moisture, snow, and surface energy exchange in land-surface models.",
-      "Advanced model evaluation through international land-surface intercomparison and field observations.",
-      "Connected satellite measurements and canopy reflectance with studies of drought, hydrology, and tropical deforestation.",
+      "Helped create PILPS, bringing land-surface models into systematic community intercomparison, evaluation, and validation instead of developing individual schemes in isolation.",
+      "Deepened representations of soil moisture, roots, snow, evapotranspiration, runoff, energy exchange, and hydrology, increasingly testing these processes against observations.",
+      "Moved vegetation from prescribed properties toward a dynamic component of climate models, including carbon uptake, allocation, leaf growth, roots, drought stress, and vegetation feedbacks.",
+      "Strengthened connections among land models, field observations, and satellite measurements, setting the stage for increasingly observation-constrained Earth-system models.",
     ],
-    impact: "His work helped turn land modeling into an observational science—one that could be compared, challenged, and improved across places and scales.",
-    threads: ["Land–atmosphere interactions", "Hydrology", "Remote sensing", "Model evaluation"],
+    impact: "Land modeling became both more testable and more alive: a community science grounded in observations, while vegetation increasingly responded to—and fed back on—the climate system.",
+    threads: ["PILPS", "Land–atmosphere interactions", "Interactive vegetation", "Model evaluation"],
     photo: null,
     publication: null,
+    publications: [
+      {
+        year: "1993",
+        title: "The Project for Intercomparison of Land-Surface Parameterization Schemes (PILPS)",
+        citation: "Henderson-Sellers, A., Yang, Z.-L. & Dickinson, R. E. · Bulletin of the American Meteorological Society, 74, 1335–1350",
+        note: "Established a framework for systematic community comparison, documentation, and validation of land-surface schemes.",
+        url: "https://journals.ametsoc.org/view/journals/bams/74/7/1520-0477_1993_074_1335_tpfiol_2_0_co_2.xml",
+        image: "landmarks/arizona-pilps.svg",
+        alt: "Publication preview for the PILPS paper by Henderson-Sellers, Yang, and Dickinson, 1993",
+      },
+      {
+        year: "1998",
+        title: "Interactive Canopies for a Climate Model",
+        citation: "Dickinson, R. E., Shaikh, M., Bryant, R. & Graumlich, L. · Journal of Climate, 11, 2823–2836",
+        note: "Moved vegetation toward an interactive component of climate models through carbon uptake, allocation, roots, leaves, and environmental stress.",
+        url: "https://journals.ametsoc.org/view/journals/clim/11/11/1520-0442_1998_011_2823_icfacm_2.0.co_2.xml",
+        image: "landmarks/arizona-interactive-canopies.svg",
+        alt: "Publication preview for Interactive Canopies for a Climate Model by Dickinson and colleagues, 1998",
+      },
+    ],
   },
   {
     id: "legacy-georgia-tech",
     number: "04",
     years: "1999–2008",
     institution: "Georgia Tech",
-    scale: "Coupled water, energy, and carbon",
-    title: "Connecting the exchanges that make an Earth system",
-    summary: "Robert brought atmospheric physics, hydrology, ecosystems, biogeochemistry, and satellite observations together to study climate as a coupled Earth system. The question became how exchanges of water, energy, and carbon shape one another.",
+    scale: "Community land modeling & remote sensing",
+    title: "From land model to Earth-system component",
+    summary: "At Georgia Tech, Robert’s land science matured into community Earth-system modeling, joining water, energy, vegetation, carbon, biogeochemistry, and observations from space.",
     contributions: [
-      "Advanced land models that connected roots, soil moisture, surface energy, ecosystems, and the carbon cycle.",
-      "Used remote sensing and observations to test land temperature, vegetation, albedo, and land–atmosphere exchange.",
-      "Extended his scientific leadership globally through the IPCC, the American Geophysical Union, and a growing international group of students and collaborators.",
+      "Helped develop the Common Land Model, bringing soil, snow, runoff, vegetation, photosynthesis, energy balance, and water exchange into a modular community modeling framework.",
+      "Advanced the integration of plant physiology, carbon, nitrogen, hydrology, and vegetation dynamics, moving land models further toward full Earth-system models.",
+      "Pioneered the use of MODIS observations to evaluate and improve land boundary conditions, albedo, leaf area, vegetation properties, and surface states in climate models.",
+      "Extended land hydrology through work on soil moisture, runoff, groundwater, snow, evapotranspiration, and their interactions with atmospheric variability.",
     ],
-    impact: "The scientific question had expanded again: not only how land affects climate, but how water, energy, carbon, vegetation, and atmosphere continually reshape one another.",
-    threads: ["Earth-system modeling", "Remote sensing", "Carbon cycle", "Hydrology"],
+    impact: "The physical land model became a community Earth-system component, increasingly joining hydrology, vegetation, carbon and biogeochemistry with observations from space.",
+    threads: ["Community Land Model", "Biogeochemistry", "MODIS", "Land hydrology"],
     photo: null,
     publication: null,
+    publications: [
+      {
+        year: "2003",
+        title: "The Common Land Model",
+        citation: "Dai, Y. et al. · Bulletin of the American Meteorological Society, 84, 1013–1023",
+        note: "A community-developed modular land model bringing physical, hydrological, and vegetation processes into a shared framework for weather and climate studies.",
+        url: "https://journals.ametsoc.org/doi/10.1175/BAMS-84-8-1013",
+        image: "landmarks/georgia-common-land-model.svg",
+        alt: "Publication preview for The Common Land Model by Dai and colleagues, 2003",
+      },
+      {
+        year: "2004",
+        title: "Land Boundary Conditions from MODIS Data and Consequences for the Albedo of a Climate Model",
+        citation: "Tian, Y. et al. · Geophysical Research Letters, 31, L05504",
+        note: "Used MODIS-derived land states to diagnose and substantially reduce land-model albedo biases, directly connecting satellite observations with climate-model improvement.",
+        url: "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2003GL019104",
+        image: "landmarks/georgia-modis-albedo.svg",
+        alt: "Publication preview for Land Boundary Conditions from MODIS Data and Consequences for the Albedo of a Climate Model, 2004",
+      },
+    ],
   },
   {
     id: "legacy-ut",
     number: "05",
     years: "2008–2018",
     institution: "UT Austin",
-    scale: "Models + observations",
-    title: "Synthesis—and a new generation of scientists",
-    summary: "Robert used models and observations together to study drought, vegetation stress, soil-moisture feedbacks, and climate extremes. Satellite measurements offered a way to test whether models captured the behavior of the living land.",
+    scale: "Water, vegetation physiology & observations",
+    title: "From the globe to the leaf — and back again",
+    summary: "Robert worked simultaneously across scales: from global evapotranspiration and hydroclimate to processes within leaves, while using satellite observations to test how the living land behaves.",
     contributions: [
-      "Studied drought, soil-moisture feedbacks, vegetation, surface temperature, atmospheric circulation, and climate extremes.",
-      "Used satellite observations to reveal ecosystem stress and to test the land processes represented in climate models.",
-      "Helped frame national priorities for climate modeling, prediction, and sustained Earth observations from space.",
+      "Synthesized the physics, observations, satellite retrievals, and modeling of global terrestrial evapotranspiration, one of the central exchanges linking land, water, vegetation, and atmosphere.",
+      "Went deeper into plant physiology—stomatal regulation, mesophyll conductance, CO₂ fertilization, hydraulic redistribution, canopy radiation, and carbon–water coupling.",
+      "Connected those fine-scale processes back to drought, Amazon hydroclimate, Great Plains precipitation, terrestrial greening, and global water and carbon cycles.",
+      "Expanded the use of satellite observations, including solar-induced chlorophyll fluorescence and other vegetation products, to observe photosynthesis, drought stress, and ecosystem change from space.",
     ],
-    impact: "By the end of his full-time career, Bob’s legacy lived in both a more complete representation of Earth and a worldwide community trained to keep improving it.",
-    threads: ["Drought", "Remote sensing", "Coupled processes", "Mentorship"],
+    impact: "Robert’s Earth-system science became simultaneously broader and deeper—linking processes inside leaves to vegetation, drought, the terrestrial water cycle, and climate at planetary scale.",
+    threads: ["Evapotranspiration", "Plant physiology", "Remote sensing", "Drought & hydroclimate"],
     photo: null,
     publication: null,
+    publications: [
+      {
+        year: "2012",
+        title: "A Review of Global Terrestrial Evapotranspiration: Observation, Modeling, Climatology, and Climatic Variability",
+        citation: "Wang, K. C. & Dickinson, R. E. · Reviews of Geophysics, 50, RG2005",
+        note: "A mature synthesis uniting physical theory, ground observations, satellite retrievals, land-surface models, and global hydroclimate.",
+        url: "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2011RG000373",
+        image: "landmarks/ut-evapotranspiration.svg",
+        alt: "Publication preview for the global terrestrial evapotranspiration review by Wang and Dickinson, 2012",
+      },
+    ],
   },
   {
     id: "legacy-ucla",
     number: "06",
     years: "2018–2026",
     institution: "UCLA",
-    scale: "Synthesis and mentorship",
-    title: "Keeping the scientific conversation alive",
-    summary: "Robert continued to connect ideas across atmospheric science and Earth-system modeling, returning to first principles as new models and observations emerged. Collaboration and mentorship carried that approach into the work of younger scientists.",
+    scale: "Synthesis, impacts & tropical hydroclimate",
+    title: "Curious about everything — still connecting the system",
+    summary: "Even after retirement, Robert continued to apply connected Earth-system thinking to new climate questions and to synthesize the land–atmosphere science he had helped build.",
     contributions: [
-      "Continued collaborating across atmospheric science, climate, land-surface processes, and Earth-system modeling.",
-      "Shared decades of physical insight with students and colleagues working on new generations of models and observations.",
-      "Sustained an international scientific community built as much through generosity and conversation as through publications.",
+      "Continued to frame the land and atmosphere as a coupled system, integrating vegetation, soil, radiation, water, energy, and atmospheric response.",
+      "Applied Earth-system thinking to new problems, including fire-weather risk, urbanization and climate teleconnections, surface-wind changes, and aviation impacts of a warming atmosphere.",
+      "Continued work on vegetation, hydrology, and tropical climate, including Amazonian plant-water dynamics and the Congo Basin water cycle.",
+      "Continued collaborating with and mentoring younger scientists rather than treating retirement as the end of scientific inquiry.",
     ],
-    impact: "His final professional chapter made clear that his enduring contribution was not only a body of science, but a way of doing science—curious, physical, collaborative, and generous.",
-    threads: ["Synthesis", "Earth-system science", "Collaboration", "Mentorship"],
+    impact: "The chronicle closes not with a new field, but with a synthesis: atmosphere, land, vegetation, water, and climate understood through their connections. The questions kept changing; the instinct to connect them did not.",
+    threads: ["Land–atmosphere synthesis", "Climate attribution", "Tropical hydroclimate", "Mentorship"],
     photo: null,
     publication: null,
+    publications: [
+      {
+        year: "3rd ed.",
+        title: "Land–Atmosphere Interactions | Overview",
+        citation: "Wang, G. & Dickinson, R. E. · Encyclopedia of Atmospheric Sciences, 3rd edition · DOI 10.1016/B978-0-323-96026-7.00098-9",
+        note: "A capstone synthesis of the coupled exchanges linking land, vegetation, water, energy, and atmosphere—the connections at the center of much of Robert’s scientific life.",
+        url: "https://www.sciencedirect.com/science/chapter/referencework/abs/pii/B9780323960267000989?via%3Dihub",
+        image: "landmarks/ucla-land-atmosphere.svg",
+        alt: "Publication preview for Land–Atmosphere Interactions Overview by Guiling Wang and Robert E. Dickinson",
+      },
+    ],
   },
 ];
-
 const honors: MemorialHonor[] = [
   { year: "1973", title: "Clarence Leroy Meisinger Award", detail: "American Meteorological Society" },
   { year: "1984", title: "Fellow", detail: "American Association for the Advancement of Science" },
@@ -727,6 +824,18 @@ function alignLegacyFrontiers(items: SecondaryLegacyTopic[]): SecondaryLegacyTop
   return unchanged ? secondaryLegacyTopics : items;
 }
 
+function alignLegacyChapters(items: LegacyChapter[]): LegacyChapter[] {
+  const hasNewPublicationSchema = items.every((chapter) => Array.isArray(chapter.publications));
+  if (hasNewPublicationSchema) return items;
+  return legacyChapters.map((template) => {
+    const saved = items.find((chapter) => chapter.id === template.id);
+    return {
+      ...template,
+      photo: saved?.photo ?? template.photo,
+    };
+  });
+}
+
 export async function getSiteContent(): Promise<SiteContent> {
   if (!env.DB) return defaultContent;
   try {
@@ -748,7 +857,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       homeFrontierLabels: parseJson<string[]>(values.homeFrontierLabels, defaultContent.homeFrontierLabels).map((label) => label === "Canopy radiative transfer" ? "Canopy Radiative Transfer" : label),
       secondaryLegacyTopics: alignLegacyFrontiers(parseJson<SecondaryLegacyTopic[]>(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics)),
       lifeMilestones: parseJson<LifeMilestone[]>(values.lifeMilestones, defaultContent.lifeMilestones).map((item) => ({ ...item, text: reviseEditorialText(item.text) })),
-      legacyChapters: parseJson<LegacyChapter[]>(values.legacyChapters, defaultContent.legacyChapters).map((chapter) => ({ ...chapter, summary: reviseEditorialText(chapter.summary) })),
+      legacyChapters: alignLegacyChapters(parseJson<LegacyChapter[]>(values.legacyChapters, defaultContent.legacyChapters)).map((chapter) => ({ ...chapter, summary: reviseEditorialText(chapter.summary) })),
       legacyThreads: alignLegacyThreads(parseJson<LegacyThread[]>(values.legacyThreads, defaultContent.legacyThreads)),
       communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
       honors: parseJson<MemorialHonor[]>(values.honors, defaultContent.honors).map((honor) => honor.year === "2007" && honor.title === "Lead Author, IPCC Fourth Assessment Report" && honor.detail === "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry" ? { ...honor, detail: "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry. Robert contributed as a Lead Author; the IPCC and Al Gore jointly received the 2007 Nobel Peace Prize." } : honor),
