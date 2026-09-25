@@ -82,7 +82,7 @@ export default async function MemoryBookPage() {
           <p className="book-running-title">{copy["nav.life"]} · {copy["global.footerName"]}</p>
           <div className="book-section-heading"><p className="book-label">{copy["life.heroKicker"]}</p><h2>{copy["life.heroTitle"]}</h2><p>{copy["life.heroIntro"]}</p></div>
           <div className="book-life-story">{storyParagraphs.map((paragraph) => <p key={paragraph.slice(0, 40)}>{paragraph}</p>)}</div>
-          <aside className="book-mentor-note"><blockquote>{copy["life.mentorQuote"]}</blockquote><p>{copy["life.mentorText"]}</p></aside>
+          <aside className="book-mentor-note"><h3>{copy["life.mentorTitle"]}</h3><p>{copy["life.mentorBody"]}</p><strong>{copy["life.mentorText"]}</strong></aside>
           <span className="book-page-number">His life</span>
         </section>
 

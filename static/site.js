@@ -515,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
     storyParagraphs.forEach((paragraph) => lifeStory.append(node("p", { text: paragraph })));
     life.append(lifeStory);
     const mentor = node("aside", { className: "book-mentor-note" });
-    mentor.append(node("blockquote", { text: copy["life.mentorQuote"] || "" }), node("p", { text: copy["life.mentorText"] || "" }));
+    mentor.append(node("h3", { text: copy["life.mentorTitle"] || "The mentor he was" }), node("p", { text: copy["life.mentorBody"] || "" }), node("strong", { text: copy["life.mentorText"] || "" }));
     life.append(mentor, node("span", { className: "book-page-number", text: copy["nav.life"] || "His life" }));
     pages.push(life);
 

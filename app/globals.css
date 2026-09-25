@@ -2574,3 +2574,54 @@ html[data-page="life"] .site-footer, .life-page-active .site-footer { background
   .life-reference-card:not(.life-reference-childhood) .life-reference-card-media .life-photo { height: 190px; }
 }
 @media (prefers-reduced-motion: reduce) { .life-reference-page .life-reference-entry::before { transition: none; } }
+
+/* The personal coda to the His Life timeline. */
+.life-mentor-feature {
+  display: grid;
+  grid-template-columns: minmax(200px, .72fr) minmax(0, 1.45fr);
+  gap: 28px clamp(34px, 5vw, 84px);
+  max-width: 1190px;
+  margin: 12px auto 70px;
+  padding: clamp(34px, 5vw, 66px);
+  border: 1px solid rgba(190, 172, 139, .55);
+  border-radius: 6px;
+  background: rgba(255, 253, 248, .9);
+  box-shadow: 0 16px 38px rgba(39, 48, 50, .09);
+}
+.life-mentor-heading .section-kicker { color: #9b773c; margin: 0 0 18px; }
+.life-mentor-heading h2 { color: #183247; font-family: Georgia, serif; font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 500; letter-spacing: -.035em; line-height: 1.12; margin: 0; }
+.life-mentor-body { align-self: start; color: #30414d; font-family: Georgia, serif; font-size: clamp(1.05rem, 1.4vw, 1.2rem); line-height: 1.7; margin: 0; }
+.life-mentor-closing {
+  grid-column: 1 / -1;
+  border-top: 1px solid #d8c7a7;
+  color: #183247;
+  font-family: Georgia, serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-style: italic;
+  line-height: 1.35;
+  margin: 7px 0 0;
+  padding: 30px 0 0 38px;
+  position: relative;
+}
+.life-mentor-closing::before { content: ""; position: absolute; top: 38px; bottom: 7px; left: 0; width: 3px; background: #b9965a; }
+
+/* A short community verse between colleagues' words and shared stories. */
+.memory-verse-section { padding: 68px clamp(26px, 8vw, 130px); background: linear-gradient(125deg, #213e51, #112b3d); }
+.memory-verse-card { display: grid; grid-template-columns: minmax(200px, .65fr) minmax(0, 1.35fr); gap: 20px 60px; max-width: 1100px; margin: 0 auto; border-top: 1px solid rgba(218, 178, 111, .65); padding-top: 34px; }
+.memory-verse-card .section-kicker { align-self: start; color: #e4c48b; margin: 12px 0 0; }
+.memory-verse-card blockquote { color: #fff9ed; font-family: Georgia, serif; font-size: clamp(1.55rem, 2.7vw, 2.4rem); font-weight: 400; line-height: 1.4; margin: 0; white-space: pre-line; }
+.memory-verse-card cite { grid-column: 2; color: #e4c48b; font-size: .82rem; font-style: normal; letter-spacing: .04em; }
+.memory-verse-card cite:empty { display: none; }
+
+.book-mentor-note { display: block; }
+.book-mentor-note h3 { font-family: var(--font-display); font-size: 1rem; margin: 0 0 8px; }
+.book-mentor-note p { font-size: .72rem; line-height: 1.5; margin: 0 0 9px; }
+.book-mentor-note strong { color: var(--ink); display: block; font-family: var(--font-display); font-size: .85rem; font-weight: 400; font-style: italic; }
+
+@media (max-width: 760px) {
+  .life-mentor-feature { grid-template-columns: 1fr; gap: 22px; margin: 8px 20px 50px; padding: 30px 26px; }
+  .life-mentor-closing { padding-left: 24px; }
+  .memory-verse-section { padding: 54px 25px; }
+  .memory-verse-card { grid-template-columns: 1fr; gap: 15px; }
+  .memory-verse-card cite { grid-column: 1; }
+}

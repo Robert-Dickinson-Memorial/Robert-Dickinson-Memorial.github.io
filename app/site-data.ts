@@ -579,7 +579,9 @@ export const defaultPageCopy: Record<string, string> = {
   "life.heroTitle": "A curious Mind. A generous spirit",
   "life.heroIntro": "Robert’s path through life and career.",
   "life.years": "1940–2026",
-  "life.mentorQuote": "For Robert, the people he collaborated with—from students and postdocs to colleagues at every career stage—were among the greatest highlights of his life in science.",
+  "life.mentorKicker": "Beyond the timeline",
+  "life.mentorTitle": "The mentor he was",
+  "life.mentorBody": "Robert was a patient and generous mentor who made time for students, postdoctoral scholars, and young scientists, listened carefully to their ideas, and helped them find their way. He passed on more than knowledge - a way of thinking that combined grand vision and close attention to detail, grounded in curiosity, physical insight, rigor, and intellectual generosity. He valued the people he worked with as deeply as the questions they explored together.",
   "life.mentorText": "His influence continues through the questions they ask, the models they build, and the people they mentor in turn.",
   "life.sourcesIntro": "Biographical information was drawn from Robert’s curriculum vitae and institutional sources.",
   "life.sourceJacksonLabel": "Jackson School profile",
@@ -650,6 +652,9 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.voicesKicker": "In the words of his colleagues",
   "memories.voicesTitle": "Voices from the scientific community",
   "memories.voicesIntro": "A few words from scientists whose work and lives were shaped by Robert.",
+  "memories.poemKicker": "A tribute in verse",
+  "memories.poemText": "So as we honor Bob today\nBy science he was smitten\nHis legacy is guaranteed\nSo many papers written!",
+  "memories.poemAttribution": "",
   "memories.shareKicker": "Add your voice",
   "memories.shareTitle": "Share a memory",
   "memories.shareText": "A conversation after seminar. A line of code he helped untangle. The question that changed your research. Small stories often reveal the truest measure of a mentor’s life.",
@@ -953,6 +958,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.";
         if (saved["life.heroTitle"] === "A curious mind. A generous spirit.") saved["life.heroTitle"] = "A curious Mind. A generous spirit";
         if (saved["life.heroIntro"] === "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.") saved["life.heroIntro"] = "Robert’s path through life and career.";
+        delete saved["life.mentorQuote"];
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
