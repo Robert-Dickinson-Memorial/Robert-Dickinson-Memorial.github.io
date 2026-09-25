@@ -1884,3 +1884,43 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .life-photo-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) { .life-photo-stack { grid-template-columns: 1fr; } }
+
+
+/* Living Tribute restoration collection */
+.tree-project-featured { position: relative; }
+.tree-project-featured::before { background: rgba(213,184,121,.82); content: ""; height: 4px; left: 0; position: absolute; right: 0; top: 0; }
+.tree-project-featured > div:first-child > p:not(.section-kicker) { margin: 14px 0 0; }
+.tree-project-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 28px; }
+.tree-project-actions a { margin-top: 0; }
+.tree-project-actions .tree-project-donate { background: var(--memorial-gold, #d5b879); border: 1px solid var(--memorial-gold, #d5b879); color: var(--memorial-navy, #0b2239); font-weight: 700; padding: 13px 17px; text-decoration: none; }
+.tree-project-actions .tree-project-source { border-bottom: 1px solid currentColor; }
+.tree-designation-note { border-top: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.64) !important; font-family: Arial, sans-serif !important; font-size: .78rem !important; line-height: 1.55; margin-top: 28px !important; max-width: 760px; padding-top: 18px; }
+.tree-designation-note strong { color: #e1c781; }
+
+.tree-restoration-collection { background: var(--memorial-ivory, #f5f0e6); color: var(--memorial-navy, #0b2239); padding: 105px clamp(26px, 8vw, 130px); }
+.tree-collection-heading { margin-bottom: 58px; }
+.tree-project-grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tree-project-card { background: var(--memorial-surface, #fffdf8); border: 1px solid var(--memorial-rule, #d7cebd); display: flex; flex-direction: column; min-height: 430px; padding: 30px; }
+.tree-project-region { color: var(--memorial-bronze, #806335) !important; font-size: .68rem !important; font-weight: 700; letter-spacing: .1em; margin: 0 0 22px !important; text-transform: uppercase; }
+.tree-project-card h3 { font-family: Georgia, serif; font-size: 1.55rem; font-weight: 400; letter-spacing: -.015em; line-height: 1.15; margin: 0 0 18px; }
+.tree-project-card > p:not(.tree-project-region) { color: var(--memorial-muted, #586571); font-size: .86rem; line-height: 1.65; margin: 0; }
+.tree-project-provider { border-top: 1px solid var(--memorial-rule, #d7cebd); color: var(--memorial-bronze, #806335); font-size: .67rem; font-weight: 700; letter-spacing: .055em; margin-top: auto; padding-top: 22px; text-transform: uppercase; }
+.tree-card-links { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
+.tree-card-links a { align-items: center; color: var(--memorial-navy, #0b2239); display: inline-flex; font-size: .79rem; font-weight: 700; gap: 6px; width: fit-content; }
+.tree-card-links a:first-child { border-bottom: 1px solid var(--memorial-gold, #d5b879); }
+.tree-card-links a + a { color: var(--memorial-muted, #586571); font-weight: 500; }
+.tree-card-note { color: var(--memorial-muted, #586571); display: block; font-size: .69rem; line-height: 1.45; margin-top: 16px; }
+.tree-projects-footnote { border-top: 1px solid var(--memorial-rule, #d7cebd); color: var(--memorial-muted, #586571); font-size: .76rem; line-height: 1.6; margin: 42px 0 0; padding-top: 22px; }
+.tree-projects-footnote strong { color: var(--memorial-navy, #0b2239); }
+
+@media (max-width: 1050px) {
+  .tree-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+  .tree-restoration-collection { padding: 80px 22px; }
+  .tree-project-grid { grid-template-columns: 1fr; }
+  .tree-project-card { min-height: 0; padding: 26px 24px; }
+  .tree-project-provider { margin-top: 34px; }
+  .tree-project-actions { align-items: flex-start; flex-direction: column; }
+}
