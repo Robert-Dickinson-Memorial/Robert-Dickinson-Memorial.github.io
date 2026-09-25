@@ -65,6 +65,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof content.headingFont === "string") main.dataset.headingFont = content.headingFont;
   }
 
+  function renderLifePhotos(photos) {
+    const target = document.querySelector("[data-life-photos]");
+    if (!(target instanceof HTMLElement) || !Array.isArray(photos) || !photos.length) return;
+    const grid = node("div", { className: "life-photo-grid" });
+    photos.forEach((photo) => {
+      const figure = node("figure");
+      figure.append(node("img", { attrs: { src: objectUrl("/api/life-photos", photo.objectKey), alt: photo.alt || "", loading: "lazy" } }));
+      if (photo.date || photo.caption) {
+        const caption = node("figcaption");
+        if (photo.date) caption.append(node("span", { text: photo.date }));
+        if (photo.caption) caption.append(node("p", { text: photo.caption }));
+        figure.append(caption);
+      }
+      grid.append(figure);
+    });
+    target.replaceChildren(grid);
+  }
+
   function renderLifeTimeline(items) {
     const target = document.querySelector("[data-life-timeline]");
     if (!(target instanceof HTMLElement) || !Array.isArray(items)) return;
@@ -255,6 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderHomeLegacy(content.legacyThreads, content.homeLegacyCards, content.homeFrontierLabels, content.pageCopy);
     renderLifeTimeline(content.lifeMilestones);
+    renderLifePhotos(content.lifePhotos);
     renderLegacy(content, content.pageCopy);
   }
 

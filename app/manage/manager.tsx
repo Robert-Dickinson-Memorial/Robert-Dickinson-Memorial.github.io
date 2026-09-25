@@ -90,6 +90,7 @@ function copyFieldLabel(key: string) {
 
 export default function Manager({ content, events, media, publishedMemories, editors, owner }: { content: SiteContent; events: MemorialEvent[]; media: GalleryItem[]; publishedMemories: PublishedMemory[]; editors: MemorialEditor[]; owner: boolean }) {
   const [contentValues, setContentValues] = useState(content);
+  const [lifePhotos, setLifePhotos] = useState(content.lifePhotos);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -190,6 +191,38 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
   function updateChapter(index: number, patch: Partial<LegacyChapter>) {
     setContentValues((current) => ({ ...current, legacyChapters: current.legacyChapters.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item) }));
+  }
+
+  async function saveLifePhoto(event: FormEvent<HTMLFormElement>, id?: string) {
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    const file = form.get("file");
+    const upload = file instanceof File && file.size > 0;
+    if (!id && !upload) { setMessage("Choose a photograph to upload."); return; }
+    if (id) form.set("id", id);
+    setBusy(true); setMessage("");
+    try {
+      const response = upload
+        ? await fetch("/api/admin/life-photos", { method: "POST", body: form })
+        : await fetch("/api/admin/life-photos", { method: "PATCH", headers: { "content-type": "application/json" },
+            body: JSON.stringify({ id, caption: form.get("caption"), date: form.get("date"), alt: form.get("alt") }) });
+      const data = await responseData(response);
+      setLifePhotos(data.photos);
+      if (!id) formElement.reset();
+      setMessage("Early-life photograph saved.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
+    finally { setBusy(false); }
+  }
+
+  async function deleteLifePhoto(id: string) {
+    if (!window.confirm("Remove this photograph and its caption from His Life?")) return;
+    setBusy(true); setMessage("");
+    try {
+      const data = await responseData(await fetch(`/api/admin/life-photos?id=${encodeURIComponent(id)}`, { method: "DELETE" }));
+      setLifePhotos(data.photos); setMessage("Photograph removed from His Life.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
+    finally { setBusy(false); }
   }
 
   async function uploadChapterPhoto(event: FormEvent<HTMLFormElement>, chapterId: string) {
@@ -333,7 +366,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage early-life photographs ↓</a><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
           <label>His life — full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
@@ -358,6 +391,29 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <button type="button" className="manager-secondary" onClick={addHomeLegacyCard}>Add highlight</button>
           </div>
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save homepage scientific story</button>
+        </div>
+      </section>
+
+      <section id="edit-life-photos" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">His Life</p><h2>Early-life photographs</h2><p>Add photographs from Robert’s childhood, school years, and early adulthood. They appear between his biography and career timeline. Dates are optional and may be approximate.</p><a className="manager-section-link" href="#copy-life">Edit the photo section heading ↓</a></div>
+        <div className="manager-form manager-stack">
+          {lifePhotos.map((photo) => <form className="manager-edit-card" key={photo.id + photo.objectKey} onSubmit={(event) => saveLifePhoto(event, photo.id)}>
+            <img className="manager-image-preview" src={`/api/life-photos/${photo.objectKey.split("/").map(encodeURIComponent).join("/")}`} alt={photo.alt} />
+            <label>Date or period<input name="date" defaultValue={photo.date} placeholder="For example: circa 1955" maxLength={100} /></label>
+            <label>Caption<textarea name="caption" rows={3} defaultValue={photo.caption} maxLength={2000} /></label>
+            <label>Image description <span>Describe the photograph for visitors using screen readers.</span><input name="alt" defaultValue={photo.alt} maxLength={500} /></label>
+            <label>Replace photograph <span>Optional. JPG, PNG, or WebP, up to 12 MB.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" /></label>
+            <button className="manager-primary" disabled={busy}><Save size={18} /> Save photograph</button>
+            <button type="button" className="manager-danger" disabled={busy} onClick={() => deleteLifePhoto(photo.id)}><Trash2 size={16} /> Delete photograph</button>
+          </form>)}
+          <form className="manager-edit-card" onSubmit={(event) => saveLifePhoto(event)}>
+            <h3>Add an early-life photograph</h3>
+            <label>Photograph <span>JPG, PNG, or WebP, up to 12 MB.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
+            <label>Date or period<input name="date" placeholder="For example: Childhood in Minnesota" maxLength={100} /></label>
+            <label>Caption<textarea name="caption" rows={3} maxLength={2000} /></label>
+            <label>Image description<input name="alt" placeholder="Describe who and what appears in the photograph" maxLength={500} /></label>
+            <button className="manager-primary" disabled={busy}><ImagePlus size={18} /> Add photograph</button>
+          </form>
         </div>
       </section>
 

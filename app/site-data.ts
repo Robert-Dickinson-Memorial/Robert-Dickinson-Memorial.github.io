@@ -97,7 +97,10 @@ export type SiteAssets = {
   horizon: SiteAsset;
 };
 
+export type LifePhoto = { id: string; objectKey: string; caption: string; date: string; alt: string };
+
 export type SiteContent = {
+  lifePhotos: LifePhoto[];
   heroIntro: string;
   obituaryStory: string;
   treeTribute: string;
@@ -389,6 +392,9 @@ export const defaultPageCopy: Record<string, string> = {
   "home.memoriesText": "Read approved stories from students, colleagues, friends, and family—and add your own.",
   "home.memoriesCta": "Read or share memories →",
 
+  "life.photosKicker": "Early years",
+  "life.photosTitle": "Early life in photographs",
+  "life.photosEmpty": "Photographs from Robert’s early years will be shared here.",
   "life.heroKicker": "His Life",
   "life.heroTitle": "A curious mind. A generous spirit.",
   "life.heroIntro": "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.",
@@ -542,6 +548,7 @@ export const defaultSiteAssets: SiteAssets = {
 };
 
 export const defaultContent: SiteContent = {
+  lifePhotos: [],
   heroIntro: "Pioneering climate scientist, visionary Earth-system modeler, devoted teacher, and generous mentor.",
   obituaryStory: "Robert Earl Dickinson helped change how humanity understands the living Earth.\n\nBorn in Millersburg, Ohio, and raised in Minnesota, Robert carried an expansive curiosity into a lifetime of science. He studied chemistry and physics at Harvard University, graduating in 1961, then turned to meteorology at the Massachusetts Institute of Technology, earning his master’s degree in 1962 and Ph.D. in 1966.\n\nRobert was known as a patient and exacting mentor. He gave care and attention to students, postdoctoral scholars, and visiting scientists, and valued the people he worked with as much as the questions they explored together.\n\nHis career took him from MIT and NCAR to the University of Arizona, Georgia Tech, UT Austin, and UCLA. After retiring from UT Austin, he remained active in collaboration and mentorship. Curiosity, physical insight, and generosity continued to shape his conversations with colleagues across generations.",
   treeTribute: "Robert grew up in Minnesota. A memorial tree in the Chippewa National Forest honors that connection while helping restore a landscape of pine, spruce, cedar, lakes, and headwater streams.",
@@ -578,6 +585,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     const result = await env.DB.prepare("SELECT key, value FROM site_content").all<{ key: string; value: string }>();
     const values = Object.fromEntries((result.results ?? []).map((row) => [row.key, row.value]));
     return {
+      lifePhotos: parseJson<LifePhoto[]>(values.lifePhotos, []),
       heroIntro: values.heroIntro || defaultContent.heroIntro,
       obituaryStory: reviseEditorialText(values.obituaryStory || defaultContent.obituaryStory),
       treeTribute: values.treeTribute || defaultContent.treeTribute,
