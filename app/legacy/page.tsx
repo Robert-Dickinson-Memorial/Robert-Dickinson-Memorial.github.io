@@ -27,7 +27,6 @@ export default async function LegacyPage() {
             <header><div className="journey-number">{chapter.number}</div><div><p>{chapter.institution} <span>·</span> {chapter.years}</p><h3>{chapter.title}</h3></div><div className="journey-scale"><small>{copy["legacy.focusLabel"]}</small><strong>{chapter.scale}</strong></div></header>
             <p className="journey-summary">{chapter.summary}</p>
             <div className="journey-detail"><div><p className="journey-label">{copy["legacy.contributionsLabel"]}</p><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><p className="journey-label">{copy["legacy.impactLabel"]}</p><span>{chapter.impact}</span></blockquote></div>
-            {image && chapter.photo && <figure className="journey-chapter-photo"><img src={image} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>{copy["legacy.photoCredit"]}</small></figcaption></figure>}
             {publications.length > 0 && <section className="landmark-work" aria-label={`Landmark work from ${chapter.institution}`}>
               <p className="journey-label">Landmark work</p>
               <div className={`landmark-grid ${publications.length === 1 ? "single" : ""}`}>
@@ -43,6 +42,8 @@ export default async function LegacyPage() {
                 </a>)}
               </div>
             </section>}
+            {image && chapter.photo && <figure className="journey-chapter-photo"><img src={image} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>{copy["legacy.photoCredit"]}</small></figcaption></figure>}
+            
             <div className="journey-tags">{chapter.threads.map((thread) => <span key={thread}>{thread}</span>)}</div>
           </article>;
         })}</div>
