@@ -344,7 +344,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       <section id="edit-home-legacy" className="manager-panel manager-panel-wide">
         <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The full-width heading sits above the introductory text and six-thread illustration. Home shows four selected frontiers beneath the illustration, then four editorial highlights. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
         <div className="manager-form manager-stack">
-          <label>Introductory text<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
+          <label>Home — Scientific Legacy introduction<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
           <div className="manager-subcard">
             <h3>Major editorial highlights</h3>
             <p className="manager-help">These are the four large editorial rows beneath the six-thread illustration on Home.</p>

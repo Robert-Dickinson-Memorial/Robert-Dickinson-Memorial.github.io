@@ -1616,7 +1616,7 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 .home-preview-heading-integrated {
   align-items: start;
   column-gap: clamp(24px, 3vw, 52px);
-  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, .6fr) minmax(0, 1.4fr);
   row-gap: clamp(36px, 4vw, 64px);
 }
 .home-preview-heading-integrated > .home-legacy-title-block {
@@ -1647,7 +1647,7 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   min-width: 0;
   width: 100%;
 }
-.home-thread-visual { margin-top: 18px; min-width: 0; }
+.home-thread-visual { margin-top: 0; min-width: 0; }
 .home-thread-mobile-list { display: none; }
 .home-science-story { margin-top: 36px; min-height: 0; }
 .science-highlight-stream { padding: 0; width: 100%; }

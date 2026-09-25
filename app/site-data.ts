@@ -553,7 +553,7 @@ export const defaultContent: SiteContent = {
   treeDetail: "Reforestation projects in the Chippewa restore native trees, strengthen wildlife habitat—including habitat for bald eagles—and improve the forest’s resilience to wind damage, insects, disease, and a changing climate.",
   bodyFont: "system-sans",
   headingFont: "classic-serif",
-  homeLegacyIntro: "Rather than a single linear path, Bob’s work formed a connected scientific landscape. Foundational ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, observations from space, and the coupled Earth repeatedly converged as the scale of his questions widened.",
+  homeLegacyIntro: "Rather than a single linear path, Robert’s work formed a connected scientific landscape. Foundational ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, observations from space, and the coupled Earth repeatedly converged as the scale of his questions widened.",
   homeLegacyCards,
   secondaryLegacyTopics,
   lifeMilestones,
@@ -588,7 +588,10 @@ export async function getSiteContent(): Promise<SiteContent> {
       treeDetail: values.treeDetail || defaultContent.treeDetail,
       bodyFont: values.bodyFont || defaultContent.bodyFont,
       headingFont: values.headingFont || defaultContent.headingFont,
-      homeLegacyIntro: values.homeLegacyIntro || defaultContent.homeLegacyIntro,
+      // Refresh the original saved introduction while preserving custom editor text.
+      homeLegacyIntro: !values.homeLegacyIntro || values.homeLegacyIntro === defaultContent.homeLegacyIntro.replace("Robert’s work", "Bob’s work")
+        ? defaultContent.homeLegacyIntro
+        : values.homeLegacyIntro,
       homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
       secondaryLegacyTopics: parseJson(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics),
       lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
