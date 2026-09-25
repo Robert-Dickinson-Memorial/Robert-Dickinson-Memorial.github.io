@@ -86,12 +86,13 @@ export default async function MemoryBookPage() {
 
         {content.legacyChapters.map((chapter) => {
           const photo = chapterPhotoUrl(chapter.photo);
+          const publications = chapter.publications?.length ? chapter.publications : chapter.publication ? [chapter.publication] : [];
           return <section className="book-spread book-legacy-chapter-spread" key={chapter.id}>
             <p className="book-running-title">{copy["nav.legacy"]} · {chapter.institution}</p>
             <header><div><p className="book-label">{chapter.number} · {chapter.years}</p><h2>{chapter.title}</h2><strong>{chapter.institution} · {chapter.scale}</strong></div>{photo && chapter.photo && <figure><img src={photo} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}</figcaption></figure>}</header>
             <p className="book-legacy-summary">{chapter.summary}</p>
             <div className="book-legacy-details"><div><h3>{copy["legacy.contributionsLabel"]}</h3><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><h3>{copy["legacy.impactLabel"]}</h3><p>{chapter.impact}</p></blockquote></div>
-            {chapter.publication && <div className="book-publication"><p className="book-label">{copy["legacy.publicationLabel"]} · {chapter.publication.year}</p><h3>{chapter.publication.title}</h3><cite>{chapter.publication.citation}</cite><p>{chapter.publication.note}</p></div>}
+            {publications.map((publication) => <div className="book-publication" key={`${publication.year}-${publication.title}`}><p className="book-label">{copy["legacy.publicationLabel"]} · {publication.year}</p><h3>{publication.title}</h3><cite>{publication.citation}</cite><p>{publication.note}</p></div>)}
             <div className="book-tags">{chapter.threads.map((thread) => <span key={thread}>{thread}</span>)}</div>
             <span className="book-page-number">{chapter.institution}</span>
           </section>;
