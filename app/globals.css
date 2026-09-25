@@ -1648,6 +1648,11 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 }
 .home-thread-art {
   aspect-ratio: 1942 / 809;
+  /* Feather the artwork into the section background without tinting its labels. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
+  mask-composite: intersect;
   background-position: right top;
   background-repeat: no-repeat;
   background-size: 100% 100%;
