@@ -52,6 +52,7 @@ jobs:
           cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
           cp public/dickinson-1967-mit-phd.jpg _site/assets/dickinson-1967-mit-phd.jpg
           cp public/memorial-horizon.png _site/assets/memorial-horizon.png
+          cp public/life-reference-background-v1.webp _site/life-reference-background-v1.webp
           cp public/legacy-science-reference.webp _site/assets/legacy-science-reference.webp
           cp public/legacy-threads-large-labels.webp _site/assets/legacy-threads-large-labels.webp
           cp public/landmarks/*.svg _site/assets/landmarks/

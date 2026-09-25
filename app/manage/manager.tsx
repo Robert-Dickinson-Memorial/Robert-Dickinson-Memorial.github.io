@@ -35,6 +35,7 @@ const copyFieldNames: Record<string, string> = {
   heroEyebrow: "Hero eyebrow",
   heroKicker: "Hero kicker",
   heroTitle: "Hero title",
+  heroName: "Hero — full name",
   heroIntro: "Hero introduction",
   heroNameLine1: "Name — line 1",
   heroNameLine2: "Name — line 2",

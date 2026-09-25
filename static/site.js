@@ -70,10 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof content.headingFont === "string") main.dataset.headingFont = content.headingFont;
   }
 
-  function lifePhotoFigure(photo) {
+  function lifePhotoFigure(photo, showCaption = true) {
     const figure = node("figure", { className: "life-photo" });
     figure.append(node("img", { attrs: { src: objectUrl("/api/life-photos", photo.objectKey), alt: photo.alt || "", loading: "lazy" } }));
-    if (photo.date || photo.caption) {
+    if (showCaption && (photo.date || photo.caption)) {
       const caption = node("figcaption");
       if (photo.date) caption.append(node("span", { text: photo.date }));
       if (photo.caption) caption.append(node("p", { text: photo.caption }));
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       target.replaceChildren(node("p", { className: "life-photos-empty", text: editableCopy["life.photosEmpty"] || "Photographs from Robert’s early years will be shared here." }));
       return;
     }
-    target.replaceChildren(...early.map(lifePhotoFigure));
+    target.replaceChildren(...early.map((photo) => lifePhotoFigure(photo)));
   }
   function illuminateLifeTimeline() {
     const entries = document.querySelectorAll(".life-reference-entry");
@@ -119,10 +119,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = node("div", { className: photo ? "life-reference-card" : "life-reference-card life-reference-no-photo" });
       const copy = node("div", { className: "life-reference-card-copy" });
       copy.append(node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
+      if (photo && (photo.date || photo.caption)) copy.append(node("p", { className: "life-reference-photo-note", text: [photo.date, photo.caption].filter(Boolean).join(" · ") }));
       card.append(copy);
       if (photo) {
         const media = node("div", { className: "life-reference-card-media" });
-        media.append(lifePhotoFigure(photo));
+        media.append(lifePhotoFigure(photo, false));
         card.append(media);
       }
       article.append(date, card);

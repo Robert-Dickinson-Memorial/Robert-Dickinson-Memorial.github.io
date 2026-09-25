@@ -5,10 +5,10 @@ import LifeTimelineMotion from "./timeline-motion";
 
 export const dynamic = "force-dynamic";
 
-function LifePhotograph({ photo }: { photo: LifePhoto }) {
+function LifePhotograph({ photo, caption = true }: { photo: LifePhoto; caption?: boolean }) {
   return <figure className="life-photo">
     <img src={`/api/life-photos/${photo.objectKey.split("/").map(encodeURIComponent).join("/")}`} alt={photo.alt} loading="lazy" />
-    {(photo.date || photo.caption) && <figcaption>{photo.date && <span>{photo.date}</span>}{photo.caption && <p>{photo.caption}</p>}</figcaption>}
+    {caption && (photo.date || photo.caption) && <figcaption>{photo.date && <span>{photo.date}</span>}{photo.caption && <p>{photo.caption}</p>}</figcaption>}
   </figure>;
 }
 
@@ -21,15 +21,16 @@ export default async function LifePage() {
     ? `/api/site-assets/${portrait.objectKey.split("/").map(encodeURIComponent).join("/")}`
     : `/assets/${portrait.asset.replace(/^\//, "")}`;
 
-  return <main className="interior-page life-reference-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+  return <main className="interior-page life-reference-page life-page-active" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="life" />
     <header className="life-reference-hero">
       <div className="life-reference-hero-inner">
         <div className="life-reference-hero-copy">
           <p className="section-kicker">{copy["life.heroKicker"]}</p>
+          <p className="life-reference-name">{copy["life.heroName"]}</p>
+          <span className="life-reference-years">{copy["life.years"]}</span>
           <h1>{copy["life.heroTitle"]}</h1>
           <p className="life-reference-hero-intro">{copy["life.heroIntro"]}</p>
-          <span className="life-reference-years">{copy["life.years"]}</span>
         </div>
         <figure className="life-reference-portrait"><img src={portraitSrc} alt={portrait.alt} /></figure>
       </div>
@@ -60,8 +61,8 @@ export default async function LifePage() {
           return <article className="life-scroll-entry life-reference-entry" key={item.id || index}>
             <div className="life-reference-date"><span>{item.year}</span></div>
             <div className={`life-reference-card${photo ? "" : " life-reference-no-photo"}`}>
-              <div className="life-reference-card-copy"><h3>{item.title}</h3><p>{item.text}</p></div>
-              {photo && <div className="life-reference-card-media"><LifePhotograph photo={photo} /></div>}
+              <div className="life-reference-card-copy"><h3>{item.title}</h3><p>{item.text}</p>{photo && (photo.date || photo.caption) && <p className="life-reference-photo-note">{[photo.date, photo.caption].filter(Boolean).join(" · ")}</p>}</div>
+              {photo && <div className="life-reference-card-media"><LifePhotograph photo={photo} caption={false} /></div>}
             </div>
           </article>;
         })}

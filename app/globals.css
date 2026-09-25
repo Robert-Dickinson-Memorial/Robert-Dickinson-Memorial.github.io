@@ -2433,154 +2433,144 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .life-scroll-entry::after { transform: none; }
 }
 
-/* His Life: a compact chronology, archival photographs, and six personal qualities. */
-.life-reference-page { background: #f5f2eb; color: #172f3f; }
-.life-reference-page .life-reference-hero {
-  position: relative; overflow: hidden; min-height: 0;
-  padding: 112px clamp(24px, 5vw, 76px) 68px;
-  background: linear-gradient(115deg, #f8f5ef 18%, #eae9e1 68%, #dfe5e3);
+/* His Life: the supplied reference's ivory, navy, serif typography and illuminated chronology. */
+html[data-page="life"] .life-reference-page, .life-page-active {
+  background: #f5f2eb url("/life-reference-background-v1.webp") center top / 100% 100% no-repeat;
+  color: #173247;
 }
-.life-reference-hero::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, #f8f5ef 4%, rgba(248,245,239,.7) 46%, rgba(248,245,239,.15)), url("/assets/memorial-horizon.png") center 58% / cover no-repeat;
-  opacity: .18;
+html[data-page="life"] .site-nav, .life-page-active .site-nav {
+  background: rgba(249,247,241,.95); color: #193247; border-bottom: 1px solid rgba(162,143,108,.2);
+  backdrop-filter: blur(10px);
 }
-.life-reference-hero-inner {
-  position: relative; z-index: 1; display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 38%);
-  gap: clamp(28px, 6vw, 86px); align-items: center; max-width: 1240px; margin: 0 auto;
-}
-.life-reference-hero-copy { padding: 0 0 8px; }
-.life-reference-hero-copy .section-kicker { color: #8a6c3b; margin: 0 0 20px; font-size: .72rem; letter-spacing: .22em; }
+html[data-page="life"] .site-nav .wordmark, .life-page-active .site-nav .wordmark { color: #193247; letter-spacing: 0; font-size: 1.12rem; }
+html[data-page="life"] .site-nav .wordmark-mark, .life-page-active .site-nav .wordmark-mark { color: #a48954; }
+html[data-page="life"] .site-nav .nav-links a, .life-page-active .site-nav .nav-links a { color: #344956; opacity: 1; }
+html[data-page="life"] .site-nav .nav-links a.active, .life-page-active .site-nav .nav-links a.active { color: #173247; border-bottom: 1px solid #a48954; padding-bottom: 5px; }
+.life-reference-page .life-reference-hero { position: relative; padding: 96px clamp(24px,4vw,64px) 0; min-height: 0; overflow: hidden; background: none; }
+.life-reference-hero::before { display: none; }
+.life-reference-hero-inner { position: relative; display: grid; grid-template-columns: 55% 45%; align-items: center; gap: 0; max-width: 1240px; margin: 0 auto; min-height: 365px; }
+.life-reference-hero-copy { position: relative; z-index: 1; padding: 15px 12px 42px 106px; text-align: center; }
+.life-reference-hero-copy .section-kicker { margin: 0 0 10px; font-size: .64rem; letter-spacing: .25em; color: #6e7c80; }
+.life-reference-name { font-family: Georgia,serif; font-size: clamp(1.25rem,2vw,1.8rem); line-height: 1.2; margin: 0 0 6px; color: #183248; }
+.life-reference-years { display: block; border: 0; padding: 0; color: #4b5b64; font-size: .7rem; letter-spacing: .28em; }
+.life-reference-years::after { content: ""; display: block; width: 48px; height: 1px; margin: 16px auto 20px; background: #a28751; }
 .life-reference-page .life-reference-hero h1 {
-  font-family: Georgia, serif; font-weight: 400; font-size: clamp(2.9rem, 5vw, 4.6rem);
-  line-height: 1.04; letter-spacing: -.045em; text-wrap: balance; max-width: 15ch; margin: 0 0 22px;
+  font-family: Georgia,serif; font-size: clamp(2.65rem,4.3vw,4rem); font-weight: 600; line-height: 1.06;
+  letter-spacing: -.035em; color: #132e42; max-width: 580px; margin: 0 auto 16px; text-wrap: balance;
 }
-.life-reference-page .life-reference-hero-intro {
-  font-family: Georgia, serif; color: #43545f; font-size: clamp(1rem, 1.5vw, 1.25rem);
-  line-height: 1.5; max-width: 540px; margin: 0 0 20px;
-}
-.life-reference-years { display: inline-block; padding-top: 13px; border-top: 1px solid #a88851; color: #79643e; font-size: .72rem; letter-spacing: .22em; }
+.life-reference-page .life-reference-hero-intro { font-family: Georgia,serif; color: #293f4e; font-size: clamp(1rem,1.45vw,1.25rem); line-height: 1.4; margin: 0 auto; max-width: 440px; }
 .life-reference-portrait {
-  margin: 0; min-height: 0; height: 300px; overflow: hidden; border-radius: 3px;
-  border: 5px solid rgba(255,253,248,.85); box-shadow: 0 12px 32px rgba(29,45,51,.13);
-  transform: rotate(1deg); background: #e4e5dc;
+  align-self: stretch; height: 370px; min-height: 0; margin: 0 -30px 0 -25px; border: 0; border-radius: 0;
+  background: transparent; box-shadow: none; transform: none; overflow: hidden;
+  mask-image: linear-gradient(to bottom,transparent 0%,#000 11%,#000 76%,transparent 100%), linear-gradient(to right,transparent 0%,#000 16%,#000 84%,transparent 100%);
+  mask-composite: intersect;
 }
-.life-reference-portrait img { display: block; width: 100%; height: 100%; max-height: none; object-fit: cover; object-position: 42% 29%; filter: saturate(.78); }
-.life-reference-body {
-  position: relative; display: grid; grid-template-columns: 164px minmax(0,1fr);
-  gap: clamp(28px,4vw,60px); align-items: start; max-width: 1400px;
-  margin: -24px auto 0; padding: 0 clamp(24px,4vw,64px) 60px;
-}
-.life-reference-qualities { position: sticky; top: 124px; padding-top: 52px; min-width: 0; }
-.life-reference-qualities h2 {
-  margin: 0 0 26px; color: #8a6d40; font-family: inherit; font-size: .63rem;
-  font-weight: 600; line-height: 1.5; letter-spacing: .18em; text-transform: uppercase;
-}
-.life-reference-qualities h2::before { content: ""; display: block; width: 34px; height: 1px; background: #aa8953; margin-bottom: 20px; }
-.life-reference-qualities ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 17px; }
-.life-reference-qualities li { font-family: Georgia, serif; font-size: clamp(1.25rem,2vw,1.7rem); font-style: italic; line-height: 1.25; color: #273f4b; }
-.life-reference-qualities .text-link { display: inline-block; max-width: 155px; margin-top: 34px; font-size: .72rem; line-height: 1.6; color: #7e6335; border-color: #c4b494; text-wrap: balance; }
-.life-reference-page .life-reference-timeline { min-width: 0; position: relative; padding: 0; background: none; }
-.life-reference-track { position: relative; margin: 0; --life-date-width: 114px; --life-gap: 52px; --life-axis: 135px; --life-node-y: 86px; }
-.life-reference-page .life-reference-entry {
-  position: relative; display: grid; grid-template-columns: var(--life-date-width) minmax(0,1fr);
-  column-gap: var(--life-gap); align-items: start; padding: 0 0 14px; margin: 0; border: 0;
-}
+.life-reference-portrait img { display: block; width: 100%; height: 100%; max-height: none; object-fit: cover; object-position: 42% 29%; filter: saturate(.55); }
+.life-reference-body { position: relative; display: grid; grid-template-columns: 136px minmax(0,1fr); column-gap: 30px; align-items: start; max-width: 1260px; margin: -5px auto 0; padding: 0 28px 38px; background: none; }
+.life-reference-qualities { position: sticky; top: 138px; min-width: 0; padding: 130px 0 0; }
+.life-reference-qualities h2 { font-family: Georgia,serif; font-size: 1.65rem; font-weight: 400; font-style: italic; letter-spacing: -.02em; line-height: 1.18; color: #294354; text-transform: none; margin: 0 0 28px; max-width: 125px; }
+.life-reference-qualities h2::after { content: ""; display: block; width: 36px; height: 1px; margin-top: 22px; background: #aa925e; }
+.life-reference-qualities ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 15px; }
+.life-reference-qualities li { font-family: Arial,sans-serif; font-size: .66rem; font-style: normal; font-weight: 400; line-height: 1.5; letter-spacing: .17em; text-transform: uppercase; color: #5c6b73; }
+.life-reference-qualities .text-link { display: inline-block; margin-top: 28px; max-width: 120px; font-size: .68rem; line-height: 1.5; color: #6d6146; border-color: #beae8e; }
+.life-reference-page .life-reference-timeline { position: relative; min-width: 0; padding: 0; background: none; }
+.life-reference-track { position: relative; margin: 0; --life-date-width: 118px; --life-gap: 66px; --life-axis: 144px; --life-node-y: 37px; }
+.life-reference-page .life-reference-entry { display: grid; grid-template-columns: var(--life-date-width) minmax(0,1fr); gap: var(--life-gap); align-items: start; position: relative; padding: 0 0 14px; margin: 0; border: 0; }
 .life-reference-page .life-reference-entry::before {
-  content: ""; position: absolute; z-index: 2; left: calc(var(--life-axis) - 6px); top: calc(var(--life-node-y) - 6px);
-  width: 13px; height: 13px; border: 1.5px solid #b49a68; border-radius: 50%; background: #fbf8f1;
-  box-shadow: 0 0 0 4px #f5f2eb; transform: none; transition: background .5s, box-shadow .5s;
+  content: ""; position: absolute; z-index: 2; left: calc(var(--life-axis) - 7px); top: calc(var(--life-node-y) - 7px);
+  width: 15px; height: 15px; border: 1.5px solid #c4a35b; border-radius: 50%; background: #fffdf3; transform: none;
+  box-shadow: 0 0 0 2px rgba(249,228,174,.28),0 0 9px rgba(214,168,65,.46),0 0 18px rgba(226,181,75,.18);
+  transition: box-shadow .7s ease, border-color .7s ease;
 }
-.life-reference-page .life-reference-entry::after {
-  content: ""; position: absolute; z-index: 1; left: var(--life-axis); top: var(--life-node-y);
-  width: calc(var(--life-date-width) + var(--life-gap) - var(--life-axis)); height: 1px;
-  bottom: auto; background: #c4b591; transform: none; transition: none;
+.life-reference-page .life-reference-entry.is-reached::before {
+  background: #fffdf3; border-color: #d2ad54;
+  box-shadow: 0 0 0 2px rgba(254,236,187,.45),0 0 10px rgba(220,172,56,.7),0 0 22px rgba(232,184,67,.26);
 }
-.life-reference-page .life-reference-entry.is-reached::before { background: #b39152; box-shadow: 0 0 0 4px #f5f2eb, 0 0 10px rgba(177,143,78,.25); }
-.life-reference-track::before { content: ""; position: absolute; left: var(--life-axis); top: var(--life-node-y); bottom: 118px; width: 1px; background: linear-gradient(#af8b4e,#d4c8b0); }
-.life-reference-date { align-self: start; padding-top: calc(var(--life-node-y) - 12px); text-align: right; font-family: Georgia,serif; font-size: 1.13rem; font-weight: 600; line-height: 1.3; color: #243e4e; white-space: nowrap; }
+.life-reference-page .life-reference-entry::after { content: ""; position: absolute; z-index: 1; left: var(--life-axis); top: var(--life-node-y); bottom: auto; width: calc(var(--life-date-width) + var(--life-gap) - var(--life-axis)); height: 1px; background: #aa9c7e; transform: none; transition: none; }
+.life-reference-track::before { content: ""; position: absolute; left: var(--life-axis); top: 15px; bottom: 116px; width: 1px; background: linear-gradient(#9a937e,#b99d66 28%,#b99d66 85%,#c4b89c); }
+.life-reference-date { padding-top: 25px; text-align: right; white-space: nowrap; color: #183247; font-family: Georgia,serif; font-weight: 600; font-size: 1.22rem; line-height: 1.2; }
 .life-reference-date span { color: inherit; font-size: inherit; font-weight: inherit; letter-spacing: 0; }
-.life-reference-card {
-  display: grid; grid-template-columns: minmax(0,1fr) 39%; min-width: 0; min-height: 172px;
-  padding: 6px; overflow: hidden; border: 1px solid #e6dfd1; border-radius: 5px;
-  background: #fffdf8; box-shadow: 0 5px 16px rgba(33,45,48,.075);
-}
-.life-reference-card-copy { min-width: 0; align-self: center; padding: 20px 24px; }
-.life-reference-card h3 { margin: 0 0 10px; color: #193547; font-family: Georgia,serif; font-weight: 600; font-size: clamp(1.25rem,1.85vw,1.65rem); line-height: 1.14; letter-spacing: -.025em; text-wrap: balance; }
-.life-reference-card-copy > p { margin: 0; color: #56636a; font-size: .88rem; line-height: 1.55; max-width: 440px; }
-.life-reference-card-media { min-width: 0; background: #e8e3d9; border-radius: 3px; overflow: hidden; }
-.life-reference-card-media .life-photo { height: 100%; min-width: 0; margin: 0; position: relative; }
-.life-reference-card-media .life-photo img { display: block; width: 100%; height: 176px; min-height: 0; max-height: none; object-fit: contain; object-position: center 23%; background: #e8e3d9; }
-.life-reference-card-media .life-photo figcaption { position: absolute; inset: auto 0 0; padding: 28px 10px 8px; background: linear-gradient(transparent,rgba(8,26,35,.78)); color: #fff; font-size: .65rem; line-height: 1.35; }
+.life-reference-card { min-width: 0; min-height: 166px; display: grid; grid-template-columns: minmax(0,1fr) 43%; padding: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,.8); border-radius: 5px; background: rgba(255,253,248,.95); box-shadow: 0 5px 18px rgba(57,45,29,.11); }
+.life-reference-card-copy { min-width: 0; align-self: center; padding: 13px 20px 15px; }
+.life-reference-card h3 { font-family: Georgia,serif; color: #173247; font-weight: 600; font-size: clamp(1.28rem,1.9vw,1.65rem); line-height: 1.12; letter-spacing: -.025em; text-wrap: balance; margin: 0 0 8px; }
+.life-reference-card-copy > p { font-family: Georgia,serif; color: #30414d; font-size: 1.05rem; line-height: 1.32; margin: 0; max-width: 470px; }
+.life-reference-card-copy > .life-reference-photo-note { font-family: Arial,sans-serif; font-size: .61rem; color: #677179; letter-spacing: .12em; text-transform: uppercase; line-height: 1.5; margin: 13px 0 0; }
+.life-reference-card-media { min-width: 0; overflow: hidden; border-radius: 3px; background: #ede9e1; }
+.life-reference-card-media .life-photo { position: relative; margin: 0; height: 100%; min-height: 152px; min-width: 0; }
+.life-reference-card-media .life-photo img { display: block; position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; max-height: none; object-fit: contain; object-position: center; background: transparent; }
+.life-reference-card-media .life-photo figcaption { position: absolute; inset: auto 0 0; padding: 20px 9px 6px; color: #fff; background: linear-gradient(transparent,rgba(22,39,49,.75)); font-size: .65rem; line-height: 1.3; }
 .life-reference-card-media .life-photo figcaption span { display: inline; color: inherit; font-size: inherit; }
-.life-reference-card-media .life-photo figcaption p { display: inline; margin: 0 0 0 5px; }
+.life-reference-card-media .life-photo figcaption p { display: inline; margin: 0 0 0 4px; }
 .life-reference-card.life-reference-no-photo { display: block; }
-.life-reference-childhood { background: transparent; box-shadow: none; border-color: transparent; }
-.life-reference-childhood .life-reference-card-copy { align-self: start; padding-top: 55px; }
-.life-reference-early-photos { display: flex; flex-direction: column; gap: 6px; background: transparent; }
-.life-reference-early-photos .life-photo { flex: 0 0 auto; height: 180px; overflow: hidden; display: grid; grid-template-columns: minmax(0,1fr) 116px; gap: 10px; background: #fffdf8; border: 4px solid #fffdf8; border-radius: 3px; box-shadow: 0 3px 10px rgba(33,45,48,.08); }
-.life-reference-early-photos .life-photo img { grid-column: 2; grid-row: 1; height: 172px; object-fit: contain; background: #eee9df; }
-.life-reference-early-photos .life-photo figcaption { grid-column: 1; grid-row: 1; align-self: center; position: static; background: none; color: #5c605d; padding: 12px 14px; font-size: .75rem; line-height: 1.5; }
-.life-reference-early-photos .life-photo figcaption span { display: block; color: #8a6d40; font-size: .72rem; letter-spacing: .06em; }
-.life-reference-early-photos .life-photo figcaption p { display: block; margin: 4px 0 0; }
-.life-reference-page .mentor-quote { background: #ece8de; padding-top: 48px; padding-bottom: 48px; border-top: 1px solid #d9cfbd; }
-.life-reference-page .mentor-quote blockquote { max-width: 840px; margin-left: auto; margin-right: auto; font-size: clamp(1.4rem,2.4vw,2rem); }
-@media (max-width: 1100px) {
-  .life-reference-body { grid-template-columns: 132px minmax(0,1fr); gap: 24px; padding-left: 28px; padding-right: 28px; }
-  .life-reference-track { --life-date-width: 96px; --life-gap: 38px; --life-axis: 111px; }
-  .life-reference-date { font-size: 1rem; }
-  .life-reference-card-copy { padding: 18px; }
-  .life-reference-qualities li { font-size: 1.35rem; }
+.life-reference-childhood .life-reference-card-copy { align-self: center; }
+.life-reference-early-photos { display: flex; flex-direction: column; gap: 5px; background: transparent; }
+.life-reference-early-photos .life-photo { flex: 0 0 auto; height: 138px; min-height: 0; display: grid; grid-template-columns: minmax(0,1fr) 94px; gap: 8px; background: #eee9df; border-radius: 3px; overflow: hidden; }
+.life-reference-early-photos .life-photo img { grid-column: 2; grid-row: 1; position: static; width: 100%; height: 138px; object-fit: contain; }
+.life-reference-early-photos .life-photo figcaption { grid-column: 1; grid-row: 1; position: static; align-self: center; background: none; color: #45555e; padding: 10px 12px; font-family: Georgia,serif; font-size: .88rem; }
+.life-reference-early-photos .life-photo figcaption span { display: block; color: #806d48; font-family: Arial,sans-serif; font-size: .64rem; letter-spacing: .07em; }
+.life-reference-early-photos .life-photo figcaption p { display: block; margin: 5px 0 0; }
+html[data-page="life"] .mentor-quote, .life-page-active .mentor-quote { background: rgba(255,253,248,.78); border: 1px solid rgba(255,255,255,.55); border-radius: 5px; padding: 32px 7vw; margin: 5px auto 18px; max-width: 1190px; }
+html[data-page="life"] .mentor-quote > div, .life-page-active .mentor-quote > svg { display: none; }
+html[data-page="life"] .mentor-quote blockquote, .life-page-active .mentor-quote blockquote { color: #2b4251; font-family: Georgia,serif; font-style: italic; font-size: clamp(1.2rem,2vw,1.65rem); line-height: 1.35; margin: 0 auto 16px; max-width: 840px; }
+html[data-page="life"] .mentor-quote > p, .life-page-active .mentor-quote > p { font-size: .84rem; line-height: 1.5; color: #586875; }
+html[data-page="life"] .sources-section, .life-page-active .sources-section { background: transparent; }
+html[data-page="life"] .site-footer, .life-page-active .site-footer { background: rgba(248,245,237,.8); color: #3b505e; border-top: 1px solid rgba(161,143,105,.25); }
+@media (max-width: 1050px) {
+  .life-reference-hero-copy { padding-left: 70px; }
+  .life-reference-body { grid-template-columns: 114px minmax(0,1fr); column-gap: 20px; padding-left: 24px; padding-right: 24px; }
+  .life-reference-track { --life-date-width: 100px; --life-gap: 48px; --life-axis: 119px; }
+  .life-reference-date { font-size: 1.08rem; }
+  .life-reference-card-copy { padding: 13px 16px; }
+  .life-reference-card-copy > p { font-size: .98rem; }
+  .life-reference-qualities h2 { font-size: 1.45rem; }
+  .life-reference-qualities li { font-size: .59rem; letter-spacing: .12em; }
 }
-@media (max-width: 850px) {
-  .life-reference-page .life-reference-hero { padding: 105px 28px 42px; }
-  .life-reference-hero-inner { grid-template-columns: minmax(0,1fr) 34%; gap: 24px; }
-  .life-reference-portrait { height: 240px; border-width: 4px; }
-  .life-reference-page .life-reference-hero h1 { font-size: clamp(2.55rem,6vw,3.6rem); }
-  .life-reference-body { display: block; margin: 0; padding: 0 28px 48px; }
-  .life-reference-qualities { position: static; padding: 26px 0 30px; margin-bottom: 28px; border-bottom: 1px solid #d9cebb; }
-  .life-reference-qualities h2 { margin-bottom: 15px; }
-  .life-reference-qualities h2::before { display: none; }
-  .life-reference-qualities ul { display: flex; flex-wrap: wrap; column-gap: 24px; row-gap: 10px; }
-  .life-reference-qualities li { font-size: 1.23rem; }
-  .life-reference-qualities .text-link { max-width: none; margin-top: 18px; }
+@media (max-width: 800px) {
+  .life-reference-page .life-reference-hero { padding: 108px 20px 0; }
+  .life-reference-hero-inner { grid-template-columns: 58% 42%; min-height: 290px; }
+  .life-reference-hero-copy { padding: 8px 0 30px 25px; }
+  .life-reference-portrait { height: 300px; margin-left: -8px; margin-right: -18px; }
+  .life-reference-page .life-reference-hero h1 { font-size: clamp(2.2rem,5vw,3.2rem); }
+  .life-reference-body { display: flex; flex-direction: column; padding: 0 22px 34px; gap: 0; }
+  .life-reference-qualities { position: static; width: 100%; padding: 4px 0 28px; }
+  .life-reference-qualities h2 { display: none; }
+  .life-reference-qualities ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px 20px; }
+  .life-reference-qualities li { font-size: .62rem; letter-spacing: .11em; }
+  .life-reference-qualities .text-link { display: block; width: max-content; max-width: 100%; text-align: center; margin: 14px auto 0; }
+  .life-reference-timeline { width: 100%; }
+  .life-reference-card { grid-template-columns: minmax(0,1fr) 42%; }
 }
-@media (max-width: 600px) {
-  .life-reference-page .life-reference-hero { padding: 105px 22px 30px; }
-  .life-reference-hero-inner { grid-template-columns: minmax(0,1fr) 30%; gap: 14px; }
-  .life-reference-portrait { height: 174px; border-width: 3px; }
-  .life-reference-page .life-reference-hero h1 { font-size: clamp(2rem,7.2vw,2.8rem); margin-bottom: 16px; }
-  .life-reference-hero-copy .section-kicker { font-size: .63rem; margin-bottom: 15px; }
-  .life-reference-page .life-reference-hero-intro { font-size: .9rem; margin-bottom: 16px; }
-  .life-reference-years { font-size: .65rem; }
-  .life-reference-body { padding: 0 20px 38px; }
-  .life-reference-qualities ul { gap: 11px 20px; }
-  .life-reference-qualities li { font-size: 1.15rem; }
-  .life-reference-track { --life-axis: 5px; --life-node-y: 12px; }
-  .life-reference-page .life-reference-entry { grid-template-columns: minmax(0,1fr); gap: 10px; padding: 0 0 22px 27px; }
+@media (max-width: 560px) {
+  .life-reference-page .life-reference-hero { padding-top: 120px; }
+  .life-reference-hero-inner { grid-template-columns: 62% 38%; min-height: 240px; }
+  .life-reference-hero-copy { padding-left: 0; }
+  .life-reference-name { font-size: 1.02rem; }
+  .life-reference-years { font-size: .59rem; }
+  .life-reference-years::after { margin: 11px auto 15px; width: 34px; }
+  .life-reference-page .life-reference-hero h1 { font-size: clamp(1.8rem,6.7vw,2.4rem); line-height: 1.08; }
+  .life-reference-page .life-reference-hero-intro { font-size: .9rem; }
+  .life-reference-portrait { height: 240px; margin-right: -20px; }
+  .life-reference-body { padding: 0 18px 26px; }
+  .life-reference-track { --life-axis: 5px; --life-node-y: 10px; }
+  .life-reference-page .life-reference-entry { grid-template-columns: minmax(0,1fr); row-gap: 10px; padding: 0 0 18px 29px; }
   .life-reference-page .life-reference-entry::after { display: none; }
-  .life-reference-track::before { bottom: 32px; }
-  .life-reference-date { padding: 0; text-align: left; font-size: 1rem; }
-  .life-reference-card { grid-template-columns: minmax(0,1fr) 39%; padding: 4px; min-height: 155px; }
-  .life-reference-card-copy { padding: 15px 13px; }
-  .life-reference-card h3 { font-size: 1.16rem; }
-  .life-reference-card-copy > p { font-size: .81rem; line-height: 1.5; }
-  .life-reference-card-media .life-photo img { height: 100%; min-height: 155px; }
-  .life-reference-card-media .life-photo figcaption { font-size: .59rem; padding: 22px 6px 6px; }
-  .life-reference-childhood .life-reference-card-copy { padding-top: 24px; }
-  .life-reference-early-photos .life-photo { display: block; height: auto; }
-  .life-reference-early-photos .life-photo figcaption { padding: 5px 6px; font-size: .6rem; }
+  .life-reference-track::before { top: 10px; bottom: 105px; }
+  .life-reference-date { text-align: left; padding: 0; font-size: 1.12rem; }
+  .life-reference-card { grid-template-columns: minmax(0,1fr) 37%; padding: 4px; }
+  .life-reference-card-copy { padding: 14px 12px; }
+  .life-reference-card h3 { font-size: 1.15rem; }
+  .life-reference-card-copy > p { font-size: .9rem; line-height: 1.34; }
+  .life-reference-card-copy > .life-reference-photo-note { font-size: .53rem; letter-spacing: .07em; }
+  .life-reference-early-photos .life-photo { display: block; height: 145px; }
+  .life-reference-early-photos .life-photo img { position: static; height: 118px; }
+  .life-reference-early-photos .life-photo figcaption { font-family: Arial,sans-serif; padding: 3px 5px; font-size: .5rem; line-height: 1.2; }
   .life-reference-early-photos .life-photo figcaption span { display: inline; font-size: inherit; letter-spacing: 0; }
-  .life-reference-early-photos .life-photo figcaption p { display: inline; margin: 0 0 0 4px; }
-  .life-reference-early-photos .life-photo img { height: 148px; min-height: 0; }
+  .life-reference-early-photos .life-photo figcaption p { display: inline; margin: 0 0 0 3px; }
+  html[data-page="life"] .mentor-quote, .life-page-active .mentor-quote { margin-left: 18px; margin-right: 18px; padding: 26px 22px; }
 }
-@media (max-width: 390px) {
-  .life-reference-hero-inner { grid-template-columns: minmax(0,1fr) 28%; gap: 10px; }
-  .life-reference-portrait { height: 152px; }
-  .life-reference-card { grid-template-columns: minmax(0,1fr); }
-  .life-reference-card-media .life-photo img { height: 220px; }
-  .life-reference-early-photos .life-photo { height: auto; }
-  .life-reference-early-photos .life-photo img { height: 192px; }
+@media (max-width: 380px) {
+  .life-reference-card:not(.life-reference-childhood) { grid-template-columns: minmax(0,1fr); }
+  .life-reference-card:not(.life-reference-childhood) .life-reference-card-media { height: 190px; }
+  .life-reference-card:not(.life-reference-childhood) .life-reference-card-media .life-photo { height: 190px; }
 }
 @media (prefers-reduced-motion: reduce) { .life-reference-page .life-reference-entry::before { transition: none; } }

@@ -575,6 +575,7 @@ export const defaultPageCopy: Record<string, string> = {
   "life.personalPortraitText": "A patient and generous mentor, he made time for students, postdoctoral scholars, and young scientists, listening carefully and helping them find their way. He valued the people he worked with as deeply as the questions they explored together.",
   "life.fullStoryLink": "Read the full story in the memory book",
   "life.heroKicker": "His Life",
+  "life.heroName": "Robert E. Dickinson",
   "life.heroTitle": "A curious Mind. A generous spirit",
   "life.heroIntro": "Robert’s path through life and career.",
   "life.years": "1940–2026",
