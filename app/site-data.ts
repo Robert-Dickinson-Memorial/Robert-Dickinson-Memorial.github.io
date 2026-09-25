@@ -105,6 +105,7 @@ export type SiteContent = {
   headingFont: string;
   homeLegacyIntro: string;
   homeLegacyCards: HomeLegacyCard[];
+  homeFrontierLabels: string[];
   secondaryLegacyTopics: SecondaryLegacyTopic[];
   lifeMilestones: LifeMilestone[];
   legacyChapters: LegacyChapter[];
@@ -555,6 +556,7 @@ export const defaultContent: SiteContent = {
   headingFont: "classic-serif",
   homeLegacyIntro: "Rather than a single linear path, Robert’s work formed a connected scientific landscape. Foundational ideas in atmospheric dynamics, climate change, modeling, land–atmosphere exchange, observations from space, and the coupled Earth repeatedly converged as the scale of his questions widened.",
   homeLegacyCards,
+  homeFrontierLabels: ["Tropical Deforestation", "Carbon & Nitrogen cycling", "Regional Climate Modeling", "Solar Geoengineering", "Canopy radiative transfer"],
   secondaryLegacyTopics,
   lifeMilestones,
   legacyChapters,
@@ -593,6 +595,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         ? defaultContent.homeLegacyIntro
         : values.homeLegacyIntro,
       homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
+      homeFrontierLabels: parseJson(values.homeFrontierLabels, defaultContent.homeFrontierLabels),
       secondaryLegacyTopics: parseJson(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics),
       lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
       legacyChapters: parseJson(values.legacyChapters, defaultContent.legacyChapters),

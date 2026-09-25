@@ -75,21 +75,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
-  function renderHomeLegacy(threads, highlights, secondaryTopics, copy) {
+  function renderHomeLegacy(threads, highlights, frontierLabels, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
     const secondaryTarget = document.querySelector("[data-home-secondary]");
     const headingThreads = document.querySelector("[data-home-heading-threads]");
     const threadList = document.querySelector("[data-home-thread-list]");
     if (!Array.isArray(threads) || !Array.isArray(highlights)) return;
-    const secondary = Array.isArray(secondaryTopics) ? secondaryTopics : [];
+    const frontiers = Array.isArray(frontierLabels) ? frontierLabels : ["Tropical Deforestation", "Carbon & Nitrogen cycling", "Regional Climate Modeling", "Solar Geoengineering", "Canopy radiative transfer"];
+    const diagramLabels = ["Atmospheric Dynamics", "Climate Change", "Climate Modeling", "Land-Atmosphere Interactions", "Satellite Remote Sensing", "A Coupled Earth"];
 
     if (headingThreads instanceof HTMLElement) {
       headingThreads.replaceChildren(...threads.map((thread) => node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
     }
     if (threadList instanceof HTMLElement) {
-      threadList.replaceChildren(...threads.map((thread) => node("li", { text: thread.title || "" })));
+      threadList.replaceChildren(...diagramLabels.map((label) => node("li", { text: label })));
       const art = document.querySelector(".home-thread-art");
-      if (art instanceof HTMLElement) art.setAttribute("aria-label", `Six connected research threads: ${threads.map((thread) => thread.title || "").join(", ")}`);
+      if (art instanceof HTMLElement) art.setAttribute("aria-label", `Six connected research threads: ${diagramLabels.join(", ")}`);
     }
 
     if (!(target instanceof HTMLElement)) return;
@@ -105,14 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const label = copy?.["home.legacyMapSecondary"];
     secondaryIntro.append(node("span", { className: "science-secondary-label", text: !label || label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label }));
     const secondaryTerms = node("div", { className: "science-secondary-terms" });
-    [
-      ["Tropical deforestation", "Tropical Deforestation"],
-      ["Carbon & nitrogen cycles", "Carbon & Nitrogen cycling"],
-      ["Regional climate modeling", "Regional Climate Modeling"],
-      ["Solar geoengineering", "Solar Geoengineering"],
-    ].forEach(([source, title]) => {
-      const topic = secondary.find((item) => item.title?.toLowerCase().startsWith(source.toLowerCase().replace("cycles", "cycl")));
-      secondaryTerms.append(node("span", { text: title, attrs: { title: topic?.text || "" } }));
+    frontiers.filter((title) => typeof title === "string" && title.trim()).forEach((title) => {
+      secondaryTerms.append(node("span", { text: title }));
     });
 
     target.replaceChildren(stream);
@@ -258,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    renderHomeLegacy(content.legacyThreads, content.homeLegacyCards, content.secondaryLegacyTopics, content.pageCopy);
+    renderHomeLegacy(content.legacyThreads, content.homeLegacyCards, content.homeFrontierLabels, content.pageCopy);
     renderLifeTimeline(content.lifeMilestones);
     renderLegacy(content, content.pageCopy);
   }

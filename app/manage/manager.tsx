@@ -342,9 +342,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-home-legacy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The full-width heading sits above the introductory text and six-thread illustration. Home shows four selected frontiers beneath the illustration, then four editorial highlights. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Scientific legacy story</h2><p>The full-width heading sits above the introductory text and six-thread illustration. Home shows your editable frontier list beneath the illustration, then four editorial highlights. Edit the story here; the illustration is a fixed image, so changes to thread names below will need an updated image to match.</p><a className="manager-section-link" href="#edit-legacy-threads">Edit shared scientific threads & other frontiers ↓</a></div>
         <div className="manager-form manager-stack">
           <label>Home — Scientific Legacy introduction<textarea rows={5} value={contentValues.homeLegacyIntro} onChange={(e) => setContentValues({ ...contentValues, homeLegacyIntro: e.target.value })} /></label>
+          <label>Other frontiers — homepage bullets <span>One bullet per line. Edit, add, remove, or reorder lines, then save the homepage scientific story.</span><textarea rows={7} value={contentValues.homeFrontierLabels.join("\n")} onChange={(e) => setContentValues({ ...contentValues, homeFrontierLabels: e.target.value.split("\n") })} /></label>
           <div className="manager-subcard">
             <h3>Major editorial highlights</h3>
             <p className="manager-help">These are the four large editorial rows beneath the six-thread illustration on Home.</p>
@@ -402,7 +403,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
           <div className="manager-subcard"><h3>Six enduring research threads</h3>
             {contentValues.legacyThreads.map((thread, index) => <div className="manager-edit-card" key={thread.id}><strong>Primary thread {index + 1}</strong><label>Thread title<input value={thread.title} onChange={(e) => updateLegacyThread(index, "title", e.target.value)} /></label><label>Description<textarea rows={3} value={thread.text} onChange={(e) => updateLegacyThread(index, "text", e.target.value)} /></label></div>)}
           </div>
-          <div className="manager-subcard"><h3>Other scientific frontiers</h3><p className="manager-help">Home shows tropical deforestation, carbon and nitrogen cycles, regional climate modeling, and solar geoengineering beneath the illustration. The fuller list appears on Scientific Legacy. Edit the descriptions here; the four Home labels and order are set in the page design.</p>
+          <div className="manager-subcard"><h3>Other scientific frontiers</h3><p className="manager-help">This fuller list appears on Scientific Legacy. Edit the homepage bullets separately under Scientific legacy story → Other frontiers — homepage bullets.</p>
             {contentValues.secondaryLegacyTopics.map((topic, index) => <div className="manager-edit-card manager-secondary-topic-editor" key={`secondary-${index}`}>
               <label>Topic<input value={topic.title} onChange={(e) => updateSecondaryLegacyTopic(index, "title", e.target.value)} /></label>
               <label>Short explanation<textarea rows={3} value={topic.text} onChange={(e) => updateSecondaryLegacyTopic(index, "text", e.target.value)} /></label>

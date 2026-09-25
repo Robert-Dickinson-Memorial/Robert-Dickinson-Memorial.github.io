@@ -44,6 +44,7 @@ jobs:
           cp public/dickinson-1967-mit-phd.jpg _site/assets/dickinson-1967-mit-phd.jpg
           cp public/memorial-horizon.png _site/assets/memorial-horizon.png
           cp public/legacy-science-reference.webp _site/assets/legacy-science-reference.webp
+          cp public/legacy-threads-large-labels.webp _site/assets/legacy-threads-large-labels.webp
           cp public/favicon.svg _site/favicon.svg
           touch _site/.nojekyll
           node -e 'require("node:fs").writeFileSync("_site/config.js", `window.MEMORIAL_API_BASE = ${JSON.stringify(process.env.MEMORIAL_API_BASE || "")};\n`)'

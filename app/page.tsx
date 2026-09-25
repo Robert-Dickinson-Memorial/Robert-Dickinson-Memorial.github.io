@@ -35,22 +35,13 @@ function ScientificLegacyStory({
   </div>;
 }
 
-const homeFrontiers = [
-  { source: "Tropical deforestation", title: "Tropical Deforestation" },
-  { source: "Carbon & nitrogen cycles", title: "Carbon & Nitrogen cycling" },
-  { source: "Regional climate modeling", title: "Regional Climate Modeling" },
-  { source: "Solar geoengineering", title: "Solar Geoengineering" },
-];
+const diagramLabels = ["Atmospheric Dynamics", "Climate Change", "Climate Modeling", "Land-Atmosphere Interactions", "Satellite Remote Sensing", "A Coupled Earth"];
 
-function OtherFrontiers({ topics, label }: { topics: SecondaryLegacyTopic[]; label: string }) {
-  const selected = homeFrontiers.map(({ source, title }) => ({
-    title,
-    text: topics.find((item) => item.title.toLowerCase().startsWith(source.toLowerCase().replace("cycles", "cycl")))?.text ?? "",
-  }));
+function OtherFrontiers({ topics, label }: { topics: string[]; label: string }) {
   return <div className="science-secondary-band science-secondary-band-home">
     <div className="science-secondary-intro"><span className="science-secondary-label">{label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label}</span></div>
     <div className="science-secondary-terms">
-      {selected.map((topic) => <span key={topic.title} title={topic.text}>{topic.title}</span>)}
+      {topics.filter((topic) => topic.trim()).map((topic, index) => <span key={index}>{topic}</span>)}
     </div>
   </div>;
 }
@@ -107,9 +98,9 @@ export default async function Home() {
             <div className="home-legacy-intro-block"><p>{content.homeLegacyIntro}</p></div>
           </div>
           <div className="home-thread-visual">
-            <div className="home-thread-art" role="img" aria-label={`Six connected research threads: ${content.legacyThreads.map((thread) => thread.title).join(", ")}`} style={{ backgroundImage: 'url("/legacy-science-reference.webp")' }} />
-            <ul className="home-thread-mobile-list" aria-label="Six enduring scientific threads">{content.legacyThreads.map((thread) => <li key={thread.id}>{thread.title}</li>)}</ul>
-            <OtherFrontiers topics={content.secondaryLegacyTopics} label={copy["home.legacyMapSecondary"]} />
+            <div className="home-thread-art" role="img" aria-label={`Six connected research threads: ${diagramLabels.join(", ")}`} style={{ backgroundImage: 'url("/legacy-threads-large-labels.webp")' }} />
+            <ul className="home-thread-mobile-list" aria-label="Six enduring scientific threads">{diagramLabels.map((label) => <li key={label}>{label}</li>)}</ul>
+            <OtherFrontiers topics={content.homeFrontierLabels} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>
         <ScientificLegacyStory highlights={content.homeLegacyCards} />

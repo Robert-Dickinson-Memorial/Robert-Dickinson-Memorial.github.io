@@ -1640,10 +1640,10 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   max-width: 660px;
 }
 .home-thread-art {
-  aspect-ratio: 952 / 390;
+  aspect-ratio: 1942 / 809;
   background-position: right top;
   background-repeat: no-repeat;
-  background-size: 172% auto;
+  background-size: 100% 100%;
   min-width: 0;
   width: 100%;
 }
