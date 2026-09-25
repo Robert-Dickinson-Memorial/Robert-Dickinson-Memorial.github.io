@@ -333,7 +333,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · His story / His life</p><h2>Biography & homepage introduction</h2><p>The short introduction appears on Home; the full biography appears on His life and is also used in the Memory book.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
           <label>His life — full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
@@ -362,7 +362,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-life" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">His life</p><h2>Education & career timeline</h2><p>Edit the institutions, periods, and descriptions shown beneath Robert’s biography.</p><a className="manager-section-link" href="#copy-life">Edit His life headings & source links ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">His life</p><h2>Education & career timeline</h2><p>Keep this timeline concise: institutions, dates, degrees, and appointments. Describe research achievements under Scientific Legacy.</p><a className="manager-section-link" href="#copy-life">Edit His life headings & source links ↓</a></div>
         <div className="manager-form manager-stack">
           {contentValues.lifeMilestones.map((item, index) => <div className="manager-edit-card" key={index}><div className="manager-row"><label>Period<input value={item.year} onChange={(e) => updateMilestone(index, "year", e.target.value)} /></label><label>Institution / affiliation<input value={item.title} onChange={(e) => updateMilestone(index, "title", e.target.value)} /></label></div><label>Description<textarea rows={4} value={item.text} onChange={(e) => updateMilestone(index, "text", e.target.value)} /></label></div>)}
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save life timeline</button>
@@ -370,7 +370,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-legacy" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Career chapters</h2><p>Edit each institutional chapter, including its scientific focus, key contributions, legacy statement, landmark publication, and photograph.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific legacy headings & labels ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Scientific legacy</p><h2>Scientific contributions</h2><p>Lead each chapter with its scientific question, contributions, and lasting impact. Institutions and dates provide context; appointment details belong in the His Life timeline. Photos and landmark publications remain editable here.</p><a className="manager-section-link" href="#copy-legacy">Edit Scientific legacy headings & labels ↓</a></div>
         <div className="manager-form manager-stack">
           {contentValues.legacyChapters.map((chapter, index) => <div className="manager-edit-card manager-chapter-editor" key={chapter.id}>
             <div className="manager-chapter-heading"><span>{chapter.number}</span><strong>{chapter.institution}</strong><small>{chapter.years}</small></div>

@@ -1,3 +1,4 @@
+import { reviseEditorialText } from "./editorial-revision";
 import { env } from "cloudflare:workers";
 
 export type MemorialEvent = {
@@ -119,12 +120,12 @@ export type SiteContent = {
 
 const lifeMilestones: LifeMilestone[] = [
   { year: "1961", title: "Harvard University", text: "B.A. in Chemistry and Physics." },
-  { year: "1961–1968", title: "MIT", text: "S.M. in Meteorology (1962), Ph.D. in Meteorology (1966), then Research Associate (1966–1968)." },
-  { year: "1968–1990", title: "NCAR", text: "Scientist (1968–1975), Head of the Climate Section (1975–1981), and Deputy Director of the Climate and Global Dynamics Division (1981–1990)." },
-  { year: "1990–1999", title: "University of Arizona", text: "Professor of Atmospheric Sciences (1990–1993), then Regents Professor (1993–1999), with appointments spanning atmospheric physics, hydrology, and tree-ring research." },
-  { year: "1999–2008", title: "Georgia Tech", text: "Professor in Earth and Atmospheric Sciences and Georgia Power/Georgia Research Alliance Endowed Chair." },
-  { year: "2008–2018", title: "The University of Texas at Austin", text: "Professor in the Jackson School of Geosciences, continuing research in climate, land-surface processes, drought, remote sensing, and Earth-system science." },
-  { year: "2018–2026", title: "UCLA", text: "Distinguished Professor in Residence in the Department of Atmospheric and Oceanic Sciences, continuing scientific collaboration and mentorship." },
+  { year: "1961–1968", title: "MIT", text: "S.M. (1962) and Ph.D. (1966) in Meteorology; Research Associate through 1968." },
+  { year: "1968–1990", title: "NCAR", text: "Scientist, Climate Section Head, and Deputy Director of Climate and Global Dynamics." },
+  { year: "1990–1999", title: "University of Arizona", text: "Professor of Atmospheric Sciences, then Regents Professor." },
+  { year: "1999–2008", title: "Georgia Tech", text: "Professor of Earth and Atmospheric Sciences; Georgia Power/Georgia Research Alliance Endowed Chair." },
+  { year: "2008–2018", title: "The University of Texas at Austin", text: "Professor in the Jackson School of Geosciences." },
+  { year: "2018–2026", title: "UCLA", text: "Distinguished Professor in Residence in Atmospheric and Oceanic Sciences." },
 ];
 
 const legacyChapters: LegacyChapter[] = [
@@ -135,7 +136,7 @@ const legacyChapters: LegacyChapter[] = [
     institution: "MIT",
     scale: "Atmospheric dynamics",
     title: "Finding order in planetary-scale motion",
-    summary: "Bob’s scientific career took shape at MIT. He completed his Ph.D. in Meteorology in 1966 with Propagators of Atmospheric Motions, then remained at MIT as a research associate through 1968. His early work centered on a fundamental problem in atmospheric dynamics: how planetary-scale waves propagate through the atmosphere, and how they interact with the circulation around them. In a remarkable series of papers, he showed that the spherical geometry of the Earth matters fundamentally for planetary-wave propagation and how waves can be guided toward critical lines where their energy and momentum are absorbed.",
+    summary: "How do planetary-scale waves move through the atmosphere and interact with its circulation? Robert showed why Earth’s spherical geometry matters for wave propagation, and how atmospheric waveguides direct energy and momentum toward critical lines where they are absorbed.",
     contributions: [
       "Showed why Earth’s spherical geometry must be included in theories of vertically propagating planetary Rossby waves.",
       "Developed the first theory of Rossby-wave critical-line absorption and demonstrated the role of atmospheric waveguides.",
@@ -163,7 +164,7 @@ const legacyChapters: LegacyChapter[] = [
     institution: "NCAR",
     scale: "Climate change and climate modeling",
     title: "Expanding from atmospheric theory to climate",
-    summary: "At the National Center for Atmospheric Research, Bob’s science widened from upper-atmospheric dynamics and planetary atmospheres to global circulation, climate change, and climate modeling. As a scientist, Climate Section head, and deputy director, he helped shape both the models and the community building them.",
+    summary: "Robert connected atmospheric circulation and radiation with the problem of climate change. His work helped make climate models a way to investigate interacting physical processes, while bringing soils, water, and vegetation into their representation of land.",
     contributions: [
       "Advanced understanding of atmospheric circulation, radiation, and the upper atmospheres of Earth, Venus, and Mars.",
       "Helped establish climate modeling as a framework for studying the interacting processes that govern global change, including service on the 1979 Charney assessment of carbon dioxide and climate.",
@@ -181,7 +182,7 @@ const legacyChapters: LegacyChapter[] = [
     institution: "University of Arizona",
     scale: "Land–atmosphere interactions",
     title: "Making the living land visible to climate models",
-    summary: "Working across atmospheric science, hydrology, and tree-ring research at Arizona, Bob deepened the physical description of the land surface and helped make those models testable against observations.",
+    summary: "Robert deepened the physical description of the land surface and helped make land models testable against observations. Vegetation, soil moisture, and surface energy exchange became processes that could be measured, compared, and improved.",
     contributions: [
       "Linked vegetation, evapotranspiration, soil moisture, snow, and surface energy exchange in land-surface models.",
       "Advanced model evaluation through international land-surface intercomparison and field observations.",
@@ -199,7 +200,7 @@ const legacyChapters: LegacyChapter[] = [
     institution: "Georgia Tech",
     scale: "Coupled water, energy, and carbon",
     title: "Connecting the exchanges that make an Earth system",
-    summary: "At Georgia Tech, Bob brought atmospheric physics, hydrology, ecosystems, biogeochemistry, and observations from space into closer conversation. His research and teaching increasingly treated climate as a coupled Earth system rather than a collection of separate components.",
+    summary: "Robert brought atmospheric physics, hydrology, ecosystems, biogeochemistry, and satellite observations together to study climate as a coupled Earth system. The question became how exchanges of water, energy, and carbon shape one another.",
     contributions: [
       "Advanced land models that connected roots, soil moisture, surface energy, ecosystems, and the carbon cycle.",
       "Used remote sensing and observations to test land temperature, vegetation, albedo, and land–atmosphere exchange.",
@@ -217,7 +218,7 @@ const legacyChapters: LegacyChapter[] = [
     institution: "UT Austin",
     scale: "Models + observations",
     title: "Synthesis—and a new generation of scientists",
-    summary: "At UT Austin’s Jackson School of Geosciences, Bob continued to connect models with observations while giving unusual care to students, postdoctoral scholars, and visiting scientists.",
+    summary: "Robert used models and observations together to study drought, vegetation stress, soil-moisture feedbacks, and climate extremes. Satellite measurements offered a way to test whether models captured the behavior of the living land.",
     contributions: [
       "Studied drought, soil-moisture feedbacks, vegetation, surface temperature, atmospheric circulation, and climate extremes.",
       "Used satellite observations to reveal ecosystem stress and to test the land processes represented in climate models.",
@@ -235,7 +236,7 @@ const legacyChapters: LegacyChapter[] = [
     institution: "UCLA",
     scale: "Synthesis and mentorship",
     title: "Keeping the scientific conversation alive",
-    summary: "After retiring from UT Austin, Bob continued as a Distinguished Professor in Residence in UCLA’s Department of Atmospheric and Oceanic Sciences. He remained engaged in research, collaboration, and mentoring, continuing the habit that had defined his career: moving easily across disciplines while returning to first principles.",
+    summary: "Robert continued to connect ideas across atmospheric science and Earth-system modeling, returning to first principles as new models and observations emerged. Collaboration and mentorship carried that approach into the work of younger scientists.",
     contributions: [
       "Continued collaborating across atmospheric science, climate, land-surface processes, and Earth-system modeling.",
       "Shared decades of physical insight with students and colleagues working on new generations of models and observations.",
@@ -333,8 +334,8 @@ export const defaultPageCopy: Record<string, string> = {
   "global.footerText": "Created with love by his academic community.",
   "global.footerHome": "Memorial home ↑",
   "nav.home": "Home",
-  "nav.life": "His life",
-  "nav.legacy": "Scientific legacy",
+  "nav.life": "His Life",
+  "nav.legacy": "Scientific Legacy",
   "nav.events": "Events",
   "nav.gallery": "Gallery",
   "nav.memories": "Memories",
@@ -346,7 +347,7 @@ export const defaultPageCopy: Record<string, string> = {
   "home.readStory": "Read his story",
   "home.portraitQuote": "“The wonderful people I collaborated with” were among the great highlights of his career.",
   "home.portraitCaption": "Portrait courtesy of the Jackson School of Geosciences",
-  "home.storyKicker": "His story",
+  "home.storyKicker": "His Life",
   "home.storyTitleLine1": "A curious mind.",
   "home.storyTitleLine2": "A generous spirit.",
   "home.storyYears": "1940–2026",
@@ -362,7 +363,7 @@ export const defaultPageCopy: Record<string, string> = {
   "home.bookTitle": "Turn memories into a book",
   "home.bookText": "Read or print an editorial collection of approved stories and photographs.",
   "home.bookCta": "Open the memory book →",
-  "home.legacyKicker": "Scientific legacy",
+  "home.legacyKicker": "Scientific Legacy",
   "home.legacyTitle": "Science that changed how we see Earth",
   "home.legacyMapPrimary": "Enduring threads",
   "home.legacyMapSecondary": "Other frontiers with pioneer contribution",
@@ -388,9 +389,9 @@ export const defaultPageCopy: Record<string, string> = {
   "home.memoriesText": "Read approved stories from students, colleagues, friends, and family—and add your own.",
   "home.memoriesCta": "Read or share memories →",
 
-  "life.heroKicker": "His life",
+  "life.heroKicker": "His Life",
   "life.heroTitle": "A curious mind. A generous spirit.",
-  "life.heroIntro": "The story of a scientist who kept widening the questions he asked—and the circle of people he welcomed into them.",
+  "life.heroIntro": "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.",
   "life.years": "1940–2026",
   "life.mentorQuote": "For Robert, the people he collaborated with—from students and postdocs to colleagues at every career stage—were among the greatest highlights of his life in science.",
   "life.mentorText": "His influence continues through the questions they ask, the models they build, and the people they mentor in turn.",
@@ -400,21 +401,21 @@ export const defaultPageCopy: Record<string, string> = {
   "life.sourceNasLabel": "National Academy of Sciences",
   "life.sourceNasUrl": "https://www.nasonline.org/directory-entry/robert-e-dickinson-75xqut/",
 
-  "legacy.heroKicker": "Scientific legacy",
+  "legacy.heroKicker": "Scientific Legacy",
   "legacy.heroTitle": "Science that changed how we see Earth",
-  "legacy.heroIntro": "A chronological journey through the institutions, questions, and enduring ideas that shaped Robert’s work.",
+  "legacy.heroIntro": "The questions Robert asked, the ideas he advanced, and the ways his work changed our understanding of Earth.",
   "legacy.scaleKicker": "A widening scientific horizon",
   "legacy.scaleTitle": "He repeatedly changed the scale of the problem.",
   "legacy.scaleIntro": "Across six decades, each question opened into a larger one—without losing the physical clarity of the question that came before it.",
-  "legacy.chaptersLabel": "Career chapters",
+  "legacy.chaptersLabel": "Scientific contributions",
   "legacy.focusLabel": "Scientific focus",
   "legacy.contributionsLabel": "Key contributions",
   "legacy.impactLabel": "Legacy",
   "legacy.publicationLabel": "Landmark publication",
   "legacy.photoCredit": "Photo shared for the Robert E. Dickinson memorial.",
-  "legacy.threadsKicker": "Across every institution",
+  "legacy.threadsKicker": "Ideas that connect his work",
   "legacy.threadsTitle": "Enduring research threads",
-  "legacy.threadsIntro": "The affiliations mark chapters in Robert’s career. These ideas reveal the deeper continuity running through them.",
+  "legacy.threadsIntro": "These research threads connect Robert’s discoveries across decades, from atmospheric motion to the coupled Earth system.",
   "legacy.frontiersKicker": "Beyond the central threads",
   "legacy.frontiersTitle": "Other frontiers he helped open",
   "legacy.frontiersIntro": "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.",
@@ -542,14 +543,7 @@ export const defaultSiteAssets: SiteAssets = {
 
 export const defaultContent: SiteContent = {
   heroIntro: "Pioneering climate scientist, visionary Earth-system modeler, devoted teacher, and generous mentor.",
-  obituaryStory: [
-    "Robert Earl Dickinson helped change how humanity understands the living Earth.",
-    "Born in Millersburg, Ohio, and raised in Minnesota, Robert carried an expansive curiosity into a lifetime of science. He studied chemistry and physics at Harvard University, graduating in 1961, then turned to meteorology at the Massachusetts Institute of Technology, earning his master’s degree in 1962 and Ph.D. in 1966.",
-    "He joined the National Center for Atmospheric Research in 1968. Early in his career, he advanced understanding of how planetary waves transfer energy through the atmosphere. Later, as a leader in NCAR’s Climate and Global Dynamics Division, he confronted a central weakness in the era’s climate models: land was treated largely as a passive store of water. Robert helped recast it as a dynamic system of soils, plants, water, energy, and carbon.",
-    "That insight reshaped global climate modeling. His pioneering work brought vegetation and land-surface processes into climate models and helped establish the intellectual foundations of modern Earth-system science. Across six decades, his research connected atmospheric dynamics with hydrology, drought, remote sensing, aerosols, tropical deforestation, and the terrestrial carbon cycle.",
-    "Robert held professorships at the University of Arizona and Georgia Tech before joining The University of Texas at Austin in 2008. At UT’s Jackson School of Geosciences, he was known not only as a giant of climate science, but as a patient and exacting mentor. After retiring from UT in 2018, he continued as a Distinguished Professor in Residence at UCLA, remaining active in research, collaboration, and mentorship.",
-    "His deepest legacy lives in both the models that now describe a more complete Earth and the people he trained to ask better questions of it.",
-  ].join("\n\n"),
+  obituaryStory: "Robert Earl Dickinson helped change how humanity understands the living Earth.\n\nBorn in Millersburg, Ohio, and raised in Minnesota, Robert carried an expansive curiosity into a lifetime of science. He studied chemistry and physics at Harvard University, graduating in 1961, then turned to meteorology at the Massachusetts Institute of Technology, earning his master’s degree in 1962 and Ph.D. in 1966.\n\nRobert was known as a patient and exacting mentor. He gave care and attention to students, postdoctoral scholars, and visiting scientists, and valued the people he worked with as much as the questions they explored together.\n\nHis career took him from MIT and NCAR to the University of Arizona, Georgia Tech, UT Austin, and UCLA. After retiring from UT Austin, he remained active in collaboration and mentorship. Curiosity, physical insight, and generosity continued to shape his conversations with colleagues across generations.",
   treeTribute: "Robert grew up in Minnesota. A memorial tree in the Chippewa National Forest honors that connection while helping restore a landscape of pine, spruce, cedar, lakes, and headwater streams.",
   treeDetail: "Reforestation projects in the Chippewa restore native trees, strengthen wildlife habitat—including habitat for bald eagles—and improve the forest’s resilience to wind damage, insects, disease, and a changing climate.",
   bodyFont: "system-sans",
@@ -585,7 +579,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     const values = Object.fromEntries((result.results ?? []).map((row) => [row.key, row.value]));
     return {
       heroIntro: values.heroIntro || defaultContent.heroIntro,
-      obituaryStory: values.obituaryStory || defaultContent.obituaryStory,
+      obituaryStory: reviseEditorialText(values.obituaryStory || defaultContent.obituaryStory),
       treeTribute: values.treeTribute || defaultContent.treeTribute,
       treeDetail: values.treeDetail || defaultContent.treeDetail,
       bodyFont: values.bodyFont || defaultContent.bodyFont,
@@ -597,8 +591,8 @@ export async function getSiteContent(): Promise<SiteContent> {
       homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
       homeFrontierLabels: parseJson<string[]>(values.homeFrontierLabels, defaultContent.homeFrontierLabels).map((label) => label === "Canopy radiative transfer" ? "Canopy Radiative Transfer" : label),
       secondaryLegacyTopics: parseJson(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics),
-      lifeMilestones: parseJson(values.lifeMilestones, defaultContent.lifeMilestones),
-      legacyChapters: parseJson(values.legacyChapters, defaultContent.legacyChapters),
+      lifeMilestones: parseJson<LifeMilestone[]>(values.lifeMilestones, defaultContent.lifeMilestones).map((item) => ({ ...item, text: reviseEditorialText(item.text) })),
+      legacyChapters: parseJson<LegacyChapter[]>(values.legacyChapters, defaultContent.legacyChapters).map((chapter) => ({ ...chapter, summary: reviseEditorialText(chapter.summary) })),
       legacyThreads: parseJson(values.legacyThreads, defaultContent.legacyThreads),
       communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
       honors: parseJson(values.honors, defaultContent.honors),
@@ -606,7 +600,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
-        return { ...defaultContent.pageCopy, ...saved };
+        return Object.fromEntries(Object.entries({ ...defaultContent.pageCopy, ...saved }).map(([key, value]) => [key, reviseEditorialText(value)]));
       })(),
       siteAssets: { ...defaultContent.siteAssets, ...parseJson(values.siteAssets, {}) },
     };

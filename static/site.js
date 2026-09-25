@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (scale instanceof HTMLElement) {
       scale.replaceChildren(...chapters.map((chapter) => {
         const item = node("li");
-        item.append(node("span", { text: chapter.number || "" }), node("strong", { text: chapter.institution || "" }), node("small", { text: chapter.scale || "" }));
+        item.append(node("span", { text: chapter.number || "" }), node("strong", { text: chapter.scale || "" }), node("small", { text: chapter.institution || "" }));
         return item;
       }));
     }
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (nav instanceof HTMLElement) {
       nav.replaceChildren(...chapters.map((chapter) => {
         const link = node("a", { attrs: { href: `#${chapter.id}` } });
-        link.append(node("span", { text: chapter.number || "" }), node("b", { text: chapter.institution || "" }), node("small", { text: chapter.years || "" }));
+        link.append(node("span", { text: chapter.number || "" }), node("b", { text: chapter.scale || "" }), node("small", { text: `${chapter.institution || ""} · ${chapter.years || ""}` }));
         return link;
       }));
     }

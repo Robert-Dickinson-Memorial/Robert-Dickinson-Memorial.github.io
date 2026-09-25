@@ -47,7 +47,7 @@ jobs:
           version = os.environ["GITHUB_SHA"]
           for page in Path("_site").rglob("*.html"):
               html = page.read_text()
-              page.write_text(html.replace("assets/styles.css", f"assets/styles.css?v={version}"))
+              page.write_text(html.replace("assets/styles.css", f"assets/styles.css?v={version}").replace("site.js", f"site.js?v={version}"))
           PY
           cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
           cp public/dickinson-1967-mit-phd.jpg _site/assets/dickinson-1967-mit-phd.jpg

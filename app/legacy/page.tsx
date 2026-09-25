@@ -18,9 +18,9 @@ export default async function LegacyPage() {
     <InteriorHero kicker={copy["legacy.heroKicker"]} title={copy["legacy.heroTitle"]} intro={copy["legacy.heroIntro"]} />
     <section className="legacy-section legacy-page-content">
       <div className="legacy-scale-intro"><p className="section-kicker light">{copy["legacy.scaleKicker"]}</p><h3>{copy["legacy.scaleTitle"]}</h3><p>{copy["legacy.scaleIntro"]}</p></div>
-      <ol className="legacy-scale legacy-scale-six" aria-label="Robert Dickinson's scientific journey">{content.legacyChapters.map((chapter) => <li key={chapter.id}><span>{chapter.number}</span><strong>{chapter.institution}</strong><small>{chapter.scale}</small></li>)}</ol>
+      <ol className="legacy-scale legacy-scale-six" aria-label="Robert Dickinson's scientific journey">{content.legacyChapters.map((chapter) => <li key={chapter.id}><span>{chapter.number}</span><strong>{chapter.scale}</strong><small>{chapter.institution}</small></li>)}</ol>
 
-      <div className="legacy-journey"><aside className="journey-rail"><p className="section-kicker light">{copy["legacy.chaptersLabel"]}</p><nav>{content.legacyChapters.map((chapter) => <a href={`#${chapter.id}`} key={chapter.id}><span>{chapter.number}</span><b>{chapter.institution}</b><small>{chapter.years}</small></a>)}</nav></aside>
+      <div className="legacy-journey"><aside className="journey-rail"><p className="section-kicker light">{copy["legacy.chaptersLabel"]}</p><nav>{content.legacyChapters.map((chapter) => <a href={`#${chapter.id}`} key={chapter.id}><span>{chapter.number}</span><b>{chapter.scale}</b><small>{chapter.institution} · {chapter.years}</small></a>)}</nav></aside>
         <div className="journey-chapters">{content.legacyChapters.map((chapter) => {
           const image = photoSrc(chapter.photo);
           return <article className="journey-chapter" id={chapter.id} key={chapter.id}>
