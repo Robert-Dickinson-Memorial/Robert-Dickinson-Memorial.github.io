@@ -561,9 +561,12 @@ export const defaultPageCopy: Record<string, string> = {
   "life.photosKicker": "Childhood in MN",
   "life.photosTitle": "Early life in photographs",
   "life.photosEmpty": "Photographs from Robert’s early years will be shared here.",
+  "life.timelineChildhoodLabel": "Childhood",
+  "life.childhoodSummary": "Born in Millersburg, Ohio, and raised in Minnesota, Robert brought an early curiosity about the natural world into a lifetime of discovery.",
+  "life.storyHeading": "Robert’s story",
   "life.heroKicker": "His Life",
-  "life.heroTitle": "A curious mind. A generous spirit.",
-  "life.heroIntro": "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.",
+  "life.heroTitle": "A curious Mind. A generous spirit",
+  "life.heroIntro": "Robert’s path through life and career.",
   "life.years": "1940–2026",
   "life.mentorQuote": "For Robert, the people he collaborated with—from students and postdocs to colleagues at every career stage—were among the greatest highlights of his life in science.",
   "life.mentorText": "His influence continues through the questions they ask, the models they build, and the people they mentor in turn.",
@@ -937,6 +940,8 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
         if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";
         if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.";
+        if (saved["life.heroTitle"] === "A curious mind. A generous spirit.") saved["life.heroTitle"] = "A curious Mind. A generous spirit";
+        if (saved["life.heroIntro"] === "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.") saved["life.heroIntro"] = "Robert’s path through life and career.";
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
