@@ -205,14 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
         article.append(detail);
 
         const imageSrc = chapterPhotoUrl(chapter.photo);
-        if (imageSrc && chapter.photo) {
-          const figure = node("figure", { className: "journey-chapter-photo" });
-          figure.append(node("img", { attrs: { src: imageSrc, alt: chapter.photo.alt || "", loading: "lazy" } }));
-          const caption = node("figcaption", { text: chapter.photo.caption || "" });
-          caption.append(node("small", { text: copy?.["legacy.photoCredit"] || "Photo shared for the Robert E. Dickinson memorial." }));
-          figure.append(caption);
-          article.append(figure);
-        }
         if (publications.length) {
           const landmarkWork = node("section", { className: "landmark-work", attrs: { "aria-label": `Landmark work from ${chapter.institution || ""}` } });
           landmarkWork.append(node("p", { className: "journey-label", text: "Landmark work" }));
@@ -234,6 +226,14 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           landmarkWork.append(grid);
           article.append(landmarkWork);
+        }
+        if (imageSrc && chapter.photo) {
+          const figure = node("figure", { className: "journey-chapter-photo" });
+          figure.append(node("img", { attrs: { src: imageSrc, alt: chapter.photo.alt || "", loading: "lazy" } }));
+          const caption = node("figcaption", { text: chapter.photo.caption || "" });
+          caption.append(node("small", { text: copy?.["legacy.photoCredit"] || "Photo shared for the Robert E. Dickinson memorial." }));
+          figure.append(caption);
+          article.append(figure);
         }
 
         const tags = node("div", { className: "journey-tags" });
