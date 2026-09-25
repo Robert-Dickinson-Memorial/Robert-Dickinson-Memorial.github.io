@@ -7,12 +7,14 @@ export const dynamic = "force-dynamic";
 export default async function LifePage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
+  const portrait = content.siteAssets.lifePortrait;
+  const portraitSrc = portrait.objectKey ? `/api/site-assets/${portrait.objectKey.split("/").map(encodeURIComponent).join("/")}` : `/${portrait.asset.replace(/^\//, "")}`;
   const paragraphs = content.obituaryStory.split(/\n\s*\n/).filter(Boolean);
   return <main className="interior-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="life" />
     <InteriorHero kicker={copy["life.heroKicker"]} title={copy["life.heroTitle"]} intro={copy["life.heroIntro"]} />
     <section className="story-section interior-story">
-      <div className="story-grid"><div><p className="story-aside">{copy["life.years"]}</p></div><div className="prose">{paragraphs.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>)}</div></div>
+      <div className="story-grid"><div className="life-portrait-column"><img className="life-portrait" src={portraitSrc} alt={portrait.alt} /><p className="story-aside">{copy["life.years"]}</p></div><div className="prose">{paragraphs.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>)}</div></div>
       <section className="life-photos" aria-labelledby="life-photos-title">
         <p className="section-kicker">{copy["life.photosKicker"]}</p>
         <h2 id="life-photos-title">{copy["life.photosTitle"]}</h2>

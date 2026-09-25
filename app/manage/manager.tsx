@@ -107,20 +107,20 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setContentValues((current) => ({ ...current, pageCopy: { ...current.pageCopy, [key]: value } }));
   }
 
-  function updateSiteAssetAlt(assetId: "portrait" | "horizon", value: string) {
+  function updateSiteAssetAlt(assetId: "portrait" | "horizon" | "lifePortrait", value: string) {
     setContentValues((current) => ({
       ...current,
       siteAssets: { ...current.siteAssets, [assetId]: { ...current.siteAssets[assetId], alt: value } },
     }));
   }
 
-  function siteAssetSrc(assetId: "portrait" | "horizon") {
+  function siteAssetSrc(assetId: "portrait" | "horizon" | "lifePortrait") {
     const asset = contentValues.siteAssets[assetId];
     if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
     return `/${asset.asset.replace(/^\//, "")}`;
   }
 
-  async function uploadSiteAsset(event: FormEvent<HTMLFormElement>, assetId: "portrait" | "horizon") {
+  async function uploadSiteAsset(event: FormEvent<HTMLFormElement>, assetId: "portrait" | "horizon" | "lifePortrait") {
     event.preventDefault(); setBusy(true); setMessage("");
     try {
       await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
@@ -131,7 +131,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
 
-  async function resetSiteAsset(assetId: "portrait" | "horizon") {
+  async function resetSiteAsset(assetId: "portrait" | "horizon" | "lifePortrait") {
     if (!window.confirm("Restore the original built-in image?")) return;
     setBusy(true); setMessage("");
     try {
@@ -366,7 +366,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage early-life photographs ↓</a><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · His Life</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-portrait">Edit His Life headshot ↓</a><a className="manager-section-link" href="#edit-life-photos">Manage early-life photographs ↓</a><p>The first two paragraphs appear on Home. Use His Life for upbringing, education, personality, and personal memories; keep detailed research achievements in Scientific Legacy. The biography also appears in the Memory book.</p></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
           <label>His life — full biographical story <span>Separate paragraphs with a blank line.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
@@ -391,6 +391,20 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <button type="button" className="manager-secondary" onClick={addHomeLegacyCard}>Add highlight</button>
           </div>
           <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save homepage scientific story</button>
+        </div>
+      </section>
+
+      <section id="edit-life-portrait" className="manager-panel">
+        <div className="manager-panel-heading"><p className="section-kicker">His Life</p><h2>Headshot</h2><p>This portrait appears beside Robert’s biography. Replace it here independently of the homepage portrait.</p></div>
+        <div className="manager-form manager-stack">
+          <img className="manager-image-preview" src={siteAssetSrc("lifePortrait")} alt={contentValues.siteAssets.lifePortrait.alt} />
+          <label>Image description<input value={contentValues.siteAssets.lifePortrait.alt} onChange={(event) => updateSiteAssetAlt("lifePortrait", event.target.value)} /></label>
+          <form className="manager-photo-form" onSubmit={(event) => uploadSiteAsset(event, "lifePortrait")}>
+            <label><ImagePlus size={17} /> Replace headshot <span>JPG, PNG, or WebP, up to 12 MB.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
+            <button className="manager-secondary" disabled={busy}>Upload replacement</button>
+            {contentValues.siteAssets.lifePortrait.objectKey && <button type="button" className="manager-danger" disabled={busy} onClick={() => resetSiteAsset("lifePortrait")}>Restore original</button>}
+          </form>
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save image description</button>
         </div>
       </section>
 

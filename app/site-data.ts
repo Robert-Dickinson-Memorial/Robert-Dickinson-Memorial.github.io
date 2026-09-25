@@ -93,6 +93,7 @@ export type SiteAsset = {
 };
 
 export type SiteAssets = {
+  lifePortrait: SiteAsset;
   portrait: SiteAsset;
   horizon: SiteAsset;
 };
@@ -543,6 +544,7 @@ export const defaultPageCopy: Record<string, string> = {
 };
 
 export const defaultSiteAssets: SiteAssets = {
+  lifePortrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors" },
   portrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors" },
   horizon: { asset: "memorial-horizon.png", objectKey: null, alt: "Earth horizon artwork" },
 };

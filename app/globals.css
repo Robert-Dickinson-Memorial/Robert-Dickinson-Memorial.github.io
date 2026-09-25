@@ -1859,3 +1859,9 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 .life-photos-empty { color: var(--memorial-muted, #586571); padding: 24px; background: var(--memorial-stone, #e9e2d6); }
 @media (max-width: 1000px) { .life-photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .life-photo-grid { grid-template-columns: 1fr; } .life-photo-grid img { height: auto; max-height: 460px; } }
+
+/* A separate, editable portrait anchors the personal biography. */
+.life-portrait-column { align-self: start; }
+.life-portrait { display: block; width: 100%; max-width: 360px; height: auto; border: 1px solid var(--memorial-rule, #d7cebd); padding: 10px; background: var(--memorial-surface, #faf7f0); }
+.life-portrait-column .story-aside { margin-top: 18px; }
+@media (max-width: 700px) { .life-portrait { max-width: 290px; } }
