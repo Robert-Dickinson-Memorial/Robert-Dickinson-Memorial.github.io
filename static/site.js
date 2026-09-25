@@ -89,12 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
       target.replaceChildren(node("p", { className: "life-photos-empty", text: editableCopy["life.photosEmpty"] || "Photographs from Robert’s early years will be shared here." }));
       return;
     }
-    const stack = node("div", { className: "life-photo-stack" });
-    stack.append(...early.map(lifePhotoFigure));
-    target.replaceChildren(stack);
+    target.replaceChildren(...early.map(lifePhotoFigure));
   }
   function illuminateLifeTimeline() {
-    const entries = document.querySelectorAll(".life-scroll-entry");
+    const entries = document.querySelectorAll(".life-reference-entry");
     if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       entries.forEach((entry) => entry.classList.add("is-reached"));
       return;
@@ -106,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
           observer.unobserve(change.target);
         }
       });
-    }, { rootMargin: "0px 0px -18% 0px", threshold: 0 });
+    }, { rootMargin: "0px 0px -14% 0px", threshold: 0 });
     entries.forEach((entry) => observer.observe(entry));
     return () => observer.disconnect();
   }
@@ -114,10 +112,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = document.querySelector("[data-life-timeline]");
     if (!(target instanceof HTMLElement) || !Array.isArray(items)) return;
     target.replaceChildren(...items.map((item, index) => {
-      const article = node("article", { className: "life-scroll-entry" });
-      article.append(node("span", { className: "life-scroll-year", text: item.year || "" }), node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
-      const photo = photos.find((photo) => photo.milestoneId === (item.id || `life-period-${index}`));
-      if (photo) article.append(lifePhotoFigure(photo));
+      const article = node("article", { className: "life-scroll-entry life-reference-entry" });
+      const date = node("div", { className: "life-reference-date" });
+      date.append(node("span", { text: item.year || "" }));
+      const photo = photos.find((candidate) => candidate.milestoneId === (item.id || `life-period-${index}`));
+      const card = node("div", { className: photo ? "life-reference-card" : "life-reference-card life-reference-no-photo" });
+      const copy = node("div", { className: "life-reference-card-copy" });
+      copy.append(node("h3", { text: item.title || "" }), node("p", { text: item.text || "" }));
+      card.append(copy);
+      if (photo) {
+        const media = node("div", { className: "life-reference-card-media" });
+        media.append(lifePhotoFigure(photo));
+        card.append(media);
+      }
+      article.append(date, card);
       return article;
     }));
     illuminateLifeTimeline();
