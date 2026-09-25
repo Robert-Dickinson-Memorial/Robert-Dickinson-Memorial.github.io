@@ -10,6 +10,7 @@ export async function SiteNav({ active }: { active?: string }) {
     { href: "/", label: copy["nav.home"], key: "home" },
     { href: "/life", label: copy["nav.life"], key: "life" },
     { href: "/legacy", label: copy["nav.legacy"], key: "legacy" },
+    { href: "/tree", label: copy["nav.tree"], key: "tree" },
     { href: "/events", label: copy["nav.events"], key: "events" },
     { href: "/gallery", label: copy["nav.gallery"], key: "gallery" },
     { href: "/memories", label: copy["nav.memories"], key: "memories" },

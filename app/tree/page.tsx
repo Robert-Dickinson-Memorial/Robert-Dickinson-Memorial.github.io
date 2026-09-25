@@ -1,5 +1,6 @@
-import { ArrowLeft, ExternalLink, Leaf, Sprout } from "lucide-react";
+import { ArrowLeft, ExternalLink, Sprout } from "lucide-react";
 import Link from "next/link";
+import { SiteNav } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 
 export const dynamic = "force-dynamic";
@@ -86,30 +87,12 @@ export default async function TreeDedicationPage() {
   const copy = content.pageCopy;
   return (
     <main className="tree-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
-      <nav className="site-nav" aria-label="Main navigation">
-        <Link className="wordmark" href="/#top" aria-label="Robert Dickinson memorial home"><span className="wordmark-mark">∞</span><span>{copy["global.wordmark"]}</span></Link>
-        <div className="nav-links"><Link href="/life">{copy["nav.life"]}</Link><Link href="/legacy">{copy["nav.legacy"]}</Link><Link href="/events">{copy["nav.events"]}</Link><Link href="/gallery">{copy["nav.gallery"]}</Link><Link href="/memories">{copy["nav.memories"]}</Link></div>
-      </nav>
-
-      <header id="top" className="tree-page-hero">
-        <div>
-          <p className="section-kicker light">{copy["tree.v2HeroKicker"]}</p>
-          <h1>{copy["tree.v2HeroTitle"]}</h1>
-          <p>{copy["tree.v2HeroText"]}</p>
-          <a className="tree-primary-action" href="#restoration-projects"><Sprout size={19} /> {copy["tree.v2HeroCta"]} <span aria-hidden="true">↓</span></a>
-          <small>{copy["tree.v2HeroNote"]}</small>
-        </div>
-        <aside className="tree-hero-card"><Leaf size={42} aria-hidden="true" /><strong>Robert E. Dickinson</strong><em>1940–2026</em><p>His science kept widening—from atmospheric dynamics to forests, water, vegetation, climate, and the coupled Earth. These living tributes follow that same landscape of connections.</p></aside>
+      <SiteNav active="tree" />
+      <header id="top" className="tree-page-intro">
+        <h1>{copy["tree.pageTitle"]}</h1>
+        <p>{copy["tree.pageIntro"]}</p>
+        <small>{copy["tree.v2HeroNote"]}</small>
       </header>
-
-      <section className="tree-how" aria-labelledby="tree-how-title">
-        <div className="tree-section-heading"><p className="section-kicker">{copy["tree.v2HowKicker"]}</p><h2 id="tree-how-title">{copy["tree.v2HowTitle"]}</h2><p>{copy["tree.v2HowIntro"]}</p></div>
-        <div className="tree-step-grid">
-          <article><span>01</span><h3>{copy["tree.v2Step1Title"]}</h3><p>{copy["tree.v2Step1Text"]}</p></article>
-          <article><span>02</span><h3>{copy["tree.v2Step2Title"]}</h3><p>{copy["tree.v2Step2Text"]}</p></article>
-          <article><span>03</span><h3>{copy["tree.v2Step3Title"]}</h3><p>{copy["tree.v2Step3Text"]}</p></article>
-        </div>
-      </section>
 
       <section id="restoration-projects" className="tree-project tree-project-featured">
         <div>

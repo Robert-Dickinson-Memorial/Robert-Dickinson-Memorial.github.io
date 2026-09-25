@@ -1934,3 +1934,20 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   background: transparent;
 }
 .life-photo-column .life-photo figcaption { padding: 6px 0; }
+
+/* Direct entry to the featured living tribute, with consistent site navigation. */
+.tree-page-intro {
+  background: var(--memorial-deep, #081b2a);
+  color: var(--memorial-ivory, #f4f0e8);
+  padding: 132px clamp(26px, 8vw, 130px) 32px;
+}
+.tree-page-intro h1 { font-size: clamp(2.5rem, 4.5vw, 4rem); line-height: 1.08; margin: 0 0 16px; }
+.tree-page-intro > p { color: var(--memorial-light-text, #c5ced4); margin: 0; max-width: 800px; }
+.tree-page-intro > small { display: block; color: var(--memorial-light-text, #c5ced4); font-size: .76rem; line-height: 1.5; margin-top: 12px; max-width: 800px; }
+.tree-page-intro + .tree-project-featured { padding-top: 40px; padding-bottom: 55px; }
+@media (min-width: 901px) { .site-nav .nav-links { gap: clamp(12px, 2vw, 28px); font-size: .82rem; } }
+@media (min-width: 901px) and (max-width: 1150px) {
+  .site-nav { padding-left: 24px; padding-right: 24px; gap: 20px; }
+  .site-nav .wordmark { font-size: .9rem; letter-spacing: .015em; }
+}
+@media (max-width: 900px) { .tree-page-intro { padding-top: 150px; } }
