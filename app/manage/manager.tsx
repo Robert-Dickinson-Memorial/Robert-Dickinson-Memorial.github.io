@@ -5,7 +5,7 @@ import { BookOpen, CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video
 import type { GalleryItem, LegacyChapter, LegacyPublication, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -344,11 +344,13 @@ export default function Manager({ content, events, media, publishedMemories, edi
     finally { setBusy(false); }
   }
 
-  async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "all", hasPhoto = true) {
+  async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "pdf" | "link" | "all", hasPhoto = true) {
     const warning = mode === "text"
-      ? hasPhoto ? `Delete only the text for “${title}”? Its photo will be preserved in the public gallery.` : `Permanently delete the text-only memory “${title}”?`
-      : mode === "photo" ? `Delete only the photo attached to “${title}”? The memory text will remain published.`
-      : `Permanently delete “${title}”? Its memory text and attached photo will both be removed from the public memorial.`;
+      ? hasPhoto ? `Delete the memory entry “${title}”? Its photo will be preserved in the public gallery, while any PDF or public link will be removed with the memory.` : `Permanently delete the memory entry “${title}” and any PDF or public link attached to it?`
+      : mode === "photo" ? `Delete only the photo attached to “${title}”? The rest of the memory will remain published.`
+      : mode === "pdf" ? `Delete only the PDF attached to “${title}”? The rest of the memory will remain published.`
+      : mode === "link" ? `Remove only the public link attached to “${title}”? The rest of the memory will remain published.`
+      : `Permanently delete “${title}” and all of its text, photo, PDF, and public-link content?`;
     if (!window.confirm(warning)) return;
     setBusy(true); setMessage("");
     try {
@@ -369,7 +371,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <p><b>Home</b> — hero introduction, portrait, Earth-horizon artwork, Scientific legacy narrative highlights, shared enduring threads, and secondary scientific frontiers.</p>
             <p><b>His life</b> — full biography, education and career timeline, and mentorship reflection.</p>
             <p><b>Scientific legacy</b> — every career chapter, chapter photograph, key contributions, legacy statement, landmark publication, Robert’s reflections, community service, and honors. Edit the quotes and service text under Scientific Legacy headings & text.</p>
-            <p><b>Memories</b> — every approved community memory and its published photograph.</p>
+            <p><b>Memories</b> — every approved community memory, published photograph, PDF attachment, and shared public link.</p>
           </div>
           <a className="manager-primary manager-preview-book" href="/memory-book" target="_blank" rel="noopener noreferrer"><BookOpen size={18} /> Preview memory book</a>
         </div>
@@ -602,8 +604,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
                 {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}
                 <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
                 <label>Memory title<input name="title" defaultValue={item.title} required /></label>
-                <label>Memory text<textarea name="story" rows={7} defaultValue={item.story} required /></label>
-                <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory text</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))}><FileX size={16} /> Delete text</button>{item.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
+                <label>Memory text <span>May be blank when the memory has a PDF or public link.</span><textarea name="story" rows={7} defaultValue={item.story} /></label>
+                <label>Public social-media or web post<input name="socialUrl" type="url" defaultValue={item.socialUrl ?? ""} placeholder="https://…" /></label>
+                {item.pdfKey && <p className="manager-memory-attachment"><a href={`/api/memory-files/${item.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer">Open PDF{item.pdfName ? ` · ${item.pdfName}` : ""} ↗</a></p>}
+                <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(item.photoKey))}><FileX size={16} /> Delete memory entry</button>{item.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}{item.pdfKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "pdf")}><FileX size={16} /> Delete PDF</button>}{item.socialUrl && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "link")}><FileX size={16} /> Remove link</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
               </form>)}
               {!publishedMemories.length && <p>No memories are currently published.</p>}
             </div>
