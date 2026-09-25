@@ -23,8 +23,7 @@ export default async function LifePage() {
     <section className="story-section interior-story">
       <div className="story-grid life-story-grid">
         <aside className="life-photo-column" aria-labelledby="life-photos-title">
-          <p className="section-kicker">{copy["life.photosKicker"]}</p>
-          <h2 id="life-photos-title">{copy["life.photosTitle"]}</h2>
+          <p className="section-kicker" id="life-photos-title">{copy["life.photosKicker"]}</p>
           {earlyPhotos.length ? <div className="life-photo-stack">{earlyPhotos.map((photo) => <LifePhotograph key={photo.id} photo={photo} />)}</div> : <p className="life-photos-empty">{copy["life.photosEmpty"]}</p>}
           <p className="story-aside">{copy["life.years"]}</p>
         </aside>

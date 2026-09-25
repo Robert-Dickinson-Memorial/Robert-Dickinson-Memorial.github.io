@@ -394,7 +394,7 @@ export const defaultPageCopy: Record<string, string> = {
   "home.memoriesText": "Read approved stories from students, colleagues, friends, and family—and add your own.",
   "home.memoriesCta": "Read or share memories →",
 
-  "life.photosKicker": "Early years",
+  "life.photosKicker": "Childhood in MN",
   "life.photosTitle": "Early life in photographs",
   "life.photosEmpty": "Photographs from Robert’s early years will be shared here.",
   "life.heroKicker": "His Life",
@@ -618,13 +618,22 @@ function parseJson<T>(value: string | undefined, fallback: T): T {
   }
 }
 
+// Requested childhood display sequence; keep career-photo positions and all metadata intact.
+function orderChildhoodPhotos(photos: LifePhoto[]): LifePhoto[] {
+  const ids = ["b5bc1fa4-f273-43c1-9957-bd6838a3aa92", "4f6d7172-ac22-42d3-944d-a65a552e98da", "df3e2926-a02c-416e-abb2-32a0120d9091"];
+  const rank = (photo: LifePhoto) => { const index = ids.indexOf(photo.id); return index < 0 ? ids.length : index; };
+  const early = photos.filter((photo) => !photo.milestoneId).sort((a, b) => rank(a) - rank(b));
+  let index = 0;
+  return photos.map((photo) => photo.milestoneId ? photo : early[index++]);
+}
+
 export async function getSiteContent(): Promise<SiteContent> {
   if (!env.DB) return defaultContent;
   try {
     const result = await env.DB.prepare("SELECT key, value FROM site_content").all<{ key: string; value: string }>();
     const values = Object.fromEntries((result.results ?? []).map((row) => [row.key, row.value]));
     return {
-      lifePhotos: parseJson<LifePhoto[]>(values.lifePhotos, []),
+      lifePhotos: orderChildhoodPhotos(parseJson<LifePhoto[]>(values.lifePhotos, [])),
       heroIntro: values.heroIntro || defaultContent.heroIntro,
       obituaryStory: reviseEditorialText(values.obituaryStory || defaultContent.obituaryStory),
       treeTribute: values.treeTribute || defaultContent.treeTribute,
@@ -646,6 +655,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});
+        if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
         return Object.fromEntries(Object.entries({ ...defaultContent.pageCopy, ...saved }).map(([key, value]) => [key, reviseEditorialText(value)]));
       })(),
