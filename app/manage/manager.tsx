@@ -131,14 +131,19 @@ export default function Manager({ content, events, media, publishedMemories, edi
   }
 
   async function uploadSiteAsset(event: FormEvent<HTMLFormElement>, assetId: "portrait" | "horizon" | "lifePortrait") {
-    event.preventDefault(); setBusy(true); setMessage("");
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    const file = form.get("file");
+    if (!(file instanceof File) || !file.size) { setMessage("Choose a photograph to upload."); return; }
+    form.set("assetId", assetId);
+    setBusy(true); setMessage("");
     try {
       await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
-      const form = new FormData(event.currentTarget);
-      form.set("assetId", assetId);
       await responseData(await fetch("/api/admin/site-asset", { method: "POST", body: form }));
       window.location.reload();
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
+    finally { setBusy(false); }
   }
 
   async function resetSiteAsset(assetId: "portrait" | "horizon" | "lifePortrait") {
@@ -257,14 +262,19 @@ export default function Manager({ content, events, media, publishedMemories, edi
   }
 
   async function uploadChapterPhoto(event: FormEvent<HTMLFormElement>, chapterId: string) {
-    event.preventDefault(); setBusy(true); setMessage("");
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    const file = form.get("file");
+    if (!(file instanceof File) || !file.size) { setMessage("Choose a photograph to upload."); return; }
+    form.set("chapterId", chapterId);
+    setBusy(true); setMessage("");
     try {
       await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
-      const form = new FormData(event.currentTarget);
-      form.set("chapterId", chapterId);
       await responseData(await fetch("/api/admin/chapter-photo", { method: "POST", body: form }));
       window.location.reload();
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
+    finally { setBusy(false); }
   }
 
   async function removeChapterPhoto(chapterId: string) {
