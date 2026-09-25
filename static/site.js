@@ -525,7 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
       section.append(details);
       publications.forEach((item) => {
         const publication = node("div", { className: "book-publication" });
-        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark publication"} · ${item.year || ""}` }), node("h3", { text: item.title || "" }), node("cite", { text: item.citation || "" }), node("p", { text: item.note || "" }));
+        publication.append(node("p", { className: "book-label", text: `${copy["legacy.publicationLabel"] || "Landmark Publication"} · ${item.year || ""}` }), node("h3", { text: item.title || "" }), node("cite", { text: item.citation || "" }), node("p", { text: item.note || "" }));
         section.append(publication);
       });
 
