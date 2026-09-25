@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const assetId = clean(form.get("assetId"), 40);
   const file = form.get("file");
   if (!allowedAssetIds.has(assetId)) return Response.json({ error: "Unknown site image." }, { status: 400 });
-  if (!(file instanceof File) || !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 12 * 1024 * 1024) {
+  if (!(file instanceof File) || !file.size || !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 12 * 1024 * 1024) {
     return Response.json({ error: "Choose a JPG, PNG, or WebP image under 12 MB." }, { status: 400 });
   }
 
