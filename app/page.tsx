@@ -61,7 +61,7 @@ export default async function Home() {
   return (
     <main data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="home" />
-      <header id="top" className="hero">
+      <header id="top" className={`hero hero-portrait-${content.siteAssets.portrait.layout === "portrait" ? "portrait" : "landscape"}`}>
         <img className="hero-art" src={assetUrl(content.siteAssets.horizon)} alt={content.siteAssets.horizon.alt} aria-hidden={!content.siteAssets.horizon.alt} />
         <div className="hero-shade" />
         <div className="hero-copy">
