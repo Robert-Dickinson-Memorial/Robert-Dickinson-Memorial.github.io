@@ -17,7 +17,7 @@ function cleanPublicUrl(value: unknown): string {
   if (!raw) return "";
   try {
     const url = new URL(raw);
-    return url.protocol === "https:" ? url.toString() : "";
+    return url.protocol === "https:" && !url.username && !url.password ? url.toString() : "";
   } catch {
     return "";
   }
