@@ -663,6 +663,8 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formPdfHelp": "PDF · up to 12 MB",
   "memories.formPhoto": "Add a photo",
   "memories.formPhotoHelp": "JPG, PNG or WebP · up to 8 MB",
+  "memories.pdfLink": "Read the shared PDF",
+  "memories.socialLink": "View the shared public post",
   "memories.formConsent": "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.",
   "memories.formSubmit": "Submit for review",
   "memories.formSending": "Sending…",
