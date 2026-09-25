@@ -275,7 +275,7 @@ const honors: MemorialHonor[] = [
   { year: "2005", title: "Einstein Lectureship", detail: "Chinese Academy of Sciences, Institute of Remote Sensing" },
   { year: "2006", title: "Outstanding Faculty Research Author", detail: "Georgia Institute of Technology" },
   { year: "2006", title: "Foreign Member", detail: "Chinese Academy of Sciences" },
-  { year: "2007", title: "Lead Author, IPCC Fourth Assessment Report", detail: "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry" },
+  { year: "2007", title: "Lead Author, IPCC Fourth Assessment Report", detail: "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry. Robert contributed as a Lead Author; the IPCC and Al Gore jointly received the 2007 Nobel Peace Prize." },
   { year: "2014", title: "Honorary Member", detail: "American Meteorological Society" },
 ];
 
@@ -751,7 +751,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       legacyChapters: parseJson<LegacyChapter[]>(values.legacyChapters, defaultContent.legacyChapters).map((chapter) => ({ ...chapter, summary: reviseEditorialText(chapter.summary) })),
       legacyThreads: alignLegacyThreads(parseJson<LegacyThread[]>(values.legacyThreads, defaultContent.legacyThreads)),
       communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
-      honors: parseJson(values.honors, defaultContent.honors),
+      honors: parseJson<MemorialHonor[]>(values.honors, defaultContent.honors).map((honor) => honor.year === "2007" && honor.title === "Lead Author, IPCC Fourth Assessment Report" && honor.detail === "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry" ? { ...honor, detail: "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry. Robert contributed as a Lead Author; the IPCC and Al Gore jointly received the 2007 Nobel Peace Prize." } : honor),
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});

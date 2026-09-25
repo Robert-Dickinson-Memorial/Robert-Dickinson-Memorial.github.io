@@ -35,9 +35,9 @@ export default async function LegacyPage() {
         })}</div>
       </div>
 
-      <section className="legacy-service" aria-labelledby="legacy-service-title"><p className="section-kicker light">{copy["legacy.serviceKicker"]}</p><h3 id="legacy-service-title">{copy["legacy.serviceTitle"]}</h3><p className="legacy-service-intro">{copy["legacy.serviceIntro"]}</p><ul>{["Leadership", "Advice", "Collaboration", "Publishing"].map((area) => <li key={area}><h4>{copy[`legacy.service${area}Title`]}</h4><p>{copy[`legacy.service${area}Text`]}</p></li>)}</ul><p className="legacy-service-sources">{copy["legacy.serviceSources"]}</p></section>
+      <section className="legacy-service" aria-labelledby="legacy-service-title"><h3 id="legacy-service-title" className="section-kicker light">{copy["legacy.serviceKicker"]}</h3><ul>{["Leadership", "Advice", "Collaboration", "Publishing"].map((area) => <li key={area}><h4>{copy[`legacy.service${area}Title`]}</h4><p>{copy[`legacy.service${area}Text`]}</p></li>)}</ul></section>
 
-      <div className="honors-block"><p className="section-kicker light">{copy["legacy.honorsKicker"]}</p><div className="honors-grid honors-grid-detailed">{content.honors.map((honor) => <div className="honor-item" key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.detail}</small></div>)}</div><p className="honors-note">{content.honorsNote}</p></div>
+      <div className="honors-block"><p className="section-kicker light">{copy["legacy.honorsKicker"]}</p><div className="honors-grid honors-grid-detailed">{content.honors.map((honor) => <div className="honor-item" key={`${honor.year}-${honor.title}`}><span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.detail}</small></div>)}</div></div>
     </section>
     <SiteFooter />
   </main>;
