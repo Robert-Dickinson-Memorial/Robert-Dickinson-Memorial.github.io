@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { Check, ImagePlus, Send } from "lucide-react";
+import { Check, FileText, ImagePlus, Link2, Send } from "lucide-react";
 
 declare global {
   interface Document {
@@ -11,7 +11,7 @@ declare global {
 
 type Status = "idle" | "sending" | "success" | "error";
 
-async function submitMemory(input: { name: string; relationship: string; email?: string; title: string; story: string }) {
+async function submitMemory(input: { name: string; relationship: string; email?: string; title: string; story?: string; socialUrl?: string }) {
   const response = await fetch("/api/memories", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -35,7 +35,7 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
       void Promise.resolve(context.registerTool({
         name: "submit_memorial_memory",
         title: "Submit memorial memory",
-        description: "Submit a written memory for review before it appears on the memorial site.",
+        description: "Submit a memory for review before it appears on the memorial site. The story can be written directly or shared through a public link.",
         inputSchema: {
           type: "object",
           properties: {
@@ -44,8 +44,10 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
             email: { type: "string" },
             title: { type: "string", minLength: 2 },
             story: { type: "string", minLength: 20 },
+            socialUrl: { type: "string", format: "uri" },
           },
-          required: ["name", "relationship", "title", "story"],
+          required: ["name", "relationship", "title"],
+          anyOf: [{ required: ["story"] }, { required: ["socialUrl"] }],
           additionalProperties: false,
         },
         annotations: { readOnlyHint: false, untrustedContentHint: true },
@@ -94,7 +96,13 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
       </div>
       <label>{copy["memories.formEmail"]} <span>{copy["memories.formEmailNote"]}</span><input name="email" type="email" maxLength={200} placeholder={copy["memories.formEmailPlaceholder"]} /></label>
       <label>{copy["memories.formTitle"]}<input name="title" required minLength={2} maxLength={160} placeholder={copy["memories.formTitlePlaceholder"]} /></label>
-      <label>{copy["memories.formStory"]}<textarea name="story" required minLength={20} maxLength={6000} rows={7} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
+      <label>{copy["memories.formStory"]} <span>{copy["memories.formStoryNote"]}</span><textarea name="story" minLength={20} maxLength={6000} rows={7} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
+      <label>{copy["memories.formSocial"]} <span>{copy["memories.formSocialNote"]}</span><div className="memory-link-input"><Link2 size={18} aria-hidden="true" /><input name="socialUrl" type="url" maxLength={1000} placeholder={copy["memories.formSocialPlaceholder"]} /></div></label>
+      <label className="photo-field">
+        <FileText size={22} aria-hidden="true" />
+        <span><strong>{copy["memories.formPdf"]}</strong><small>{copy["memories.formPdfHelp"]}</small></span>
+        <input name="pdf" type="file" accept="application/pdf,.pdf" />
+      </label>
       <label className="photo-field">
         <ImagePlus size={22} aria-hidden="true" />
         <span><strong>{copy["memories.formPhoto"]}</strong><small>{copy["memories.formPhotoHelp"]}</small></span>
