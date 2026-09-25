@@ -34,7 +34,7 @@ export default async function ReviewPage() {
         <Link className="review-back" href={PUBLIC_MEMORIAL_URL}><ArrowLeft size={17} /> Return to the memorial</Link>
         <p className="section-kicker">Private moderation</p>
         <h1>Review submitted memories</h1>
-        <p>Approve a story to publish it on the memory wall, or reject it to keep it private.</p>
+        <p>Approve a submission to publish it on the memory wall, or reject it to keep it private. Submissions may include written text, a photograph, a PDF, or a public link.</p>
         <div className={`notification-status ${notificationsReady ? "ready" : "inactive"}`}>
           {notificationsReady ? <Bell size={18} /> : <BellOff size={18} />}
           {notificationsReady ? "Email notifications are active." : "Email notifications are awaiting mail-service activation."}
