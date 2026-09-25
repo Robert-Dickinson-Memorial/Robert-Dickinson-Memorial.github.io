@@ -228,16 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
             card.append(caption);
             grid.append(card);
           });
-            const preview = publicationImageUrl(publication.image);
-            if (preview) card.append(node("img", { attrs: { src: preview, alt: publication.alt || `Publication preview for ${publication.title || ""}`, loading: "lazy" } }));
-            const body = node("div", { className: "landmark-paper-copy" });
-            const label = node("p", { className: "journey-label" });
-            label.append(document.createTextNode((copy?.["legacy.publicationLabel"] || "Landmark publication") + " "), node("span", { text: "·" }), document.createTextNode(` ${publication.year || ""}`));
-            body.append(label, node("h4", { text: publication.title || "" }), node("cite", { text: publication.citation || "" }), node("p", { text: publication.note || "" }));
-            if (publication.url) body.append(node("span", { className: "landmark-paper-link", text: "Read the publication ↗" }));
-            card.append(body);
-            grid.append(card);
-          });
           landmarkWork.append(grid);
           article.append(landmarkWork);
         }
