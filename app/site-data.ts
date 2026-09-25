@@ -493,7 +493,7 @@ export const defaultPageCopy: Record<string, string> = {
   "legacy.scaleKicker": "A widening scientific horizon",
   "legacy.scaleTitle": "He repeatedly changed the scale of the problem.",
   "legacy.scaleIntro": "Across six decades, each question opened into a larger one—without losing the physical clarity of the question that came before it.",
-  "legacy.chaptersLabel": "Scientific contributions",
+  "legacy.chaptersLabel": "Scientific Contribution Chronicle",
   "legacy.focusLabel": "Scientific focus",
   "legacy.contributionsLabel": "Key contributions",
   "legacy.impactLabel": "Legacy",
@@ -758,6 +758,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["legacy.frontiersIntro"] === "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.") saved["legacy.frontiersIntro"] = "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.";
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
+        if (saved["legacy.chaptersLabel"] === "Scientific contributions") saved["legacy.chaptersLabel"] = "Scientific Contribution Chronicle";
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));
