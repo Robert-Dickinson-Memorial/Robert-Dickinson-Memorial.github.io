@@ -1928,8 +1928,8 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 /* Medium-size childhood photographs, between the original and compact layouts. */
 .life-photo-column .life-photo-stack { gap: 16px; }
 .life-photo-column .life-photo img {
-  height: clamp(200px, 16vw, 240px);
-  max-height: 240px;
+  height: clamp(300px, 24vw, 360px);
+  max-height: 360px;
   object-fit: contain;
   background: transparent;
 }
