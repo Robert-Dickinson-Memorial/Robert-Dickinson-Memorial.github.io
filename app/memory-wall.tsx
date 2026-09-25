@@ -36,8 +36,8 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
           <Quote size={24} strokeWidth={1.4} aria-hidden="true" />
           <h3>{memory.title}</h3>{memory.story && <p>{memory.story}</p>}
           {(memory.pdfKey || memory.socialUrl) && <div className="memory-attachments">
-            {memory.pdfKey && <a href={`/api/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer"><FileText size={16} /> Read the shared PDF</a>}
-            {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={16} /> View the shared public post</a>}
+            {memory.pdfKey && <a href={`/api/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer"><FileText size={16} /> {copy["memories.pdfLink"] || "Read the shared PDF"}</a>}
+            {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={16} /> {copy["memories.socialLink"] || "View the shared public post"}</a>}
           </div>}
           <footer><strong>{memory.name}</strong><span>{memory.relationship}</span></footer>
         </article>
