@@ -279,12 +279,36 @@ const honors: MemorialHonor[] = [
 ];
 
 const legacyThreads: LegacyThread[] = [
-  { id: "atmospheric-dynamics", title: "Atmospheric dynamics", text: "Planetary waves, circulation, radiation, and the physics that set atmospheres in motion." },
-  { id: "climate-change", title: "Climate change", text: "Physical understanding of radiative forcing, greenhouse warming, climate sensitivity, and feedbacks." },
-  { id: "climate-modeling", title: "Climate modeling", text: "Models used not merely to predict, but to reveal how interacting processes create climate." },
-  { id: "land-atmosphere", title: "Land–atmosphere interactions", text: "Vegetation, soils, water, snow, roots, and surface energy made active parts of the climate system." },
-  { id: "observation-space", title: "Observation from space", text: "Remote sensing used to confront models with the changing temperature and condition of land." },
-  { id: "coupled-earth", title: "A coupled Earth", text: "Water, energy, carbon, ecosystems, and human influence brought into one scientific picture." },
+  {
+    "id": "atmospheric-dynamics",
+    "title": "Atmospheric Dynamics",
+    "text": "Robert advanced the theory of planetary waves and the dynamics of Earth’s upper atmosphere, extending his work to the atmospheres of Venus and Mars."
+  },
+  {
+    "id": "climate-change",
+    "title": "Climate Change",
+    "text": "His work on radiative forcing, climate sensitivity, and greenhouse gases helped explain how changes in Earth’s energy balance lead to global warming."
+  },
+  {
+    "id": "climate-modeling",
+    "title": "Climate Modeling",
+    "text": "Robert developed and improved models that connect atmospheric circulation and radiation with land processes, making them tools for understanding how the climate system works."
+  },
+  {
+    "id": "land-atmosphere",
+    "title": "Land-Atmosphere Interactions",
+    "text": "He brought vegetation, soils, water, and surface energy exchange into global climate models, transforming land from a passive boundary into an active part of climate."
+  },
+  {
+    "id": "observation-space",
+    "title": "Satellite Remote Sensing",
+    "text": "Robert used satellite observations of vegetation, surface temperature, and reflectance to study the land surface and test the processes represented in climate models."
+  },
+  {
+    "id": "coupled-earth",
+    "title": "A Coupled Earth",
+    "text": "His work connected atmosphere, biosphere, and hydrosphere through exchanges of water, energy, and carbon, helping build a fuller picture of the Earth system."
+  }
 ];
 
 const homeLegacyCards: HomeLegacyCard[] = [
@@ -311,14 +335,48 @@ const homeLegacyCards: HomeLegacyCard[] = [
 ];
 
 const secondaryLegacyTopics: SecondaryLegacyTopic[] = [
-  { title: "Planetary atmospheres", text: "Global circulation, radiation, and upper-atmosphere modeling for Earth, Venus, and Mars.", threadIds: ["atmospheric-dynamics", "climate-modeling"] },
-  { title: "Tropical deforestation", text: "How land-cover change in the Amazon reshapes regional energy, water, and climate.", threadIds: ["land-atmosphere", "climate-change", "coupled-earth"] },
-  { title: "Regional climate modeling", text: "Early development of regional models for resolving climate processes below the global scale.", threadIds: ["climate-modeling", "climate-change"] },
-  { title: "Carbon & nitrogen cycles", text: "Coupling biogeochemistry with water and energy cycles in land and Earth-system models.", threadIds: ["land-atmosphere", "coupled-earth"] },
-  { title: "Dynamic vegetation", text: "Representing vegetation change as an active part of climate and Earth-system feedbacks.", threadIds: ["land-atmosphere", "coupled-earth"] },
-  { title: "Solar geoengineering", text: "Early analysis of deliberate changes to Earth’s energy balance and their climatic implications.", threadIds: ["climate-change", "climate-modeling"] },
-  { title: "Hydrology & drought", text: "Soil moisture, evapotranspiration, groundwater, drought, and land–climate feedbacks.", threadIds: ["land-atmosphere", "coupled-earth"] },
-  { title: "Aerosols & radiation", text: "Radiative effects of aerosols, greenhouse gases, and atmospheric composition across climate scales.", threadIds: ["atmospheric-dynamics", "climate-change"] },
+  {
+    "title": "Tropical Deforestation",
+    "text": "How land-cover change in the Amazon reshapes regional energy, water, and climate.",
+    "threadIds": [
+      "land-atmosphere",
+      "climate-change",
+      "coupled-earth"
+    ]
+  },
+  {
+    "title": "Carbon & Nitrogen cycling",
+    "text": "Coupling biogeochemistry with water and energy cycles in land and Earth-system models.",
+    "threadIds": [
+      "land-atmosphere",
+      "coupled-earth"
+    ]
+  },
+  {
+    "title": "Regional Climate Modeling",
+    "text": "Early development of regional models for resolving climate processes below the global scale.",
+    "threadIds": [
+      "climate-modeling",
+      "climate-change"
+    ]
+  },
+  {
+    "title": "Solar Geoengineering",
+    "text": "Early analysis of deliberate changes to Earth’s energy balance and their climatic implications.",
+    "threadIds": [
+      "climate-change",
+      "climate-modeling"
+    ]
+  },
+  {
+    "title": "Canopy Radiative Transfer",
+    "text": "How vegetation absorbs, transmits, and scatters radiation, connecting canopy reflectance and satellite observations with land-surface modeling.",
+    "threadIds": [
+      "land-atmosphere",
+      "observation-space",
+      "climate-modeling"
+    ]
+  }
 ];
 
 const communityQuotes: CommunityQuote[] = [
@@ -429,7 +487,7 @@ export const defaultPageCopy: Record<string, string> = {
   "legacy.threadsIntro": "These research threads connect Robert’s discoveries across decades, from atmospheric motion to the coupled Earth system.",
   "legacy.frontiersKicker": "Beyond the central threads",
   "legacy.frontiersTitle": "Other frontiers he helped open",
-  "legacy.frontiersIntro": "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.",
+  "legacy.frontiersIntro": "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.",
   "legacy.honorsKicker": "Honors, awards & recognition",
 
   "events.heroKicker": "Gather together",
@@ -630,6 +688,28 @@ function orderChildhoodPhotos(photos: LifePhoto[]): LifePhoto[] {
   return photos.map((photo) => photo.milestoneId ? photo : early[index++]);
 }
 
+
+const previousThreadCopy: LegacyThread[] = [{"id":"atmospheric-dynamics","title":"Atmospheric dynamics","text":"Planetary waves, circulation, radiation, and the physics that set atmospheres in motion."},{"id":"climate-change","title":"Climate change","text":"Physical understanding of radiative forcing, greenhouse warming, climate sensitivity, and feedbacks."},{"id":"climate-modeling","title":"Climate modeling","text":"Models used not merely to predict, but to reveal how interacting processes create climate."},{"id":"land-atmosphere","title":"Land–atmosphere interactions","text":"Vegetation, soils, water, snow, roots, and surface energy made active parts of the climate system."},{"id":"observation-space","title":"Observation from space","text":"Remote sensing used to confront models with the changing temperature and condition of land."},{"id":"coupled-earth","title":"A coupled Earth","text":"Water, energy, carbon, ecosystems, and human influence brought into one scientific picture."}];
+const previousFrontierCopy: SecondaryLegacyTopic[] = [{"title":"Planetary atmospheres","text":"Global circulation, radiation, and upper-atmosphere modeling for Earth, Venus, and Mars.","threadIds":["atmospheric-dynamics","climate-modeling"]},{"title":"Tropical deforestation","text":"How land-cover change in the Amazon reshapes regional energy, water, and climate.","threadIds":["land-atmosphere","climate-change","coupled-earth"]},{"title":"Regional climate modeling","text":"Early development of regional models for resolving climate processes below the global scale.","threadIds":["climate-modeling","climate-change"]},{"title":"Carbon & nitrogen cycles","text":"Coupling biogeochemistry with water and energy cycles in land and Earth-system models.","threadIds":["land-atmosphere","coupled-earth"]},{"title":"Dynamic vegetation","text":"Representing vegetation change as an active part of climate and Earth-system feedbacks.","threadIds":["land-atmosphere","coupled-earth"]},{"title":"Solar geoengineering","text":"Early analysis of deliberate changes to Earth’s energy balance and their climatic implications.","threadIds":["climate-change","climate-modeling"]},{"title":"Hydrology & drought","text":"Soil moisture, evapotranspiration, groundwater, drought, and land–climate feedbacks.","threadIds":["land-atmosphere","coupled-earth"]},{"title":"Aerosols & radiation","text":"Radiative effects of aerosols, greenhouse gases, and atmospheric composition across climate scales.","threadIds":["atmospheric-dynamics","climate-change"]}];
+
+// Update the reviewed older copy while leaving subsequent editor changes intact.
+function alignLegacyThreads(items: LegacyThread[]): LegacyThread[] {
+  return items.map((item) => {
+    const before = previousThreadCopy.find((entry) => entry.id === item.id);
+    const after = legacyThreads.find((entry) => entry.id === item.id);
+    if (!before || !after) return item;
+    return { ...item, title: item.title === before.title ? after.title : item.title,
+      text: item.text === before.text ? after.text : item.text };
+  });
+}
+function alignLegacyFrontiers(items: SecondaryLegacyTopic[]): SecondaryLegacyTopic[] {
+  const unchanged = items.length === previousFrontierCopy.length && items.every((item, index) => {
+    const before = previousFrontierCopy[index];
+    return item.title === before.title && item.text === before.text && JSON.stringify(item.threadIds) === JSON.stringify(before.threadIds);
+  });
+  return unchanged ? secondaryLegacyTopics : items;
+}
+
 export async function getSiteContent(): Promise<SiteContent> {
   if (!env.DB) return defaultContent;
   try {
@@ -649,15 +729,16 @@ export async function getSiteContent(): Promise<SiteContent> {
         : values.homeLegacyIntro,
       homeLegacyCards: parseJson(values.homeLegacyCards, defaultContent.homeLegacyCards),
       homeFrontierLabels: parseJson<string[]>(values.homeFrontierLabels, defaultContent.homeFrontierLabels).map((label) => label === "Canopy radiative transfer" ? "Canopy Radiative Transfer" : label),
-      secondaryLegacyTopics: parseJson(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics),
+      secondaryLegacyTopics: alignLegacyFrontiers(parseJson<SecondaryLegacyTopic[]>(values.secondaryLegacyTopics, defaultContent.secondaryLegacyTopics)),
       lifeMilestones: parseJson<LifeMilestone[]>(values.lifeMilestones, defaultContent.lifeMilestones).map((item) => ({ ...item, text: reviseEditorialText(item.text) })),
       legacyChapters: parseJson<LegacyChapter[]>(values.legacyChapters, defaultContent.legacyChapters).map((chapter) => ({ ...chapter, summary: reviseEditorialText(chapter.summary) })),
-      legacyThreads: parseJson(values.legacyThreads, defaultContent.legacyThreads),
+      legacyThreads: alignLegacyThreads(parseJson<LegacyThread[]>(values.legacyThreads, defaultContent.legacyThreads)),
       communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
       honors: parseJson(values.honors, defaultContent.honors),
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});
+        if (saved["legacy.frontiersIntro"] === "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.") saved["legacy.frontiersIntro"] = "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.";
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
         return Object.fromEntries(Object.entries({ ...defaultContent.pageCopy, ...saved }).map(([key, value]) => [key, reviseEditorialText(value)]));
