@@ -64,6 +64,15 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
     setStatus("sending");
     setMessage("");
     const form = new FormData(event.currentTarget);
+    const story = String(form.get("story") || "").trim();
+    const socialUrl = String(form.get("socialUrl") || "").trim();
+    const pdf = form.get("pdf");
+    const hasPdf = pdf instanceof File && pdf.size > 0;
+    if (!story && !socialUrl && !hasPdf) {
+      setStatus("error");
+      setMessage("Please share your story as written text, a PDF, or a public post.");
+      return;
+    }
     try {
       const response = await fetch("/api/memories", { method: "POST", body: form });
       const data = await response.json();
@@ -97,7 +106,7 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
       <label>{copy["memories.formEmail"]} <span>{copy["memories.formEmailNote"]}</span><input name="email" type="email" maxLength={200} placeholder={copy["memories.formEmailPlaceholder"]} /></label>
       <label>{copy["memories.formTitle"]}<input name="title" required minLength={2} maxLength={160} placeholder={copy["memories.formTitlePlaceholder"]} /></label>
       <label>{copy["memories.formStory"]} <span>{copy["memories.formStoryNote"]}</span><textarea name="story" minLength={20} maxLength={6000} rows={7} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
-      <label>{copy["memories.formSocial"]} <span>{copy["memories.formSocialNote"]}</span><div className="memory-link-input"><Link2 size={18} aria-hidden="true" /><input name="socialUrl" type="url" maxLength={1000} placeholder={copy["memories.formSocialPlaceholder"]} /></div></label>
+      <label>{copy["memories.formSocial"]} <span>{copy["memories.formSocialNote"]}</span><span className="memory-link-input"><Link2 size={18} aria-hidden="true" /><input name="socialUrl" type="url" maxLength={1000} placeholder={copy["memories.formSocialPlaceholder"]} /></span></label>
       <label className="photo-field">
         <FileText size={22} aria-hidden="true" />
         <span><strong>{copy["memories.formPdf"]}</strong><small>{copy["memories.formPdfHelp"]}</small></span>
