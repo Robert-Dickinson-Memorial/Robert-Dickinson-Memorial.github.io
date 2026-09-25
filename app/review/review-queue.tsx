@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, ExternalLink, FileText, X } from "lucide-react";
 
 export type PendingMemory = {
   id: number;
@@ -12,6 +12,9 @@ export type PendingMemory = {
   story: string;
   photoKey: string | null;
   photoName: string | null;
+  pdfKey: string | null;
+  pdfName: string | null;
+  socialUrl: string | null;
   createdAt: string;
 };
 
@@ -58,7 +61,11 @@ export default function ReviewQueue({ initialMemories }: { initialMemories: Pend
                 <time dateTime={memory.createdAt}>{new Date(memory.createdAt).toLocaleString()}</time>
               </div>
               <h2>{memory.title}</h2>
-              <p className="review-story">{memory.story}</p>
+              {memory.story && <p className="review-story">{memory.story}</p>}
+              {(memory.pdfKey || memory.socialUrl) && <div className="review-attachments">
+                {memory.pdfKey && <a href={`/api/admin/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer"><FileText size={17} /> Open submitted PDF{memory.pdfName ? ` · ${memory.pdfName}` : ""}</a>}
+                {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} /> Open shared public post</a>}
+              </div>}
               <div className="review-submitter">
                 <strong>{memory.name}</strong>
                 {memory.email && <a href={`mailto:${memory.email}`}>{memory.email}</a>}
