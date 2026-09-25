@@ -1631,7 +1631,14 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   line-height: 1.02;
   max-width: none;
 }
+.home-legacy-copy-block { align-self: center; }
 .home-legacy-intro-block { padding-top: 0; }
+.home-legacy-intro-block > p { margin: 0; }
+.science-secondary-band-home .science-secondary-terms { row-gap: 10px; }
+.science-secondary-band-home .science-secondary-terms span {
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
 .home-legacy-intro-block > p {
   color: #c5ced4;
   font-family: var(--font-body);
@@ -1723,7 +1730,7 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 @media (max-width: 1000px) {
   .home-preview-heading-integrated { grid-template-columns: 1fr; }
   .home-preview-heading-integrated > .home-legacy-title-block { grid-column: 1; }
-  .home-legacy-copy-block { max-width: 740px; }
+  .home-legacy-copy-block { align-self: start; max-width: 740px; }
   .home-thread-visual { margin-top: 0; }
   .home-thread-art { max-width: 850px; }
   .science-highlight { grid-template-columns: 22px minmax(0, 1fr); }
