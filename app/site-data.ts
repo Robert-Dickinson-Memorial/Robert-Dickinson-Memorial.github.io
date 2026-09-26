@@ -502,7 +502,7 @@ export const defaultPageCopy: Record<string, string> = {
   "nav.home": "Home",
   "nav.life": "His Life",
   "nav.legacy": "Scientific Legacy",
-  "nav.tree": "Living Tribute",
+  "nav.tree": "Plant a Tree",
   "tree.pageTitle": "Living Tribute",
   "tree.pageIntro": "Honor Robert by supporting forests and ecosystems connected to his life and work.",
   "nav.events": "Events",
@@ -954,6 +954,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});
+        if (saved["nav.tree"] === "Living Tribute") saved["nav.tree"] = "Plant a Tree";
         if (saved["nav.memories"] === "Memories") saved["nav.memories"] = "Share A Memory";
         if (saved["legacy.frontiersIntro"] === "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.") saved["legacy.frontiersIntro"] = "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.";
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";

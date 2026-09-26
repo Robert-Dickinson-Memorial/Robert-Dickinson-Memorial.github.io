@@ -317,6 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
     editableCopy = { ...content.pageCopy };
+    if (editableCopy["nav.tree"] === "Living Tribute") editableCopy["nav.tree"] = "Plant a Tree";
     if (editableCopy["nav.memories"] === "Memories") editableCopy["nav.memories"] = "Share A Memory";
     applyTheme(content);
     applyPageCopy(editableCopy);
