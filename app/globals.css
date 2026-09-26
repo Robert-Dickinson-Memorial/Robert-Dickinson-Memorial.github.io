@@ -2700,3 +2700,38 @@ html[data-page="life"] .site-footer, .life-page-active .site-footer { background
   .life-reference-page .life-reference-card:not(.life-reference-childhood) .life-reference-card-media,
   .life-reference-page .life-reference-card:not(.life-reference-childhood) .life-reference-card-media .life-photo { height: 215px; }
 }
+
+/* Make contributing a memory visible from every page. */
+.site-nav .nav-links a.nav-memory-cta,
+html[data-page] .site-nav .nav-links a.nav-memory-cta,
+.life-page-active .site-nav .nav-links a.nav-memory-cta {
+  color: #081b2a;
+  background: #e6cd94;
+  border: 1px solid #e6cd94;
+  border-radius: 5px;
+  padding: 9px 13px;
+  font-weight: 700;
+  opacity: 1;
+}
+.site-nav .nav-links { align-items: center; }
+.site-nav .nav-links a.nav-memory-cta:hover { background: #f0ddb3; }
+.site-nav .nav-links a.nav-memory-cta:focus-visible { outline: 3px solid #ac8139; outline-offset: 3px; }
+.tribute-action-card.memory-card-cta { background: #e6cd94; border-color: #ba9656; color: #081b2a; }
+.tribute-action-card.memory-card-cta:hover { background: #efdbaf; }
+.tribute-action-card.memory-card-cta small,
+.tribute-action-card.memory-card-cta em,
+.tribute-action-card.memory-card-cta .tribute-action-icon { color: #344956; }
+#share { scroll-margin-top: 120px; }
+.memories-page .interior-hero,
+html[data-page="memories"] .interior-hero { min-height: 0; padding-top: 145px; padding-bottom: 38px; }
+.memories-page .interior-hero h1,
+html[data-page="memories"] .interior-hero h1 { font-size: clamp(2.6rem, 5vw, 4.8rem); }
+.memories-page .interior-hero > p:last-child,
+html[data-page="memories"] .interior-hero > p:last-child { margin-top: 20px; }
+.memories-page .share-section,
+html[data-page="memories"] .share-section { padding-top: 48px; }
+@media (max-width: 900px) {
+  .site-nav .nav-links a.nav-memory-cta { padding: 6px 10px; }
+  .memories-page .interior-hero,
+  html[data-page="memories"] .interior-hero { padding-top: 165px; }
+}

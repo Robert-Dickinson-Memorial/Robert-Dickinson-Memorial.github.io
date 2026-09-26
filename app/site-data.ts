@@ -507,7 +507,7 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.pageIntro": "Honor Robert by supporting forests and ecosystems connected to his life and work.",
   "nav.events": "Events",
   "nav.gallery": "Gallery",
-  "nav.memories": "Memories",
+  "nav.memories": "Share A Memory",
 
   "home.heroEyebrow": "Celebrating a life in science",
   "home.heroNameLine1": "Robert E.",
@@ -522,6 +522,11 @@ export const defaultPageCopy: Record<string, string> = {
   "home.storyYears": "1940–2026",
   "home.storyReadLink": "Read Robert’s full story",
   "home.tributeKicker": "Living tributes",
+  "home.tributeParticipationIntro": "Honor Robert through a living tribute or a memory shared with his community.",
+  "home.shareMemoryKicker": "Add your voice",
+  "home.shareMemoryTitle": "Share A Memory",
+  "home.shareMemoryText": "Share a story, photograph, or moment that helps us remember Robert.",
+  "home.shareMemoryCta": "Share your memory →",
   "home.tributeTitle": "Two lasting ways to remember Robert",
   "home.tributeIntro": "Carry his memory into a living landscape, or preserve the community’s stories in a keepsake collection.",
   "home.treeKicker": "Living tribute",
@@ -949,6 +954,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
         const saved = parseJson<Record<string, string>>(values.pageCopy, {});
+        if (saved["nav.memories"] === "Memories") saved["nav.memories"] = "Share A Memory";
         if (saved["legacy.frontiersIntro"] === "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.") saved["legacy.frontiersIntro"] = "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.";
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);

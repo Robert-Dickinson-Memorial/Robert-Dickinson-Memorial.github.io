@@ -13,12 +13,12 @@ export async function SiteNav({ active }: { active?: string }) {
     { href: "/tree", label: copy["nav.tree"], key: "tree" },
     { href: "/events", label: copy["nav.events"], key: "events" },
     { href: "/gallery", label: copy["nav.gallery"], key: "gallery" },
-    { href: "/memories", label: copy["nav.memories"], key: "memories" },
+    { href: "/memories/#share", label: copy["nav.memories"], key: "memories" },
   ];
   return (
     <nav className="site-nav" aria-label="Main navigation">
       <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark">∞</span><span>{copy["global.wordmark"]}</span></Link>
-      <div className="nav-links">{links.map((link) => <Link className={active === link.key ? "active" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
+      <div className="nav-links">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : ""].filter(Boolean).join(" ") || undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
     </nav>
   );
 }
