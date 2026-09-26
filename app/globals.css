@@ -684,6 +684,8 @@ h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 4.
 }
 
 .memories-empty {
+  column-span: all;
+  break-inside: avoid;
   color: var(--muted);
   grid-column: 1 / -1;
   margin: 0;
