@@ -47,17 +47,17 @@ export async function PATCH(request: Request) {
       return Response.json({ error: "Please enter a valid HTTPS public link." }, { status: 400 });
     }
     const current = await env.DB.prepare(
-      "SELECT pdf_key AS pdfKey FROM memories WHERE id = ? AND status = 'approved'"
-    ).bind(id).first<{ pdfKey: string | null }>();
+      "SELECT video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey FROM memories WHERE id = ? AND status = 'approved'"
+    ).bind(id).first<{ videoKey: string | null; videoName: string | null; pdfKey: string | null }>();
     if (!current) return Response.json({ error: "Published memory not found." }, { status: 404 });
     if (name.length < 2 || relationship.length < 2 || title.length < 2) {
       return Response.json({ error: "Name, connection, and title are required." }, { status: 400 });
     }
     if (story && story.length < 20) {
-      return Response.json({ error: "Memory text must be at least 20 characters, or left blank when a PDF or public link is present." }, { status: 400 });
+      return Response.json({ error: "Memory text must be at least 20 characters, or left blank when a PDF, video, or public link is present." }, { status: 400 });
     }
-    if (!story && !current.pdfKey && !socialUrl) {
-      return Response.json({ error: "Keep written text, a PDF, or a public link with this memory." }, { status: 400 });
+    if (!story && !current.pdfKey && !current.videoKey && !socialUrl) {
+      return Response.json({ error: "Keep written text, a PDF, video, or a public link with this memory." }, { status: 400 });
     }
     const result = await env.DB.prepare(
       "UPDATE memories SET name = ?, relationship = ?, title = ?, story = ?, social_url = ? WHERE id = ? AND status = 'approved'"
@@ -72,8 +72,8 @@ export async function PATCH(request: Request) {
 
   const status = action === "approve" ? "approved" : "rejected";
   const memory = await env.DB.prepare(
-    "SELECT photo_key AS photoKey, pdf_key AS pdfKey FROM memories WHERE id = ? AND status = ?"
-  ).bind(id, "pending").first<{ photoKey: string | null; pdfKey: string | null }>();
+    "SELECT photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey FROM memories WHERE id = ? AND status = ?"
+  ).bind(id, "pending").first<{ photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null }>();
   const result = await env.DB.prepare(
     "UPDATE memories SET status = ? WHERE id = ? AND status = ?"
   ).bind(status, id, "pending").run();
@@ -83,8 +83,9 @@ export async function PATCH(request: Request) {
   }
   if (action === "reject" && env.BUCKET) {
     if (memory?.photoKey) await env.BUCKET.delete(memory.photoKey);
+    if (memory?.videoKey) await env.BUCKET.delete(memory.videoKey);
     if (memory?.pdfKey) await env.BUCKET.delete(memory.pdfKey);
-    await env.DB.prepare("UPDATE memories SET photo_key = NULL, photo_name = NULL, pdf_key = NULL, pdf_name = NULL WHERE id = ?").bind(id).run();
+    await env.DB.prepare("UPDATE memories SET photo_key = NULL, photo_name = NULL, pdf_key = NULL, pdf_name = NULL, video_key = NULL, video_name = NULL WHERE id = ?").bind(id).run();
   }
   return Response.json({ ok: true, id, status });
 }
@@ -99,13 +100,13 @@ export async function DELETE(request: Request) {
 
   const id = Number(new URL(request.url).searchParams.get("id"));
   const mode = new URL(request.url).searchParams.get("mode") || "all";
-  if (!Number.isInteger(id) || id < 1 || !["text", "photo", "pdf", "link", "all"].includes(mode)) {
+  if (!Number.isInteger(id) || id < 1 || !["text", "photo", "pdf", "video", "link", "all"].includes(mode)) {
     return Response.json({ error: "Invalid memory." }, { status: 400 });
   }
 
   const memory = await env.DB.prepare(
-    "SELECT story, photo_key AS photoKey, pdf_key AS pdfKey, social_url AS socialUrl FROM memories WHERE id = ? AND status = 'approved'"
-  ).bind(id).first<{ story: string; photoKey: string | null; pdfKey: string | null; socialUrl: string | null }>();
+    "SELECT story, photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl FROM memories WHERE id = ? AND status = 'approved'"
+  ).bind(id).first<{ story: string; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null }>();
   if (!memory) {
     return Response.json({ error: "Published memory not found." }, { status: 404 });
   }
@@ -122,6 +123,7 @@ export async function DELETE(request: Request) {
     } else {
       await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
     }
+    if (memory.videoKey) await env.BUCKET.delete(memory.videoKey);
     if (memory.pdfKey) await env.BUCKET.delete(memory.pdfKey);
     return Response.json({ ok: true, id, deleted: "text" });
   }
@@ -135,21 +137,29 @@ export async function DELETE(request: Request) {
 
   if (mode === "pdf") {
     if (!memory.pdfKey) return Response.json({ error: "This memory has no PDF." }, { status: 404 });
-    if (!memory.story && !memory.socialUrl) return Response.json({ error: "This PDF is the only story content. Use Delete all to remove the memory." }, { status: 409 });
+    if (!memory.story && !memory.videoKey && !memory.socialUrl) return Response.json({ error: "This PDF is the only story content. Use Delete all to remove the memory." }, { status: 409 });
     await env.BUCKET.delete(memory.pdfKey);
     await env.DB.prepare("UPDATE memories SET pdf_key = NULL, pdf_name = NULL WHERE id = ? AND status = 'approved'").bind(id).run();
     return Response.json({ ok: true, id, deleted: "pdf" });
   }
 
+  if (mode === "video") {
+    if (!memory.videoKey) return Response.json({ error: "This memory has no video." }, { status: 404 });
+    if (!memory.story && !memory.pdfKey && !memory.socialUrl) return Response.json({ error: "This video is the only story content. Use Delete all to remove the memory." }, { status: 409 });
+    await env.BUCKET.delete(memory.videoKey);
+    await env.DB.prepare("UPDATE memories SET video_key = NULL, video_name = NULL WHERE id = ? AND status = 'approved'").bind(id).run();
+    return Response.json({ ok: true, id, deleted: "video" });
+  }
   if (mode === "link") {
     if (!memory.socialUrl) return Response.json({ error: "This memory has no public link." }, { status: 404 });
-    if (!memory.story && !memory.pdfKey) return Response.json({ error: "This link is the only story content. Use Delete all to remove the memory." }, { status: 409 });
+    if (!memory.story && !memory.videoKey && !memory.pdfKey) return Response.json({ error: "This link is the only story content. Use Delete all to remove the memory." }, { status: 409 });
     await env.DB.prepare("UPDATE memories SET social_url = NULL WHERE id = ? AND status = 'approved'").bind(id).run();
     return Response.json({ ok: true, id, deleted: "link" });
   }
 
   if (memory.photoKey) await env.BUCKET.delete(memory.photoKey);
-  if (memory.pdfKey) await env.BUCKET.delete(memory.pdfKey);
+  if (memory.videoKey) await env.BUCKET.delete(memory.videoKey);
+    if (memory.pdfKey) await env.BUCKET.delete(memory.pdfKey);
   await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
   return Response.json({ ok: true, id, deleted: "memory" });
 }

@@ -12,7 +12,7 @@ export type PendingMemory = {
   story: string;
   photoKey: string | null;
   photoName: string | null;
-  pdfKey: string | null;
+  videoKey: string | null; videoName: string | null; pdfKey: string | null;
   pdfName: string | null;
   socialUrl: string | null;
   createdAt: string;
@@ -62,6 +62,7 @@ export default function ReviewQueue({ initialMemories }: { initialMemories: Pend
               </div>
               <h2>{memory.title}</h2>
               {memory.story && <p className="review-story">{memory.story}</p>}
+          {memory.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/admin/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
               {(memory.pdfKey || memory.socialUrl) && <div className="review-attachments">
                 {memory.pdfKey && <a href={`/api/admin/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer"><FileText size={17} /> Open submitted PDF{memory.pdfName ? ` · ${memory.pdfName}` : ""}</a>}
                 {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} /> Open shared public post</a>}

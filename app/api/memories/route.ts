@@ -24,7 +24,7 @@ export async function GET() {
     if (!env.DB) throw new Error("Database unavailable");
     const result = await env.DB.prepare(
       `SELECT id, name, relationship, title, story, photo_key AS photoKey,
-              pdf_key AS pdfKey, social_url AS socialUrl,
+              video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
               created_at AS createdAt
        FROM memories WHERE status = ? ORDER BY created_at DESC, id DESC LIMIT 50`
     ).bind("approved").all();
@@ -49,9 +49,19 @@ export async function POST(request: Request) {
     let consent = false;
     let photo: File | null = null;
     let pdf: File | null = null;
+    let video: File | null = null;
 
     if (contentType.includes("multipart/form-data")) {
-      const form = await request.formData();
+      // Bound the request before multipart parsing, including chunked requests.
+      const maxBody = 72 * 1024 * 1024;
+      if (Number(request.headers.get("content-length")) > maxBody) return publicJson({ error: "Attachments are too large. Video limit: 50 MB." }, { status: 413 });
+      let received = 0;
+      const bounded = request.body?.pipeThrough(new TransformStream({ transform(chunk, controller) {
+        received += chunk.byteLength;
+        if (received > maxBody) throw new Error("Attachments exceed the upload limit.");
+        controller.enqueue(chunk);
+      } }));
+      const form = await new Response(bounded, { headers: { "content-type": contentType } }).formData();
       name = clean(form.get("name"), 100);
       relationship = clean(form.get("relationship"), 120);
       email = clean(form.get("email"), 200);
@@ -63,6 +73,8 @@ export async function POST(request: Request) {
       consent = form.get("consent") === "on";
       const candidate = form.get("photo");
       photo = candidate instanceof File && candidate.size > 0 ? candidate : null;
+      const videoCandidate = form.get("video");
+      video = videoCandidate instanceof File && videoCandidate.size > 0 ? videoCandidate : null;
       const pdfCandidate = form.get("pdf");
       pdf = pdfCandidate instanceof File && pdfCandidate.size > 0 ? pdfCandidate : null;
     } else {
@@ -86,15 +98,23 @@ export async function POST(request: Request) {
       return publicJson({ error: "Please enter a valid HTTPS link to the public post." }, { status: 400 });
     }
     if (story && story.length < 20) {
-      return publicJson({ error: "Please write at least 20 characters, or leave the story field blank and share a PDF or public post instead." }, { status: 400 });
+      return publicJson({ error: "Please write at least 20 characters, or leave the story field blank and share a PDF, video, or public post instead." }, { status: 400 });
     }
-    if (!story && !pdf && !socialUrl) {
-      return publicJson({ error: "Please share your story as written text, a PDF, or a public social-media link." }, { status: 400 });
+    if (!story && !pdf && !video && !socialUrl) {
+      return publicJson({ error: "Please share your story as written text, a PDF, video, or a public social-media link." }, { status: 400 });
     }
     if (!consent) {
       return publicJson({ error: "Permission is required before we can accept a submission." }, { status: 400 });
     }
 
+    if (video) {
+      const header = new Uint8Array(await video.slice(0, 12).arrayBuffer());
+      const mp4 = /\.mp4$/i.test(video.name) && String.fromCharCode(...header.slice(4, 8)) === "ftyp";
+      const webm = /\.webm$/i.test(video.name) && [0x1a, 0x45, 0xdf, 0xa3].every((v, i) => header[i] === v);
+      if (video.size > 50 * 1024 * 1024 || (!mp4 && !webm)) return publicJson({ error: "Choose an MP4 or WebM video up to 50 MB. MP4 with H.264 video and AAC audio is recommended." }, { status: 400 });
+    }
+    let videoKey: string | null = null;
+    let videoName: string | null = null;
     let photoKey: string | null = null;
     let photoName: string | null = null;
     let pdfKey: string | null = null;
@@ -132,14 +152,21 @@ export async function POST(request: Request) {
     }
 
     try {
+      if (video) {
+        if (!env.BUCKET) throw new Error("Video storage is temporarily unavailable.");
+        videoKey = `pending-videos/${crypto.randomUUID()}`;
+        videoName = clean(video.name, 240);
+        await env.BUCKET.put(videoKey, video.stream(), { httpMetadata: { contentType: /\.webm$/i.test(video.name) ? "video/webm" : "video/mp4" } });
+      }
       await env.DB.prepare(
         `INSERT INTO memories
-         (name, relationship, email, title, story, photo_key, photo_name, pdf_key, pdf_name, social_url, status, consent, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      ).bind(name, relationship, email || null, title, story, photoKey, photoName, pdfKey, pdfName, socialUrl || null, "pending", 1, new Date().toISOString()).run();
+         (name, relationship, email, title, story, photo_key, photo_name, pdf_key, pdf_name, video_key, video_name, social_url, status, consent, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(name, relationship, email || null, title, story, photoKey, photoName, pdfKey, pdfName, videoKey, videoName, socialUrl || null, "pending", 1, new Date().toISOString()).run();
     } catch (error) {
       if (photoKey && env.BUCKET) await env.BUCKET.delete(photoKey);
       if (pdfKey && env.BUCKET) await env.BUCKET.delete(pdfKey);
+      if (videoKey && env.BUCKET) await env.BUCKET.delete(videoKey);
       throw error;
     }
 

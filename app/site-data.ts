@@ -678,7 +678,7 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formTitle": "A title for your memory",
   "memories.formTitlePlaceholder": "The lesson I still carry",
   "memories.formStory": "Your story",
-  "memories.formStoryNote": "(optional if you share a PDF or public post)",
+  "memories.formStoryNote": "(optional if you share a PDF, video, or public post)",
   "memories.formStoryPlaceholder": "Tell us what you remember…",
   "memories.formSocial": "Public social-media or web post",
   "memories.formSocialNote": "(optional)",
@@ -689,7 +689,7 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formPhotoHelp": "JPG, PNG or WebP · up to 8 MB",
   "memories.pdfLink": "Read the shared PDF",
   "memories.socialLink": "View the shared public post",
-  "memories.formConsent": "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.",
+  "memories.formConsent": "I give permission for this story, photo, PDF, video, and/or shared public link to be published on this memorial site after review.",
   "memories.formSubmit": "Submit for review",
   "memories.formSending": "Sending…",
   "memories.successTitle": "Your story is safely with us.",
@@ -962,7 +962,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["legacy.chaptersLabel"] === "Scientific contributions") saved["legacy.chaptersLabel"] = "Scientific Contribution Chronicle";
         if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
         if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";
-        if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, and/or shared public link to be published on this memorial site after review.";
+        if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, video, and/or shared public link to be published on this memorial site after review.";
         if (saved["life.heroTitle"] === "A curious mind. A generous spirit.") saved["life.heroTitle"] = "A curious Mind. A generous spirit";
         if (saved["life.heroIntro"] === "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.") saved["life.heroIntro"] = "Robert’s path through life and career.";
         delete saved["life.mentorQuote"];

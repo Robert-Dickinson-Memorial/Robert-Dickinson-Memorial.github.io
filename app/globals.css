@@ -2737,3 +2737,6 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   .memories-page .interior-hero,
   html[data-page="memories"] .interior-hero { padding-top: 165px; }
 }
+
+.memory-video { display: block; width: 100%; max-height: 560px; margin: 1rem 0; border-radius: 8px; background: #142b37; }
+.video-field { min-height: 120px; }

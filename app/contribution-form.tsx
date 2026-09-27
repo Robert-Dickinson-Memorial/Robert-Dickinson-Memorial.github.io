@@ -67,10 +67,13 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
     const story = String(form.get("story") || "").trim();
     const socialUrl = String(form.get("socialUrl") || "").trim();
     const pdf = form.get("pdf");
+    const video = form.get("video");
+    const hasVideo = video instanceof File && video.size > 0;
+    if (hasVideo && video.size > 50 * 1024 * 1024) { setStatus("error"); setMessage("Please choose a video up to 50 MB."); return; }
     const hasPdf = pdf instanceof File && pdf.size > 0;
-    if (!story && !socialUrl && !hasPdf) {
+    if (!story && !socialUrl && !hasPdf && !hasVideo) {
       setStatus("error");
-      setMessage("Please share your story as written text, a PDF, or a public post.");
+      setMessage("Please share your story as written text, a PDF, video, or a public post.");
       return;
     }
     try {
@@ -116,6 +119,10 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
         <ImagePlus size={22} aria-hidden="true" />
         <span><strong>{copy["memories.formPhoto"]}</strong><small>{copy["memories.formPhotoHelp"]}</small></span>
         <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" />
+      </label>
+      <label className="photo-field video-field">
+        <span aria-hidden="true">▶</span><span><strong>Upload a video</strong><small>MP4 or WebM · up to 50 MB. For narrated slides, export to MP4 (H.264 video / AAC audio).</small></span>
+        <input name="video" type="file" accept="video/mp4,video/webm,.mp4,.webm" />
       </label>
       <label className="consent-field">
         <input name="consent" type="checkbox" required />

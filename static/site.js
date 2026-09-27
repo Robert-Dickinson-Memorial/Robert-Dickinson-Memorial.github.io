@@ -422,6 +422,8 @@ document.addEventListener("DOMContentLoaded", () => {
           if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
           article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }));
           if (memory.story) article.append(node("p", { text: memory.story }));
+          if (memory.videoKey) article.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
+          if (memory.videoKey) article.append(node("a", { text: "Watch the shared video ↗", attrs: { href: objectUrl("/api/memory-videos", memory.videoKey), target: "_blank", rel: "noopener noreferrer" } }));
           if (memory.pdfKey || memory.socialUrl) {
             const attachments = node("div", { className: "memory-attachments" });
             if (memory.pdfKey) attachments.append(node("a", { text: `▤ ${copy["memories.pdfLink"] || "Read the shared PDF"}`, attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
@@ -672,6 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}` } }));
         article.append(node("p", { className: "book-label", text: `${copy["book.memoryPrefix"] || "A memory from"} ${memory.relationship || ""}` }), node("h3", { text: memory.title || "" }));
         if (memory.story) article.append(node("p", { className: "book-story", text: memory.story }));
+        if (memory.videoKey) article.append(node("a", { text: "Watch the shared video ↗", attrs: { href: objectUrl("/api/memory-videos", memory.videoKey), target: "_blank", rel: "noopener noreferrer" } }));
         if (memory.pdfKey || memory.socialUrl) {
           const links = node("p", { className: "book-memory-links" });
           if (memory.pdfKey) links.append(node("a", { text: `${copy["memories.pdfLink"] || "Read the shared PDF"} ↗`, attrs: { href: objectUrl("/api/memory-files", memory.pdfKey), target: "_blank", rel: "noopener noreferrer" } }));
@@ -711,9 +714,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData(form);
     const story = String(formData.get("story") || "").trim();
     const socialUrl = String(formData.get("socialUrl") || "").trim();
+    const video = formData.get("video");
+    if (video instanceof File && video.size > 50 * 1024 * 1024) { showMessage("Please choose a video up to 50 MB."); return; }
     const pdf = formData.get("pdf");
-    if (!story && !socialUrl && !(pdf instanceof File && pdf.size > 0)) {
-      showMessage("Please share your story as written text, a PDF, or a public post.");
+    if (!story && !socialUrl && !(pdf instanceof File && pdf.size > 0) && !(video instanceof File && video.size > 0)) {
+      showMessage("Please share your story as written text, a PDF, video, or a public post.");
       return;
     }
     const button = form.querySelector("button[type=submit]");

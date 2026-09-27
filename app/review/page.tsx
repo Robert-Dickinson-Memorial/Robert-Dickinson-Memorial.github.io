@@ -22,7 +22,7 @@ export default async function ReviewPage() {
 
   const result = env.DB ? await env.DB.prepare(
     `SELECT id, name, relationship, email, title, story, photo_key AS photoKey,
-            photo_name AS photoName, pdf_key AS pdfKey, pdf_name AS pdfName,
+            photo_name AS photoName, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, pdf_name AS pdfName,
             social_url AS socialUrl, created_at AS createdAt
      FROM memories WHERE status = ? ORDER BY created_at ASC, id ASC`
   ).bind("pending").all<PendingMemory>() : { results: [] };
