@@ -7,6 +7,7 @@ type Memory = { id: number; name: string; relationship: string; title: string; s
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,15 +33,19 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
     <div className="memory-grid">
       {memories.map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
+          <header className="memory-author">
+            <span className="memory-author-mark" aria-hidden="true">{memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("")}</span>
+            <div><strong>{memory.name}</strong><span>{memory.relationship}</span></div>
+          </header>
           {memory.photoKey && <img src={`/api/photos/${memory.photoKey}`} alt="" />}
-          <Quote size={24} strokeWidth={1.4} aria-hidden="true" />
-          <h3>{memory.title}</h3>{memory.story && <p>{memory.story}</p>}
+          <h3>{memory.title}</h3>
+          {memory.story && <p id={`memory-story-${memory.id}`} className={`memory-story${memory.story.length > 420 && !expanded[memory.id] ? " is-collapsed" : ""}`}>{memory.story}</p>}
+          {memory.story.length > 420 && <button type="button" className="memory-read-more" aria-expanded={Boolean(expanded[memory.id])} aria-controls={`memory-story-${memory.id}`} onClick={() => setExpanded(previous => ({ ...previous, [memory.id]: !previous[memory.id] }))}>{expanded[memory.id] ? "Show less" : "Read full memory"}</button>}
           {memory.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
           {(memory.pdfKey || memory.socialUrl) && <div className="memory-attachments">
             {memory.pdfKey && <a href={`/api/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer nofollow ugc"><FileText size={16} /> {copy["memories.pdfLink"] || "Read the shared PDF"}</a>}
             {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer nofollow ugc"><ExternalLink size={16} /> {copy["memories.socialLink"] || "View the shared public post"}</a>}
           </div>}
-          <footer><strong>{memory.name}</strong><span>{memory.relationship}</span></footer>
         </article>
       ))}
     </div>

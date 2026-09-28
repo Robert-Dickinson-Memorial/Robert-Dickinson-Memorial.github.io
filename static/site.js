@@ -419,9 +419,29 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         wallTarget.replaceChildren(...memories.map((memory) => {
           const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
+          const author = node("header", { className: "memory-author" });
+          const initials = memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("");
+          const identity = node("div");
+          identity.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
+          author.append(node("span", { className: "memory-author-mark", text: initials, attrs: { "aria-hidden": "true" } }), identity);
+          article.append(author);
           if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
-          article.append(node("div", { text: "❝", attrs: { "aria-hidden": "true" } }), node("h3", { text: memory.title }));
-          if (memory.story) article.append(node("p", { text: memory.story }));
+          article.append(node("h3", { text: memory.title }));
+          if (memory.story) {
+            const longStory = memory.story.length > 420;
+            const story = node("p", { className: `memory-story${longStory ? " is-collapsed" : ""}`, text: memory.story, attrs: { id: `memory-story-${memory.id}` } });
+            article.append(story);
+            if (longStory) {
+              const toggle = node("button", { className: "memory-read-more", text: "Read full memory", attrs: { type: "button", "aria-expanded": "false", "aria-controls": `memory-story-${memory.id}` } });
+              toggle.addEventListener("click", () => {
+                const expanded = toggle.getAttribute("aria-expanded") !== "true";
+                story.classList.toggle("is-collapsed", !expanded);
+                toggle.setAttribute("aria-expanded", String(expanded));
+                toggle.textContent = expanded ? "Show less" : "Read full memory";
+              });
+              article.append(toggle);
+            }
+          }
           if (memory.videoKey) article.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
           if (memory.videoKey) article.append(node("a", { text: "Watch the shared video ↗", attrs: { href: objectUrl("/api/memory-videos", memory.videoKey), target: "_blank", rel: "noopener noreferrer" } }));
           if (memory.pdfKey || memory.socialUrl) {
@@ -430,9 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (memory.socialUrl) attachments.append(node("a", { text: `↗ ${copy["memories.socialLink"] || "View the shared public post"}`, attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer nofollow ugc" } }));
             article.append(attachments);
           }
-          const footer = node("footer");
-          footer.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
-          article.append(footer);
           return article;
         }));
       }
