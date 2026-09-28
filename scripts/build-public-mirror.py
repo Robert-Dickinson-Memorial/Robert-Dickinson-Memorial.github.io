@@ -8,6 +8,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
+from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
@@ -123,7 +124,7 @@ def main():
     rows = {name: query(sql) for name, sql in QUERIES.items() if name != "participation"}
     try:
         rows["participation"] = query(QUERIES["participation"])
-    except RuntimeError:
+    except (RuntimeError, HTTPError):
         # Backend migrations and Pages deploy on separate jobs. The live API
         # will supply the total once the tree-dedication table is available.
         rows["participation"] = []
