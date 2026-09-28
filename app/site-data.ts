@@ -642,7 +642,7 @@ export const defaultPageCopy: Record<string, string> = {
   "events.defaultLink": "Event details",
 
   "gallery.heroKicker": "Photos & film",
-  "gallery.heroTitle": "A life remembered in images",
+  "gallery.heroTitle": "A life remembered",
   "gallery.heroIntro": "Photographs and recordings from Robert’s life, scientific work, collaborations, and community.",
   "gallery.sectionKicker": "Images and voices",
   "gallery.sectionTitle": "Photo & video gallery",
@@ -963,6 +963,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";
         if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, video, and/or shared public link to be published on this memorial site after review.";
         if (saved["memories.formPdfHelp"] === "PDF · up to 12 MB") saved["memories.formPdfHelp"] = "PDF · up to 15 MB";
+        if (saved["gallery.heroTitle"] === "A life remembered in images") saved["gallery.heroTitle"] = "A life remembered";
         delete saved["memories.formEmail"];
         delete saved["memories.formEmailNote"];
         delete saved["memories.formEmailPlaceholder"];

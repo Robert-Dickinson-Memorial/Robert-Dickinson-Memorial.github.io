@@ -2907,3 +2907,31 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   .landmark-paper-card:has(.landmark-paper-year) > img { display: none; }
   .landmark-paper-caption { padding: 20px; }
 }
+
+/* Gallery: one heading, then the photographs without a second introduction. */
+.gallery-page .interior-hero, html[data-page="gallery"] .interior-hero {
+  min-height: 0;
+  padding-top: clamp(120px, 10vw, 150px);
+  padding-bottom: 32px;
+}
+.gallery-hero-meta { align-items: center; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; margin-bottom: 28px; }
+.gallery-hero-meta .section-kicker { margin: 0; }
+.gallery-hero-meta .book-button { font-size: .78rem; padding: 10px 14px; }
+.gallery-page .interior-hero > p:last-child, html[data-page="gallery"] .interior-hero > p:last-child {
+  font-family: inherit;
+  font-size: clamp(.96rem, 1.2vw, 1.12rem);
+  line-height: 1.5;
+  margin-top: 17px;
+  max-width: none;
+}
+.gallery-page .gallery-section, html[data-page="gallery"] .gallery-section { padding-top: 12px; }
+.gallery-page .gallery-grid, html[data-page="gallery"] .gallery-grid,
+.gallery-page .gallery-empty, html[data-page="gallery"] .gallery-empty { margin-top: 0; }
+@media (min-width: 1100px) {
+  .gallery-page .interior-hero > p:last-child, html[data-page="gallery"] .interior-hero > p:last-child { white-space: nowrap; }
+}
+@media (max-width: 700px) {
+  .gallery-page .interior-hero, html[data-page="gallery"] .interior-hero { padding: 110px 22px 25px; }
+  .gallery-hero-meta { margin-bottom: 24px; }
+  .gallery-page .gallery-section, html[data-page="gallery"] .gallery-section { padding: 8px 22px 58px; }
+}

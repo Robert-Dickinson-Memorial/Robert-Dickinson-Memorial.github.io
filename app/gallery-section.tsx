@@ -1,13 +1,9 @@
-import { BookOpen, Images } from "lucide-react";
+import { Images } from "lucide-react";
 import { GalleryItem, videoEmbedUrl } from "./site-data";
 
 export default function GallerySection({ items, copy }: { items: GalleryItem[]; copy: Record<string, string> }) {
   return (
     <section id="gallery" className="gallery-section">
-      <div className="gallery-heading">
-        <div><p className="section-kicker light">{copy["gallery.sectionKicker"]}</p><h2>{copy["gallery.sectionTitle"]}</h2></div>
-        <a className="book-button" href="/memory-book"><BookOpen size={18} /> {copy["gallery.bookButton"]}</a>
-      </div>
       {!items.length ? (
         <div className="gallery-empty"><Images size={32} /><p>{copy["gallery.empty"]}</p></div>
       ) : (
