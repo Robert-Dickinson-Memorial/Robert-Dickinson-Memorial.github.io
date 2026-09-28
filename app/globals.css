@@ -2776,3 +2776,30 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 
 .memory-card > .memory-video { height: 260px; margin: 0 0 24px; object-fit: contain; }
 @media (max-width: 720px) { .memory-card > .memory-video { height: 230px; } }
+
+/* Keep stories visible on arrival; expand the contribution form only when requested. */
+.memory-share-panel { margin: 0 clamp(22px, 8vw, 130px); border: 1px solid #c8b487; border-radius: 10px; background: #f6ecd8; overflow: hidden; }
+.memory-share-panel > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 24px; cursor: pointer; }
+.memory-share-panel > summary::-webkit-details-marker { display: none; }
+.memory-share-panel > summary > span:first-child { display: flex; flex-direction: column; gap: 3px; }
+.memory-share-panel summary strong { color: #102b3b; font-size: 1.15rem; }
+.memory-share-panel summary small { color: #4d5d64; font-size: .88rem; line-height: 1.5; }
+.share-panel-action { display: flex; align-items: center; gap: 14px; background: #153444; color: #fff; padding: 11px 17px; border-radius: 5px; font-size: .9rem; font-weight: 600; white-space: nowrap; }
+.share-close-label { display: none; }
+.memory-share-panel[open] .share-open-label { display: none; }
+.memory-share-panel[open] .share-close-label { display: inline; }
+.memory-share-panel[open] .share-panel-action > span:last-child { transform: rotate(45deg); }
+.memory-share-panel > summary:focus-visible { outline: 3px solid #94703b; outline-offset: -4px; }
+.memory-share-panel[open] > summary { border-bottom: 1px solid #d6c7ab; }
+.memory-share-panel .share-section { padding: 30px !important; gap: 36px; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+.memories-page .interior-hero, html[data-page="memories"] .interior-hero { padding-bottom: 24px; }
+.memories-page-wall { padding-top: 36px; }
+.memories-page-wall .memories-heading h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
+.memories-page-wall .memory-grid { margin-top: 26px; }
+@media (max-width: 720px) {
+ .memory-share-panel > summary { padding: 16px; gap: 12px; flex-wrap: wrap; }
+ .memory-share-panel .share-section { padding: 20px !important; grid-template-columns: 1fr; }
+ .memory-share-panel .share-copy { display: none; }
+ .share-panel-action { padding: 9px 12px; }
+ .memories-page-wall { padding-top: 28px; }
+}

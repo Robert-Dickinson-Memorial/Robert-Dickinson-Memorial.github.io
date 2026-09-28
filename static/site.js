@@ -1,6 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const apiBase = String(window.MEMORIAL_API_BASE || "").replace(/\/$/, "");
   const form = document.querySelector("[data-migration-form]");
+  const sharePanel = document.querySelector("details.memory-share-panel");
+  const revealShareForm = () => {
+    if (location.hash === "#share" && sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
+  };
+  revealShareForm();
+  window.addEventListener("hashchange", revealShareForm);
+  document.querySelectorAll('a[href="#share"]').forEach(link => link.addEventListener("click", () => {
+    if (sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
+  }));
+
   let editableCopy = {};
   const message = document.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;

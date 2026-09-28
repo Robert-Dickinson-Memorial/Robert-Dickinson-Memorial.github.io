@@ -13,7 +13,7 @@ export async function SiteNav({ active }: { active?: string }) {
     { href: "/tree", label: copy["nav.tree"], key: "tree" },
     { href: "/events", label: copy["nav.events"], key: "events" },
     { href: "/gallery", label: copy["nav.gallery"], key: "gallery" },
-    { href: "/memories/#share", label: copy["nav.memories"], key: "memories" },
+    { href: "/memories/", label: copy["nav.memories"], key: "memories" },
   ];
   return (
     <nav className="site-nav" aria-label="Main navigation">
