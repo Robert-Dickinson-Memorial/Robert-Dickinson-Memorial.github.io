@@ -14,7 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let editableCopy = {};
   const message = document.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;
-  const objectUrl = (path, key) => apiUrl(`${path}/${String(key).split("/").map(encodeURIComponent).join("/")}`);
+  let mirroredMedia = {};
+  const objectUrl = (path, key) => {
+    const resource = `${path}/${String(key).split("/").map(encodeURIComponent).join("/")}`;
+    return mirroredMedia[resource] || apiUrl(resource);
+  };
 
   function node(tag, options = {}) {
     const element = document.createElement(tag);
@@ -33,6 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function getJson(path) {
+    const snapshotPath = `/mirror${path}.json`;
+    try {
+      const response = await fetch(snapshotPath, { cache: "no-store" });
+      if (response.ok) return response.json();
+    } catch {}
     const response = await fetch(apiUrl(path));
     if (!response.ok) throw new Error("Unable to load memorial updates.");
     return response.json();
@@ -734,7 +743,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook()]);
+  const mirrorReady = fetch("/mirror/manifest.json", { cache: "no-store" })
+    .then((response) => response.ok ? response.json() : { media: {} })
+    .then((manifest) => { mirroredMedia = manifest.media || {}; })
+    .catch(() => {});
+  mirrorReady.then(() => Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook()]));
 
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();
