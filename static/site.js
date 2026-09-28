@@ -425,7 +425,8 @@ document.addEventListener("DOMContentLoaded", () => {
           identity.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
           author.append(node("span", { className: "memory-author-mark", text: initials, attrs: { "aria-hidden": "true" } }), identity);
           article.append(author);
-          if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          if (memory.videoKey) article.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
+          else if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
           article.append(node("h3", { text: memory.title }));
           if (memory.story) {
             const longStory = memory.story.length > 420;
@@ -442,7 +443,6 @@ document.addEventListener("DOMContentLoaded", () => {
               article.append(toggle);
             }
           }
-          if (memory.videoKey) article.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
           if (memory.videoKey) article.append(node("a", { text: "Watch the shared video ↗", attrs: { href: objectUrl("/api/memory-videos", memory.videoKey), target: "_blank", rel: "noopener noreferrer" } }));
           if (memory.pdfKey || memory.socialUrl) {
             const attachments = node("div", { className: "memory-attachments" });

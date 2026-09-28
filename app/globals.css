@@ -2773,3 +2773,6 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   .memory-card > img, .memory-card > img[src*="/extracted-memory-previews/"] { height: 230px; }
 }
 @media print { .memory-story.is-collapsed { display: block; overflow: visible; } .memory-read-more { display: none; } }
+
+.memory-card > .memory-video { height: 260px; margin: 0 0 24px; object-fit: contain; }
+@media (max-width: 720px) { .memory-card > .memory-video { height: 230px; } }
