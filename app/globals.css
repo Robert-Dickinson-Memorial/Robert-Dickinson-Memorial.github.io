@@ -2749,33 +2749,42 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   background: #f8f5ef;
 }
 
-/* Contributor-first memory cards: row order, distinct boundaries, readable previews. */
-.memory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); columns: auto; gap: 32px; align-items: start; margin-top: 42px; }
-.memory-card { min-width: 0; margin: 0; padding: 28px; border: 1px solid #cfc6b5; border-top: 3px solid #b3945a; border-radius: 12px; box-shadow: 0 8px 26px rgb(16 39 51 / 7%); overflow: hidden; }
-.memory-author { display: flex; align-items: center; gap: 14px; padding-bottom: 22px; margin-bottom: 24px; border-bottom: 1px solid #ded6c7; }
-.memory-author-mark { display: grid; place-items: center; flex: 0 0 46px; height: 46px; border-radius: 50%; background: #eee2c6; color: #5a4727; font-family: Georgia, serif; font-size: 1.1rem; }
+/* Four compact previews across wide screens; long stories open in a reading view. */
+.memory-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); columns: auto; gap: 20px; align-items: start; margin-top: 36px; }
+.memory-card { min-width: 0; margin: 0; padding: 18px; border: 1px solid #cfc6b5; border-top: 3px solid #b3945a; border-radius: 10px; box-shadow: 0 8px 26px rgb(16 39 51 / 7%); }
+.memory-author { display: flex; align-items: center; gap: 11px; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid #ded6c7; }
+.memory-author-mark { display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 50%; background: #eee2c6; color: #5a4727; font-family: Georgia, serif; font-size: 1rem; }
 .memory-author > div { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
-.memory-author strong { color: #102b3b; font-size: 1.15rem; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
+.memory-author strong { color: #102b3b; font-size: 1rem; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
 .memory-author > div > span { color: #59656c; font-size: .85rem; line-height: 1.4; }
-.memory-card > img, .memory-card > img[src*="/extracted-memory-previews/"] { display: block; width: 100%; height: 260px; max-height: none; margin: 0 0 24px; border-radius: 6px; object-fit: contain; background: #efece5; }
-.memory-card h3 { font-size: 1.55rem; line-height: 1.35; margin: 0 0 16px; }
-.memory-card > .memory-story { font-size: 1rem; line-height: 1.8; margin: 0; overflow-wrap: anywhere; }
-.memory-story.is-collapsed { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.memory-card > img, .memory-card > img[src*="/extracted-memory-previews/"] { display: block; width: 100%; height: 185px; max-height: none; margin: 0 0 16px; border-radius: 6px; object-fit: contain; background: #efece5; }
+.memory-card h3 { font-size: 1.3rem; line-height: 1.28; margin: 0 0 12px; }
+.memory-card > .memory-story { font-size: .95rem; line-height: 1.65; margin: 0; overflow-wrap: anywhere; }
+.memory-story.is-collapsed { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
 .memory-read-more { display: block; background: transparent; border: 0; border-bottom: 1px solid #b3945a; padding: 4px 0; margin: 16px 0 22px; color: #173b4b; font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; }
 .memory-read-more:hover { color: #82642e; }
 .memory-read-more:focus-visible { outline: 2px solid #173b4b; outline-offset: 5px; }
 .memory-card .memory-attachments { border-top: 1px solid #ded6c7; padding-top: 18px; margin-top: 22px; }
-.memory-card .memory-video { max-height: 280px; }
+.memory-card .memory-video { max-height: 185px; }
 .memory-grid > .memories-empty { grid-column: 1 / -1; }
-@media (max-width: 720px) {
-  .memory-grid { grid-template-columns: 1fr; gap: 26px; }
-  .memory-card { padding: 22px; }
-  .memory-card > img, .memory-card > img[src*="/extracted-memory-previews/"] { height: 230px; }
+@media (max-width: 1199px) { .memory-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 899px) { .memory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) {
+  .memory-grid { grid-template-columns: 1fr; gap: 20px; }
+  .memory-card { padding: 20px; }
+  .memory-card > img, .memory-card > img[src*="/extracted-memory-previews/"] { height: 220px; }
 }
 @media print { .memory-story.is-collapsed { display: block; overflow: visible; } .memory-read-more { display: none; } }
 
-.memory-card > .memory-video { height: 260px; margin: 0 0 24px; object-fit: contain; }
-@media (max-width: 720px) { .memory-card > .memory-video { height: 230px; } }
+.memory-card > .memory-video { height: 185px; margin: 0 0 16px; object-fit: contain; }
+@media (max-width: 620px) { .memory-card > .memory-video { height: 220px; } }
+.memory-reader { width: min(720px, calc(100vw - 32px)); max-width: none; max-height: min(86dvh, 850px); overflow-y: auto; margin: auto; padding: clamp(24px, 4vw, 48px); border: 1px solid #c9b992; border-radius: 12px; background: #faf7f0; color: #173443; box-shadow: 0 22px 70px rgb(5 25 36 / 30%); }
+.memory-reader::backdrop { background: rgb(7 25 36 / 68%); }
+.memory-reader-close { display: block; margin-left: auto; padding: 8px 12px; border: 1px solid #c8b992; border-radius: 5px; background: #fff; color: #173443; font: inherit; cursor: pointer; }
+.memory-reader-author { color: #82642e; font-size: .85rem; font-weight: 700; margin: 16px 0 8px; }
+.memory-reader h2 { font-family: Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.2; margin: 0 0 24px; }
+.memory-reader-story { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 1.06rem; line-height: 1.85; margin: 0; }
+.memory-reader-close:focus-visible { outline: 2px solid #173443; outline-offset: 3px; }
 
 /* Keep stories visible on arrival; expand the contribution form only when requested. */
 .memory-share-panel { margin: 0 clamp(22px, 8vw, 130px); border: 1px solid #c8b487; border-radius: 10px; background: #f6ecd8; overflow: hidden; }
@@ -2794,6 +2803,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .memory-share-panel .share-section { padding: 30px !important; gap: 36px; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
 .memories-page .interior-hero, html[data-page="memories"] .interior-hero { padding-bottom: 24px; }
 .memories-page-wall { padding-top: 36px; }
+.memories-page-wall { padding-inline: clamp(22px, 4vw, 72px); }
 .memories-page-wall .memories-heading h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); }
 .memories-page-wall .memory-grid { margin-top: 26px; }
 /* Three compact attachment choices on one row, with usable file controls. */

@@ -464,7 +464,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!memories.length) {
         wallTarget.replaceChildren(node("p", { className: "memories-empty", text: copy["memories.emptyText"] || "Approved community memories will appear here." }));
       } else {
-        wallTarget.replaceChildren(...memories.map((memory) => {
+        const orderedMemories = [...memories].sort((a, b) =>
+          Number(b.id === 11) - Number(a.id === 11) ||
+          String(b.createdAt || "").localeCompare(String(a.createdAt || "")) ||
+          Number(b.id || 0) - Number(a.id || 0));
+        wallTarget.replaceChildren(...orderedMemories.map((memory) => {
           const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
           const author = node("header", { className: "memory-author" });
           const initials = memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("");
@@ -480,14 +484,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const story = node("p", { className: `memory-story${longStory ? " is-collapsed" : ""}`, text: memory.story, attrs: { id: `memory-story-${memory.id}` } });
             article.append(story);
             if (longStory) {
-              const toggle = node("button", { className: "memory-read-more", text: "Read full memory", attrs: { type: "button", "aria-expanded": "false", "aria-controls": `memory-story-${memory.id}` } });
-              toggle.addEventListener("click", () => {
-                const expanded = toggle.getAttribute("aria-expanded") !== "true";
-                story.classList.toggle("is-collapsed", !expanded);
-                toggle.setAttribute("aria-expanded", String(expanded));
-                toggle.textContent = expanded ? "Show less" : "Read full memory";
-              });
-              article.append(toggle);
+              const reader = node("dialog", { className: "memory-reader", attrs: { "aria-labelledby": `memory-reader-title-${memory.id}` } });
+              const close = node("button", { className: "memory-reader-close", text: "Close ×", attrs: { type: "button", "aria-label": "Close full memory" } });
+              reader.append(close, node("p", { className: "memory-reader-author", text: `${memory.name} · ${memory.relationship}` }),
+                node("h2", { text: memory.title, attrs: { id: `memory-reader-title-${memory.id}` } }),
+                node("p", { className: "memory-reader-story", text: memory.story }));
+              const toggle = node("button", { className: "memory-read-more", text: "Read full memory", attrs: { type: "button", "aria-haspopup": "dialog" } });
+              toggle.addEventListener("click", () => reader.showModal());
+              close.addEventListener("click", () => reader.close());
+              reader.addEventListener("click", (event) => { if (event.target === reader) reader.close(); });
+              reader.addEventListener("close", () => toggle.focus());
+              article.append(toggle, reader);
             }
           }
           if (memory.videoKey) article.append(node("a", { text: "Watch the shared video ↗", attrs: { href: objectUrl("/api/memory-videos", memory.videoKey), target: "_blank", rel: "noopener noreferrer" } }));

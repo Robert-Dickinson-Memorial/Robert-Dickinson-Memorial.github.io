@@ -14,9 +14,20 @@ import pymupdf
 from PIL import Image
 
 PLACEHOLDERS = {'see the attached audio/pdf file for detail', 'see attached', 'see attached pdf', 'please see attached', 'see attached file'}
+FIGURE_CAPTION = re.compile(
+    r'^\s*(?:fig(?:ure)?\.?|photo|plate|图|照片|图片)\s*[0-9０-９一二三四五六七八九十]+'
+    r'(?:\s*[.:：、)）-]\s*|\s+|$)', re.IGNORECASE)
 
 def needs_story(story):
     return not story.strip() or story.strip().lower().rstrip('.') in PLACEHOLDERS
+
+def is_figure_caption(line):
+    match = FIGURE_CAPTION.match(line)
+    if not match:
+        return False
+    # A sentence such as "Figure 2 shows the result" is narrative, not a caption.
+    remainder = line[match.end():].lstrip()
+    return not re.match(r'^(?:shows?|illustrates?|depicts?|displays?|demonstrates?|is|was)\b', remainder, re.IGNORECASE)
 
 def extract_pdf(path, image_path):
     paragraphs = []
@@ -28,7 +39,10 @@ def extract_pdf(path, image_path):
             blocks = page.get_text('blocks', sort=True)
             for block in blocks:
                 if block[6] == 0:
-                    text = re.sub(r'[ \t]+', ' ', block[4]).strip()
+                    # Caption and prose can share one PDF text block. Filter individual
+                    # lines before joining wrapped prose so the prose is retained.
+                    lines = [line for line in block[4].splitlines() if not is_figure_caption(line)]
+                    text = re.sub(r'[ \t]+', ' ', '\n'.join(lines)).strip()
                     # Rejoin PDF line wrapping while retaining paragraph boundaries.
                     text = re.sub(r'(?<=\w)-\n(?=[a-z])', '', text)
                     text = re.sub(r'\s*\n\s*', ' ', text)
@@ -84,12 +98,18 @@ def main():
     query('''CREATE TABLE IF NOT EXISTS memory_attachment_backups (
       memory_id INTEGER PRIMARY KEY, previous_story TEXT, previous_photo_key TEXT,
       previous_photo_name TEXT, applied_story TEXT, applied_photo_key TEXT, created_at TEXT)''')
-    rows = query("SELECT id, story, photo_key, photo_name, pdf_key, video_key FROM memories WHERE status = 'approved' AND (pdf_key IS NOT NULL OR video_key IS NOT NULL)")['results']
+    rows = query("""SELECT m.id, m.story, m.photo_key, m.photo_name, m.pdf_key, m.video_key,
+                         b.applied_story FROM memories m LEFT JOIN memory_attachment_backups b ON b.memory_id = m.id
+                         WHERE m.status = 'approved' AND (m.pdf_key IS NOT NULL OR m.video_key IS NOT NULL)""")['results']
     updated = 0
     for row in rows:
         need_text = needs_story(row['story'] or '') and row['pdf_key']
         need_photo = not row['photo_key']
-        if not need_text and not need_photo: continue
+        # Clean earlier automatic extractions, but never rewrite an owner's edit.
+        clean_captions = (bool(row['pdf_key']) and bool(row['applied_story'])
+                          and row['story'] == row['applied_story']
+                          and any(is_figure_caption(p) for p in row['story'].split('\n\n')))
+        if not need_text and not need_photo and not clean_captions: continue
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory); image = folder/'preview.jpg'; text = ''
             try:
@@ -99,7 +119,7 @@ def main():
                 elif row['video_key'] and need_photo:
                     video = folder/'source-video'; r2('get',row['video_key'],video)
                     subprocess.run(['ffmpeg','-v','error','-i',str(video),'-frames:v','1','-vf','scale=1600:1600:force_original_aspect_ratio=decrease',str(image)], check=True, capture_output=True, timeout=120)
-                new_text = text if need_text and len(text.strip()) >= 20 else row['story']
+                new_text = text if (need_text or clean_captions) and len(text.strip()) >= 20 else row['story']
                 new_key = f"extracted-memory-previews/{uuid.uuid4()}.jpg" if need_photo and image.exists() else row['photo_key']
                 if new_text == row['story'] and new_key == row['photo_key']:
                     print(f"Memory {row['id']}: no extractable content; unchanged")
@@ -115,6 +135,9 @@ def main():
                   (new_text,new_key,'Attachment preview' if new_key != row['photo_key'] else row['photo_name'],row['id'],row['story'],row['photo_key'],row['pdf_key'],row['video_key']))
                 changed = result.get('meta',{}).get('changes',0)
                 updated += changed
+                if changed and clean_captions:
+                    query('''UPDATE memory_attachment_backups SET applied_story = ?
+                      WHERE memory_id = ? AND applied_story IS ?''', (new_text,row['id'],row['applied_story']))
                 print(f"Memory {row['id']}: {'updated' if changed else 'concurrent edit; skipped'}, extracted text {len(text)} characters, preview {image.exists()}")
             except Exception as exc:
                 # Do not print credentials, attachment contents or private data into workflow logs.

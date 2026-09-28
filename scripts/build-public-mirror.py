@@ -24,7 +24,8 @@ QUERIES = {
     "memories": """SELECT id, name, relationship, title, story, photo_key AS photoKey,
                    video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey,
                    social_url AS socialUrl, created_at AS createdAt FROM memories
-                   WHERE status = 'approved' ORDER BY created_at DESC, id DESC LIMIT 50""",
+                   WHERE status = 'approved' ORDER BY CASE WHEN id = 11 THEN 0 ELSE 1 END,
+                   created_at DESC, id DESC LIMIT 50""",
 }
 
 
