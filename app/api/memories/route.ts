@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
     if (contentType.includes("multipart/form-data")) {
       // Bound the request before multipart parsing, including chunked requests.
-      const maxBody = 72 * 1024 * 1024;
+      const maxBody = 80 * 1024 * 1024;
       if (Number(request.headers.get("content-length")) > maxBody) return publicJson({ error: "Attachments are too large. Video limit: 50 MB." }, { status: 413 });
       let received = 0;
       const bounded = request.body?.pipeThrough(new TransformStream({ transform(chunk, controller) {
