@@ -71,6 +71,7 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
     const hasVideo = video instanceof File && video.size > 0;
     if (hasVideo && video.size > 50 * 1024 * 1024) { setStatus("error"); setMessage("Please choose a video up to 50 MB."); return; }
     const hasPdf = pdf instanceof File && pdf.size > 0;
+    if (hasPdf && pdf.size > 15 * 1024 * 1024) { setStatus("error"); setMessage("Please choose a PDF up to 15 MB."); return; }
     if (!story && !socialUrl && !hasPdf && !hasVideo) {
       setStatus("error");
       setMessage("Please share your story as written text, a PDF, video, or a public post.");
@@ -106,10 +107,10 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
         <label>{copy["memories.formName"]}<input name="name" required minLength={2} maxLength={100} placeholder={copy["memories.formNamePlaceholder"]} /></label>
         <label>{copy["memories.formRelationship"]}<input name="relationship" required maxLength={120} placeholder={copy["memories.formRelationshipPlaceholder"]} /></label>
       </div>
-      <label>{copy["memories.formEmail"]} <span>{copy["memories.formEmailNote"]}</span><input name="email" type="email" maxLength={200} placeholder={copy["memories.formEmailPlaceholder"]} /></label>
       <label>{copy["memories.formTitle"]}<input name="title" required minLength={2} maxLength={160} placeholder={copy["memories.formTitlePlaceholder"]} /></label>
       <label>{copy["memories.formStory"]} <span>{copy["memories.formStoryNote"]}</span><textarea name="story" minLength={20} maxLength={6000} rows={7} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
       <label>{copy["memories.formSocial"]} <span>{copy["memories.formSocialNote"]}</span><span className="memory-link-input"><Link2 size={18} aria-hidden="true" /><input name="socialUrl" type="url" maxLength={1000} placeholder={copy["memories.formSocialPlaceholder"]} /></span></label>
+      <div className="upload-options">
       <label className="photo-field">
         <FileText size={22} aria-hidden="true" />
         <span><strong>{copy["memories.formPdf"]}</strong><small>{copy["memories.formPdfHelp"]}</small></span>
@@ -121,9 +122,10 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
         <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" />
       </label>
       <label className="photo-field video-field">
-        <span aria-hidden="true">▶</span><span><strong>Upload a video</strong><small>MP4 or WebM · up to 50 MB. For narrated slides, export to MP4 (H.264 video / AAC audio).</small></span>
+        <span aria-hidden="true">▶</span><span><strong>Upload a video</strong><small>MP4 or WebM · up to 50 MB</small></span>
         <input name="video" type="file" accept="video/mp4,video/webm,.mp4,.webm" />
       </label>
+      </div>
       <label className="consent-field">
         <input name="consent" type="checkbox" required />
         <span>{copy["memories.formConsent"]}</span>

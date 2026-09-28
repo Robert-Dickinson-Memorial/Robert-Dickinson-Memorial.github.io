@@ -672,9 +672,6 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formNamePlaceholder": "Full name",
   "memories.formRelationship": "Your connection",
   "memories.formRelationshipPlaceholder": "Student, colleague, friend…",
-  "memories.formEmail": "Email",
-  "memories.formEmailNote": "(kept private)",
-  "memories.formEmailPlaceholder": "you@example.edu",
   "memories.formTitle": "A title for your memory",
   "memories.formTitlePlaceholder": "The lesson I still carry",
   "memories.formStory": "Your story",
@@ -684,7 +681,7 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formSocialNote": "(optional)",
   "memories.formSocialPlaceholder": "https://…",
   "memories.formPdf": "Upload your story as a PDF",
-  "memories.formPdfHelp": "PDF · up to 12 MB",
+  "memories.formPdfHelp": "PDF · up to 15 MB",
   "memories.formPhoto": "Add a photo",
   "memories.formPhotoHelp": "JPG, PNG or WebP · up to 8 MB",
   "memories.pdfLink": "Read the shared PDF",
@@ -963,6 +960,10 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
         if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";
         if (saved["memories.formConsent"] === "I give permission for this story and photo to be published on this memorial site after review.") saved["memories.formConsent"] = "I give permission for this story, photo, PDF, video, and/or shared public link to be published on this memorial site after review.";
+        if (saved["memories.formPdfHelp"] === "PDF · up to 12 MB") saved["memories.formPdfHelp"] = "PDF · up to 15 MB";
+        delete saved["memories.formEmail"];
+        delete saved["memories.formEmailNote"];
+        delete saved["memories.formEmailPlaceholder"];
         if (saved["life.heroTitle"] === "A curious mind. A generous spirit.") saved["life.heroTitle"] = "A curious Mind. A generous spirit";
         if (saved["life.heroIntro"] === "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.") saved["life.heroIntro"] = "Robert’s path through life and career.";
         delete saved["life.mentorQuote"];

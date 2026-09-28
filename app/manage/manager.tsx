@@ -5,7 +5,7 @@ import { BookOpen, CalendarPlus, FileX, ImageOff, ImagePlus, Save, Trash2, Video
 import type { GalleryItem, LegacyChapter, LegacyPublication, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; photoName: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -363,6 +363,20 @@ export default function Manager({ content, events, media, publishedMemories, edi
     finally { setBusy(false); }
   }
 
+  async function uploadMemoryPhoto(id: number, formElement: HTMLFormElement) {
+    const input = formElement.querySelector<HTMLInputElement>("[data-memory-photo]");
+    const file = input?.files?.[0];
+    if (!file) { setMessage("Choose a photograph for this memory first."); return; }
+    if (file.size > 12 * 1024 * 1024) { setMessage("Choose a photograph up to 12 MB."); return; }
+    const form = new FormData();
+    form.set("id", String(id)); form.set("file", file);
+    setBusy(true); setMessage("");
+    try {
+      await responseData(await fetch("/api/admin/memory-photo", { method: "POST", body: form }));
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
+  }
+
   async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "pdf" | "video" | "link" | "all", hasPhoto = true) {
     const warning = mode === "text"
       ? hasPhoto ? `Delete the memory entry “${title}”? Its photo will be preserved in the public gallery, while any PDF, video, or public link will be removed with the memory.` : `Permanently delete the memory entry “${title}” and any PDF, video, or public link attached to it?`
@@ -618,13 +632,15 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
           <div className="manager-subcard">
             <h3>Published community memories</h3>
+            <p className="manager-help">These are the same approved stories shown on the public memory wall. Text extracted from PDFs appears in the Memory text field, and extracted photographs appear below. Save text edits here; add or replace a photograph for each memory with the photo control.</p>
             <div className="manager-edit-list">
               {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" key={item.id} onSubmit={savePublishedMemory}>
                 <input type="hidden" name="id" value={item.id} />
-                {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt="" />}
+                {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={item.photoName || `Photo for ${item.title}`} />}
                 <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
                 <label>Memory title<input name="title" defaultValue={item.title} required /></label>
                 <label>Memory text <span>May be blank when the memory has a PDF, video, or public link.</span><textarea name="story" rows={7} defaultValue={item.story} /></label>
+                <div className="manager-photo-controls"><label>{item.photoKey ? "Replace the displayed photograph" : "Add a displayed photograph"} <span>JPG, PNG, or WebP, up to 12 MB.</span><input data-memory-photo type="file" accept="image/jpeg,image/png,image/webp" /></label><button type="button" className="manager-secondary" disabled={busy} onClick={(event) => uploadMemoryPhoto(item.id, event.currentTarget.closest("form") as HTMLFormElement)}><ImagePlus size={16} /> {item.photoKey ? "Replace photo" : "Add photo"}</button></div>
                 <label>Public social-media or web post<input name="socialUrl" type="url" defaultValue={item.socialUrl ?? ""} placeholder="https://…" /></label>
           {item.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={item.title} src={`/api/memory-videos/${item.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
                 {item.pdfKey && <p className="manager-memory-attachment"><a href={`/api/memory-files/${item.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer">Open PDF{item.pdfName ? ` · ${item.pdfName}` : ""} ↗</a></p>}

@@ -136,9 +136,9 @@ export async function POST(request: Request) {
     if (pdf) {
       const hasPdfType = pdf.type === "application/pdf" || ((!pdf.type || pdf.type === "application/octet-stream") && /\.pdf$/i.test(pdf.name));
       const signature = await pdf.slice(0, 5).text();
-      if (!hasPdfType || signature !== "%PDF-" || pdf.size > 12 * 1024 * 1024) {
+      if (!hasPdfType || signature !== "%PDF-" || pdf.size > 15 * 1024 * 1024) {
         if (photoKey && env.BUCKET) await env.BUCKET.delete(photoKey);
-        return publicJson({ error: "Please choose a valid PDF file under 12 MB." }, { status: 400 });
+        return publicJson({ error: "Please choose a valid PDF file up to 15 MB." }, { status: 400 });
       }
       if (!env.BUCKET) {
         throw new Error("File storage is temporarily unavailable.");

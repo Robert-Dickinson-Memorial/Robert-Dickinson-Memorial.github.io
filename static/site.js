@@ -744,6 +744,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const video = formData.get("video");
     if (video instanceof File && video.size > 50 * 1024 * 1024) { showMessage("Please choose a video up to 50 MB."); return; }
     const pdf = formData.get("pdf");
+    if (pdf instanceof File && pdf.size > 15 * 1024 * 1024) { showMessage("Please choose a PDF up to 15 MB."); return; }
     if (!story && !socialUrl && !(pdf instanceof File && pdf.size > 0) && !(video instanceof File && video.size > 0)) {
       showMessage("Please share your story as written text, a PDF, video, or a public post.");
       return;

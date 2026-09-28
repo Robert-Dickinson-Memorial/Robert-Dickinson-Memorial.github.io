@@ -17,6 +17,7 @@ type PublishedMemory = {
   title: string;
   story: string;
   photoKey: string | null;
+  photoName: string | null;
   videoKey: string | null; videoName: string | null; pdfKey: string | null;
   pdfName: string | null;
   socialUrl: string | null;
@@ -32,7 +33,7 @@ export default async function ManagePage() {
     env.DB.prepare(`SELECT id, title, start_at AS startAt, end_at AS endAt, location, description, link_label AS linkLabel, link_url AS linkUrl FROM events ORDER BY start_at ASC`).all<MemorialEvent>(),
     env.DB.prepare(`SELECT id, kind, title, caption, object_key AS objectKey, external_url AS externalUrl, created_at AS createdAt FROM gallery_items ORDER BY created_at DESC`).all<GalleryItem>(),
     env.DB.prepare(`SELECT email, display_name AS displayName, created_at AS createdAt FROM memorial_editors ORDER BY created_at ASC`).all<{ email: string; displayName: string | null; createdAt: string }>(),
-    env.DB.prepare(`SELECT id, name, relationship, title, story, photo_key AS photoKey,
+    env.DB.prepare(`SELECT id, name, relationship, title, story, photo_key AS photoKey, photo_name AS photoName,
                            video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, pdf_name AS pdfName, social_url AS socialUrl
                     FROM memories WHERE status = 'approved' ORDER BY created_at DESC, id DESC`).all<PublishedMemory>(),
   ]) : [{ results: [] }, { results: [] }, { results: [] }, { results: [] }];
@@ -45,7 +46,7 @@ export default async function ManagePage() {
         <p>Use the same page names and section names as the public memorial below. Choose a public page first, then edit its text, images, or structured content.</p>
       </header>
       <div className="manager-nav-dock" aria-label="Management sections">
-        <nav className="manager-nav"><a href="#edit-home">Home</a><a href="#edit-life">His life</a><a href="#edit-legacy">Scientific legacy</a><a href="#edit-events">Events</a><a href="#edit-gallery">Gallery</a><a href="#edit-memories">Memories</a><a href="#edit-tree-content">Living tribute</a><a href="#edit-memory-book"><BookOpen size={16} /> Memory book</a><a href="#edit-style">Site-wide settings</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a></nav>
+        <nav className="manager-nav"><a href="#edit-home">Home</a><a href="#edit-life">His life</a><a href="#edit-legacy">Scientific legacy</a><a href="#edit-events">Events</a><a href="#edit-gallery">Gallery</a><a href="#edit-memories">Published memories</a><a href="#edit-tree-content">Living tribute</a><a href="#edit-memory-book"><BookOpen size={16} /> Memory book</a><a href="#edit-style">Site-wide settings</a>{isOwnerEmail(user.email) && <a href="#edit-access">Editor access</a>}<a href="/review"><MessageSquareText size={16} /> Review memories</a></nav>
       </div>
       <Manager content={content} events={eventResult.results ?? []} media={mediaResult.results ?? []} publishedMemories={memoryResult.results ?? []} editors={editorResult.results ?? []} owner={isOwnerEmail(user.email)} />
       <a className="manager-return-top" href="#manage-top">Return to top ↑</a>
