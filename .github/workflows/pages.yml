@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '7 * * * *'
 
 permissions:
   contents: read
@@ -82,6 +82,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+          retention-days: 1
 
       - name: Publish
         id: deployment
