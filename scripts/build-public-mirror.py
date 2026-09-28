@@ -91,9 +91,12 @@ def copy_media(entry):
     resource = f"{route}/{'/'.join(quote(part, safe='') for part in key.split('/'))}"
     digest = hashlib.sha256(resource.encode()).hexdigest()[:24]
     temporary = OUTPUT / "media" / f"{digest}.download"
-    bucket = os.environ["CLOUDFLARE_R2_BUCKET_NAME"]
-    subprocess.run([os.environ["WRANGLER_BIN"], "r2", "object", "get", f"{bucket}/{key}",
-                    "--remote", "--file", str(temporary)], check=True, capture_output=True, timeout=180)
+    bucket = os.environ.get("CLOUDFLARE_R2_BUCKET_NAME") or "robert-dickinson-memorial-photos"
+    try:
+        subprocess.run([os.environ["WRANGLER_BIN"], "r2", "object", "get", f"{bucket}/{key}",
+                       "--remote", "--file", str(temporary)], check=True, capture_output=True, timeout=180)
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError(f"Approved public media could not be copied: {route}") from error
     if not temporary.is_file() or not temporary.stat().st_size or temporary.stat().st_size > 55 * 1024 * 1024:
         raise RuntimeError(f"Invalid public media size for {route}")
     suffix = extension(temporary)
