@@ -2807,6 +2807,9 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .manager-published-memory .manager-image-preview { max-height: 260px; width: min(100%, 400px); }
 .manager-published-memory .manager-photo-controls { background: #f4efe5; border: 1px solid #ded0b5; border-radius: 5px; padding: 14px; margin: 0 0 18px; }
 .manager-published-memory .manager-photo-controls input[type="file"] { cursor: pointer; }
+.manager-published-memory .manager-attachment-controls { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.manager-published-memory .manager-attachment-controls .manager-photo-controls { align-content: space-between; display: grid; gap: 12px; margin-bottom: 18px; }
+.manager-published-memory .manager-memory-status { background: #e3eee4; border-left: 3px solid #76947c; color: #315b3a; font-size: .85rem; margin: 0 0 16px; padding: 11px 13px; }
 @media (max-width: 660px) { .memory-form .upload-options { grid-template-columns: 1fr; } .memory-form .upload-options .photo-field { min-height: 0; } }
 @media (max-width: 720px) {
  .memory-share-panel > summary { padding: 16px; gap: 12px; flex-wrap: wrap; }
