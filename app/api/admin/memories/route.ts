@@ -41,6 +41,7 @@ export async function PATCH(request: Request) {
     const relationship = clean(body.relationship, 120);
     const title = clean(body.title, 160);
     const story = clean(body.story, 60000);
+    const originalStory = typeof body.originalStory === "string" ? body.originalStory : null;
     const socialUrlRaw = clean(body.socialUrl, 1000);
     const socialUrl = cleanPublicUrl(socialUrlRaw);
     if (socialUrlRaw && !socialUrl) {
@@ -59,10 +60,13 @@ export async function PATCH(request: Request) {
     if (!story && !current.pdfKey && !current.videoKey && !socialUrl) {
       return Response.json({ error: "Keep written text, a PDF, video, or a public link with this memory." }, { status: 400 });
     }
+    if (originalStory === null) {
+      return Response.json({ error: "Reload this editor to get the current memory before saving." }, { status: 409 });
+    }
     const result = await env.DB.prepare(
-      "UPDATE memories SET name = ?, relationship = ?, title = ?, story = ?, social_url = ? WHERE id = ? AND status = 'approved'"
-    ).bind(name, relationship, title, story, socialUrl || null, id).run();
-    if (!result.meta.changes) return Response.json({ error: "Published memory not found." }, { status: 404 });
+      "UPDATE memories SET name = ?, relationship = ?, title = ?, story = ?, social_url = ? WHERE id = ? AND status = 'approved' AND COALESCE(story, '') = ?"
+    ).bind(name, relationship, title, story, socialUrl || null, id, originalStory).run();
+    if (!result.meta.changes) return Response.json({ error: "This memory changed since you opened the editor. Reload the page to see the current text, then apply your edits again." }, { status: 409 });
     return Response.json({ ok: true, id, status: "approved" });
   }
 

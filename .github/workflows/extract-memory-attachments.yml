@@ -1,6 +1,8 @@
 name: Extract shared-memory PDF text and previews
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '2 * * * *'
   push:
     branches: [main]
     paths:

@@ -354,10 +354,12 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
   async function savePublishedMemory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage("");
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const payload = Object.fromEntries(form.entries());
     try {
       await responseData(await fetch("/api/admin/memories", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...payload, action: "edit" }) }));
+      (formElement.elements.namedItem("originalStory") as HTMLInputElement).value = String(payload.story ?? "").trim();
       setMessage("Published memory updated.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
     finally { setBusy(false); }
@@ -636,6 +638,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
             <div className="manager-edit-list">
               {publishedMemories.map((item) => <form className="manager-edit-card manager-form manager-published-memory" key={item.id} onSubmit={savePublishedMemory}>
                 <input type="hidden" name="id" value={item.id} />
+                <input type="hidden" name="originalStory" defaultValue={item.story ?? ""} />
                 {item.photoKey && <img className="manager-image-preview" src={`/api/photos/${item.photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={item.photoName || `Photo for ${item.title}`} />}
                 <div className="manager-row"><label>Name<input name="name" defaultValue={item.name} required /></label><label>Connection<input name="relationship" defaultValue={item.relationship} required /></label></div>
                 <label>Memory title<input name="title" defaultValue={item.title} required /></label>
