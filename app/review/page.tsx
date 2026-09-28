@@ -4,6 +4,7 @@ import Link from "next/link";
 import { requireChatGPTUser } from "../chatgpt-auth";
 import { emailNotificationsConfigured, isEditorEmail } from "../moderation";
 import ReviewQueue, { PendingMemory } from "./review-queue";
+import TreeReview, { TreeDedication } from "./tree-review";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,8 @@ export default async function ReviewPage() {
             social_url AS socialUrl, created_at AS createdAt
      FROM memories WHERE status = ? ORDER BY created_at ASC, id ASC`
   ).bind("pending").all<PendingMemory>() : { results: [] };
+  const treeResult = env.DB ? await env.DB.prepare("SELECT id, name, email, project, status, created_at AS createdAt FROM tree_dedications WHERE status IN ('pending', 'approved') ORDER BY created_at DESC, id DESC")
+    .all<TreeDedication & { status: string }>() : { results: [] };
   const notificationsReady = emailNotificationsConfigured();
 
   return (
@@ -41,6 +44,7 @@ export default async function ReviewPage() {
         </div>
       </header>
       <ReviewQueue initialMemories={result.results ?? []} />
+      <TreeReview pending={(treeResult.results ?? []).filter((item) => item.status === "pending")} approved={(treeResult.results ?? []).filter((item) => item.status === "approved")} />
     </main>
   );
 }

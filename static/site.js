@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   const form = document.querySelector("[data-migration-form]");
+  const treeForm = document.querySelector("[data-tree-dedication-form]");
   const sharePanel = document.querySelector("details.memory-share-panel");
   const revealShareForm = () => {
     if (location.hash === "#share" && sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
@@ -69,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) return;
       const payload = await response.json();
       const listKey = { "/api/memories": "memories", "/api/gallery": "gallery", "/api/events": "events" }[path];
+      if (path === "/api/participation" && !(Number.isFinite(payload?.memories) && Number.isFinite(payload?.trees))) return;
       if (listKey ? !Array.isArray(payload?.[listKey]) : !payload?.content || typeof payload.content !== "object") return;
       const signature = JSON.stringify(payload);
       if (signature === payloadSignatures.get(path)) return;
@@ -522,6 +524,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function hydrateParticipation() {
+    if (!document.querySelector("[data-participation-count]")) return;
+    const counts = await getJson("/api/participation");
+    document.querySelectorAll("[data-participation-count]").forEach((element) => {
+      const kind = element.getAttribute("data-participation-count");
+      const count = counts[kind];
+      if (!Number.isSafeInteger(count) || count < 0) return;
+      element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${count === 1 ? "person has" : "people have"} ${kind === "trees" ? "recorded a tree dedication" : "shared a memory"}`));
+      element.hidden = false;
+    });
+  }
+
 
   async function hydrateMemoryBook() {
     const target = document.querySelector("[data-memory-book]");
@@ -787,8 +801,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!apiBase) {
     if (form instanceof HTMLFormElement) form.addEventListener("submit", (event) => { event.preventDefault(); showMessage("Online submissions are temporarily paused while the private review service is being connected. No information was sent or stored."); });
+    if (treeForm instanceof HTMLFormElement) treeForm.addEventListener("submit", (event) => { event.preventDefault(); const status = treeForm.querySelector("[data-tree-dedication-message]"); if (status) { status.textContent = "Dedication reporting is temporarily unavailable."; status.hidden = false; } });
     return;
   }
+
+  if (treeForm instanceof HTMLFormElement) treeForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = treeForm.querySelector("[data-tree-dedication-message]");
+    const button = treeForm.querySelector('button[type="submit"]');
+    const data = new FormData(treeForm);
+    if (button) button.disabled = true;
+    try {
+      const response = await fetch(apiUrl("/api/participation"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: data.get("name"), email: data.get("email"), project: data.get("project"), confirmed: data.get("confirmed") === "on", website: data.get("website") }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to record the dedication.");
+      treeForm.reset();
+      if (status) status.textContent = "Thank you. Your dedication has been submitted for review. The contributor count will update after approval.";
+    } catch (error) { if (status) status.textContent = error.message || "Please try again."; }
+    finally { if (status) status.hidden = false; if (button) button.disabled = false; }
+  });
 
   const mirrorReady = fetch("/mirror/manifest.json", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : { media: {} })
@@ -799,6 +830,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ["/api/events", [hydrateEvents], Boolean(document.querySelector("[data-events]"))],
     ["/api/gallery", [hydrateGallery, hydrateMemoryBook], Boolean(document.querySelector("[data-gallery], [data-memory-book]"))],
     ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-community-quotes], [data-memory-book]"))],
+    ["/api/participation", [hydrateParticipation], Boolean(document.querySelector("[data-participation-count]"))],
   ];
   let refreshInProgress = false;
   let initialHydrated = false;
@@ -812,7 +844,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   mirrorReady.then(async () => {
-    await Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook()]);
+    await Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook(), hydrateParticipation()]);
     initialHydrated = true;
     refreshPublicData();
   });

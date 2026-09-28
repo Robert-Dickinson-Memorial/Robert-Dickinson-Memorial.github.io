@@ -2,6 +2,7 @@ import { ArrowLeft, ExternalLink, Sprout } from "lucide-react";
 import Link from "next/link";
 import { SiteNav } from "../site-chrome";
 import { getSiteContent } from "../site-data";
+import DedicationForm from "./dedication-form";
 
 export const dynamic = "force-dynamic";
 
@@ -135,6 +136,13 @@ export default async function TreeDedicationPage() {
         <details><summary>{copy["tree.v2Faq2Q"]}</summary><p>{copy["tree.v2Faq2A"]}</p></details>
         <details><summary>{copy["tree.v2Faq3Q"]}</summary><p>{copy["tree.v2Faq3A"]}</p></details>
         <details><summary>{copy["tree.v2Faq4Q"]}</summary><p>{copy["tree.v2Faq4A"]}</p></details>
+      </section>
+
+      <section className="tree-dedication-report" aria-labelledby="tree-dedication-title">
+        <p className="section-kicker">A growing tribute</p>
+        <h2 id="tree-dedication-title">Already made a dedication?</h2>
+        <p>Let us count you among those honoring Robert. Donations take place with the organizations above; this optional form records your participation with the memorial. Your name and email stay private. Each person is counted once after review, even if they support more than one project.</p>
+        <DedicationForm />
       </section>
 
       <section className="tree-final-cta"><Sprout size={42} aria-hidden="true" /><h2>{copy["tree.v2FinalTitle"]}</h2><p>{copy["tree.v2FinalText"]}</p><a className="tree-primary-action" href="#restoration-projects">{copy["tree.v2FinalCta"]} <span aria-hidden="true">↑</span></a></section>

@@ -1,0 +1,43 @@
+import { env } from "cloudflare:workers";
+import { isAllowedPublicOrigin, publicJson, publicOptions } from "../../cors";
+import { contributorCount } from "../../participation";
+
+export const dynamic = "force-dynamic";
+
+const projects = new Set(["Chippewa National Forest", "Amazon rainforest", "Arizona", "Georgia", "Texas", "Colorado", "California", "Massachusetts & New England"]);
+
+export async function GET() {
+  try {
+    if (!env.DB) throw new Error("Database unavailable");
+    const [memory, tree] = await Promise.all([
+      env.DB.prepare("SELECT name FROM memories WHERE status = 'approved' AND trim(name) <> ''").all<{ name: string }>(),
+      env.DB.prepare("SELECT name FROM tree_dedications WHERE status = 'approved' AND trim(name) <> ''").all<{ name: string }>(),
+    ]);
+    return publicJson({ memories: contributorCount((memory.results ?? []).map((row) => row.name)), trees: contributorCount((tree.results ?? []).map((row) => row.name)) });
+  } catch {
+    return publicJson({ error: "Participation totals are temporarily unavailable." }, { status: 503 });
+  }
+}
+
+export function OPTIONS() { return publicOptions(); }
+
+export async function POST(request: Request) {
+  if (!isAllowedPublicOrigin(request)) return publicJson({ error: "This submission source is not allowed." }, { status: 403 });
+  if (!env.DB) return publicJson({ error: "The memorial archive is temporarily unavailable." }, { status: 503 });
+  try {
+    if (Number(request.headers.get("content-length")) > 4096) return publicJson({ error: "Submission is too large." }, { status: 413 });
+    const body = await request.json() as Record<string, unknown>;
+    const name = typeof body.name === "string" ? body.name.trim().slice(0, 100) : "";
+    const email = typeof body.email === "string" ? body.email.trim().slice(0, 200) : "";
+    const project = typeof body.project === "string" ? body.project.trim() : "";
+    if (body.website) return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
+    if (name.length < 2 || !projects.has(project) || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) || body.confirmed !== true) {
+      return publicJson({ error: "Enter your name and project, and confirm that you made a dedication through the provider." }, { status: 400 });
+    }
+    await env.DB.prepare("INSERT INTO tree_dedications (name, email, project, status, created_at) VALUES (?, ?, ?, 'pending', ?)")
+      .bind(name, email || null, project, new Date().toISOString()).run();
+    return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
+  } catch {
+    return publicJson({ error: "Unable to record the dedication. Please try again." }, { status: 400 });
+  }
+}

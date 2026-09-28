@@ -2031,6 +2031,35 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
   .landmark-paper-card img { aspect-ratio: 11 / 8.1; }
 }
 
+/* Compact live participation totals in the two home-page actions. */
+.tribute-action-card .tribute-participation { align-items: baseline; border-top: 1px solid currentColor; display: block; font-size: .86rem; line-height: 1.4; margin-top: 22px; opacity: .9; padding-top: 14px; }
+.tribute-action-card .tribute-participation[hidden] { display: none; }
+.tribute-action-card .tribute-participation strong { font-family: Georgia, serif; font-size: 1.4rem; font-weight: 600; margin: 0 4px 0 0; }
+.tree-dedication-report { background: #eee9df; color: #142b3b; padding: 70px clamp(22px, 8vw, 130px); }
+.tree-dedication-report > p:not(.section-kicker) { color: #50616a; line-height: 1.6; max-width: 780px; }
+.tree-dedication-report h2 { font-family: Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.7rem); margin: 10px 0 16px; }
+.tree-dedication-form { max-width: 980px; margin-top: 28px; }
+.tree-dedication-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.tree-dedication-fields label { display: grid; font-size: .85rem; font-weight: 700; gap: 8px; }
+.tree-dedication-fields small { font-weight: 400; }
+.tree-dedication-fields input, .tree-dedication-fields select { background: white; border: 1px solid #bea985; border-radius: 4px; color: #142b3b; font: inherit; min-width: 0; padding: 13px 11px; width: 100%; }
+.tree-dedication-confirm { align-items: start; display: flex; gap: 10px; line-height: 1.5; margin: 24px 0; }
+.tree-dedication-confirm input { margin-top: 5px; }
+.tree-dedication-form button { background: #153b34; border: 0; border-radius: 4px; color: white; cursor: pointer; font: inherit; font-weight: 700; padding: 13px 22px; }
+.tree-dedication-form button:disabled { cursor: wait; opacity: .65; }
+.tree-dedication-message { color: #1b4b41; margin-top: 15px; }
+.tree-dedication-form .form-honeypot { left: -9999px; position: absolute; }
+@media (max-width: 700px) { .tree-dedication-fields { grid-template-columns: 1fr; } .tree-dedication-report { padding-block: 45px; } }
+.tree-review { background: #f2ede3; border-radius: 8px; margin: 50px auto; max-width: 1100px; padding: 30px; }
+.tree-review h2 { font-family: Georgia, serif; font-size: 2rem; }
+.tree-review h3 { margin: 30px 0 12px; }
+.tree-review-list { display: grid; gap: 10px; }
+.tree-review-list article { align-items: center; background: white; border: 1px solid #ded0b5; display: flex; flex-wrap: wrap; gap: 10px 20px; padding: 15px; }
+.tree-review-list article strong { min-width: 170px; }
+.tree-review-list article small { color: #53636c; }
+.tree-review-list article div { display: flex; gap: 8px; margin-left: auto; }
+.tree-review-list button { border: 1px solid #a78b58; border-radius: 3px; cursor: pointer; padding: 7px 12px; }
+
 
 /* Memory Book: photographs from His Life and Gallery */
 .book-life-photo-spread,

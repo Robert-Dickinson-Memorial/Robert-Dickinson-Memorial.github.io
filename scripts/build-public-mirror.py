@@ -26,6 +26,9 @@ QUERIES = {
                    social_url AS socialUrl, created_at AS createdAt FROM memories
                    WHERE status = 'approved' ORDER BY CASE WHEN id = 11 THEN 0 ELSE 1 END,
                    created_at DESC, id DESC LIMIT 50""",
+    "participation": """SELECT 'memories' AS category, name FROM memories WHERE status = 'approved' AND trim(name) <> ''
+                    UNION ALL
+                    SELECT 'trees' AS category, name FROM tree_dedications WHERE status = 'approved' AND trim(name) <> ''""",
 }
 
 
@@ -117,7 +120,13 @@ def gallery_year(item):
 def main():
     (OUTPUT / "api").mkdir(parents=True, exist_ok=True)
     (OUTPUT / "media").mkdir(parents=True, exist_ok=True)
-    rows = {name: query(sql) for name, sql in QUERIES.items()}
+    rows = {name: query(sql) for name, sql in QUERIES.items() if name != "participation"}
+    try:
+        rows["participation"] = query(QUERIES["participation"])
+    except RuntimeError:
+        # Backend migrations and Pages deploy on separate jobs. The live API
+        # will supply the total once the tree-dedication table is available.
+        rows["participation"] = []
     raw = OUTPUT / "site-content-rows.json"
     raw.write_text(json.dumps(rows["site_content"], ensure_ascii=False), encoding="utf-8")
     subprocess.run(["node", "scripts/render-public-content.mjs", str(raw), str(OUTPUT / "api" / "content.json")], check=True)
@@ -127,6 +136,16 @@ def main():
     memories = rows["memories"]
     for name, value in (("events", rows["events"]), ("gallery", gallery), ("memories", memories)):
         (OUTPUT / "api" / f"{name}.json").write_text(json.dumps({name: value}, ensure_ascii=False), encoding="utf-8")
+    def people_count(category):
+        people = set()
+        for row in rows["participation"]:
+            if row["category"] == category:
+                for name in re.split(r"\s+(?:&|and)\s+", row["name"], flags=re.IGNORECASE):
+                    normalized = " ".join(name.lower().split())
+                    if normalized:
+                        people.add(normalized)
+        return len(people)
+    (OUTPUT / "api" / "participation.json").write_text(json.dumps({"memories": people_count("memories"), "trees": people_count("trees")}), encoding="utf-8")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         media = dict(pool.map(copy_media, public_keys(content, gallery, memories)))
