@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const apiBase = String(window.MEMORIAL_API_BASE || "").replace(/\/$/, "");
+  const mobileMenu = document.querySelector(".mobile-nav");
+  if (mobileMenu instanceof HTMLDetailsElement) {
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") mobileMenu.open = false; });
+    document.addEventListener("click", (event) => {
+      if (mobileMenu.open && !mobileMenu.contains(event.target)) mobileMenu.open = false;
+    });
+  }
   const form = document.querySelector("[data-migration-form]");
   const sharePanel = document.querySelector("details.memory-share-panel");
   const revealShareForm = () => {
@@ -233,6 +240,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return value ? `/assets/${String(value).replace(/^[/]+/, "")}` : "";
   }
 
+  const officialIpccPdf = "https://www.ipcc.ch/site/assets/uploads/2018/02/ar4-wg1-chapter7-1.pdf";
+  function publicationPdfUrl(publication) {
+    const url = publication.pdfUrl || (String(publication.url || "").includes("ipcc.ch/report/ar4/wg1/coupling-between-changes") ? officialIpccPdf : "");
+    return /^https:\/\//i.test(url) ? url : "";
+  }
+
   function renderLegacy(content, copy) {
     const chapters = Array.isArray(content.legacyChapters) ? content.legacyChapters : [];
     if (!chapters.length) return;
@@ -288,21 +301,20 @@ document.addEventListener("DOMContentLoaded", () => {
           landmarkWork.append(node("p", { className: "journey-label", text: "Landmark Publication" }));
           const grid = node("div", { className: `landmark-grid ${publications.length === 1 ? "single" : ""}` });
           publications.forEach((publication) => {
-            const card = node(publication.url ? "a" : "article", {
-              className: "landmark-paper-card",
-              attrs: publication.url ? { href: publication.url, target: "_blank", rel: "noopener noreferrer" } : {},
-            });
+            const card = node("article", { className: "landmark-paper-card" });
             const preview = publicationImageUrl(publication.image);
             if (preview) {
-              card.append(node("img", { attrs: { src: preview, alt: publication.alt || `Publication preview for ${publication.title || ""}`, loading: "lazy" } }));
-            } else {
-              const fallback = node("div", { className: "landmark-paper-fallback" });
-              fallback.append(node("span", { text: publication.year || "" }), node("strong", { text: publication.title || "" }), node("small", { text: publication.citation || "" }));
-              card.append(fallback);
+              card.append(node("img", { attrs: { src: preview, alt: "", "aria-hidden": "true", loading: "lazy" } }));
             }
             const caption = node("div", { className: "landmark-paper-caption" });
-            caption.append(node("p", { text: publication.note || "" }));
-            if (publication.url) caption.append(node("span", { className: "landmark-paper-link", text: "Read the publication ↗" }));
+            caption.append(node("span", { className: "landmark-paper-year", text: publication.year || "" }),
+              node("h4", { text: publication.title || "" }), node("cite", { text: publication.citation || "" }),
+              node("p", { text: publication.note || "" }));
+            const actions = node("div", { className: "landmark-paper-actions" });
+            if (/^https:\/\//i.test(publication.url || "")) actions.append(node("a", { text: "Open publication page ↗", attrs: { href: publication.url, target: "_blank", rel: "noopener noreferrer" } }));
+            const pdfUrl = publicationPdfUrl(publication);
+            if (pdfUrl && pdfUrl !== publication.url) actions.append(node("a", { text: "Open PDF ↗", attrs: { href: pdfUrl, target: "_blank", rel: "noopener noreferrer", type: "application/pdf" } }));
+            if (actions.childNodes.length) caption.append(actions);
             card.append(caption);
             grid.append(card);
           });

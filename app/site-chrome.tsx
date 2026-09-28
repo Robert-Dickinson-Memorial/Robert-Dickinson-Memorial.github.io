@@ -19,6 +19,7 @@ export async function SiteNav({ active }: { active?: string }) {
     <nav className="site-nav" aria-label="Main navigation">
       <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark">∞</span><span>{copy["global.wordmark"]}</span></Link>
       <div className="nav-links">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : ""].filter(Boolean).join(" ") || undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
+      <details className="mobile-nav"><summary>Menu <span aria-hidden="true">☰</span></summary><div className="mobile-nav-panel">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div></details>
     </nav>
   );
 }

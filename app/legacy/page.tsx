@@ -10,6 +10,12 @@ function photoSrc(photo: LegacyChapterPhoto | null): string | null {
   return null;
 }
 
+function publicationPdfUrl(publication: { url?: string; pdfUrl?: string }): string {
+  const url = publication.pdfUrl || (publication.url?.includes("ipcc.ch/report/ar4/wg1/coupling-between-changes")
+    ? "https://www.ipcc.ch/site/assets/uploads/2018/02/ar4-wg1-chapter7-1.pdf" : "");
+  return /^https:\/\//i.test(url) ? url : "";
+}
+
 export default async function LegacyPage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
@@ -30,10 +36,15 @@ export default async function LegacyPage() {
             {publications.length > 0 && <section className="landmark-work" aria-label={`Landmark publications from ${chapter.institution}`}>
               <p className="journey-label">Landmark Publication</p>
               <div className={`landmark-grid ${publications.length === 1 ? "single" : ""}`}>
-                {publications.map((publication) => <a className="landmark-paper-card" href={publication.url || "#"} target={publication.url ? "_blank" : undefined} rel={publication.url ? "noopener noreferrer" : undefined} key={`${publication.year}-${publication.title}`}>
-                  {publication.image ? <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt={publication.alt || `Publication preview for ${publication.title}`} loading="lazy" /> : <div className="landmark-paper-fallback"><span>{publication.year}</span><strong>{publication.title}</strong><small>{publication.citation}</small></div>}
-                  <div className="landmark-paper-caption"><p>{publication.note}</p>{publication.url && <span className="landmark-paper-link">Read the publication ↗</span>}</div>
-                </a>)}
+                {publications.map((publication) => <article className="landmark-paper-card" key={`${publication.year}-${publication.title}`}>
+                  {publication.image && <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt="" aria-hidden="true" loading="lazy" />}
+                  <div className="landmark-paper-caption"><span className="landmark-paper-year">{publication.year}</span><h4>{publication.title}</h4><cite>{publication.citation}</cite><p>{publication.note}</p>
+                    <div className="landmark-paper-actions">
+                      {publication.url?.startsWith("https://") && <a href={publication.url} target="_blank" rel="noopener noreferrer">Open publication page ↗</a>}
+                      {publicationPdfUrl(publication) && publicationPdfUrl(publication) !== publication.url && <a href={publicationPdfUrl(publication)} target="_blank" rel="noopener noreferrer" type="application/pdf">Open PDF ↗</a>}
+                    </div>
+                  </div>
+                </article>)}
               </div>
             </section>}
             {image && chapter.photo && <figure className="journey-chapter-photo"><img src={image} alt={chapter.photo.alt} /><figcaption>{chapter.photo.caption}<small>{copy["legacy.photoCredit"]}</small></figcaption></figure>}

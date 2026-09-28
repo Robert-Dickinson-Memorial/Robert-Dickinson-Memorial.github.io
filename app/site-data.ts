@@ -43,6 +43,7 @@ export type LegacyPublication = {
   citation: string;
   note: string;
   url?: string;
+  pdfUrl?: string;
   image?: string;
   alt?: string;
 };
@@ -282,6 +283,7 @@ const legacyChapters: LegacyChapter[] = [
         citation: "Denman, K. L., G. Brasseur, A. Chidthaisong, P. Ciais, P. M. Cox, R. E. Dickinson, et al. · IPCC AR4 Working Group I, Chapter 7, 499–587",
         note: "Robert served as a Lead Author of this chapter, which synthesized interactions among climate, terrestrial and ocean carbon cycles, atmospheric chemistry, aerosols, and biogeochemical feedbacks.",
         url: "https://www.ipcc.ch/report/ar4/wg1/coupling-between-changes-in-the-climate-system-and-biogeochemistry/",
+        pdfUrl: "https://www.ipcc.ch/site/assets/uploads/2018/02/ar4-wg1-chapter7-1.pdf",
         image: "landmarks/georgia-ipcc-ar4-ch7.svg",
         alt: "Publication preview for IPCC AR4 Working Group I Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry, 2007",
       },

@@ -2828,3 +2828,53 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
  .share-panel-action { padding: 9px 12px; }
  .memories-page-wall { padding-top: 28px; }
 }
+
+/* A fixed, fully visible navigation menu replaces the hidden horizontal strip on phones. */
+.mobile-nav { display: none; }
+@media (max-width: 900px) {
+  .site-nav { grid-template-columns: minmax(0, 1fr) auto; height: 72px; padding: 0 20px; }
+  .site-nav .wordmark { min-width: 0; font-size: .96rem; }
+  .site-nav .nav-links { display: none; }
+  .mobile-nav { display: block; justify-self: end; }
+  .mobile-nav > summary { align-items: center; border: 1px solid currentColor; border-radius: 5px; cursor: pointer; display: flex; font-size: .9rem; font-weight: 700; gap: 12px; list-style: none; padding: 9px 12px; }
+  .mobile-nav > summary::-webkit-details-marker { display: none; }
+  .mobile-nav > summary span { font-size: 1.12rem; line-height: 1; }
+  .mobile-nav[open] > summary span { transform: rotate(90deg); }
+  .mobile-nav > summary:focus-visible, .mobile-nav-panel a:focus-visible { outline: 3px solid #d5b879; outline-offset: 3px; }
+  .mobile-nav-panel { background: #0b2234; border-top: 1px solid #b89b64; box-shadow: 0 14px 28px rgb(0 0 0 / 25%); display: grid; gap: 0; left: 0; max-height: calc(100dvh - 72px); overflow-y: auto; padding: 10px 20px 20px; position: absolute; right: 0; top: 100%; }
+  .mobile-nav-panel a, html[data-page="life"] .mobile-nav-panel a, .life-page-active .mobile-nav-panel a { border-bottom: 1px solid rgb(255 255 255 / 14%); color: #f4f0e8; display: block; font-size: 1rem; opacity: 1; padding: 13px 8px; }
+  .mobile-nav-panel a.active, html[data-page="life"] .mobile-nav-panel a.active, .life-page-active .mobile-nav-panel a.active { color: #e8ca8d; font-weight: 700; }
+  .mobile-nav-panel a.nav-memory-cta { background: #e6cd94; border: 0; border-radius: 5px; color: #081b2a; font-weight: 700; margin-top: 14px; padding: 13px; text-align: center; }
+  .interior-hero { min-height: 0; padding-top: 122px; }
+  .hero { padding-top: 140px; }
+  .tree-page-intro { padding-top: 110px; }
+  .life-reference-page .life-reference-hero { padding-top: 78px; }
+}
+@media (max-width: 380px) { .site-nav .wordmark { font-size: .86rem; } }
+
+/* Publication information stays legible on a phone; decorative title cards stay small. */
+.landmark-paper-card > img { height: 205px; aspect-ratio: auto; object-fit: contain; background: #ede8dc; }
+.landmark-paper-caption .landmark-paper-year { color: #7a673d; font-size: .71rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.landmark-paper-caption h4 { color: #102b3b; font-family: Georgia, serif; font-size: clamp(1.25rem, 1.8vw, 1.65rem); font-weight: 400; line-height: 1.25; margin: 9px 0; }
+.landmark-paper-caption cite { color: #56626b; font-size: .75rem; font-style: normal; line-height: 1.5; }
+.landmark-paper-caption > p { border-top: 1px solid #d9d0bf; margin-top: 16px; padding-top: 14px; }
+.landmark-paper-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 18px; }
+.landmark-paper-actions a { border-bottom: 1px solid #a48954; color: #173747; font-size: .84rem; font-weight: 700; padding-bottom: 3px; }
+.landmark-paper-actions a:focus-visible { outline: 2px solid #173747; outline-offset: 3px; }
+@media (max-width: 780px) {
+  .legacy-page-content { padding-top: 45px; }
+  .legacy-personal-quotes { gap: 18px; margin-bottom: 44px; }
+  .legacy-journey { margin-top: 40px; }
+  .journey-rail { padding: 22px 0 8px; }
+  .journey-rail nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; overflow: visible; }
+  .journey-rail a { background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 18%); border-radius: 5px; min-width: 0; padding: 10px; }
+  .journey-rail a b { font-size: .8rem; line-height: 1.28; }
+  .journey-rail a small { display: none; }
+  .journey-chapter { padding: 42px 0 50px; }
+  .journey-summary { margin-top: 23px; }
+  .journey-detail { gap: 24px; margin-top: 26px; }
+  .landmark-work { margin-top: 30px; }
+  .landmark-grid { gap: 14px; }
+  .landmark-paper-card:has(.landmark-paper-year) > img { display: none; }
+  .landmark-paper-caption { padding: 20px; }
+}
