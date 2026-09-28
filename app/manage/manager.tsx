@@ -372,7 +372,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
       if (owner && formElement.querySelector<HTMLInputElement>("[data-memory-pdf]")?.files?.length) {
         await sendMemoryAttachment(id, formElement, "pdf"); saved.push("PDF");
       }
-      setMemoryMessages((previous) => ({ ...previous, [id]: `${saved.join(", ")} saved. The public page will show the latest version when refreshed.` }));
+      const waitingForPdfText = saved.includes("PDF") && !String(payload.story ?? "").trim();
+      setMemoryMessages((previous) => ({ ...previous, [id]: waitingForPdfText
+        ? `${saved.join(", ")} saved. PDF text will be extracted into the editable Memory field automatically. Reopen this editor after processing to review it.`
+        : `${saved.join(", ")} saved. The public page will show the latest version when refreshed.` }));
     } catch (error) { setMemoryMessages((previous) => ({ ...previous, [id]: `${saved.length ? `${saved.join(", ")} saved; ` : ""}${error instanceof Error ? error.message : "Please try again."}` })); }
     finally { setBusy(false); }
   }
@@ -401,7 +404,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setMemoryMessages((previous) => ({ ...previous, [id]: `Uploading ${kind}…` }));
     try {
       await sendMemoryAttachment(id, formElement, kind);
-      setMemoryMessages((previous) => ({ ...previous, [id]: `${kind === "photo" ? "Photograph" : "PDF"} saved. The public page will show the latest version when refreshed.` }));
+      const blankMemoryText = !(formElement.elements.namedItem("story") as HTMLTextAreaElement | null)?.value.trim();
+      setMemoryMessages((previous) => ({ ...previous, [id]: kind === "pdf" && blankMemoryText
+        ? "PDF saved. Its text will be extracted into the editable Memory field automatically. Reopen this editor after processing to review it."
+        : `${kind === "photo" ? "Photograph" : "PDF"} saved. The public page will show the latest version when refreshed.` }));
     } catch (error) { setMemoryMessages((previous) => ({ ...previous, [id]: error instanceof Error ? error.message : "Please try again." })); }
     finally { setBusy(false); }
   }
@@ -676,7 +682,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
                 <label>Memory text <span>May be blank when the memory has a PDF, video, or public link.</span><textarea name="story" rows={7} defaultValue={item.story} /></label>
                 <div className="manager-attachment-controls">
                   <div className="manager-photo-controls"><label>{attachment.photoKey ? "Replace the displayed photograph" : "Add a displayed photograph"} <span>JPG, PNG, or WebP, up to 12 MB.</span><input data-memory-photo type="file" accept="image/jpeg,image/png,image/webp" /></label><button type="button" className="manager-secondary" disabled={busy} onClick={(event) => uploadMemoryAttachment(item.id, event.currentTarget.closest("form") as HTMLFormElement, "photo")}><ImagePlus size={16} /> {attachment.photoKey ? "Replace photo" : "Upload photo"}</button></div>
-                  {owner && <div className="manager-photo-controls"><label>{attachment.pdfKey ? "Replace the shared PDF" : "Add a shared PDF"} <span>PDF, up to 15 MB. The Memory text above remains editable.</span><input data-memory-pdf type="file" accept="application/pdf,.pdf" /></label><button type="button" className="manager-secondary" disabled={busy} onClick={(event) => uploadMemoryAttachment(item.id, event.currentTarget.closest("form") as HTMLFormElement, "pdf")}><FileUp size={16} /> {attachment.pdfKey ? "Replace PDF" : "Upload PDF"}</button></div>}
+                  {owner && <div className="manager-photo-controls"><label>{attachment.pdfKey ? "Replace the shared PDF" : "Add a shared PDF"} <span>PDF, up to 15 MB. If Memory text is blank, it is extracted automatically after upload. Existing edited text is preserved.</span><input data-memory-pdf type="file" accept="application/pdf,.pdf" /></label><button type="button" className="manager-secondary" disabled={busy} onClick={(event) => uploadMemoryAttachment(item.id, event.currentTarget.closest("form") as HTMLFormElement, "pdf")}><FileUp size={16} /> {attachment.pdfKey ? "Replace PDF" : "Upload PDF"}</button></div>}
                 </div>
                 <label>Public social-media or web post<input name="socialUrl" type="url" defaultValue={item.socialUrl ?? ""} placeholder="https://…" /></label>
           {item.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={item.title} src={`/api/memory-videos/${item.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}

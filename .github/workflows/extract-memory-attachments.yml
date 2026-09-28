@@ -2,7 +2,9 @@ name: Extract shared-memory PDF text and previews
 on:
   workflow_dispatch:
   schedule:
-    - cron: '2 * * * *'
+    # Owner uploads go directly to R2/D1; check for blank PDF-backed stories
+    # throughout the hour so they become editable and visible promptly.
+    - cron: '2,12,22,32,42,52 * * * *'
   push:
     branches: [main]
     paths:
