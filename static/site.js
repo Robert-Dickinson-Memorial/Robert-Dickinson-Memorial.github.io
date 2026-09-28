@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const message = document.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;
   let mirroredMedia = {};
+  const livePayloads = new Map();
+  const payloadSignatures = new Map();
   const objectUrl = (path, key) => {
     const resource = `${path}/${String(key).split("/").map(encodeURIComponent).join("/")}`;
     return mirroredMedia[resource] || apiUrl(resource);
@@ -37,14 +39,40 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function getJson(path) {
+    if (livePayloads.has(path)) return livePayloads.get(path);
     const snapshotPath = `/mirror${path}.json`;
     try {
       const response = await fetch(snapshotPath, { cache: "no-store" });
-      if (response.ok) return response.json();
+      if (response.ok) {
+        const snapshot = await response.json();
+        payloadSignatures.set(path, JSON.stringify(snapshot));
+        return snapshot;
+      }
     } catch {}
-    const response = await fetch(apiUrl(path));
+    const response = await fetch(apiUrl(path), { cache: "no-store" });
     if (!response.ok) throw new Error("Unable to load memorial updates.");
     return response.json();
+  }
+
+  async function refreshLive(path, renderers) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(apiUrl(path), { cache: "no-store", signal: controller.signal });
+      if (!response.ok) return;
+      const payload = await response.json();
+      const listKey = { "/api/memories": "memories", "/api/gallery": "gallery", "/api/events": "events" }[path];
+      if (listKey ? !Array.isArray(payload?.[listKey]) : !payload?.content || typeof payload.content !== "object") return;
+      const signature = JSON.stringify(payload);
+      if (signature === payloadSignatures.get(path)) return;
+      livePayloads.set(path, payload);
+      payloadSignatures.set(path, signature);
+      await Promise.allSettled(renderers.map((render) => render()));
+    } catch {
+      // Visitors who cannot reach the service continue to see the same-site mirror.
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   function applyPageCopy(copy) {
@@ -747,7 +775,31 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((response) => response.ok ? response.json() : { media: {} })
     .then((manifest) => { mirroredMedia = manifest.media || {}; })
     .catch(() => {});
-  mirrorReady.then(() => Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook()]));
+  const liveRefreshers = [
+    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook], true],
+    ["/api/events", [hydrateEvents], Boolean(document.querySelector("[data-events]"))],
+    ["/api/gallery", [hydrateGallery, hydrateMemoryBook], Boolean(document.querySelector("[data-gallery], [data-memory-book]"))],
+    ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-community-quotes], [data-memory-book]"))],
+  ];
+  let refreshInProgress = false;
+  let initialHydrated = false;
+  async function refreshPublicData() {
+    if (!initialHydrated || refreshInProgress || document.visibilityState === "hidden") return;
+    refreshInProgress = true;
+    try {
+      await Promise.allSettled(liveRefreshers.filter(([, , active]) => active).map(([path, renderers]) => refreshLive(path, renderers)));
+    } finally {
+      refreshInProgress = false;
+    }
+  }
+  mirrorReady.then(async () => {
+    await Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook()]);
+    initialHydrated = true;
+    refreshPublicData();
+  });
+  window.addEventListener("focus", refreshPublicData);
+  document.addEventListener("visibilitychange", refreshPublicData);
+  setInterval(refreshPublicData, 60000);
 
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();

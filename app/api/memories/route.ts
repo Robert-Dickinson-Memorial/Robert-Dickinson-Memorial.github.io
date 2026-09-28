@@ -30,7 +30,7 @@ export async function GET() {
     ).bind("approved").all();
     return publicJson({ memories: result.results });
   } catch {
-    return publicJson({ memories: [] });
+    return publicJson({ error: "Memories are temporarily unavailable." }, { status: 503 });
   }
 }
 
