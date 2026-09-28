@@ -40,7 +40,7 @@ export async function PATCH(request: Request) {
     const name = clean(body.name, 100);
     const relationship = clean(body.relationship, 120);
     const title = clean(body.title, 160);
-    const story = clean(body.story, 6000);
+    const story = clean(body.story, 60000);
     const socialUrlRaw = clean(body.socialUrl, 1000);
     const socialUrl = cleanPublicUrl(socialUrlRaw);
     if (socialUrlRaw && !socialUrl) {

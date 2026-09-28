@@ -1,0 +1,40 @@
+name: Extract shared-memory PDF text and previews
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/extract-memory-attachments.py'
+      - '.github/workflows/extract-memory-attachments.yml'
+permissions:
+  contents: read
+concurrency:
+  group: memorial-attachment-extraction
+  cancel-in-progress: false
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install extraction tools
+        run: |
+          python -m pip install PyMuPDF==1.28.2 Pillow==12.3.0
+          npm install --prefix "$RUNNER_TEMP/memorial-tools" wrangler@4.92.0
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Fill missing text and images in approved memories
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_D1_DATABASE_ID: ${{ vars.CLOUDFLARE_D1_DATABASE_ID }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+        run: |
+          export WRANGLER_BIN="$RUNNER_TEMP/memorial-tools/node_modules/.bin/wrangler"
+          python scripts/extract-memory-attachments.py
