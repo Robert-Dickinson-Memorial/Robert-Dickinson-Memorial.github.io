@@ -15,6 +15,7 @@ export const memories = sqliteTable("memories", {
   pdfName: text("pdf_name"),
   socialUrl: text("social_url"),
   status: text("status").notNull().default("pending"),
+  previewTokenHash: text("preview_token_hash"),
   consent: integer("consent", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull(),
 });

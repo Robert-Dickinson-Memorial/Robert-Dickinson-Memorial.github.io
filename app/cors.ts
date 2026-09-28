@@ -9,7 +9,7 @@ export function publicCorsHeaders(): Headers {
   return new Headers({
     "access-control-allow-origin": configuredOrigin(),
     "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-headers": "content-type, range, if-range",
+    "access-control-allow-headers": "content-type, authorization, range, if-range",
     "access-control-max-age": "86400",
     vary: "Origin",
   });

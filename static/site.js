@@ -852,9 +852,107 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("visibilitychange", refreshPublicData);
   setInterval(refreshPublicData, 60000);
 
+  const privatePreview = document.querySelector("[data-private-preview]");
+  let editAccess = null;
+  let previewBlobs = [];
+  const accessFromHash = () => {
+    const match = location.hash.match(/^#preview=(\d+)\.([a-f0-9]{64})$/);
+    return match ? { id: Number(match[1]), token: match[2] } : null;
+  };
+  const previewRequest = (path) => fetch(apiUrl(path), { headers: { authorization: `Bearer ${editAccess.token}` }, cache: "no-store" });
+  async function showPrivatePreview(scroll = false) {
+    if (!(privatePreview instanceof HTMLElement) || !editAccess) return;
+    previewBlobs.forEach(URL.revokeObjectURL);
+    previewBlobs = [];
+    const response = await previewRequest(`/api/memory-preview?id=${editAccess.id}`);
+    const data = await response.json();
+    if (!response.ok) {
+      privatePreview.hidden = false;
+      privatePreview.replaceChildren(node("p", { text: data.error || "Private preview unavailable." }));
+      editAccess = null;
+      return;
+    }
+    const memory = data.memory;
+    const heading = node("div", { className: "private-preview-heading" });
+    const copy = node("div");
+    copy.append(node("p", { className: "section-kicker", text: "Private preview · awaiting review" }),
+      node("h2", { text: "Your memory, as it will appear" }),
+      node("p", { text: "Only someone with your private link can see this preview. You can revise it until the owner reviews it." }));
+    heading.append(copy);
+    const card = node("article", { className: "memory-card private-preview-card" });
+    const byline = node("header", { className: "memory-author" });
+    byline.append(node("span", { className: "memory-author-mark", text: memory.name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join("") }),
+      node("div", { text: `${memory.name} · ${memory.relationship}` }));
+    card.append(byline);
+    const mediaKind = memory.videoName ? "video" : memory.photoName ? "photo" : null;
+    if (mediaKind) {
+      const mediaResponse = await previewRequest(`/api/memory-preview?id=${editAccess.id}&media=${mediaKind}`);
+      if (mediaResponse.ok) {
+        const url = URL.createObjectURL(await mediaResponse.blob());
+        previewBlobs.push(url);
+        card.append(mediaKind === "video"
+          ? node("video", { attrs: { src: url, controls: "", playsinline: "", preload: "metadata", class: "memory-video" } })
+          : node("img", { attrs: { src: url, alt: `Shared by ${memory.name}` } }));
+      }
+    }
+    card.append(node("h3", { text: memory.title }));
+    if (memory.story) card.append(node("p", { className: "memory-story", text: memory.story }));
+    const links = node("div", { className: "memory-attachments" });
+    if (memory.pdfName) {
+      const pdf = node("button", { className: "private-preview-link", text: `▤ Open PDF · ${memory.pdfName}`, attrs: { type: "button" } });
+      pdf.addEventListener("click", async () => {
+        const windowForPdf = window.open("", "_blank");
+        try {
+          const res = await previewRequest(`/api/memory-preview?id=${editAccess.id}&media=pdf`);
+          if (!res.ok) throw new Error("PDF preview unavailable.");
+          const url = URL.createObjectURL(await res.blob());
+          previewBlobs.push(url);
+          if (windowForPdf) windowForPdf.location.href = url;
+          else pdf.textContent = "Please allow popups to view the PDF";
+        } catch { if (windowForPdf) windowForPdf.close(); pdf.textContent = "PDF preview unavailable"; }
+      });
+      links.append(pdf);
+    }
+    if (memory.socialUrl) links.append(node("a", { text: "↗ View shared public post", attrs: { href: memory.socialUrl, target: "_blank", rel: "noopener noreferrer nofollow ugc" } }));
+    if (links.childNodes.length) card.append(links);
+    const actions = node("div", { className: "private-preview-actions" });
+    const revise = node("button", { text: "Edit this memory", attrs: { type: "button" } });
+    revise.addEventListener("click", () => {
+      if (!(form instanceof HTMLFormElement)) return;
+      for (const key of ["name", "relationship", "title", "story", "socialUrl"]) {
+        const field = form.elements.namedItem(key);
+        if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) field.value = memory[key] || "";
+      }
+      const consent = form.elements.namedItem("consent");
+      if (consent instanceof HTMLInputElement) consent.checked = true;
+      if (sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
+      const button = form.querySelector("button[type=submit]");
+      if (button) button.textContent = "Save revised memory →";
+      form.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    const privateLink = node("button", { text: "Copy private edit link", attrs: { type: "button" } });
+    privateLink.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(`${location.origin}/memories/#preview=${editAccess.id}.${editAccess.token}`); privateLink.textContent = "Private link copied"; }
+      catch { privateLink.textContent = "Copy the address in your browser to return to this preview"; }
+    });
+    actions.append(revise, privateLink);
+    privatePreview.replaceChildren(heading, card, actions,
+      node("p", { className: "private-preview-note", text: "Keep your private link. After approval, your memory will appear below with the community stories." }));
+    privatePreview.hidden = false;
+    if (sharePanel instanceof HTMLDetailsElement) sharePanel.open = false;
+    if (scroll) privatePreview.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  editAccess = accessFromHash();
+  if (editAccess) showPrivatePreview();
+  window.addEventListener("hashchange", () => {
+    const access = accessFromHash();
+    if (access) { editAccess = access; showPrivatePreview(true); }
+  });
+
   if (form instanceof HTMLFormElement) form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const formData = new FormData(form);
+    if (editAccess) { formData.set("editId", String(editAccess.id)); formData.set("editToken", editAccess.token); }
     const story = String(formData.get("story") || "").trim();
     const socialUrl = String(formData.get("socialUrl") || "").trim();
     const video = formData.get("video");
@@ -871,11 +969,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: formData });
       const responseData = await response.json();
       if (!response.ok) throw new Error(responseData.error || "Unable to submit this memory.");
-      form.reset(); showMessage(editableCopy["memories.successMessage"] || "Thank you. Your memory has been received for review.", true);
+      editAccess = { id: responseData.id, token: responseData.editToken };
+      history.replaceState(null, "", `#preview=${editAccess.id}.${editAccess.token}`);
+      form.reset();
+      if (message instanceof HTMLElement) message.hidden = true;
+      await showPrivatePreview(true);
     } catch (error) {
       showMessage(error instanceof Error ? error.message : (editableCopy["memories.formError"] || "Please try again."));
     } finally {
-      if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = `${editableCopy["memories.formSubmit"] || "Submit for review"} →`; }
+      if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = editAccess ? "Save revised memory →" : `${editableCopy["memories.formSubmit"] || "Submit for review"} →`; }
     }
   });
 });

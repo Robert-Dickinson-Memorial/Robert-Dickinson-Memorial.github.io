@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import { sendReviewNotification } from "../../moderation";
 import { isAllowedPublicOrigin, publicJson, publicOptions } from "../../cors";
+import { pendingMemory, tokenHash } from "../../memory-preview";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,7 @@ export async function POST(request: Request) {
     if (!env.DB) throw new Error("The memorial archive is temporarily unavailable.");
     const contentType = request.headers.get("content-type") || "";
     let name = "", relationship = "", email = "", title = "", story = "", website = "", socialUrl = "", socialUrlRaw = "";
+    let editId = 0, editToken = "";
     let consent = false;
     let photo: File | null = null;
     let pdf: File | null = null;
@@ -72,6 +74,8 @@ export async function POST(request: Request) {
       socialUrlRaw = clean(form.get("socialUrl"), 1000);
       socialUrl = cleanPublicUrl(socialUrlRaw);
       consent = form.get("consent") === "on";
+      editId = Number(form.get("editId") || 0);
+      editToken = clean(form.get("editToken"), 64);
       const candidate = form.get("photo");
       photo = candidate instanceof File && candidate.size > 0 ? candidate : null;
       const videoCandidate = form.get("video");
@@ -92,6 +96,9 @@ export async function POST(request: Request) {
 
     if (website) return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
 
+    const previous = editId || editToken ? await pendingMemory(editId, editToken) : null;
+    if ((editId || editToken) && !previous) return publicJson({ error: "This private edit link is no longer available." }, { status: 403 });
+
     if (name.length < 2 || relationship.length < 2 || title.length < 2) {
       return publicJson({ error: "Please complete your name, connection, and title." }, { status: 400 });
     }
@@ -101,7 +108,7 @@ export async function POST(request: Request) {
     if (story && story.length < 20) {
       return publicJson({ error: "Please write at least 20 characters, or leave the story field blank and share a PDF, video, or public post instead." }, { status: 400 });
     }
-    if (!story && !pdf && !video && !socialUrl) {
+    if (!story && !pdf && !video && !socialUrl && !previous?.pdfKey && !previous?.videoKey) {
       return publicJson({ error: "Please share your story as written text, a PDF, video, or a public social-media link." }, { status: 400 });
     }
     if (!consent) {
@@ -159,11 +166,26 @@ export async function POST(request: Request) {
         videoName = clean(video.name, 240);
         await env.BUCKET.put(videoKey, video.stream(), { httpMetadata: { contentType: /\.webm$/i.test(video.name) ? "video/webm" : "video/mp4" } });
       }
-      await env.DB.prepare(
-        `INSERT INTO memories
-         (name, relationship, email, title, story, photo_key, photo_name, pdf_key, pdf_name, video_key, video_name, social_url, status, consent, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      ).bind(name, relationship, email || null, title, story, photoKey, photoName, pdfKey, pdfName, videoKey, videoName, socialUrl || null, "pending", 1, new Date().toISOString()).run();
+      if (previous) {
+        const result = await env.DB.prepare(
+          `UPDATE memories SET name = ?, relationship = ?, title = ?, story = ?, social_url = ?,
+            photo_key = ?, photo_name = ?, pdf_key = ?, pdf_name = ?, video_key = ?, video_name = ?
+           WHERE id = ? AND status = 'pending' AND preview_token_hash = ?`
+        ).bind(name, relationship, title, story, socialUrl || null,
+          photoKey || previous.photoKey, photoName || previous.photoName,
+          pdfKey || previous.pdfKey, pdfName || previous.pdfName,
+          videoKey || previous.videoKey, videoName || previous.videoName,
+          editId, await tokenHash(editToken)).run();
+        if (!result.meta.changes) throw new Error("This submission was reviewed while you edited it. Please reload its preview.");
+      } else {
+        editToken = [...crypto.getRandomValues(new Uint8Array(32))].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+        const result = await env.DB.prepare(
+          `INSERT INTO memories
+           (name, relationship, email, title, story, photo_key, photo_name, pdf_key, pdf_name, video_key, video_name, social_url, status, consent, created_at, preview_token_hash)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(name, relationship, email || null, title, story, photoKey, photoName, pdfKey, pdfName, videoKey, videoName, socialUrl || null, "pending", 1, new Date().toISOString(), await tokenHash(editToken)).run();
+        editId = Number(result.meta.last_row_id);
+      }
     } catch (error) {
       if (photoKey && env.BUCKET) await env.BUCKET.delete(photoKey);
       if (pdfKey && env.BUCKET) await env.BUCKET.delete(pdfKey);
@@ -171,18 +193,28 @@ export async function POST(request: Request) {
       throw error;
     }
 
+    if (previous && env.BUCKET) {
+      try {
+        if (photoKey && previous.photoKey && previous.photoKey !== photoKey) await env.BUCKET.delete(previous.photoKey);
+        if (pdfKey && previous.pdfKey && previous.pdfKey !== pdfKey) await env.BUCKET.delete(previous.pdfKey);
+        if (videoKey && previous.videoKey && previous.videoKey !== videoKey) await env.BUCKET.delete(previous.videoKey);
+      } catch (cleanupError) { console.warn("Old preview attachment cleanup failed", cleanupError); }
+    }
+
     try {
-      await sendReviewNotification({
-        name,
-        relationship,
-        title,
-        reviewUrl: new URL("/review", request.url).toString(),
-      });
+      if (!previous) {
+        await sendReviewNotification({
+          name,
+          relationship,
+          title,
+          reviewUrl: new URL("/review", request.url).toString(),
+        });
+      }
     } catch (notificationError) {
       console.warn("Review notification could not be sent", notificationError);
     }
 
-    return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
+    return publicJson({ ok: true, status: "pending_review", id: editId, editToken }, { status: previous ? 200 : 201, headers: { "cache-control": "no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to save this memory.";
     return publicJson({ error: message }, { status: 500 });
