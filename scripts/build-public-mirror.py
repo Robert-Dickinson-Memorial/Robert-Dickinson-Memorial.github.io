@@ -1,53 +1,55 @@
 #!/usr/bin/env python3
-"""Publish only approved, public memorial data and media beside the static site."""
+"""Mirror approved public records and referenced files into the Pages publication."""
 
 import concurrent.futures
 import hashlib
 import json
 import os
+import re
+import subprocess
 from pathlib import Path
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 
-API_BASE = os.environ["MEMORIAL_API_BASE"].rstrip("/")
 OUTPUT = Path(os.environ.get("MEMORIAL_SITE_DIR", "_site")) / "mirror"
-DATA = {
-    "/api/content": "content",
-    "/api/events": "events",
-    "/api/gallery": "gallery",
-    "/api/memories": "memories",
+QUERIES = {
+    "site_content": "SELECT key, value FROM site_content",
+    "events": """SELECT id, title, start_at AS startAt, end_at AS endAt, location, description,
+                 link_label AS linkLabel, link_url AS linkUrl FROM events
+                 WHERE published = 1 ORDER BY start_at ASC, id ASC""",
+    "gallery": """SELECT id, kind, title, caption, object_key AS objectKey,
+                  external_url AS externalUrl, created_at AS createdAt FROM gallery_items
+                  WHERE published = 1 ORDER BY created_at DESC, id DESC""",
+    "memories": """SELECT id, name, relationship, title, story, photo_key AS photoKey,
+                   video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey,
+                   social_url AS socialUrl, created_at AS createdAt FROM memories
+                   WHERE status = 'approved' ORDER BY created_at DESC, id DESC LIMIT 50""",
 }
-MIME_EXTENSIONS = {
-    "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp",
-    "video/mp4": ".mp4", "video/webm": ".webm", "application/pdf": ".pdf",
-}
 
 
-def public_url(path):
-    return API_BASE + path
+def query(sql):
+    endpoint = (f"https://api.cloudflare.com/client/v4/accounts/{os.environ['CLOUDFLARE_ACCOUNT_ID']}"
+                f"/d1/database/{os.environ['CLOUDFLARE_D1_DATABASE_ID']}/query")
+    request = Request(endpoint, data=json.dumps({"sql": sql}).encode(), headers={
+        "Authorization": "Bearer " + os.environ["CLOUDFLARE_API_TOKEN"],
+        "Content-Type": "application/json",
+    })
+    with urlopen(request, timeout=60) as response:
+        payload = json.load(response)
+    if not payload.get("success") or any(not result.get("success", True) for result in payload.get("result", [])):
+        raise RuntimeError("Public snapshot database query failed")
+    return payload["result"][0]["results"]
 
 
-def fetch_json(path):
-    with urlopen(Request(public_url(path), headers={"accept": "application/json"}), timeout=35) as response:
-        if response.status != 200:
-            raise RuntimeError(f"Public data endpoint failed: {path} ({response.status})")
-        return json.load(response)
-
-
-def safe_key(key):
-    if not isinstance(key, str) or not key or any(part in ("", ".", "..") for part in key.split("/")):
-        raise ValueError("Invalid public media key")
-    return "/".join(quote(part, safe="") for part in key.split("/"))
-
-
-def media_requests(payloads):
-    content = payloads["content"]["content"]
-    requests = set()
+def public_keys(content, gallery, memories):
+    entries = set()
 
     def add(route, key):
         if key:
-            requests.add((route, safe_key(key)))
+            if not isinstance(key, str) or any(part in ("", ".", "..") for part in key.split("/")):
+                raise ValueError("Invalid public media key")
+            entries.add((route, key))
 
     for asset in content.get("siteAssets", {}).values():
         if isinstance(asset, dict):
@@ -56,56 +58,76 @@ def media_requests(payloads):
         add("/api/life-photos", photo.get("objectKey"))
     for chapter in content.get("legacyChapters", []):
         add("/api/chapter-photos", (chapter.get("photo") or {}).get("objectKey"))
-    for item in payloads["gallery"]["gallery"]:
+    for item in gallery:
         if item.get("kind") == "image":
             add("/api/gallery/photos", item.get("objectKey"))
-    for memory in payloads["memories"]["memories"]:
+    for memory in memories:
         add("/api/photos", memory.get("photoKey"))
         add("/api/memory-videos", memory.get("videoKey"))
         add("/api/memory-files", memory.get("pdfKey"))
-    return sorted(requests)
+    return sorted(entries)
+
+
+def extension(path):
+    with path.open("rb") as file:
+        header = file.read(16)
+    if header.startswith(b"\xff\xd8\xff"):
+        return ".jpg"
+    if header.startswith(b"\x89PNG\r\n\x1a\n"):
+        return ".png"
+    if header.startswith(b"RIFF") and header[8:12] == b"WEBP":
+        return ".webp"
+    if header.startswith(b"%PDF-"):
+        return ".pdf"
+    if header[4:8] == b"ftyp":
+        return ".mp4"
+    if header.startswith(b"\x1a\x45\xdf\xa3"):
+        return ".webm"
+    raise RuntimeError("Unsupported public media format")
 
 
 def copy_media(entry):
     route, key = entry
-    source = f"{route}/{key}"
-    with urlopen(Request(public_url(source)), timeout=90) as response:
-        mime = response.headers.get_content_type()
-        extension = MIME_EXTENSIONS.get(mime)
-        if response.status != 200 or not extension:
-            raise RuntimeError(f"Public media unavailable or invalid: {route} ({response.status}, {mime})")
-        digest = hashlib.sha256(source.encode()).hexdigest()[:24]
-        filename = f"{digest}{extension}"
-        destination = OUTPUT / "media" / filename
-        limit = 55 * 1024 * 1024
-        count = 0
-        with destination.open("wb") as stream:
-            while chunk := response.read(1024 * 1024):
-                count += len(chunk)
-                if count > limit:
-                    raise RuntimeError(f"Public media exceeds snapshot limit: {route}")
-                stream.write(chunk)
-        if not count:
-            raise RuntimeError(f"Public media is empty: {route}")
-    return source, f"/mirror/media/{filename}"
+    resource = f"{route}/{'/'.join(quote(part, safe='') for part in key.split('/'))}"
+    digest = hashlib.sha256(resource.encode()).hexdigest()[:24]
+    temporary = OUTPUT / "media" / f"{digest}.download"
+    bucket = os.environ["CLOUDFLARE_R2_BUCKET_NAME"]
+    subprocess.run([os.environ["WRANGLER_BIN"], "r2", "object", "get", f"{bucket}/{key}",
+                    "--remote", "--file", str(temporary)], check=True, capture_output=True, timeout=180)
+    if not temporary.is_file() or not temporary.stat().st_size or temporary.stat().st_size > 55 * 1024 * 1024:
+        raise RuntimeError(f"Invalid public media size for {route}")
+    suffix = extension(temporary)
+    filename = f"{digest}{suffix}"
+    temporary.rename(OUTPUT / "media" / filename)
+    return resource, f"/mirror/media/{filename}"
+
+
+def gallery_year(item):
+    for text in (item["title"], item.get("caption") or ""):
+        match = re.search(r"(?:^|[^\d])((?:18|19|20|21)\d{2})(?!\d)", text)
+        if match:
+            return int(match.group(1))
+    return None
 
 
 def main():
-    if not API_BASE.startswith("https://"):
-        raise ValueError("MEMORIAL_API_BASE must be HTTPS")
     (OUTPUT / "api").mkdir(parents=True, exist_ok=True)
     (OUTPUT / "media").mkdir(parents=True, exist_ok=True)
-    payloads = {name: fetch_json(path) for path, name in DATA.items()}
-    for name, key in (("content", "content"), ("events", "events"), ("gallery", "gallery"), ("memories", "memories")):
-        if not isinstance(payloads[name].get(key), (dict if name == "content" else list)):
-            raise RuntimeError(f"Malformed public response: {name}")
-        (OUTPUT / "api" / f"{name}.json").write_text(json.dumps(payloads[name], ensure_ascii=False), encoding="utf-8")
+    rows = {name: query(sql) for name, sql in QUERIES.items()}
+    raw = OUTPUT / "site-content-rows.json"
+    raw.write_text(json.dumps(rows["site_content"], ensure_ascii=False), encoding="utf-8")
+    subprocess.run(["node", "scripts/render-public-content.mjs", str(raw), str(OUTPUT / "api" / "content.json")], check=True)
+    raw.unlink()
+    content = json.loads((OUTPUT / "api" / "content.json").read_text(encoding="utf-8"))["content"]
+    gallery = sorted(rows["gallery"], key=lambda item: (gallery_year(item) is None, gallery_year(item) or 0, item["id"]))
+    memories = rows["memories"]
+    for name, value in (("events", rows["events"]), ("gallery", gallery), ("memories", memories)):
+        (OUTPUT / "api" / f"{name}.json").write_text(json.dumps({name: value}, ensure_ascii=False), encoding="utf-8")
 
-    entries = media_requests(payloads)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-        media = dict(pool.map(copy_media, entries))
-    (OUTPUT / "manifest.json").write_text(json.dumps({"media": media}, ensure_ascii=False), encoding="utf-8")
-    print(f"Mirrored {len(payloads['gallery']['gallery'])} gallery items, {len(payloads['memories']['memories'])} approved memories, and {len(media)} public media files.")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        media = dict(pool.map(copy_media, public_keys(content, gallery, memories)))
+    (OUTPUT / "manifest.json").write_text(json.dumps({"media": media}), encoding="utf-8")
+    print(f"Mirrored {len(gallery)} gallery items, {len(memories)} approved memories, and {len(media)} public media files.")
 
 
 if __name__ == "__main__":
