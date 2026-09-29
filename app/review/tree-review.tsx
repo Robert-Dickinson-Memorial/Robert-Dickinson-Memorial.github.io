@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export type TreeDedication = { id: number; name: string; email: string | null; project: string; createdAt: string };
+export type TreeDedication = { id: number; name: string; email: string | null; project: string; treeCount: number; createdAt: string };
 
 export default function TreeReview({ pending, approved }: { pending: TreeDedication[]; approved: TreeDedication[] }) {
   const [queue, setQueue] = useState(pending);
@@ -28,11 +28,11 @@ export default function TreeReview({ pending, approved }: { pending: TreeDedicat
 
   return <section className="tree-review" aria-labelledby="tree-review-title">
     <h2 id="tree-review-title">Tree dedication reports</h2>
-    <p>These are self-reported gifts through outside organizations. Approve only a plausible entry; the site counts each approved name once. Names and emails are never shown publicly.</p>
+    <p>These are self-reported gifts through outside organizations. Approve only a plausible entry. The public homepage adds the approved tree quantities into one lifetime total, regardless of provider; names and emails are never shown publicly.</p>
     {error && <p role="alert" className="review-error">{error}</p>}
     <h3>Waiting for review ({queue.length})</h3>
-    {queue.length ? <div className="tree-review-list">{queue.map((item) => <article key={item.id}><strong>{item.name}</strong><span>{item.project} · {new Date(item.createdAt).toLocaleDateString()}</span>{item.email && <small>{item.email}</small>}<div><button disabled={busy === item.id} onClick={() => update(item, "approve")}>Approve</button><button disabled={busy === item.id} onClick={() => update(item, "reject")}>Reject</button></div></article>)}</div> : <p>No tree dedications waiting for review.</p>}
-    <h3>Approved ({published.length} reports)</h3>
-    {published.length ? <div className="tree-review-list">{published.map((item) => <article key={item.id}><strong>{item.name}</strong><span>{item.project}</span>{item.email && <small>{item.email}</small>}<div><button disabled={busy === item.id} onClick={() => update(item, "delete")}>Remove</button></div></article>)}</div> : <p>No dedications have been recorded yet.</p>}
+    {queue.length ? <div className="tree-review-list">{queue.map((item) => <article key={item.id}><strong>{item.name}</strong><span>{item.project} · {item.treeCount} {item.treeCount === 1 ? "tree" : "trees"} · {new Date(item.createdAt).toLocaleDateString()}</span>{item.email && <small>{item.email}</small>}<div><button disabled={busy === item.id} onClick={() => update(item, "approve")}>Approve</button><button disabled={busy === item.id} onClick={() => update(item, "reject")}>Reject</button></div></article>)}</div> : <p>No tree dedications waiting for review.</p>}
+    <h3>Approved ({published.length} reports · ${published.reduce((sum, item) => sum + item.treeCount, 0)} trees)</h3>
+    {published.length ? <div className="tree-review-list">{published.map((item) => <article key={item.id}><strong>{item.name}</strong><span>{item.project} · {item.treeCount} {item.treeCount === 1 ? "tree" : "trees"}</span>{item.email && <small>{item.email}</small>}<div><button disabled={busy === item.id} onClick={() => update(item, "delete")}>Remove</button></div></article>)}</div> : <p>No dedications have been recorded yet.</p>}
   </section>;
 }
