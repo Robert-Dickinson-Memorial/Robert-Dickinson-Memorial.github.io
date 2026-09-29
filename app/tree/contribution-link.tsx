@@ -20,7 +20,10 @@ export default function ContributionLink({
     target="_blank"
     rel="noopener noreferrer"
     data-contribution-route={route}
-    onClick={() => window.sessionStorage.setItem("livingTributeRoute", route)}
+    onClick={() => {
+      window.sessionStorage.setItem("livingTributeRoute", route);
+      window.dispatchEvent(new CustomEvent("livingTributeRouteSelected", { detail: route }));
+    }}
   >
     {children} <ExternalLink size={14} aria-hidden="true" />
   </a>;
