@@ -2039,7 +2039,7 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 .tree-dedication-report > p:not(.section-kicker) { color: #50616a; line-height: 1.6; max-width: 780px; }
 .tree-dedication-report h2 { font-family: Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.7rem); margin: 10px 0 16px; }
 .tree-dedication-form { max-width: 980px; margin-top: 28px; }
-.tree-dedication-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.tree-dedication-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .tree-dedication-fields label { display: grid; font-size: .85rem; font-weight: 700; gap: 8px; }
 .tree-dedication-fields small { font-weight: 400; }
 .tree-dedication-fields input, .tree-dedication-fields select { background: white; border: 1px solid #bea985; border-radius: 4px; color: #142b3b; font: inherit; min-width: 0; padding: 13px 11px; width: 100%; }
@@ -2049,6 +2049,7 @@ main :is(h1, h2, h3, h4, .wordmark, .hero-intro, .home-story-copy .lead, .story-
 .tree-dedication-form button:disabled { cursor: wait; opacity: .65; }
 .tree-dedication-message { color: #1b4b41; margin-top: 15px; }
 .tree-dedication-form .form-honeypot { left: -9999px; position: absolute; }
+@media (max-width: 900px) { .tree-dedication-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 700px) { .tree-dedication-fields { grid-template-columns: 1fr; } .tree-dedication-report { padding-block: 45px; } }
 .tree-review { background: #f2ede3; border-radius: 8px; margin: 50px auto; max-width: 1100px; padding: 30px; }
 .tree-review h2 { font-family: Georgia, serif; font-size: 2rem; }
