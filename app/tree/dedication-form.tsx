@@ -17,14 +17,14 @@ export default function DedicationForm() {
       const response = await fetch("/api/participation", {
         method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          name: data.get("name"), email: data.get("email"), project: data.get("project"),
+          name: data.get("name"), email: data.get("email"), project: data.get("project"), treeCount: data.get("treeCount"),
           confirmed: data.get("confirmed") === "on", website: data.get("website"),
         }),
       });
       const result = await response.json() as { error?: string };
       if (!response.ok) throw new Error(result.error || "Unable to record the dedication.");
       form.reset();
-      setMessage("Thank you. Your dedication has been submitted for review. The contributor count will update after approval.");
+      setMessage("Thank you. Your dedication has been submitted for review. The lifetime tree total will update after approval.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
     finally { setBusy(false); }
   }
@@ -33,6 +33,7 @@ export default function DedicationForm() {
     <div className="tree-dedication-fields">
       <label>Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" /></label>
       <label>Project supported<select name="project" required defaultValue=""><option value="" disabled>Choose a project</option>{projects.map((project) => <option key={project}>{project}</option>)}</select></label>
+      <label>Number of trees<input name="treeCount" type="number" min={1} max={10000} step={1} defaultValue={1} required inputMode="numeric" /></label>
       <label>Email <small>(optional, kept private)</small><input name="email" type="email" maxLength={200} autoComplete="email" /></label>
     </div>
     <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I made a dedication through the selected organization in Robert’s memory.</label>
