@@ -27,6 +27,7 @@ export const treeDedications = sqliteTable("tree_dedications", {
   name: text("name").notNull(),
   email: text("email"),
   project: text("project").notNull(),
+  treeCount: integer("tree_count").notNull().default(1),
   status: text("status").notNull().default("pending"),
   createdAt: text("created_at").notNull(),
 }, (table) => [index("idx_tree_dedications_status").on(table.status)]);
