@@ -3,18 +3,35 @@ import { isAllowedPublicOrigin, publicJson, publicOptions } from "../../cors";
 
 export const dynamic = "force-dynamic";
 
-const projects = new Set(["Chippewa National Forest", "Amazon rainforest", "Arizona", "Georgia", "Texas", "Colorado", "California", "Massachusetts & New England"]);
+const contributionRoutes = {
+  "chippewa-arbor-day": { project: "Chippewa National Forest", provider: "Arbor Day Foundation", type: "tree", basis: "provider-reported exact tree quantity" },
+  "chippewa-living-tribute": { project: "Chippewa National Forest", provider: "A Living Tribute", type: "tree", basis: "provider-reported exact tree quantity" },
+  "chippewa-usda": { project: "Chippewa National Forest", provider: "USDA Forest Service Plant-A-Tree", type: "restoration", basis: "restoration gift; provider does not assign an exact tree quantity" },
+  "amazon-tree-nation": { project: "Amazon rainforest", provider: "Tree-Nation / Rioterra", type: "tree", basis: "provider-reported exact tree quantity" },
+  "amazon-conservation": { project: "Amazon rainforest", provider: "Amazon Conservation", type: "restoration", basis: "restoration gift; no exact tree quantity assigned" },
+  "arizona-living-tribute": { project: "Arizona", provider: "A Living Tribute", type: "tree", basis: "provider-reported exact tree quantity" },
+  "georgia-living-tribute": { project: "Georgia", provider: "A Living Tribute", type: "tree", basis: "provider-reported exact tree quantity" },
+  "texas-living-tribute": { project: "Texas", provider: "A Living Tribute", type: "tree", basis: "provider-reported exact tree quantity" },
+  "colorado-csfs": { project: "Colorado", provider: "Colorado State Forest Service", type: "tree", basis: "official Restoring Colorado's Forests Fund conversion: $2 funds one seedling" },
+  "california-living-tribute": { project: "California", provider: "A Living Tribute", type: "tree", basis: "provider-reported exact tree quantity" },
+  "massachusetts-esplanade": { project: "Massachusetts & New England", provider: "Esplanade Association", type: "tree", basis: "one new tree sponsorship" },
+  "new-england-neff": { project: "Massachusetts & New England", provider: "New England Forestry Foundation", type: "restoration", basis: "regional forest restoration gift; no exact tree quantity assigned" },
+} as const;
+
+type ContributionRoute = keyof typeof contributionRoutes;
 
 export async function GET() {
   try {
     if (!env.DB) throw new Error("Database unavailable");
-    const [memory, tree] = await Promise.all([
+    const [memory, tree, restoration] = await Promise.all([
       env.DB.prepare("SELECT COUNT(*) AS total FROM memories WHERE status = 'approved'").first<{ total: number }>(),
-      env.DB.prepare("SELECT COALESCE(SUM(tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved'").first<{ total: number }>(),
+      env.DB.prepare("SELECT COALESCE(SUM(reported_tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1").first<{ total: number }>(),
+      env.DB.prepare("SELECT COUNT(*) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'restoration' AND payment_confirmed = 1").first<{ total: number }>(),
     ]);
     return publicJson({
       memories: Number(memory?.total ?? 0),
       trees: Number(tree?.total ?? 0),
+      restorationGifts: Number(restoration?.total ?? 0),
     });
   } catch {
     return publicJson({ error: "Participation totals are temporarily unavailable." }, { status: 503 });
@@ -31,23 +48,43 @@ export async function POST(request: Request) {
     const body = await request.json() as Record<string, unknown>;
     const name = typeof body.name === "string" ? body.name.trim().slice(0, 100) : "";
     const email = typeof body.email === "string" ? body.email.trim().slice(0, 200) : "";
-    const project = typeof body.project === "string" ? body.project.trim() : "";
+    const routeId = typeof body.route === "string" ? body.route.trim() as ContributionRoute : "" as ContributionRoute;
+    const route = contributionRoutes[routeId];
+    const confirmationRef = typeof body.confirmationRef === "string" ? body.confirmationRef.trim().slice(0, 120) : "";
     const treeCount = Number(body.treeCount);
+
     if (body.website) return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
+
+    const treeQuantityValid = route?.type === "restoration" || (Number.isSafeInteger(treeCount) && treeCount >= 1 && treeCount <= 10000);
     if (
       name.length < 2 ||
-      !projects.has(project) ||
-      !Number.isSafeInteger(treeCount) ||
-      treeCount < 1 ||
-      treeCount > 10000 ||
+      !route ||
+      !treeQuantityValid ||
       (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ||
       body.confirmed !== true
     ) {
-      return publicJson({ error: "Enter your name, project, and number of trees, and confirm that you made the dedication through the provider." }, { status: 400 });
+      return publicJson({ error: "Enter your name and contribution, confirm that payment completed successfully, and report the provider's tree quantity when applicable." }, { status: 400 });
     }
-    await env.DB.prepare("INSERT INTO tree_dedications (name, email, project, tree_count, status, created_at) VALUES (?, ?, ?, ?, 'pending', ?)")
-      .bind(name, email || null, project, treeCount, new Date().toISOString()).run();
-    return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
+
+    const reportedTreeCount = route.type === "tree" ? treeCount : null;
+    const legacyTreeCount = route.type === "tree" ? treeCount : 1;
+
+    await env.DB.prepare(
+      "INSERT INTO tree_dedications (name, email, project, provider, contribution_type, tree_count, reported_tree_count, count_basis, confirmation_ref, payment_confirmed, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'pending', ?)"
+    ).bind(
+      name,
+      email || null,
+      route.project,
+      route.provider,
+      route.type,
+      legacyTreeCount,
+      reportedTreeCount,
+      route.basis,
+      confirmationRef || null,
+      new Date().toISOString()
+    ).run();
+
+    return publicJson({ ok: true, status: "pending_review", contributionType: route.type }, { status: 201 });
   } catch {
     return publicJson({ error: "Unable to record the dedication. Please try again." }, { status: 400 });
   }
