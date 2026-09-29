@@ -12,7 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-contribution-route]").forEach((link) => {
     link.addEventListener("click", () => {
       const route = link.getAttribute("data-contribution-route");
-      if (route) sessionStorage.setItem("livingTributeRoute", route);
+      if (route) {
+        sessionStorage.setItem("livingTributeRoute", route);
+        window.dispatchEvent(new CustomEvent("livingTributeRouteSelected", { detail: route }));
+      }
     });
   });
   const sharePanel = document.querySelector("details.memory-share-panel");
@@ -838,6 +841,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const savedRoute = sessionStorage.getItem("livingTributeRoute");
       if (savedRoute && Array.from(routeSelect.options).some((option) => option.value === savedRoute)) routeSelect.value = savedRoute;
       routeSelect.addEventListener("change", updateTreeRoute);
+      window.addEventListener("livingTributeRouteSelected", (event) => {
+        const route = event.detail;
+        if (typeof route === "string" && Array.from(routeSelect.options).some((option) => option.value === route)) {
+          routeSelect.value = route;
+          updateTreeRoute();
+        }
+      });
       updateTreeRoute();
     }
 
