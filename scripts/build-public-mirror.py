@@ -25,8 +25,11 @@ QUERIES = {
     "memories": """SELECT id, name, relationship, title, story, photo_key AS photoKey,
                    video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey,
                    social_url AS socialUrl, created_at AS createdAt FROM memories
-                   WHERE status = 'approved' ORDER BY CASE WHEN id = 11 THEN 0 ELSE 1 END,
-                   created_at DESC, id DESC LIMIT 50""",
+                   WHERE status = 'approved' ORDER BY CASE
+                     WHEN id = 11 THEN 0
+                     WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
+                     ELSE 2 END,
+                     created_at ASC, id ASC""",
     "participation": """SELECT 'memories' AS category, name FROM memories WHERE status = 'approved' AND trim(name) <> ''
                     UNION ALL
                     SELECT 'trees' AS category, name FROM tree_dedications WHERE status = 'approved' AND trim(name) <> ''""",

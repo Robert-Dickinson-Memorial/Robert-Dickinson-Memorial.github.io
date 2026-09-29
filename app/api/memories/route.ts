@@ -28,7 +28,11 @@ export async function GET() {
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
               created_at AS createdAt
        FROM memories WHERE status = ?
-       ORDER BY CASE WHEN id = 11 THEN 0 ELSE 1 END, created_at DESC, id DESC LIMIT 50`
+       ORDER BY CASE
+         WHEN id = 11 THEN 0
+         WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
+         ELSE 2 END,
+         created_at ASC, id ASC`
     ).bind("approved").all();
     return publicJson({ memories: result.results });
   } catch {

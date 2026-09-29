@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, FileText, Quote } from "lucide-react";
 
-type Memory = { id: number; name: string; relationship: string; title: string; story: string; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
+type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
+
+function memoryPriority(memory: Memory) {
+  if (memory.id === 11) return 0;
+  return /^(haishan|hanshan) chen$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 1 : 2;
+}
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -30,7 +35,8 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
 
   return (
     <div className="memory-grid">
-      {[...memories].sort((a, b) => Number(b.id === 11) - Number(a.id === 11)).map((memory) => (
+      {[...memories].sort((a, b) => memoryPriority(a) - memoryPriority(b) ||
+        (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
           <header className="memory-author">
             <span className="memory-author-mark" aria-hidden="true">{memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("")}</span>

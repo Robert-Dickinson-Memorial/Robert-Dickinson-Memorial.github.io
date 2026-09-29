@@ -466,10 +466,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!memories.length) {
         wallTarget.replaceChildren(node("p", { className: "memories-empty", text: copy["memories.emptyText"] || "Approved community memories will appear here." }));
       } else {
+        const priority = (memory) => memory.id === 11 ? 0 :
+          /^(haishan|hanshan) chen$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 1 : 2;
         const orderedMemories = [...memories].sort((a, b) =>
-          Number(b.id === 11) - Number(a.id === 11) ||
-          String(b.createdAt || "").localeCompare(String(a.createdAt || "")) ||
-          Number(b.id || 0) - Number(a.id || 0));
+          priority(a) - priority(b) ||
+          String(a.createdAt || "").localeCompare(String(b.createdAt || "")) ||
+          Number(a.id || 0) - Number(b.id || 0));
         wallTarget.replaceChildren(...orderedMemories.map((memory) => {
           const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
           const author = node("header", { className: "memory-author" });
