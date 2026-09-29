@@ -2893,6 +2893,19 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 }
 @media (max-width: 380px) { .site-nav .wordmark { font-size: .86rem; } }
 
+/* Navigation labels should read clearly without crowding the shorter desktop widths. */
+@media (min-width: 1101px) {
+  .site-nav .nav-links { font-size: 1.02rem; gap: clamp(12px, 1.25vw, 20px); }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .site-nav .nav-links { font-size: .94rem; gap: 10px; }
+  .site-nav .nav-links a.nav-memory-cta { padding: 8px 10px; }
+}
+@media (max-width: 900px) {
+  .mobile-nav > summary { font-size: 1rem; }
+  .mobile-nav-panel a, html[data-page="life"] .mobile-nav-panel a, .life-page-active .mobile-nav-panel a { font-size: 1.12rem; }
+}
+
 /* Publication information stays legible on a phone; decorative title cards stay small. */
 .landmark-paper-card > img { height: 205px; aspect-ratio: auto; object-fit: contain; background: #ede8dc; }
 .landmark-paper-caption .landmark-paper-year { color: #7a673d; font-size: .71rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
