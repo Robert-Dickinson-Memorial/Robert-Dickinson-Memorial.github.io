@@ -22,7 +22,7 @@ export async function DELETE(request: Request) {
   if (!env.DB) return Response.json({ error: "The memorial archive is unavailable." }, { status: 503 });
   const id = Number(new URL(request.url).searchParams.get("id"));
   if (!Number.isInteger(id) || id < 1) return Response.json({ error: "Invalid dedication." }, { status: 400 });
-  const result = await env.DB.prepare("DELETE FROM tree_dedications WHERE id = ? AND status = 'approved'").bind(id).run();
+  const result = await env.DB.prepare("UPDATE tree_dedications SET status = 'voided' WHERE id = ? AND status = 'approved'").bind(id).run();
   if (!result.meta.changes) return Response.json({ error: "Approved dedication not found." }, { status: 404 });
-  return Response.json({ ok: true, id });
+  return Response.json({ ok: true, id, status: "voided" });
 }
