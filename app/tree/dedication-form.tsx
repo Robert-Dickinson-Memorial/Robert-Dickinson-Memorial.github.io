@@ -23,8 +23,13 @@ export default function DedicationForm() {
   const [routeId, setRouteId] = useState("");
 
   useEffect(() => {
-    const saved = window.sessionStorage.getItem("livingTributeRoute");
-    if (saved && contributionRoutes.some((route) => route.id === saved)) setRouteId(saved);
+    const chooseRoute = (value: string | null) => {
+      if (value && contributionRoutes.some((route) => route.id === value)) setRouteId(value);
+    };
+    chooseRoute(window.sessionStorage.getItem("livingTributeRoute"));
+    const onRouteSelected = (event: Event) => chooseRoute((event as CustomEvent<string>).detail);
+    window.addEventListener("livingTributeRouteSelected", onRouteSelected);
+    return () => window.removeEventListener("livingTributeRouteSelected", onRouteSelected);
   }, []);
 
   const selectedRoute = useMemo(() => contributionRoutes.find((route) => route.id === routeId), [routeId]);
