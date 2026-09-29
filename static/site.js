@@ -9,6 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   const form = document.querySelector("[data-migration-form]");
   const treeForm = document.querySelector("[data-tree-dedication-form]");
+  document.querySelectorAll("[data-contribution-route]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const route = link.getAttribute("data-contribution-route");
+      if (route) sessionStorage.setItem("livingTributeRoute", route);
+    });
+  });
   const sharePanel = document.querySelector("details.memory-share-panel");
   const revealShareForm = () => {
     if (location.hash === "#share" && sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
@@ -522,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const count = counts[kind];
       if (!Number.isSafeInteger(count) || count < 0) return;
       const label = kind === "trees"
-        ? `${count === 1 ? "tree planted" : "trees planted"} in Robert’s memory`
+        ? `${count === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory${Number.isSafeInteger(counts.restorationGifts) && counts.restorationGifts > 0 ? ` · ${counts.restorationGifts} additional restoration ${counts.restorationGifts === 1 ? "gift" : "gifts"}` : ""}`
         : `${count === 1 ? "memory shared" : "memories shared"}`;
       element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
       element.hidden = false;
@@ -798,21 +804,81 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  if (treeForm instanceof HTMLFormElement) treeForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const status = treeForm.querySelector("[data-tree-dedication-message]");
-    const button = treeForm.querySelector('button[type="submit"]');
-    const data = new FormData(treeForm);
-    if (button) button.disabled = true;
-    try {
-      const response = await fetch(apiUrl("/api/participation"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: data.get("name"), email: data.get("email"), project: data.get("project"), treeCount: data.get("treeCount"), confirmed: data.get("confirmed") === "on", website: data.get("website") }) });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Unable to record the dedication.");
-      treeForm.reset();
-      if (status) status.textContent = "Thank you. Your dedication has been submitted for review. The lifetime tree total will update after approval.";
-    } catch (error) { if (status) status.textContent = error.message || "Please try again."; }
-    finally { if (status) status.hidden = false; if (button) button.disabled = false; }
-  });
+  if (treeForm instanceof HTMLFormElement) {
+    const routeSelect = treeForm.querySelector("[data-tree-route-select]");
+    const countField = treeForm.querySelector("[data-tree-count-field]");
+    const countInput = countField?.querySelector('input[name="treeCount"]');
+    const countGuidance = treeForm.querySelector("[data-tree-count-guidance]");
+
+    const updateTreeRoute = () => {
+      if (!(routeSelect instanceof HTMLSelectElement)) return;
+      const selected = routeSelect.selectedOptions[0];
+      const type = selected?.dataset.type || "";
+      const isTree = type === "tree";
+      if (countField instanceof HTMLElement) countField.hidden = !isTree;
+      if (countInput instanceof HTMLInputElement) {
+        countInput.required = isTree;
+        if (!isTree) countInput.value = "";
+      }
+      if (countGuidance instanceof HTMLElement) {
+        if (!type) {
+          countGuidance.hidden = true;
+          countGuidance.textContent = "";
+        } else if (isTree) {
+          countGuidance.hidden = false;
+          countGuidance.textContent = "Enter only the number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.";
+        } else {
+          countGuidance.hidden = false;
+          countGuidance.textContent = "This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.";
+        }
+      }
+    };
+
+    if (routeSelect instanceof HTMLSelectElement) {
+      const savedRoute = sessionStorage.getItem("livingTributeRoute");
+      if (savedRoute && Array.from(routeSelect.options).some((option) => option.value === savedRoute)) routeSelect.value = savedRoute;
+      routeSelect.addEventListener("change", updateTreeRoute);
+      updateTreeRoute();
+    }
+
+    treeForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const status = treeForm.querySelector("[data-tree-dedication-message]");
+      const button = treeForm.querySelector('button[type="submit"]');
+      const data = new FormData(treeForm);
+      const selected = routeSelect instanceof HTMLSelectElement ? routeSelect.selectedOptions[0] : null;
+      const isTree = selected?.dataset.type === "tree";
+      if (button) button.disabled = true;
+      try {
+        const response = await fetch(apiUrl("/api/participation"), {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            name: data.get("name"),
+            email: data.get("email"),
+            route: data.get("route"),
+            treeCount: isTree ? data.get("treeCount") : null,
+            confirmationRef: data.get("confirmationRef"),
+            confirmed: data.get("confirmed") === "on",
+            website: data.get("website"),
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to record the living tribute.");
+        treeForm.reset();
+        sessionStorage.removeItem("livingTributeRoute");
+        updateTreeRoute();
+        if (status) status.textContent = result.contributionType === "tree"
+          ? "Thank you. Your tree dedication has been submitted for review. After approval, the reported trees will join Robert’s lifetime total."
+          : "Thank you. Your restoration gift has been submitted for review. It will be preserved separately from the exact tree total.";
+      } catch (error) {
+        if (status) status.textContent = error.message || "Please try again.";
+      } finally {
+        if (status) status.hidden = false;
+        if (button) button.disabled = false;
+      }
+    });
+  }
 
   const mirrorReady = fetch("/mirror/manifest.json", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : { media: {} })
