@@ -11,9 +11,12 @@ export async function GET() {
     if (!env.DB) throw new Error("Database unavailable");
     const [memory, tree] = await Promise.all([
       env.DB.prepare("SELECT name FROM memories WHERE status = 'approved' AND trim(name) <> ''").all<{ name: string }>(),
-      env.DB.prepare("SELECT name FROM tree_dedications WHERE status = 'approved' AND trim(name) <> ''").all<{ name: string }>(),
+      env.DB.prepare("SELECT COALESCE(SUM(tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved'").first<{ total: number }>(),
     ]);
-    return publicJson({ memories: contributorCount((memory.results ?? []).map((row) => row.name)), trees: contributorCount((tree.results ?? []).map((row) => row.name)) });
+    return publicJson({
+      memories: contributorCount((memory.results ?? []).map((row) => row.name)),
+      trees: Number(tree?.total ?? 0),
+    });
   } catch {
     return publicJson({ error: "Participation totals are temporarily unavailable." }, { status: 503 });
   }
@@ -30,12 +33,21 @@ export async function POST(request: Request) {
     const name = typeof body.name === "string" ? body.name.trim().slice(0, 100) : "";
     const email = typeof body.email === "string" ? body.email.trim().slice(0, 200) : "";
     const project = typeof body.project === "string" ? body.project.trim() : "";
+    const treeCount = Number(body.treeCount);
     if (body.website) return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
-    if (name.length < 2 || !projects.has(project) || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) || body.confirmed !== true) {
-      return publicJson({ error: "Enter your name and project, and confirm that you made a dedication through the provider." }, { status: 400 });
+    if (
+      name.length < 2 ||
+      !projects.has(project) ||
+      !Number.isSafeInteger(treeCount) ||
+      treeCount < 1 ||
+      treeCount > 10000 ||
+      (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ||
+      body.confirmed !== true
+    ) {
+      return publicJson({ error: "Enter your name, project, and number of trees, and confirm that you made the dedication through the provider." }, { status: 400 });
     }
-    await env.DB.prepare("INSERT INTO tree_dedications (name, email, project, status, created_at) VALUES (?, ?, ?, 'pending', ?)")
-      .bind(name, email || null, project, new Date().toISOString()).run();
+    await env.DB.prepare("INSERT INTO tree_dedications (name, email, project, tree_count, status, created_at) VALUES (?, ?, ?, ?, 'pending', ?)")
+      .bind(name, email || null, project, treeCount, new Date().toISOString()).run();
     return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
   } catch {
     return publicJson({ error: "Unable to record the dedication. Please try again." }, { status: 400 });
