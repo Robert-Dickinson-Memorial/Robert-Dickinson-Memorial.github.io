@@ -141,7 +141,7 @@ export default async function TreeDedicationPage() {
       <section className="tree-dedication-report" aria-labelledby="tree-dedication-title">
         <p className="section-kicker">A growing tribute</p>
         <h2 id="tree-dedication-title">Already made a dedication?</h2>
-        <p>Let us count you among those honoring Robert. Donations take place with the organizations above; this optional form records your participation with the memorial. Your name and email stay private. Each person is counted once after review, even if they support more than one project.</p>
+        <p>Let us add the trees you planted to Robert’s growing living tribute. Donations take place with the organizations above; this optional form records the number of trees represented by your completed purchase. Your name and email stay private. Every approved tree is added to the lifetime total—including test purchases that resulted in real, non-refundable plantings.</p>
         <DedicationForm />
       </section>
 
