@@ -523,7 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!Number.isSafeInteger(count) || count < 0) return;
       const label = kind === "trees"
         ? `${count === 1 ? "tree planted" : "trees planted"} in Robert’s memory`
-        : `${count === 1 ? "person has" : "people have"} shared a memory`;
+        : `${count === 1 ? "memory shared" : "memories shared"}`;
       element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
       element.hidden = false;
     });

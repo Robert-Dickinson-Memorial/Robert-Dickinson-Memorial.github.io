@@ -1,7 +1,6 @@
 import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
-import { contributorCount } from "./participation";
 import { SiteFooter, SiteNav } from "./site-chrome";
 import {
   getPublishedEvents,
@@ -54,10 +53,10 @@ export default async function Home() {
     try {
       if (!env.DB) return null;
       const [memories, trees] = await Promise.all([
-        env.DB.prepare("SELECT name FROM memories WHERE status = 'approved' AND trim(name) <> ''").all<{ name: string }>(),
+        env.DB.prepare("SELECT COUNT(*) AS total FROM memories WHERE status = 'approved'").first<{ total: number }>(),
         env.DB.prepare("SELECT COALESCE(SUM(tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved'").first<{ total: number }>(),
       ]);
-      return { memories: contributorCount((memories.results ?? []).map((row) => row.name)), trees: Number(trees?.total ?? 0) };
+      return { memories: Number(memories?.total ?? 0), trees: Number(trees?.total ?? 0) };
     } catch { return null; }
   })()]);
   const copy = content.pageCopy;
@@ -93,7 +92,7 @@ export default async function Home() {
         <div className="tribute-actions-copy"><p className="section-kicker">{copy["home.tributeKicker"]}</p><h2 id="tribute-actions-title">{copy["home.tributeTitle"]}</h2><p>{copy["home.tributeParticipationIntro"]}</p></div>
         <div className="tribute-action-grid">
           <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>{copy["home.treeKicker"]}</small><strong>{copy["home.treeTitle"]}</strong><em>{copy["home.treeText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.trees}</strong> {participation.trees === 1 ? "tree planted" : "trees planted"} in Robert’s memory</span>}<b>{copy["home.treeCta"]}</b></span></Link>
-          <Link className="tribute-action-card memory-card-cta" href="/memories/#share"><span className="tribute-action-icon"><MessageSquareText size={28} /></span><span><small>{copy["home.shareMemoryKicker"]}</small><strong>{copy["home.shareMemoryTitle"]}</strong><em>{copy["home.shareMemoryText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.memories}</strong> {participation.memories === 1 ? "person has" : "people have"} shared a memory</span>}<b>{copy["home.shareMemoryCta"]}</b></span></Link>
+          <Link className="tribute-action-card memory-card-cta" href="/memories/#share"><span className="tribute-action-icon"><MessageSquareText size={28} /></span><span><small>{copy["home.shareMemoryKicker"]}</small><strong>{copy["home.shareMemoryTitle"]}</strong><em>{copy["home.shareMemoryText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.memories}</strong> {participation.memories === 1 ? "memory shared" : "memories shared"}</span>}<b>{copy["home.shareMemoryCta"]}</b></span></Link>
         </div>
       </section>
 

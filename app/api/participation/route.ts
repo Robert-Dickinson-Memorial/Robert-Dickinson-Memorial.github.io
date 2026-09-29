@@ -1,6 +1,5 @@
 import { env } from "cloudflare:workers";
 import { isAllowedPublicOrigin, publicJson, publicOptions } from "../../cors";
-import { contributorCount } from "../../participation";
 
 export const dynamic = "force-dynamic";
 
@@ -10,11 +9,11 @@ export async function GET() {
   try {
     if (!env.DB) throw new Error("Database unavailable");
     const [memory, tree] = await Promise.all([
-      env.DB.prepare("SELECT name FROM memories WHERE status = 'approved' AND trim(name) <> ''").all<{ name: string }>(),
+      env.DB.prepare("SELECT COUNT(*) AS total FROM memories WHERE status = 'approved'").first<{ total: number }>(),
       env.DB.prepare("SELECT COALESCE(SUM(tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved'").first<{ total: number }>(),
     ]);
     return publicJson({
-      memories: contributorCount((memory.results ?? []).map((row) => row.name)),
+      memories: Number(memory?.total ?? 0),
       trees: Number(tree?.total ?? 0),
     });
   } catch {
