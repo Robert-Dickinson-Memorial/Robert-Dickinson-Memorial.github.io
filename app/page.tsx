@@ -52,11 +52,12 @@ export default async function Home() {
   const [content, events, gallery, participation] = await Promise.all([getSiteContent(), getPublishedEvents(), getPublishedGallery(), (async () => {
     try {
       if (!env.DB) return null;
-      const [memories, trees] = await Promise.all([
+      const [memories, trees, restorationGifts] = await Promise.all([
         env.DB.prepare("SELECT COUNT(*) AS total FROM memories WHERE status = 'approved'").first<{ total: number }>(),
-        env.DB.prepare("SELECT COALESCE(SUM(tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved'").first<{ total: number }>(),
+        env.DB.prepare("SELECT COALESCE(SUM(reported_tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1").first<{ total: number }>(),
+        env.DB.prepare("SELECT COUNT(*) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'restoration' AND payment_confirmed = 1").first<{ total: number }>(),
       ]);
-      return { memories: Number(memories?.total ?? 0), trees: Number(trees?.total ?? 0) };
+      return { memories: Number(memories?.total ?? 0), trees: Number(trees?.total ?? 0), restorationGifts: Number(restorationGifts?.total ?? 0) };
     } catch { return null; }
   })()]);
   const copy = content.pageCopy;
@@ -91,7 +92,7 @@ export default async function Home() {
       <section className="tribute-actions" aria-labelledby="tribute-actions-title">
         <div className="tribute-actions-copy"><p className="section-kicker">{copy["home.tributeKicker"]}</p><h2 id="tribute-actions-title">{copy["home.tributeTitle"]}</h2><p>{copy["home.tributeParticipationIntro"]}</p></div>
         <div className="tribute-action-grid">
-          <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>{copy["home.treeKicker"]}</small><strong>{copy["home.treeTitle"]}</strong><em>{copy["home.treeText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.trees}</strong> {participation.trees === 1 ? "tree planted" : "trees planted"} in Robert’s memory</span>}<b>{copy["home.treeCta"]}</b></span></Link>
+          <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>{copy["home.treeKicker"]}</small><strong>{copy["home.treeTitle"]}</strong><em>{copy["home.treeText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.trees}</strong> {participation.trees === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory{participation.restorationGifts > 0 ? ` · ${participation.restorationGifts} additional restoration ${participation.restorationGifts === 1 ? "gift" : "gifts"}` : ""}</span>}<b>{copy["home.treeCta"]}</b></span></Link>
           <Link className="tribute-action-card memory-card-cta" href="/memories/#share"><span className="tribute-action-icon"><MessageSquareText size={28} /></span><span><small>{copy["home.shareMemoryKicker"]}</small><strong>{copy["home.shareMemoryTitle"]}</strong><em>{copy["home.shareMemoryText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.memories}</strong> {participation.memories === 1 ? "memory shared" : "memories shared"}</span>}<b>{copy["home.shareMemoryCta"]}</b></span></Link>
         </div>
       </section>
