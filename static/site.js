@@ -521,7 +521,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const kind = element.getAttribute("data-participation-count");
       const count = counts[kind];
       if (!Number.isSafeInteger(count) || count < 0) return;
-      element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${count === 1 ? "person has" : "people have"} ${kind === "trees" ? "recorded a tree dedication" : "shared a memory"}`));
+      const label = kind === "trees"
+        ? `${count === 1 ? "tree planted" : "trees planted"} in Robert’s memory`
+        : `${count === 1 ? "person has" : "people have"} shared a memory`;
+      element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
       element.hidden = false;
     });
   }
@@ -802,11 +805,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = new FormData(treeForm);
     if (button) button.disabled = true;
     try {
-      const response = await fetch(apiUrl("/api/participation"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: data.get("name"), email: data.get("email"), project: data.get("project"), confirmed: data.get("confirmed") === "on", website: data.get("website") }) });
+      const response = await fetch(apiUrl("/api/participation"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: data.get("name"), email: data.get("email"), project: data.get("project"), treeCount: data.get("treeCount"), confirmed: data.get("confirmed") === "on", website: data.get("website") }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Unable to record the dedication.");
       treeForm.reset();
-      if (status) status.textContent = "Thank you. Your dedication has been submitted for review. The contributor count will update after approval.";
+      if (status) status.textContent = "Thank you. Your dedication has been submitted for review. The lifetime tree total will update after approval.";
     } catch (error) { if (status) status.textContent = error.message || "Please try again."; }
     finally { if (status) status.hidden = false; if (button) button.disabled = false; }
   });
