@@ -88,11 +88,6 @@ export type SecondaryLegacyTopic = {
   threadIds: string[];
 };
 
-export type CommunityQuote = {
-  quote: string;
-  attribution: string;
-};
-
 export type SiteAsset = {
   asset: string;
   objectKey: string | null;
@@ -123,7 +118,6 @@ export type SiteContent = {
   lifeMilestones: LifeMilestone[];
   legacyChapters: LegacyChapter[];
   legacyThreads: LegacyThread[];
-  communityQuotes: CommunityQuote[];
   honors: MemorialHonor[];
   honorsNote: string;
   pageCopy: Record<string, string>;
@@ -484,18 +478,6 @@ const secondaryLegacyTopics: SecondaryLegacyTopic[] = [
   }
 ];
 
-const communityQuotes: CommunityQuote[] = [
-  { quote: "A way of thinking.", attribution: "Yongkang Xue" },
-  { quote: "Grand visions and attention to details.", attribution: "Fei Chen" },
-  { quote: "A towering figure.", attribution: "V. Ramaswamy" },
-  { quote: "A pioneer of Earth-system modeling and biosphere–atmosphere interaction.", attribution: "Richard Betts" },
-  { quote: "The world's authority on the understanding and modeling of the land component of the Earth system.", attribution: "2020 AMS Dickinson Symposium foreword" },
-  { quote: "A giant in the field and the kindest person he had met.", attribution: "Venkataraman Lakshmi" },
-  { quote: "An inspiration, mentor, and groundbreaking researcher.", attribution: "Christa Peters-Lidard" },
-  { quote: "A respected expert who was generous with his time.", attribution: "Mike Kuperberg" },
-  { quote: "A gentleman of uncommon humility, kindness, and intellectual generosity.", attribution: "Zong-Liang Yang" },
-];
-
 export const defaultPageCopy: Record<string, string> = {
   "global.wordmark": "Robert Dickinson",
   "global.footerName": "Robert E. Dickinson",
@@ -656,9 +638,6 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.sectionKicker": "Remembering Robert",
   "memories.sectionTitle": "Stories that carry forward",
   "memories.bookButton": "Open the memory book",
-  "memories.voicesKicker": "In the words of his colleagues",
-  "memories.voicesTitle": "Voices from the scientific community",
-  "memories.voicesIntro": "A few words from scientists whose work and lives were shaped by Robert.",
   "memories.poemKicker": "A tribute in verse",
   "memories.poemText": "So as we honor Bob today\nBy science he was smitten\nHis legacy is guaranteed\nSo many papers written!",
   "memories.poemAttribution": "",
@@ -812,7 +791,6 @@ export const defaultContent: SiteContent = {
   lifeMilestones,
   legacyChapters,
   legacyThreads,
-  communityQuotes,
   honors,
   honorsNote: "Robert served as a Lead Author of the IPCC Fourth Assessment Report. The IPCC and Al Gore jointly received the 2007 Nobel Peace Prize.",
   pageCopy: defaultPageCopy,
@@ -948,7 +926,6 @@ export async function getSiteContent(): Promise<SiteContent> {
       lifeMilestones: parseJson<LifeMilestone[]>(values.lifeMilestones, defaultContent.lifeMilestones).map((item) => ({ ...item, text: reviseEditorialText(item.text) })),
       legacyChapters: alignLegacyChapters(parseJson<LegacyChapter[]>(values.legacyChapters, defaultContent.legacyChapters)).map((chapter) => ({ ...chapter, summary: reviseEditorialText(chapter.summary) })),
       legacyThreads: alignLegacyThreads(parseJson<LegacyThread[]>(values.legacyThreads, defaultContent.legacyThreads)),
-      communityQuotes: parseJson(values.communityQuotes, defaultContent.communityQuotes),
       honors: parseJson<MemorialHonor[]>(values.honors, defaultContent.honors).map((honor) => honor.year === "2007" && honor.title === "Lead Author, IPCC Fourth Assessment Report" && honor.detail === "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry" ? { ...honor, detail: "Chapter 7, Couplings Between Changes in the Climate System and Biogeochemistry. Robert contributed as a Lead Author; the IPCC and Al Gore jointly received the 2007 Nobel Peace Prize." } : honor),
       honorsNote: values.honorsNote || defaultContent.honorsNote,
       pageCopy: (() => {
@@ -958,6 +935,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["legacy.frontiersIntro"] === "Robert’s range extended well beyond the six enduring threads. These smaller constellations show important areas where his ideas opened new questions, models, and communities.") saved["legacy.frontiersIntro"] = "These five frontiers, also highlighted on the homepage, show the breadth of Robert’s contributions beyond the six central research threads.";
         if (saved["life.photosKicker"] === "Early years" || saved["life.photosKicker"] === "Early Years") saved["life.photosKicker"] = "Childhood in MN";
         Object.keys(saved).filter((key) => key.startsWith("legacy.voices")).forEach((key) => delete saved[key]);
+        Object.keys(saved).filter((key) => key.startsWith("memories.voices")).forEach((key) => delete saved[key]);
         if (saved["legacy.chaptersLabel"] === "Scientific contributions") saved["legacy.chaptersLabel"] = "Scientific Contribution Chronicle";
         if (saved["legacy.publicationLabel"] === "Landmark publication") saved["legacy.publicationLabel"] = "Landmark Publication";
         if (saved["memories.moderation"] === "Every submission and photograph is reviewed before appearing publicly.") saved["memories.moderation"] = "Every submission, attachment, and link is reviewed before appearing publicly.";

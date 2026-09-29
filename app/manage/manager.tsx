@@ -76,9 +76,6 @@ const copyFieldNames: Record<string, string> = {
   threadsKicker: "Enduring research threads — kicker",
   threadsTitle: "Enduring research threads — heading",
   threadsIntro: "Enduring research threads — introduction",
-  voicesKicker: "Scientific community voices — kicker",
-  voicesTitle: "Scientific community voices — heading",
-  voicesIntro: "Scientific community voices — introduction",
   honorsKicker: "Honors, awards & recognition — heading",
   shareKicker: "Share a memory — kicker",
   shareTitle: "Share a memory — heading",
@@ -207,18 +204,6 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
   function removeSecondaryLegacyTopic(index: number) {
     setContentValues((current) => ({ ...current, secondaryLegacyTopics: current.secondaryLegacyTopics.filter((_, itemIndex) => itemIndex !== index) }));
-  }
-
-  function updateCommunityQuote(index: number, field: "quote" | "attribution", value: string) {
-    setContentValues((current) => ({ ...current, communityQuotes: current.communityQuotes.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item) }));
-  }
-
-  function addCommunityQuote() {
-    setContentValues((current) => ({ ...current, communityQuotes: [...current.communityQuotes, { quote: "", attribution: "" }] }));
-  }
-
-  function removeCommunityQuote(index: number) {
-    setContentValues((current) => ({ ...current, communityQuotes: current.communityQuotes.filter((_, itemIndex) => itemIndex !== index) }));
   }
 
   function updateHonor(index: number, field: "year" | "title" | "detail", value: string) {
@@ -653,21 +638,9 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-memories" className="manager-panel manager-panel-wide">
-        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Voices & community memories</h2><p>Edit the curated scientist quotations shown near the top of the Memories page, along with the full published community memories below.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Memories</p><h2>Published community memories</h2><p>Edit the published memories shown on the Share A Memory page.</p><a className="manager-section-link" href="#copy-memories">Edit Memories headings, form labels & messages ↓</a></div>
         <div className="manager-form manager-stack">
           <div className="manager-subcard">
-            <h3>Voices from the scientific community</h3>
-            <p className="manager-help">These appear as a bulleted quotation list on the public Memories page. Edit the quotation and attribution directly, add new entries, or remove entries.</p>
-            {contentValues.communityQuotes.map((item, index) => <div className="manager-edit-card manager-community-quote-editor" key={`community-quote-${index}`}>
-              <label>Quotation<textarea rows={3} value={item.quote} onChange={(e) => updateCommunityQuote(index, "quote", e.target.value)} /></label>
-              <label>Attribution<input value={item.attribution} onChange={(e) => updateCommunityQuote(index, "attribution", e.target.value)} /></label>
-              <button type="button" className="manager-danger" onClick={() => removeCommunityQuote(index)}><Trash2 size={16} /> Remove quote</button>
-            </div>)}
-            <div className="manager-inline-actions"><button type="button" className="manager-secondary" onClick={addCommunityQuote}>Add quotation</button><button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save quotations</button></div>
-          </div>
-
-          <div className="manager-subcard">
-            <h3>Published community memories</h3>
             <p className="manager-help">Edit a memory below, choose a photograph or PDF if needed, then select Save memory. The separate upload buttons also save a file without changing the text. Replacing a PDF preserves the edited Memory text; update that field separately if the document wording has changed.</p>
             <div className="manager-edit-list">
               {publishedMemories.map((item) => {

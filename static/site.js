@@ -455,24 +455,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function hydrateMemories() {
     const wallTarget = document.querySelector("[data-memory-wall]");
-    const quoteList = document.querySelector("[data-community-quotes]");
-    if (!(wallTarget instanceof HTMLElement) && !(quoteList instanceof HTMLElement)) return;
+    if (!(wallTarget instanceof HTMLElement)) return;
     const [{ memories = [] }, { content = {} }] = await Promise.all([
       getJson("/api/memories"),
       getJson("/api/content"),
     ]);
     const copy = content.pageCopy || editableCopy || {};
-
-    if (quoteList instanceof HTMLElement && Array.isArray(content.communityQuotes)) {
-      quoteList.replaceChildren(...content.communityQuotes.map((item) => {
-        const li = node("li");
-        li.append(
-          node("blockquote", { text: `“${item.quote || ""}”` }),
-          node("cite", { text: `— ${item.attribution || ""}` })
-        );
-        return li;
-      }));
-    }
 
     if (wallTarget instanceof HTMLElement) {
       if (!memories.length) {
@@ -829,7 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook], true],
     ["/api/events", [hydrateEvents], Boolean(document.querySelector("[data-events]"))],
     ["/api/gallery", [hydrateGallery, hydrateMemoryBook], Boolean(document.querySelector("[data-gallery], [data-memory-book]"))],
-    ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-community-quotes], [data-memory-book]"))],
+    ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-memory-book]"))],
     ["/api/participation", [hydrateParticipation], Boolean(document.querySelector("[data-participation-count]"))],
   ];
   let refreshInProgress = false;

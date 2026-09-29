@@ -21,7 +21,6 @@ const jsonKeys = new Set([
   "secondaryLegacyTopics",
   "lifeMilestones",
   "legacyThreads",
-  "communityQuotes",
   "pageCopy",
   "siteAssets",
   "legacyChapters",
