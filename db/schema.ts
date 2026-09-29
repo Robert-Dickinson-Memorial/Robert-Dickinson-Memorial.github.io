@@ -27,7 +27,13 @@ export const treeDedications = sqliteTable("tree_dedications", {
   name: text("name").notNull(),
   email: text("email"),
   project: text("project").notNull(),
+  provider: text("provider").notNull().default("Legacy provider"),
+  contributionType: text("contribution_type").notNull().default("tree"),
   treeCount: integer("tree_count").notNull().default(1),
+  reportedTreeCount: integer("reported_tree_count"),
+  countBasis: text("count_basis"),
+  confirmationRef: text("confirmation_ref"),
+  paymentConfirmed: integer("payment_confirmed", { mode: "boolean" }).notNull().default(true),
   status: text("status").notNull().default("pending"),
   createdAt: text("created_at").notNull(),
 }, (table) => [index("idx_tree_dedications_status").on(table.status)]);
