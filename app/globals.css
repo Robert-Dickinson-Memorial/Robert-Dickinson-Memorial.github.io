@@ -3266,3 +3266,34 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   color: #f4f0e8;
   padding: 11px 14px;
 }
+
+
+/* Simplified Chippewa choices: place first, provider prominent, minimal copy. */
+.tree-route-location {
+  color: #f0d89f;
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .025em;
+  line-height: 1.25;
+}
+.tree-route-card h3 {
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1.12;
+}
+.tree-route-card p {
+  max-width: 34rem;
+}
+.tree-route-card.tree-route-primary {
+  background: rgba(213,184,121,.10);
+}
+.tree-route-card.tree-route-alternative {
+  background: rgba(255,255,255,.045);
+}
+.tree-route-card.tree-route-alternative .tree-route-location {
+  color: rgba(255,255,255,.82);
+}
+.tree-route-card > a {
+  margin-top: 5px;
+}
