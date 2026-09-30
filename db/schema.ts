@@ -32,6 +32,8 @@ export const treeDedications = sqliteTable("tree_dedications", {
   treeCount: integer("tree_count").notNull().default(1),
   reportedTreeCount: integer("reported_tree_count"),
   countBasis: text("count_basis"),
+  geographicScope: text("geographic_scope").notNull().default("legacy"),
+  geographicLabel: text("geographic_label"),
   confirmationRef: text("confirmation_ref"),
   paymentConfirmed: integer("payment_confirmed", { mode: "boolean" }).notNull().default(true),
   status: text("status").notNull().default("pending"),
