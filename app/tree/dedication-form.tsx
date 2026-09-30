@@ -67,8 +67,8 @@ export default function DedicationForm() {
       window.sessionStorage.removeItem("livingTributeRoute");
       window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
       setMessage(result.contributionType === "tree"
-        ? `Thank you. Your trees have been submitted for review and will be attributed to ${result.geographicLabel || "the provider’s stated location"} after approval.`
-        : "Thank you. Your restoration gift has been submitted for review. It will be preserved separately from the exact tree total.");
+        ? `Thank you. Your trees are now part of Robert’s living-tribute total and are recorded under ${result.geographicLabel || "the provider’s stated location"}.`
+        : "Thank you. Your restoration gift is now recorded in Robert’s living tribute, separately from the exact tree total.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Please try again.");
     } finally {
