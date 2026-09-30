@@ -3255,3 +3255,14 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   .tree-international-fallback,
   .tree-universal-fallback { grid-template-columns: 1fr; }
 }
+
+.tree-route-primary > a {
+  background: var(--memorial-gold, #d5b879);
+  color: var(--memorial-navy, #0b2239);
+  padding: 12px 15px;
+}
+.tree-route-card > .tree-project-secondary-action {
+  border: 1px solid rgba(255,255,255,.45);
+  color: #f4f0e8;
+  padding: 11px 14px;
+}
