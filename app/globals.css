@@ -3671,3 +3671,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 html[data-page="events"] .site-nav .nav-links a[data-nav="events"], .events-redesign .site-nav .nav-links a.active { color:#3f654d!important; }
 @media(max-width:760px) { .events-redesign .interior-hero, html[data-page="events"] .interior-hero[data-route="events"] { padding-top:100px; } }
 .event-feature-photo img { object-position:36% 35%; }
+
+.event-designed-section .event-feature-list { margin-top:28px; }
+.event-planning-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media(max-width:760px) { .event-planning-grid { grid-template-columns:1fr; } }

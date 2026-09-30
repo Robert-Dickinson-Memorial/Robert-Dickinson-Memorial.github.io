@@ -711,10 +711,6 @@ export const defaultPageCopy: Record<string, string> = {
   "events.design.upcoming": "Upcoming",
   "events.design.past": "Past events",
   "events.design.all": "All events",
-  "events.design.upcomingTitle": "Upcoming events",
-  "events.design.pastTitle": "Past tributes & gatherings",
-  "events.design.allTitle": "All memorial events",
-  "events.design.intro": "Gather to remember Robert, share stories, and honor his life in science.",
   "events.design.emptyUpcoming": "No upcoming events have been announced.",
   "events.design.emptyPast": "Past gatherings will appear here after they take place.",
   "events.design.emptyAll": "No events have been announced yet.",
@@ -727,8 +723,6 @@ export const defaultPageCopy: Record<string, string> = {
   "events.design.venueText": "The venue, address, and available parking information are listed with each event.",
   "events.design.onlineTitle": "Join online",
   "events.design.onlineText": "Use the livestream link on the event card to join remotely.",
-  "events.design.programTitle": "Event announcement",
-  "events.design.programText": "Download the original announcement from the event information for details you can save or share.",
   "events.design.rememberTitle": "Continue his legacy",
   "events.design.rememberText": "Remember Robert through a tree planted or a memory shared.",
   "events.design.tree": "Plant a Tree",
@@ -1089,6 +1083,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["tree.chippewaWhyText"] === "Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.") saved["tree.chippewaWhyText"] = defaultPageCopy["tree.chippewaWhyText"];
         if (saved["tree.arborButton"] === "Continue with Arbor Day") saved["tree.arborButton"] = "Plant a tree";
         if (saved["tree.minnesotaButton"] === "Continue with A Living Tribute") saved["tree.minnesotaButton"] = "Plant a tree";
+        for (const key of ["events.design.upcomingTitle", "events.design.pastTitle", "events.design.allTitle", "events.design.intro", "events.design.programTitle", "events.design.programText"]) delete saved[key];
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));

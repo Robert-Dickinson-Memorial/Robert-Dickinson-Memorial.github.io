@@ -16,14 +16,13 @@ export default function EventsSection({ events, copy, portrait = "/robert-dickin
   }
   return <section className="events-section event-designed-section">
     <div className="event-filter-bar" role="group" aria-label="Filter events">{["upcoming","past","all"].map(f=><button key={f} type="button" aria-pressed={filter===f} onClick={()=>setFilter(f)}>{c(f)}</button>)}</div>
-    <div className="event-list-heading"><h2>{c(`${filter}Title`)}</h2><span/><p>{c("intro")}</p></div>
     <div className="event-feature-list" aria-live="polite">{!visible.length ? <p className="events-empty">{c(`empty${filter[0].toUpperCase()+filter.slice(1)}`)}</p> : visible.map(e=><article className="event-feature" key={e.id}>
       <div className="event-feature-photo"><img src={portrait} alt="Robert E. Dickinson"/><div className="event-date-badge"><span>{date(e.startAt,{month:"short"})}</span><strong>{date(e.startAt,{day:"numeric"})}</strong><span>{date(e.startAt,{year:"numeric"})}</span></div></div>
       <div className="event-feature-copy"><p className="section-kicker">{c("details")}</p><h3>{e.title}</h3><time dateTime={e.startAt}>{date(e.startAt,{weekday:"long",month:"long",day:"numeric",year:"numeric"})}<br/>{date(e.startAt,{timeStyle:"short"})}{e.endAt ? ` – ${date(e.endAt,{timeStyle:"short"})}` : ""} Pacific Time</time>
       {e.location && <p className="event-venue">{e.location}</p>}
       <div className="event-actions">{e.linkUrl && <a className="event-primary" href={e.linkUrl} target="_blank" rel="noopener noreferrer">{e.linkLabel || copy["events.defaultLink"]} ↗</a>}<button type="button" onClick={()=>calendar(e)}>{c("calendar")} ↓</button>{e.location && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}`} target="_blank" rel="noopener noreferrer">{c("directions")} ↗</a>}</div>
-      {e.description && <div className="event-story">{e.description.split(/(https?:\/\/[^\s]+)/g).map((p,i)=>/^https?:\/\//.test(p)?<a key={i} href={p} target="_blank" rel="noopener noreferrer">{p.endsWith(".pdf") ? c("programTitle")+" (PDF) ↗" : p === "https://robert-dickinson-memorial.github.io/" ? "Robert’s memorial website ↗" : p}</a>:p)}</div>}</div>
+      {e.description && <div className="event-story">{e.description.split(/(https?:\/\/[^\s]+)/g).map((p,i)=>/^https?:\/\//.test(p)?<a key={i} href={p} target="_blank" rel="noopener noreferrer">{p === "https://robert-dickinson-memorial.github.io/" ? "Robert’s memorial website ↗" : p}</a>:p)}</div>}</div>
     </article>)}</div>
-    <aside className="event-planning"><h2>{c("planning")}</h2><p>{c("planningIntro")}</p><div className="event-planning-grid">{["venue","online","program","remember"].map(k=><div key={k}><h3>{c(`${k}Title`)}</h3><p>{c(`${k}Text`)}</p>{k==="remember" && <div className="event-remembrance"><a href="/tree/">{c("tree")} →</a><a href="/memories/">{c("memory")} →</a></div>}</div>)}</div></aside>
+    <aside className="event-planning"><h2>{c("planning")}</h2><p>{c("planningIntro")}</p><div className="event-planning-grid">{["venue","online","remember"].map(k=><div key={k}><h3>{c(`${k}Title`)}</h3><p>{c(`${k}Text`)}</p>{k==="remember" && <div className="event-remembrance"><a href="/tree/">{c("tree")} →</a><a href="/memories/">{c("memory")} →</a></div>}</div>)}</div></aside>
   </section>;
 }
