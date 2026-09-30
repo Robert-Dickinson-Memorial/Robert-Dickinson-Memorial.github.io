@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, Waves, ChartNoAxesColumnIncreasing, Settings, Satellite, GraduationCap } from "lucide-react";
+import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, ChartNoAxesColumnIncreasing, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
 import { SharedHeroArt, SiteFooter, SiteNav } from "./site-chrome";
@@ -29,14 +29,14 @@ function ScientificLegacyStory({
   </div>;
 }
 
-const threadIcons = [Waves, ChartNoAxesColumnIncreasing, Settings, Sprout, Satellite, Globe2];
 const contributionIcons = [Globe2, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
 function HomeThreads({ threads, label, hint }: { threads: LegacyThread[]; label: string; hint: string }) {
   return <div className="home-earth-map">
     <div className="home-map-heading"><h3>{label}</h3><p>{hint}</p></div>
     <div className="home-earth-layout">
-      <figure className="home-earth"><div className="home-earth-orbit"><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div><figcaption>NASA / Earth Observatory</figcaption></figure>
-      {threads.map((thread,index) => {const Icon=threadIcons[index % threadIcons.length];return <article className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><span className="home-line-icon"><Icon size={28} strokeWidth={1.5}/></span><div><h4>{thread.title}</h4><p>{thread.text}</p></div></article>;})}
+<svg className="home-thread-arcs" viewBox="0 0 900 500" preserveAspectRatio="none" aria-hidden="true"><ellipse cx="450" cy="250" rx="245" ry="180" /><path d="M205 250 C240 115 640 80 695 250 C660 385 260 420 205 250" /><circle cx="327.5" cy="94.1" r="5" /><circle cx="572.5" cy="94.1" r="5" /><circle cx="695" cy="250" r="5" /><circle cx="572.5" cy="405.9" r="5" /><circle cx="327.5" cy="405.9" r="5" /><circle cx="205" cy="250" r="5" /></svg>
+      <figure className="home-earth"><div className="home-earth-orbit"><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div></figure>
+      {threads.map((thread,index) => <details name="home-science-threads" open={index === 0} className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><summary>{thread.title}</summary><p>{thread.text}</p></details>)}
     </div>
   </div>;
 }
@@ -64,7 +64,6 @@ export default async function Home() {
     } catch { return null; }
   })()]);
   const copy = content.pageCopy;
-  const introduction = content.obituaryStory.split(/\n\s*\n/).filter(Boolean).slice(0, 2);
   const eventsText = events.length
     ? (events.length === 1 ? copy["home.eventsCountOne"] : copy["home.eventsCountMany"].replace("{count}", String(events.length)))
     : copy["home.eventsEmpty"];
@@ -84,6 +83,7 @@ export default async function Home() {
           <Link className="scroll-cue" href="/life">{copy["home.readStory"]} <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
         <SharedHeroArt assets={content.siteAssets} />
+      <figure className="home-quote-band"><blockquote>{copy["home.portraitQuote"]}</blockquote><figcaption>{copy["home.portraitCaption"]}</figcaption></figure>
       </div>      </header>
 
       <section className="tribute-actions" aria-labelledby="tribute-actions-title">
@@ -94,7 +94,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <figure className="home-quote-band"><blockquote>{copy["home.portraitQuote"]}</blockquote><figcaption>{copy["home.portraitCaption"]}</figcaption></figure>
 
       <section className="home-legacy-preview">
         <div className="home-preview-heading home-preview-heading-integrated">
@@ -111,17 +110,11 @@ export default async function Home() {
         <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
 
-      <section className="home-story-preview">
-        <div><p className="section-kicker">{copy["home.storyKicker"]}</p><h2>{copy["home.storyTitleLine1"]}<br />{copy["home.storyTitleLine2"]}</h2><span>{copy["home.storyYears"]}</span></div>
-        <div className="home-story-copy">{introduction.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={paragraph.slice(0, 30)}>{paragraph}</p>)}<Link className="text-link" href="/life">{copy["home.storyReadLink"]} <ArrowRight size={16} /></Link></div>
-      </section>
-
       <section className="home-community">
         <div className="home-community-heading"><p className="section-kicker">{copy["home.communityKicker"]}</p><h2>{copy["home.communityTitle"]}</h2><p>{copy["home.communityIntro"]}</p></div>
         <div className="home-community-grid">
           <Link href="/events"><CalendarDays size={25} /><small>{copy["home.eventsKicker"]}</small><h3>{copy["home.eventsTitle"]}</h3><p>{eventsText}</p>{events[0] && <div className="home-event-preview"><time dateTime={events[0].startAt}>{new Intl.DateTimeFormat("en-US", {month:"short",day:"numeric",timeZone:"America/Los_Angeles"}).format(new Date(events[0].startAt))}</time><div><strong>{events[0].title}</strong><span>{events[0].location?.split("\n")[0]}</span></div></div>}<b>{copy["home.eventsCta"]}</b></Link>
           <Link href="/gallery"><Images size={25} /><small>{copy["home.galleryKicker"]}</small><h3>{copy["home.galleryTitle"]}</h3><p>{galleryText}</p><div className="home-gallery-strip">{gallery.filter(item => item.kind === "image" && item.objectKey).slice(0,4).map(item => <img key={item.id} src={`/api/gallery/photos/${item.objectKey!.split("/").map(encodeURIComponent).join("/")}`} alt={item.title} loading="lazy" />)}</div><b>{copy["home.galleryCta"]}</b></Link>
-          <Link href="/memories"><MessageSquareText size={25} /><small>{copy["home.memoriesKicker"]}</small><h3>{copy["home.memoriesTitle"]}</h3><p>{copy["home.memoriesText"]}</p><b>{copy["home.memoriesCta"]}</b></Link>
         </div>
       </section>
       <SiteFooter />

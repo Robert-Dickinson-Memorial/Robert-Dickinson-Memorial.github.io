@@ -4079,3 +4079,75 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-years::after {ma
 @media(max-width:380px) {
   .journey-chapter h3 {overflow-wrap:anywhere;}
 }
+
+/* Home: portrait quotation, orbital scientific threads and a frontier sidebar. */
+.home-redesign .hero .shared-hero-inner {min-height:535px;}
+.home-redesign .hero .home-quote-band {position:absolute;left:0;top:392px;width:44%;max-width:none;margin:0;padding:12px 22px 0 0;text-align:center;}
+.home-redesign .hero .home-quote-band::before,.home-redesign .hero .home-quote-band::after {display:none;}
+.home-redesign .hero .home-quote-band blockquote {font-size:19px;line-height:1.45;color:#304e59;}
+.home-redesign .hero .home-quote-band figcaption {font-size:10px;margin-top:9px;}
+.home-redesign .home-legacy-preview {background:linear-gradient(145deg,#eef3ef,#e8f0f1 65%,#f3f4ed);border-block:1px solid #cbd8d1;padding-top:44px;padding-bottom:44px;}
+.home-redesign .home-thread-visual {display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:28px;align-items:center;}
+.home-redesign .home-earth-map {background:none;padding:14px 0 20px;min-width:0;}
+.home-redesign .home-earth-layout {position:relative;display:block;min-height:500px;padding-top:500px;max-width:none;margin:0;}
+.home-redesign .home-thread-arcs {position:absolute;inset:0 0 auto;width:100%;height:500px;overflow:visible;pointer-events:none;}
+.home-thread-arcs ellipse,.home-thread-arcs path {fill:none;stroke:#789b93;stroke-width:1.2;vector-effect:non-scaling-stroke;}
+.home-thread-arcs path {stroke:#b2a477;opacity:.6;}
+.home-thread-arcs circle {fill:#54877a;stroke:#f5f7f1;stroke-width:2;vector-effect:non-scaling-stroke;}
+.home-redesign .home-earth {position:absolute;left:50%;top:250px;transform:translate(-50%,-50%);width:27%;max-width:245px;margin:0;}
+.home-redesign .home-earth-orbit {padding:0;border:0;box-shadow:0 0 70px #5c8d8a25;}
+.home-redesign .home-earth-orbit::before,.home-redesign .home-earth-orbit::after {display:none;}
+.home-redesign .home-thread-card {display:block;margin:0;padding:0;border:0;min-width:0;}
+.home-redesign .home-thread-card summary {position:absolute;width:26%;padding:9px 5px;list-style:none;text-align:center;cursor:pointer;color:#183e50;font:500 19px/1.2 Georgia,serif;border-radius:8px;}
+.home-redesign .home-thread-card summary::-webkit-details-marker {display:none;}
+.home-redesign .home-thread-card summary:hover {background:#ffffff85;}
+.home-redesign .home-thread-card[open] summary {color:#2d6754;background:#ffffff9c;box-shadow:inset 0 -2px #7c9f8d;}
+.home-redesign .home-thread-card summary:focus-visible {outline:2px solid #406e55;outline-offset:3px;}
+.home-redesign .home-thread-card-1 summary {left:23.4%;top:10px;}
+.home-redesign .home-thread-card-2 summary {left:50.6%;top:10px;}
+.home-redesign .home-thread-card-3 summary {left:auto;right:0;top:250px;width:21%;transform:translateY(-50%);}
+.home-redesign .home-thread-card-4 summary {left:50.6%;top:431px;}
+.home-redesign .home-thread-card-5 summary {left:23.4%;top:431px;}
+.home-redesign .home-thread-card-6 summary {left:0;top:250px;width:21%;transform:translateY(-50%);}
+.home-redesign .home-thread-card >p {font:16px/1.6 Georgia,serif;margin:10px 0 0;padding:18px 22px;background:#fcfcf6ba;border-left:2px solid #88a691;border-radius:0 6px 6px 0;color:#405967;}
+.home-redesign .science-secondary-band-home {align-self:center;border:0;border-left:1px solid #b8c9bc;background:#ffffff55;padding:24px 0 24px 24px;border-radius:0 8px 8px 0;}
+.home-redesign .science-secondary-label {display:block;font-size:12px;letter-spacing:.1em;line-height:1.6;}
+.home-redesign .science-secondary-terms {display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:23px;}
+.home-redesign .science-secondary-terms span {font-size:17px;line-height:1.4;}
+.home-redesign .science-highlight {background:#fdfcf9c9;border-color:#d0dbd3;}
+.home-redesign .home-community {background:#faf9f5;}
+/* Both remaining collection cards have equal weight. */
+.home-redesign .home-community-grid>a:last-child {display:block;grid-column:auto;padding:22px;border:1px solid var(--home-line);background:#fdfcf9;}
+.home-redesign .home-community-grid>a:last-child h3 {font-size:28px;}
+.home-redesign .home-community-grid>a:last-child p {margin:0 0 12px;}
+@media(max-width:1100px) {
+ .home-redesign .home-thread-visual {grid-template-columns:minmax(0,1fr) 180px;gap:20px;}
+ .home-redesign .home-thread-card summary {font-size:17px;}
+ .home-redesign .science-secondary-band-home {padding-left:18px;}
+}
+@media(max-width:900px) {
+ .home-redesign .home-thread-visual {grid-template-columns:1fr;}
+ .home-redesign .science-secondary-band-home {padding:20px;border-left:0;border-top:1px solid #b8c9bc;border-radius:6px;}
+ .home-redesign .science-secondary-terms {grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin-top:15px;}
+}
+@media(max-width:760px) {
+ .home-redesign .hero .shared-hero-inner {min-height:460px;}
+ .home-redesign .hero .home-quote-band {top:310px;width:42%;padding:8px 4px 0 0;}
+ .home-redesign .hero .home-quote-band blockquote {font-size:16px;}
+}
+@media(max-width:540px) {
+ .home-redesign .hero .shared-hero-inner {min-height:0;}
+ .home-redesign .hero .home-quote-band {position:relative;top:auto;left:auto;width:100%;padding:16px 0 8px;margin:14px 0 0;border-top:1px solid #a8b9ae;}
+ .home-redesign .home-earth-layout {padding-top:330px;min-height:330px;}
+ .home-redesign .home-thread-arcs {height:300px;}
+ .home-redesign .home-earth {top:150px;width:29%;}
+ .home-redesign .home-thread-card summary {font-size:15px;padding:7px 2px;width:39%;}
+ .home-redesign .home-thread-card-1 summary {left:10%;top:4px;}
+ .home-redesign .home-thread-card-2 summary {left:51%;top:4px;}
+ .home-redesign .home-thread-card-3 summary {right:0;left:auto;top:150px;width:23%;font-size:14px;}
+ .home-redesign .home-thread-card-4 summary {left:51%;top:258px;}
+ .home-redesign .home-thread-card-5 summary {left:10%;top:258px;}
+ .home-redesign .home-thread-card-6 summary {left:0;top:150px;width:23%;font-size:14px;}
+ .home-redesign .home-thread-card >p {font-size:16px;padding:15px;}
+ .home-redesign .science-secondary-terms {grid-template-columns:1fr;gap:12px;}
+}
