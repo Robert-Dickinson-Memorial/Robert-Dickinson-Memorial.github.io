@@ -3421,7 +3421,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-provider-note {
   color: #ead7a3;
   display: block;
-  font-size: 1.35rem;
+  font-size: 2.025rem;
   font-weight: 800;
   line-height: 1.35;
   margin: -2px 0 10px;
@@ -3439,7 +3439,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 }
 .tree-collection-heading > .tree-payment-availability-note {
   color: var(--memorial-bronze, #806335);
-  font-size: 1.35rem;
+  font-size: 2.025rem;
   font-weight: 800;
   line-height: 1.35;
   margin: -18px 0 -10px;
