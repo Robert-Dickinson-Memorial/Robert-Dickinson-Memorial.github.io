@@ -3,18 +3,19 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const contributionRoutes = [
-  { id: "chippewa-arbor-day", label: "Chippewa · Arbor Day Foundation", type: "tree" },
-  { id: "chippewa-living-tribute", label: "Chippewa · A Living Tribute", type: "tree" },
-  { id: "chippewa-usda", label: "Chippewa · USDA Forest Service restoration gift", type: "restoration" },
-  { id: "amazon-tree-nation", label: "Amazon · Tree-Nation / Rioterra", type: "tree" },
-  { id: "amazon-conservation", label: "Amazon · Amazon Conservation restoration gift", type: "restoration" },
-  { id: "arizona-living-tribute", label: "Arizona · A Living Tribute", type: "tree" },
-  { id: "georgia-living-tribute", label: "Georgia · A Living Tribute", type: "tree" },
-  { id: "texas-living-tribute", label: "Texas · A Living Tribute", type: "tree" },
-  { id: "colorado-csfs", label: "Colorado · Colorado State Forest Service", type: "tree" },
-  { id: "california-living-tribute", label: "California · A Living Tribute", type: "tree" },
-  { id: "massachusetts-esplanade", label: "Massachusetts · Esplanade Association", type: "tree" },
-  { id: "new-england-neff", label: "New England · New England Forestry Foundation restoration gift", type: "restoration" },
+  { id: "chippewa-arbor-day", label: "Chippewa National Forest · Arbor Day Foundation", type: "tree", geography: "Exact forest: Chippewa National Forest" },
+  { id: "minnesota-living-tribute", label: "Minnesota forests · A Living Tribute", type: "tree", geography: "State-level attribution: Minnesota (specific forest not guaranteed)" },
+  { id: "global-one-tree-planted", label: "Where needed most · One Tree Planted", type: "tree", geography: "Global / greatest-need attribution; not assigned to a Robert-specific location" },
+  { id: "chippewa-usda", label: "Chippewa requested · USDA Forest Service restoration gift", type: "restoration", geography: "Chippewa may be requested, but USDA may redirect funds within the National Forest system" },
+  { id: "amazon-tree-nation", label: "Brazilian Amazon · Tree-Nation / Rioterra", type: "tree", geography: "Specific project: Brazilian Amazon · Rioterra" },
+  { id: "amazon-conservation", label: "Amazon · Amazon Conservation restoration gift", type: "restoration", geography: "Regional attribution: Amazon rainforest" },
+  { id: "arizona-living-tribute", label: "Arizona forests · A Living Tribute", type: "tree", geography: "State-level attribution: Arizona" },
+  { id: "georgia-living-tribute", label: "Georgia forests · A Living Tribute", type: "tree", geography: "State-level attribution: Georgia" },
+  { id: "texas-living-tribute", label: "Texas forests · A Living Tribute", type: "tree", geography: "State-level attribution: Texas" },
+  { id: "colorado-csfs", label: "Colorado · Colorado State Forest Service", type: "tree", geography: "State-level attribution: Colorado" },
+  { id: "california-living-tribute", label: "California forests · A Living Tribute", type: "tree", geography: "State-level attribution: California" },
+  { id: "massachusetts-esplanade", label: "Boston, Massachusetts · Esplanade Association", type: "tree", geography: "Specific project: Charles River Esplanade, Boston" },
+  { id: "new-england-neff", label: "New England · NEFF restoration gift", type: "restoration", geography: "Regional attribution: New England" },
 ] as const;
 
 export default function DedicationForm() {
@@ -24,7 +25,8 @@ export default function DedicationForm() {
 
   useEffect(() => {
     const chooseRoute = (value: string | null) => {
-      if (value && contributionRoutes.some((route) => route.id === value)) setRouteId(value);
+      const normalized = value === "chippewa-living-tribute" ? "minnesota-living-tribute" : value;
+      if (normalized && contributionRoutes.some((route) => route.id === normalized)) setRouteId(normalized);
     };
     chooseRoute(window.sessionStorage.getItem("livingTributeRoute"));
     const onRouteSelected = (event: Event) => chooseRoute((event as CustomEvent<string>).detail);
@@ -54,14 +56,18 @@ export default function DedicationForm() {
           website: data.get("website"),
         }),
       });
-      const result = await response.json() as { error?: string; contributionType?: "tree" | "restoration" };
+      const result = await response.json() as {
+        error?: string;
+        contributionType?: "tree" | "restoration";
+        geographicLabel?: string;
+      };
       if (!response.ok) throw new Error(result.error || "Unable to record the tribute.");
       form.reset();
       setRouteId("");
       window.sessionStorage.removeItem("livingTributeRoute");
       window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
       setMessage(result.contributionType === "tree"
-        ? "Thank you. Your tree dedication has been submitted for review. After approval, the reported trees will join Robert’s lifetime total."
+        ? `Thank you. Your trees have been submitted for review and will be attributed to ${result.geographicLabel || "the provider’s stated location"} after approval.`
         : "Thank you. Your restoration gift has been submitted for review. It will be preserved separately from the exact tree total.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Please try again.");
@@ -83,9 +89,10 @@ export default function DedicationForm() {
       <label>Confirmation / order no. <small>(optional)</small><input name="confirmationRef" maxLength={120} autoComplete="off" /></label>
       <label>Email <small>(optional, kept private)</small><input name="email" type="email" maxLength={200} autoComplete="email" /></label>
     </div>
+    {selectedRoute && <p className="tree-geography-guidance"><strong>Location recorded:</strong> {selectedRoute.geography}</p>}
     {selectedRoute?.type === "restoration" && <p className="tree-count-guidance">This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.</p>}
-    {isTree && <p className="tree-count-guidance">Enter only the number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.</p>}
-    <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I confirm that the payment completed successfully and, when I entered a tree quantity, it is the quantity stated by the provider or its published conversion.</label>
+    {isTree && <p className="tree-count-guidance">Enter only the exact number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.</p>}
+    <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I confirm that the payment completed successfully and that the tree quantity, when entered, matches the provider’s stated quantity or published conversion.</label>
     <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
     <button type="submit" disabled={busy || !selectedRoute}>{busy ? "Submitting…" : "Record my living tribute"}</button>
     {message && <p role="status" className="tree-dedication-message">{message}</p>}
