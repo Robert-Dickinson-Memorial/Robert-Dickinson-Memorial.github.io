@@ -4178,3 +4178,8 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {wh
 /* Center both scientific headings on the full section, including its sidebar. */
 .home-redesign .home-preview-heading-integrated > .home-map-heading {width:100%;margin:42px 0 0;text-align:center;}
 .home-redesign .home-preview-heading-integrated > .home-thread-visual {margin-top:12px;}
+
+/* Matching homepage section labels and a centered tribute invitation. */
+.home-redesign .tribute-actions-copy {display:block;}
+.home-redesign .tribute-actions-copy h2 {text-align:center;width:100%;}
+.home-redesign :is(.tribute-actions-copy,.home-legacy-title-block) .section-kicker {font:700 10px/1.5 Arial,Helvetica,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#67775f;margin:0 0 8px;}
