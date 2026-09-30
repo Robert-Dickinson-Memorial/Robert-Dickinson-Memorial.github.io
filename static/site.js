@@ -109,8 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) return;
       const payload = await response.json();
       const listKey = { "/api/memories": "memories", "/api/gallery": "gallery", "/api/events": "events" }[path];
-      if (path === "/api/participation" && !(Number.isFinite(payload?.memories) && Number.isFinite(payload?.trees))) return;
-      if (listKey ? !Array.isArray(payload?.[listKey]) : !payload?.content || typeof payload.content !== "object") return;
+      if (path === "/api/participation") {
+        if (!(Number.isFinite(payload?.memories) && Number.isFinite(payload?.trees))) return;
+      } else if (listKey) {
+        if (!Array.isArray(payload?.[listKey])) return;
+      } else if (!payload?.content || typeof payload.content !== "object") {
+        return;
+      }
       const signature = JSON.stringify(payload);
       if (signature === payloadSignatures.get(path)) return;
       livePayloads.set(path, payload);
