@@ -312,14 +312,14 @@ function initializeMemorialPage() {
     if (!eventTarget && !galleryTarget) return;
     await Promise.allSettled([
       (async()=>{if(!eventTarget)return; const {events=[]}=await getJson("/api/events");eventTarget.replaceChildren();
-        const summary=eventTarget.parentElement.querySelector("p");
-        if(events.length && summary) summary.textContent=(editableCopy[events.length===1?"home.eventsCountOne":"home.eventsCountMany"] || "{count} memorial events currently listed.").replace("{count}",String(events.length));
-        if(!events.length)return;const event=events[0], card=node("div",{className:"home-event-preview"}), date=new Date(event.startAt);
-        card.append(node("time",{text:new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"America/Los_Angeles"}).format(date),attrs:{datetime:event.startAt}}));
-        const body=node("div");body.append(node("strong",{text:event.title}),node("span",{text:(event.location||"").split("\n")[0]}));card.append(body);eventTarget.append(card);
+        if(!events.length){eventTarget.append(node("p",{text:editableCopy["home.eventsEmpty"] || "Memorial gatherings and scientific tributes will be shared here."}));return;}
+        const event=events[0], card=node("div",{className:"home-event-preview"}), date=new Date(event.startAt);
+        const calendar=node("time",{attrs:{datetime:event.startAt}});
+        ["month","day","year"].forEach(part=>calendar.append(node("span",{className:`calendar-${part}`,text:new Intl.DateTimeFormat("en-US",{[part]:part==="month"?"short":"numeric",timeZone:"America/Los_Angeles"}).format(date)})));
+        card.append(calendar);
+        const body=node("div");body.append(node("strong",{text:event.title}),node("span",{text:(event.location||"").split("\n")[0]}));card.append(body,node("span",{className:"home-event-arrow",text:"›",attrs:{"aria-hidden":"true"}}));eventTarget.append(card);
       })(),
       (async()=>{if(!galleryTarget)return;const {gallery=[]}=await getJson("/api/gallery");galleryTarget.replaceChildren();
-        const summary=galleryTarget.parentElement.querySelector("p");if(gallery.length && summary)summary.textContent=(editableCopy[gallery.length===1?"home.galleryCountOne":"home.galleryCountMany"] || "{count} photographs or videos in the public collection.").replace("{count}",String(gallery.length));
         gallery.filter(item=>item.kind==="image"&&item.objectKey).slice(0,4).forEach(item=>galleryTarget.append(node("img",{attrs:{src:objectUrl("/api/gallery/photos",item.objectKey),alt:item.title||"",loading:"lazy"}})));
       })()
     ]);

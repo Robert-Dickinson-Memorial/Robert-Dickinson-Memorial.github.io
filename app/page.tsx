@@ -63,12 +63,6 @@ export default async function Home() {
     } catch { return null; }
   })()]);
   const copy = content.pageCopy;
-  const eventsText = events.length
-    ? (events.length === 1 ? copy["home.eventsCountOne"] : copy["home.eventsCountMany"].replace("{count}", String(events.length)))
-    : copy["home.eventsEmpty"];
-  const galleryText = gallery.length
-    ? (gallery.length === 1 ? copy["home.galleryCountOne"] : copy["home.galleryCountMany"].replace("{count}", String(gallery.length)))
-    : copy["home.galleryEmpty"];
 
   return (
     <main id="page-top" className="home-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
@@ -112,10 +106,9 @@ export default async function Home() {
       </section>
 
       <section className="home-community">
-        <div className="home-community-heading"><p className="section-kicker">{copy["home.communityKicker"]}</p><h2>{copy["home.communityTitle"]}</h2><p>{copy["home.communityIntro"]}</p></div>
         <div className="home-community-grid">
-          <Link href="/events"><CalendarDays size={25} /><small>{copy["home.eventsKicker"]}</small><h3>{copy["home.eventsTitle"]}</h3><p>{eventsText}</p>{events[0] && <div className="home-event-preview"><time dateTime={events[0].startAt}>{new Intl.DateTimeFormat("en-US", {month:"short",day:"numeric",timeZone:"America/Los_Angeles"}).format(new Date(events[0].startAt))}</time><div><strong>{events[0].title}</strong><span>{events[0].location?.split("\n")[0]}</span></div></div>}<b>{copy["home.eventsCta"]}</b></Link>
-          <Link href="/gallery"><Images size={25} /><small>{copy["home.galleryKicker"]}</small><h3>{copy["home.galleryTitle"]}</h3><p>{galleryText}</p><div className="home-gallery-strip">{gallery.filter(item => item.kind === "image" && item.objectKey).slice(0,4).map(item => <img key={item.id} src={`/api/gallery/photos/${item.objectKey!.split("/").map(encodeURIComponent).join("/")}`} alt={item.title} loading="lazy" />)}</div><b>{copy["home.galleryCta"]}</b></Link>
+          <Link href="/events"><div className="home-preview-header"><CalendarDays size={25} /><div><h3>{copy["home.eventsPreviewTitle"]}</h3><p>{copy["home.eventsPreviewIntro"]}</p></div><b>{copy["home.previewViewAll"]}</b></div>{events[0] ? <div className="home-event-preview"><time dateTime={events[0].startAt}>{["month", "day", "year"].map(part => <span key={part} className={`calendar-${part}`}>{new Intl.DateTimeFormat("en-US", { [part]: part === "month" ? "short" : "numeric", timeZone:"America/Los_Angeles" }).format(new Date(events[0].startAt))}</span>)}</time><div><strong>{events[0].title}</strong><span>{events[0].location?.split("\n")[0]}</span></div><ArrowRight size={16} /></div> : <p>{copy["home.eventsEmpty"]}</p>}</Link>
+          <Link href="/gallery"><div className="home-preview-header"><Images size={25} /><div><h3>{copy["home.galleryTitle"]}</h3><p>{copy["home.galleryPreviewIntro"]}</p></div><b>{copy["home.previewViewAll"]}</b></div><div className="home-gallery-strip">{gallery.filter(item => item.kind === "image" && item.objectKey).slice(0,4).map(item => <img key={item.id} src={`/api/gallery/photos/${item.objectKey!.split("/").map(encodeURIComponent).join("/")}`} alt={item.title} loading="lazy" />)}</div></Link>
         </div>
       </section>
       <SiteFooter />
