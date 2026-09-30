@@ -10,16 +10,16 @@ export async function SiteNav({ active }: { active?: string }) {
     { href: "/", label: copy["nav.home"], key: "home" },
     { href: "/life", label: copy["nav.life"], key: "life" },
     { href: "/legacy", label: copy["nav.legacy"], key: "legacy" },
-    { href: "/tree", label: copy["nav.tree"], key: "tree" },
     { href: "/events", label: copy["nav.events"], key: "events" },
     { href: "/gallery", label: copy["nav.gallery"], key: "gallery" },
     { href: "/memories/", label: copy["nav.memories"], key: "memories" },
+    { href: "/tree", label: copy["nav.tree"], key: "tree" },
   ];
   return (
     <nav className="site-nav" aria-label="Main navigation">
-      <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark">∞</span><span>{copy["global.wordmark"]}</span></Link>
-      <div className="nav-links">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : ""].filter(Boolean).join(" ") || undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
-      <details className="mobile-nav"><summary>Menu <span aria-hidden="true">☰</span></summary><div className="mobile-nav-panel">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div></details>
+      <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark" aria-hidden="true">∞</span><span>{copy["global.wordmark"]}</span></Link>
+      <div className="nav-links">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : link.key === "tree" ? "nav-tree-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
+      <details className="mobile-nav"><summary>Menu <span aria-hidden="true">☰</span></summary><div className="mobile-nav-panel">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : link.key === "tree" ? "nav-tree-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div></details>
     </nav>
   );
 }

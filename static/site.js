@@ -2,6 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let editableCopy = {};
   const treeText = (key, fallback) => editableCopy[`tree.ui.${key}`] ?? fallback;
   const apiBase = String(window.MEMORIAL_API_BASE || "").replace(/\/$/, "");
+  const currentNavPage = location.pathname.split("/").filter(Boolean)[0] || "home";
+  document.querySelectorAll(".site-nav [data-nav]").forEach(link => {
+    const active = link.dataset.nav === currentNavPage;
+    link.classList.toggle("active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
   const mobileMenu = document.querySelector(".mobile-nav");
   if (mobileMenu instanceof HTMLDetailsElement) {
     document.addEventListener("keydown", (event) => { if (event.key === "Escape") mobileMenu.open = false; });
