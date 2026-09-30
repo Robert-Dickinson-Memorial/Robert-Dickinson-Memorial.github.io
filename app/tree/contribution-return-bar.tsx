@@ -8,6 +8,7 @@ const labels: Record<string, string> = {
   "minnesota-living-tribute": "Minnesota forests · A Living Tribute",
   "global-one-tree-planted": "Where needed most · One Tree Planted",
   "chippewa-usda": "Chippewa · USDA Forest Service",
+  "brazil-black-jaguar": "Brazil · Black Jaguar Foundation",
   "amazon-tree-nation": "Amazon · Tree-Nation / Rioterra",
   "amazon-conservation": "Amazon · Amazon Conservation",
   "arizona-living-tribute": "Arizona · A Living Tribute",

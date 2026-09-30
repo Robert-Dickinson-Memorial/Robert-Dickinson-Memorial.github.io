@@ -45,6 +45,14 @@ const contributionRoutes = {
     geographicScope: "greatest_need",
     geographicLabel: "Where needed most",
   },
+  "brazil-black-jaguar": {
+    project: "Araguaia Biodiversity Corridor",
+    provider: "Black Jaguar Foundation",
+    type: "tree",
+    basis: "provider-reported exact tree quantity",
+    geographicScope: "region",
+    geographicLabel: "Brazil · Amazon–Cerrado corridor",
+  },
   "amazon-saving-the-amazon": {
     project: "Amazon rainforest",
     provider: "Saving The Amazon",

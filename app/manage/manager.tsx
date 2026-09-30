@@ -67,7 +67,7 @@ const treeCardCopyGroups = [
     ],
   },
   ...[
-    ["amazon", "Amazon rainforest · Saving The Amazon"],
+    ["blackjaguar", "Brazil · Black Jaguar Foundation"],
     ["arizona", "Arizona · A Living Tribute"],
     ["georgia", "Georgia · A Living Tribute"],
     ["texas", "Texas · A Living Tribute"],

@@ -11,16 +11,16 @@ export const dynamic = "force-dynamic";
 
 const restorationProjects = [
   {
-    region: "Amazon rainforest",
-    title: "Plant a native tree in the Amazon",
-    text: "Robert’s work on tropical deforestation makes the Amazon a scientifically meaningful part of this tribute. Saving The Amazon works with Indigenous communities to plant and care for native trees in the Amazon.",
-    provider: "Saving The Amazon",
-    copyId: "amazon",
-    route: "amazon-saving-the-amazon",
-    donateLabel: "Plant a tree in the Amazon",
-    donateUrl: "https://savingtheamazon.org/en/dona-un-arbol",
-    geography: "Amazon rainforest",
-    note: "Exact tree quantity. Each tree receives a unique code, planting coordinates, a planting certificate, and information about the species and Indigenous community.",
+    region: "Brazil · Amazon–Cerrado",
+    title: "Restore Brazil’s Amazon–Cerrado corridor",
+    text: "Robert’s work on tropical deforestation makes Brazil’s forests a meaningful part of this tribute. Black Jaguar Foundation restores native vegetation with local landowners in the Araguaia Biodiversity Corridor, spanning the Amazon rainforest and Cerrado.",
+    provider: "Black Jaguar Foundation",
+    copyId: "blackjaguar",
+    route: "brazil-black-jaguar",
+    donateLabel: "Plant trees with Black Jaguar",
+    donateUrl: "https://www.black-jaguar.org/donate-tree/",
+    geography: "Brazil · Amazon–Cerrado",
+    note: "Choose a tree quantity at checkout and record that number here after payment. Guest payment is available. Trees support the Amazon–Cerrado corridor, not an Amazon-only site. A memorial certificate is not promised; your dedication is recorded on Robert’s website.",
   },
   {
     region: "Arizona",
