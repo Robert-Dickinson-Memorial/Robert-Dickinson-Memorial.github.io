@@ -4171,3 +4171,6 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {wh
  .home-redesign .home-thread-card p {font-size:16px;}
  .home-redesign .science-secondary-terms {grid-template-columns:1fr;}
 }
+
+.home-redesign .home-impact-heading {font:400 38px/1.2 Georgia,serif;letter-spacing:-.025em;color:#112f45;text-align:center;margin:18px 0 26px;padding-top:24px;border-top:1px solid #ccd8d1;}
+@media(max-width:760px) {.home-redesign .home-impact-heading {font-size:32px;}}

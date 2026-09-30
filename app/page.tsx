@@ -102,10 +102,11 @@ export default async function Home() {
             <div className="home-legacy-intro-block"><p>{content.homeLegacyIntro}</p></div>
           </div>
           <div className="home-thread-visual">
-            <HomeThreads threads={content.legacyThreads} label={copy["home.legacyMapPrimary"]} hint={copy["home.legacyMapHint"]} />
+            <HomeThreads threads={content.legacyThreads} label={copy["home.legacyIdeasTitle"]} hint={copy["home.legacyMapHint"]} />
             <OtherFrontiers topics={content.homeFrontierLabels} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>
+        <h3 className="home-impact-heading">{copy["home.legacyImpactTitle"]}</h3>
         <ScientificLegacyStory highlights={content.homeLegacyCards} />
         <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
