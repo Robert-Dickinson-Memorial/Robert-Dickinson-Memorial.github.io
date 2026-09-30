@@ -12,9 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const tributeReturnBar = document.querySelector("[data-tribute-return-bar]");
   const tributeReturnLabel = document.querySelector("[data-tribute-return-label]");
   const tributeRouteLabels = {
-    "chippewa-arbor-day": "Chippewa · Arbor Day Foundation",
-    "chippewa-living-tribute": "Chippewa · A Living Tribute",
-    "chippewa-usda": "Chippewa · USDA Forest Service",
+    "chippewa-arbor-day": "Chippewa National Forest · Arbor Day Foundation",
+    "chippewa-living-tribute": "Minnesota forests · A Living Tribute",
+    "minnesota-living-tribute": "Minnesota forests · A Living Tribute",
+    "global-one-tree-planted": "Where needed most · One Tree Planted",
+    "chippewa-usda": "Chippewa requested · USDA Forest Service",
     "amazon-tree-nation": "Amazon · Tree-Nation / Rioterra",
     "amazon-conservation": "Amazon · Amazon Conservation",
     "arizona-living-tribute": "Arizona · A Living Tribute",
@@ -840,12 +842,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const countField = treeForm.querySelector("[data-tree-count-field]");
     const countInput = countField?.querySelector('input[name="treeCount"]');
     const countGuidance = treeForm.querySelector("[data-tree-count-guidance]");
+    const geographyGuidance = treeForm.querySelector("[data-tree-geography-guidance]");
 
     const updateTreeRoute = () => {
       if (!(routeSelect instanceof HTMLSelectElement)) return;
       const selected = routeSelect.selectedOptions[0];
       const type = selected?.dataset.type || "";
       const isTree = type === "tree";
+      const geography = selected?.dataset.geography || "";
+      if (geographyGuidance instanceof HTMLElement) {
+        geographyGuidance.hidden = !geography;
+        geographyGuidance.textContent = geography ? `Location recorded: ${geography}` : "";
+      }
       if (countField instanceof HTMLElement) countField.hidden = !isTree;
       if (countInput instanceof HTMLInputElement) {
         countInput.required = isTree;
@@ -866,11 +874,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     if (routeSelect instanceof HTMLSelectElement) {
-      const savedRoute = sessionStorage.getItem("livingTributeRoute");
+      const rawSavedRoute = sessionStorage.getItem("livingTributeRoute");
+      const savedRoute = rawSavedRoute === "chippewa-living-tribute" ? "minnesota-living-tribute" : rawSavedRoute;
       if (savedRoute && Array.from(routeSelect.options).some((option) => option.value === savedRoute)) routeSelect.value = savedRoute;
       routeSelect.addEventListener("change", updateTreeRoute);
       window.addEventListener("livingTributeRouteSelected", (event) => {
-        const route = event.detail;
+        const rawRoute = event.detail;
+        const route = rawRoute === "chippewa-living-tribute" ? "minnesota-living-tribute" : rawRoute;
         if (typeof route === "string" && Array.from(routeSelect.options).some((option) => option.value === route)) {
           routeSelect.value = route;
           updateTreeRoute();
@@ -908,7 +918,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
         updateTreeRoute();
         if (status) status.textContent = result.contributionType === "tree"
-          ? "Thank you. Your tree dedication has been submitted for review. After approval, the reported trees will join Robert’s lifetime total."
+          ? `Thank you. Your trees have been submitted for review and will be attributed to ${result.geographicLabel || "the provider’s stated location"} after approval.`
           : "Thank you. Your restoration gift has been submitted for review. It will be preserved separately from the exact tree total.";
       } catch (error) {
         if (status) status.textContent = error.message || "Please try again.";
