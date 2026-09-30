@@ -4,7 +4,7 @@ import { getSiteContent, type SiteAssets } from "../../../site-data";
 
 export const dynamic = "force-dynamic";
 
-const allowedAssetIds = new Set(["portrait", "horizon", "lifePortrait", "earth", "lifeBackground", "treeLandscapes"]);
+const allowedAssetIds = new Set(["portrait", "horizon", "lifePortrait", "earth", "lifeBackground", "treeLandscapes", "bookCover"]);
 const clean = (value: unknown, max: number) => typeof value === "string" ? value.trim().slice(0, max) : "";
 
 async function saveAssets(assets: SiteAssets) {

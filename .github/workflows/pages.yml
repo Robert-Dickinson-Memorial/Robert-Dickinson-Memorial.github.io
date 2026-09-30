@@ -44,6 +44,7 @@ jobs:
           cp static/site.js _site/site.js
           cp static/config.js _site/config.js
           cp static/memory-book.html _site/memory-book/index.html
+          cp public/memory-book.js public/memory-book.css _site/
           cp static/tree/index.html _site/tree/index.html
           tail -n +4 app/globals.css > _site/assets/styles.css
           # Give every deployment a fresh stylesheet URL to avoid stale browser caches.
@@ -53,7 +54,7 @@ jobs:
           version = os.environ["GITHUB_SHA"]
           for page in Path("_site").rglob("*.html"):
               html = page.read_text()
-              page.write_text(html.replace("assets/styles.css", f"assets/styles.css?v={version}").replace("site.js", f"site.js?v={version}"))
+              page.write_text(html.replace("assets/styles.css", f"assets/styles.css?v={version}").replace("site.js", f"site.js?v={version}").replace("memory-book.css", f"memory-book.css?v={version}"))
           PY
           cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
           cp public/dickinson-1967-mit-phd.jpg _site/assets/dickinson-1967-mit-phd.jpg
@@ -79,6 +80,19 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/memorial-mirror-tools" wrangler@4.92.0
           export WRANGLER_BIN="$RUNNER_TEMP/memorial-mirror-tools/node_modules/.bin/wrangler"
           python3 scripts/build-public-mirror.py
+
+      - name: Generate the current printable memory book
+        run: |
+          python3 -m pip install Pillow fonttools
+          curl --fail --location --retry 3 'https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Regular.otf' -o "$RUNNER_TEMP/NotoSerifCJKsc-Regular.otf"
+          curl --fail --location --retry 3 'https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/LICENSE' -o "$RUNNER_TEMP/Noto-CJK-LICENSE.txt"
+          export MEMORIAL_BOOK_CJK_FONT="$RUNNER_TEMP/NotoSerifCJKsc-Regular.otf"
+          export MEMORIAL_BOOK_CJK_LICENSE="$RUNNER_TEMP/Noto-CJK-LICENSE.txt"
+          python3 scripts/prepare-book-images.py _site
+          npm install --prefix "$RUNNER_TEMP/memorial-book-tools" playwright@1.58.2
+          "$RUNNER_TEMP/memorial-book-tools/node_modules/.bin/playwright" install --with-deps chromium
+          export MEMORIAL_BOOK_PLAYWRIGHT="$RUNNER_TEMP/memorial-book-tools/node_modules/playwright"
+          node scripts/generate-memory-book.mjs _site
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

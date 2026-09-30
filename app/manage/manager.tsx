@@ -485,7 +485,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       {message && <p className="manager-message" role="status">{message}</p>}
 
       <section id="edit-memory-book" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Memory book</p><h2>Dynamic memorial book</h2><p>The book is assembled automatically from the current Home, His life, Scientific legacy, and approved Memories content. Updating any of those sections updates the book the next time it is opened.</p><a className="manager-section-link" href="#copy-book">Edit Memory book cover & print labels ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Memory book</p><h2>Dynamic memorial book</h2><p>The book uses the latest Home, His Life, Scientific Legacy, published Memories and Gallery content. Its live preview paginates automatically. The downloadable Letter-size PDF is rebuilt hourly. Book-only titles and acknowledgments can be edited below; cover artwork is in Shared images & backgrounds.</p><a className="manager-section-link" href="#copy-book">Edit Memory book cover & print labels ↓</a></div>
         <div className="manager-form manager-stack">
           <div className="manager-edit-card manager-book-sources">
             <strong>Included automatically</strong>
@@ -510,9 +510,9 @@ export default function Manager({ content, events, media, publishedMemories, edi
       <section id="edit-home" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Shared images & backgrounds</h2><p>Manage the shared portrait, banner background, homepage globe, His Life background, and Plant a Tree landscape artwork here. Page photographs remain in their corresponding photo editors below. Replacement images keep their original files.</p><a className="manager-section-link" href="#copy-home">Edit Home headings, buttons & labels ↓</a></div>
         <div className="manager-form manager-stack">
-          {(["portrait", "horizon", "earth", "lifeBackground", "treeLandscapes"] as const).map((assetId) => {
+          {(["portrait", "horizon", "earth", "lifeBackground", "treeLandscapes", "bookCover"] as const).map((assetId) => {
             const asset = contentValues.siteAssets[assetId];
-            const label = { portrait: "Shared portrait — Home, His Life, Scientific Legacy, Memories and Events", horizon: "Shared banner background — all page banners", earth: "Home — globe in Ideas That Endure", lifeBackground: "His Life — full-page background", treeLandscapes: "Plant a Tree — landscape grid (retain the 3 × 3 layout)" }[assetId];
+            const label = { portrait: "Shared portrait — Home, His Life, Scientific Legacy, Memories and Events", horizon: "Shared banner background — all page banners", earth: "Home — globe in Ideas That Endure", lifeBackground: "His Life — full-page background", treeLandscapes: "Plant a Tree — landscape grid (retain the 3 × 3 layout)", bookCover: "Memory book — cover and closing artwork" }[assetId];
             return <div className="manager-edit-card manager-asset-editor" key={assetId}>
               <strong>{label}</strong>
               <img className={`manager-image-preview ${assetId === "portrait" && asset.layout !== "portrait" ? "manager-image-preview-landscape" : ""}`} src={siteAssetSrc(assetId)} alt={asset.alt} />

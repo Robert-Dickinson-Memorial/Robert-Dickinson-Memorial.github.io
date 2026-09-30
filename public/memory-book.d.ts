@@ -1,0 +1,1 @@
+export function renderMemoryBook(target:HTMLElement,data:unknown,options?:{assetRoot?:string;imageUrl?:(src:string)=>string;mediaUrl?:(route:string,key:string)=>string;publicOrigin?:string;generatedAt?:string}):Promise<{pages:number;generatedAt:string;failedImages:string[];overflow:number[];memories:number;galleryPhotos:number;lifePhotos:number}>;

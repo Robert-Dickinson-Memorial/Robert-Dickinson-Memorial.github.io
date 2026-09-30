@@ -103,6 +103,7 @@ export type SiteAssets = {
   earth: SiteAsset;
   lifeBackground: SiteAsset;
   treeLandscapes: SiteAsset;
+  bookCover: SiteAsset;
 
 };
 
@@ -911,6 +912,38 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.dedicationUrl": "https://onetreeplanted.org/products/gift-trees-in-memory",
   "tree.footerReturn": "Return to memorial",
 
+  "book.design.strapline": "SCIENCE FOR A MORE LIVABLE PLANET",
+  "book.design.coverLine": "A Life. A Legacy. A Brighter Tomorrow.",
+  "book.design.contents": "Contents",
+  "book.design.opening": "A Life Remembered",
+  "book.design.openingKicker": "A commemorative book",
+  "book.design.welcome": "Gathered from the memorial website, these pages bring together Robert’s life, his scientific contributions, and the voices and photographs of the people who knew him.",
+  "book.design.editionNote": "This edition reflects the published memorial content available when it was created. The online memorial continues to grow.",
+  "book.design.editionLabel": "Edition prepared",
+  "book.design.lifeTitle": "A Life Well Lived",
+  "book.design.career": "Life & Career",
+  "book.design.lifePhotos": "His Life in Photographs",
+  "book.design.scienceKicker": "A life in science",
+  "book.design.memoriesTitle": "In Their Words",
+  "book.design.memoriesKicker": "Stories and memories",
+  "book.design.memoriesIntro": "Stories, reflections, and gratitude from colleagues, students, friends, and family.",
+  "book.design.onlineNote": "Accompanying recordings and original attachments are available in the online memorial.",
+  "book.design.watchVideo": "Watch the shared video",
+  "book.design.galleryTitle": "A Life in Pictures",
+  "book.design.recordings": "Recordings",
+  "book.design.impactTitle": "Ideas for a Brighter Tomorrow",
+  "book.design.impactKicker": "A lasting impact",
+  "book.design.thanksTitle": "Thank You",
+  "book.design.thanksText": "To all who shared their stories, photographs, and memories: thank you for helping keep Robert’s spirit alive.",
+  "book.design.contentsNote": "A life. A legacy. A community that carries both forward.",
+  "book.design.footer": "Robert E. Dickinson · A Memorial Book",
+  "book.design.download": "Download PDF edition",
+  "book.design.refresh": "Refresh latest content",
+  "book.design.loading": "Preparing the latest memory book…",
+  "book.design.ready": "{pages} pages · Letter portrait (8.5 × 11 in). For printing, use actual size, turn off browser headers and footers, and enable background graphics.",
+  "book.design.snapshotNote": "The downloadable PDF is refreshed hourly. Use Print or save as PDF for the latest live preview.",
+  "book.design.error": "The book could not be prepared. Please try refreshing.",
+  "book.design.imageWarning": "Some photographs could not load. Please refresh before printing.",
   "book.toolbarReturn": "Return to memorial",
   "book.print": "Print or save as PDF",
   "book.coverKicker": "Community memories",
@@ -932,6 +965,7 @@ export const defaultPageCopy: Record<string, string> = {
 };
 
 export const defaultSiteAssets: SiteAssets = {
+  bookCover: { asset: "life-reference-background-v1.webp", objectKey: null, alt: "Mountain landscape artwork for the memorial book" },
   earth: { asset: "home-earth.jpg", objectKey: null, alt: "Earth, NASA Blue Marble composite" },
   lifeBackground: { asset: "life-reference-background-v1.webp", objectKey: null, alt: "His Life background artwork" },
   treeLandscapes: { asset: "tree-landscapes.webp", objectKey: null, alt: "Plant a Tree landscape artwork" },
@@ -981,6 +1015,7 @@ function alignSiteAssets(value: string | undefined): SiteAssets {
     earth: { ...defaultSiteAssets.earth, ...(saved.earth ?? {}) },
     lifeBackground: { ...defaultSiteAssets.lifeBackground, ...(saved.lifeBackground ?? {}) },
     treeLandscapes: { ...defaultSiteAssets.treeLandscapes, ...(saved.treeLandscapes ?? {}) },
+    bookCover: { ...defaultSiteAssets.bookCover, ...(saved.bookCover ?? {}) },
 
   };
 }
