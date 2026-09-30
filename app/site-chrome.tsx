@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getChatGPTUser } from "./chatgpt-auth";
 import { isEditorEmail, isOwnerEmail } from "./moderation";
-import { getSiteContent } from "./site-data";
+import { getSiteContent, type SiteAssets } from "./site-data";
 
 export async function SiteNav({ active }: { active?: string }) {
   const content = await getSiteContent();
@@ -45,6 +45,14 @@ export async function SiteFooter() {
   );
 }
 
-export function InteriorHero({ kicker, title, intro }: { kicker: string; title: string; intro: string }) {
+export function SharedHeroArt({ assets }: { assets: SiteAssets }) {
+  const url = (asset: SiteAssets["portrait"]) => asset.objectKey
+    ? `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`
+    : `/${asset.asset.replace(/^\//, "")}`;
+  return <><img className="shared-hero-background" src={url(assets.horizon)} alt="" aria-hidden="true" /><figure className="shared-hero-portrait"><img src={url(assets.portrait)} alt={assets.portrait.alt} fetchPriority="high" /></figure></>;
+}
+
+export function InteriorHero({ kicker, title, intro, assets }: { kicker: string; title: string; intro: string; assets?: SiteAssets }) {
+  if (assets) return <header className="interior-hero shared-portrait-hero"><div className="shared-hero-inner"><div className="shared-hero-copy"><p className="section-kicker">{kicker}</p><h1>{title}</h1><p className="shared-hero-intro">{intro}</p></div><SharedHeroArt assets={assets} /></div></header>;
   return <header className="interior-hero"><p className="section-kicker light">{kicker}</p><h1>{title}</h1><p>{intro}</p></header>;
 }

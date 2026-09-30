@@ -481,7 +481,7 @@ const secondaryLegacyTopics: SecondaryLegacyTopic[] = [
 
 export const defaultPageCopy: Record<string, string> = {
   ...treeUiDefaults,
-  "global.wordmark": "Robert Dickinson",
+  "global.wordmark": "Robert E. Dickinson",
   "global.footerName": "Robert E. Dickinson",
   "global.footerText": "Created with love by his academic community.",
   "global.footerHome": "Memorial home ↑",

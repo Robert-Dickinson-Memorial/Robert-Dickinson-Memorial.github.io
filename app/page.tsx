@@ -1,22 +1,16 @@
 import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, Waves, ChartNoAxesColumnIncreasing, Settings, Satellite, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
-import { SiteFooter, SiteNav } from "./site-chrome";
+import { SharedHeroArt, SiteFooter, SiteNav } from "./site-chrome";
 import {
   getPublishedEvents,
   getPublishedGallery,
   getSiteContent,
   type HomeLegacyCard,
   type LegacyThread,
-  type SiteAsset,
 } from "./site-data";
 
 export const dynamic = "force-dynamic";
-
-function assetUrl(asset: SiteAsset) {
-  if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
-  return `/${asset.asset.replace(/^\//, "")}`;
-}
 
 function ScientificLegacyStory({
   highlights,
@@ -81,21 +75,16 @@ export default async function Home() {
   return (
     <main id="page-top" className="home-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="home" />
-      <header id="top" className={`hero hero-portrait-${content.siteAssets.portrait.layout === "portrait" ? "portrait" : "landscape"}`}>
-        <img className="hero-art" src={assetUrl(content.siteAssets.horizon)} alt={content.siteAssets.horizon.alt} aria-hidden={!content.siteAssets.horizon.alt} />
-        <div className="hero-shade" />
-        <div className="hero-copy">
+      <header id="top" className="hero shared-portrait-hero"><div className="shared-hero-inner">
+        <div className="hero-copy shared-hero-copy">
           <p className="eyebrow">{copy["home.heroEyebrow"]}</p>
           <h1>{copy["home.heroNameLine1"]}{" "}<em>{copy["home.heroNameLine2"]}</em></h1>
           <p className="life-dates">{copy["home.lifeDates"]}</p>
           <p className="hero-intro">{content.heroIntro}</p>
           <Link className="scroll-cue" href="/life">{copy["home.readStory"]} <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
-        <figure className="portrait-card">
-          <img src={assetUrl(content.siteAssets.portrait)} alt={content.siteAssets.portrait.alt} />
-
-        </figure>
-      </header>
+        <SharedHeroArt assets={content.siteAssets} />
+      </div>      </header>
 
       <section className="tribute-actions" aria-labelledby="tribute-actions-title">
         <div className="tribute-actions-copy"><p className="section-kicker">{copy["home.tributeKicker"]}</p><h2 id="tribute-actions-title">{copy["home.tributeTitle"]}</h2><p>{copy["home.tributeParticipationIntro"]}</p></div>

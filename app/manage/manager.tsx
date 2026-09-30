@@ -207,16 +207,6 @@ export default function Manager({ content, events, media, publishedMemories, edi
     }));
   }
 
-  function updatePortraitLayout(layout: "portrait" | "landscape") {
-    setContentValues((current) => ({
-      ...current,
-      siteAssets: {
-        ...current.siteAssets,
-        portrait: { ...current.siteAssets.portrait, layout },
-      },
-    }));
-  }
-
   function siteAssetSrc(assetId: "portrait" | "horizon" | "lifePortrait") {
     const asset = contentValues.siteAssets[assetId];
     if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
@@ -516,15 +506,14 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-home" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Hero images</h2><p>Replace the homepage photograph and Earth-horizon artwork here. The homepage photograph can be displayed as either a landscape or portrait card.</p><a className="manager-section-link" href="#copy-home">Edit Home headings, buttons & labels ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Shared banner images</h2><p>One portrait and one background are shared by Home, His Life, Scientific Legacy, and Share A Memory. Upload a replacement here to update all four pages. Portrait edges blend automatically into the banner; the original upload is preserved.</p><a className="manager-section-link" href="#copy-home">Edit Home headings, buttons & labels ↓</a></div>
         <div className="manager-form manager-stack">
           {(["portrait", "horizon"] as const).map((assetId) => {
             const asset = contentValues.siteAssets[assetId];
-            const label = assetId === "portrait" ? "Homepage photograph" : "Homepage horizon / background artwork";
+            const label = assetId === "portrait" ? "Shared portrait — all four pages" : "Shared banner background — all four pages";
             return <div className="manager-edit-card manager-asset-editor" key={assetId}>
               <strong>{label}</strong>
               <img className={`manager-image-preview ${assetId === "portrait" && asset.layout !== "portrait" ? "manager-image-preview-landscape" : ""}`} src={siteAssetSrc(assetId)} alt={asset.alt} />
-              {assetId === "portrait" && <label>Homepage photo layout<select value={asset.layout === "portrait" ? "portrait" : "landscape"} onChange={(e) => updatePortraitLayout(e.target.value as "portrait" | "landscape")}><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select><span>This changes the shape of the photo card on the homepage; it does not crop the uploaded file permanently.</span></label>}
               <label>Alt text<input value={asset.alt} onChange={(e) => updateSiteAssetAlt(assetId, e.target.value)} /></label>
               <form className="manager-photo-form manager-site-asset-form" onSubmit={(event) => uploadSiteAsset(event, assetId)}>
                 <label>Replacement image <span>JPG, PNG, or WebP, up to 12 MB.</span><input name="file" type="file" accept="image/jpeg,image/png,image/webp" required /></label>

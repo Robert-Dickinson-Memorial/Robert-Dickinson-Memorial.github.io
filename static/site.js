@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-copy]").forEach((element) => {
       if (!(element instanceof HTMLElement)) return;
       const key = element.dataset.copy;
-      if (key && typeof copy[key] === "string") element.textContent = copy[key];
+      if (key && typeof copy[key] === "string" && element.textContent !== copy[key]) element.textContent = copy[key];
     });
     document.querySelectorAll("[data-copy-href]").forEach((element) => {
       const key = element.getAttribute("data-copy-href");
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const asset = id && assets[id];
       if (!asset) return;
       element.src = asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
-      element.alt = asset.alt || "";
+      element.alt = element.getAttribute("aria-hidden") === "true" ? "" : asset.alt || "";
     });
     const hero = document.querySelector(".hero");
     if (hero instanceof HTMLElement) {

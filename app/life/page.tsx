@@ -1,4 +1,4 @@
-import { SiteFooter, SiteNav } from "../site-chrome";
+import { SharedHeroArt, SiteFooter, SiteNav } from "../site-chrome";
 import { getSiteContent, type LifePhoto } from "../site-data";
 import LifeTimelineMotion from "./timeline-motion";
 
@@ -15,23 +15,19 @@ export default async function LifePage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
   const earlyPhotos = content.lifePhotos.filter((photo) => !photo.milestoneId);
-  const portrait = content.siteAssets.portrait;
-  const portraitSrc = portrait.objectKey
-    ? `/api/site-assets/${portrait.objectKey.split("/").map(encodeURIComponent).join("/")}`
-    : `/assets/${portrait.asset.replace(/^\//, "")}`;
 
   return <main id="page-top" className="interior-page life-reference-page life-page-active" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="life" />
-    <header className="life-reference-hero">
-      <div className="life-reference-hero-inner">
-        <div className="life-reference-hero-copy">
+    <header className="life-reference-hero shared-portrait-hero">
+      <div className="life-reference-hero-inner shared-hero-inner">
+        <div className="life-reference-hero-copy shared-hero-copy">
           <p className="section-kicker">{copy["life.heroKicker"]}</p>
           <p className="life-reference-name">{copy["life.heroName"]}</p>
           <span className="life-reference-years">{copy["life.years"]}</span>
           <h1>{copy["life.heroTitle"]}</h1>
           <p className="life-reference-hero-intro">{copy["life.heroIntro"]}</p>
         </div>
-        <figure className="life-reference-portrait"><img src={portraitSrc} alt={portrait.alt} /></figure>
+        <SharedHeroArt assets={content.siteAssets} />
       </div>
     </header>
     <div className="life-reference-body">

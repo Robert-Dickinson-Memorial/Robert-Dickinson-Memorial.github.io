@@ -151,6 +151,7 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         media = dict(pool.map(copy_media, public_keys(content, gallery, memories)))
     (OUTPUT / "manifest.json").write_text(json.dumps({"media": media}), encoding="utf-8")
+    subprocess.run(["python3", "scripts/prerender-shared-hero.py", str(OUTPUT.parent)], check=True)
     print(f"Mirrored {len(gallery)} gallery items, {len(memories)} approved memories, {tree_total} dedicated trees, {restoration_total} restoration gifts, and {len(media)} public media files.")
 
 

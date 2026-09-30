@@ -21,7 +21,7 @@ export default async function LegacyPage() {
   const copy = content.pageCopy;
   return <main id="page-top" className="interior-page legacy-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="legacy" />
-    <InteriorHero kicker={copy["legacy.heroKicker"]} title={copy["home.legacyTitle"]} intro={copy["legacy.heroIntro"]} />
+    <InteriorHero assets={content.siteAssets} kicker={copy["legacy.heroKicker"]} title={copy["home.legacyTitle"]} intro={copy["legacy.heroIntro"]} />
     <section className="legacy-section legacy-page-content">
       <div className="legacy-personal-quotes">{["2018", "1996"].map((year) => <blockquote key={year}><p>{copy[`legacy.quote${year}Text`]}</p><footer>{copy[`legacy.quote${year}Attribution`]}</footer></blockquote>)}</div>
 
