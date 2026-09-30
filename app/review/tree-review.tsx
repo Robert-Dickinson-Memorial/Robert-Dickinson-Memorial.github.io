@@ -11,6 +11,8 @@ export type TreeDedication = {
   contributionType: "tree" | "restoration";
   reportedTreeCount: number | null;
   countBasis: string | null;
+  geographicScope: string | null;
+  geographicLabel: string | null;
   confirmationRef: string | null;
   paymentConfirmed: boolean | number;
   createdAt: string;
@@ -50,6 +52,7 @@ export default function TreeReview({ pending, approved }: { pending: TreeDedicat
   const recordDetails = (item: TreeDedication) => <>
     <span>{item.project} · {item.provider}</span>
     <span>{item.contributionType === "tree" ? `${item.reportedTreeCount ?? 0} ${item.reportedTreeCount === 1 ? "tree" : "trees"}` : "restoration gift"}</span>
+    {item.geographicLabel && <small>Location recorded: {item.geographicLabel}{item.geographicScope ? ` · ${item.geographicScope.replaceAll("_", " ")}` : ""}</small>}
     {item.countBasis && <small>{item.countBasis}</small>}
     {item.confirmationRef && <small>Confirmation: {item.confirmationRef}</small>}
     {item.email && <small>{item.email}</small>}
