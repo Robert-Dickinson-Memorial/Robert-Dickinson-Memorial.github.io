@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteNav } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 import ContributionLink from "./contribution-link";
+import ContributionReturnBar from "./contribution-return-bar";
 import DedicationForm from "./dedication-form";
 
 export const dynamic = "force-dynamic";
@@ -117,6 +118,10 @@ export default async function TreeDedicationPage() {
         <h1>{copy["tree.pageTitle"]}</h1>
         <p>{copy["tree.pageIntro"]}</p>
         <small>{copy["tree.v3HeroNote"]}</small>
+        <div className="tree-page-intro-actions">
+          <a className="tree-intro-primary" href="#restoration-projects">Choose a planting location ↓</a>
+          <a className="tree-intro-record" href="#record-tribute">Already contributed? Record your trees →</a>
+        </div>
       </header>
 
       <section id="restoration-projects" className="tree-project tree-project-featured">
@@ -207,6 +212,8 @@ export default async function TreeDedicationPage() {
         <p>Minnesota comes first in this tribute, while every other project carries forward another place or ecosystem connected to Robert’s life and science.</p>
         <a className="tree-primary-action" href="#restoration-projects">Explore the projects again <span aria-hidden="true">↑</span></a>
       </section>
+
+      <ContributionReturnBar />
 
       <footer className="site-footer">
         <div className="wordmark footer-mark"><span className="wordmark-mark">∞</span><span>{copy["global.footerName"]}</span></div>
