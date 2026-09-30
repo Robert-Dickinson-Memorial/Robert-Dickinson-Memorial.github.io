@@ -6,7 +6,6 @@ const contributionRoutes = [
   { id: "chippewa-arbor-day", label: "Chippewa National Forest · Arbor Day Foundation", type: "tree", geography: "Exact forest: Chippewa National Forest" },
   { id: "minnesota-living-tribute", label: "Minnesota forests · A Living Tribute", type: "tree", geography: "State-level attribution: Minnesota (specific forest not guaranteed)" },
   { id: "global-one-tree-planted", label: "Where needed most · One Tree Planted", type: "tree", geography: "Global / greatest-need attribution; not assigned to a Robert-specific location" },
-  { id: "chippewa-usda", label: "Chippewa requested · USDA Forest Service restoration gift", type: "restoration", geography: "Chippewa may be requested, but USDA may redirect funds within the National Forest system" },
   { id: "amazon-tree-nation", label: "Brazilian Amazon · Tree-Nation / Rioterra", type: "tree", geography: "Specific project: Brazilian Amazon · Rioterra" },
   { id: "amazon-conservation", label: "Amazon · Amazon Conservation restoration gift", type: "restoration", geography: "Regional attribution: Amazon rainforest" },
   { id: "arizona-living-tribute", label: "Arizona forests · A Living Tribute", type: "tree", geography: "State-level attribution: Arizona" },
