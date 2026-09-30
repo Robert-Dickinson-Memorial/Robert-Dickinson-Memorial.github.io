@@ -4174,3 +4174,7 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {wh
 
 .home-redesign .home-impact-heading {font:400 38px/1.2 Georgia,serif;letter-spacing:-.025em;color:#112f45;text-align:center;margin:18px 0 26px;padding-top:24px;border-top:1px solid #ccd8d1;}
 @media(max-width:760px) {.home-redesign .home-impact-heading {font-size:32px;}}
+
+/* Center both scientific headings on the full section, including its sidebar. */
+.home-redesign .home-preview-heading-integrated > .home-map-heading {width:100%;margin:42px 0 0;text-align:center;}
+.home-redesign .home-preview-heading-integrated > .home-thread-visual {margin-top:12px;}

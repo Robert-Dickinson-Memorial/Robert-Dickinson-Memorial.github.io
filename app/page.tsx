@@ -30,10 +30,9 @@ function ScientificLegacyStory({
 }
 
 const threadIcons = [Waves, ChartNoAxesColumnIncreasing, Settings, Sprout, Satellite, Globe2];
-const contributionIcons = [Globe2, Waves, Settings, Satellite, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
-function HomeThreads({ threads, label, hint }: { threads: LegacyThread[]; label: string; hint: string }) {
+const contributionIcons = [Globe2, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
+function HomeThreads({ threads }: { threads: LegacyThread[] }) {
   return <div className="home-earth-map">
-    <div className="home-map-heading"><h3>{label}</h3><p>{hint}</p></div>
     <div className="home-earth-layout">
       <figure className="home-earth"><div className="home-earth-orbit"><svg className="home-thread-ring" viewBox="0 0 300 300" aria-hidden="true"><circle className="thread-orbit-line" cx="150" cy="150" r="140" /><circle className="thread-orbit-dot" cx="42.75" cy="60" r="4" /><circle className="thread-orbit-dot" cx="10" cy="150" r="4" /><circle className="thread-orbit-dot" cx="42.75" cy="240" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="60" r="4" /><circle className="thread-orbit-dot" cx="290" cy="150" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="240" r="4" /></svg><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div></figure>
       {threads.map((thread,index) => {const Icon=threadIcons[index % threadIcons.length];return <article className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><span className="home-line-icon" aria-hidden="true"><Icon size={28} strokeWidth={1.5} /></span><div><h4>{thread.title}</h4><p>{thread.text}</p></div></article>;})}
@@ -101,8 +100,9 @@ export default async function Home() {
           <div className="home-legacy-copy-block">
             <div className="home-legacy-intro-block"><p>{content.homeLegacyIntro}</p></div>
           </div>
+          <div className="home-map-heading"><h3>{copy["home.legacyIdeasTitle"]}</h3><p>{copy["home.legacyMapHint"]}</p></div>
           <div className="home-thread-visual">
-            <HomeThreads threads={content.legacyThreads} label={copy["home.legacyIdeasTitle"]} hint={copy["home.legacyMapHint"]} />
+            <HomeThreads threads={content.legacyThreads} />
             <OtherFrontiers topics={content.homeFrontierLabels} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>
