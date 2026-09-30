@@ -6,14 +6,13 @@ const contributionRoutes = [
   { id: "chippewa-arbor-day", label: "Chippewa National Forest · Arbor Day Foundation", type: "tree", geography: "Exact forest: Chippewa National Forest" },
   { id: "minnesota-living-tribute", label: "Minnesota forests · A Living Tribute", type: "tree", geography: "State-level attribution: Minnesota (specific forest not guaranteed)" },
   { id: "global-one-tree-planted", label: "Where needed most · One Tree Planted", type: "tree", geography: "Global / greatest-need attribution; not assigned to a Robert-specific location" },
-  { id: "amazon-tree-nation", label: "Brazilian Amazon · Tree-Nation / Rioterra", type: "tree", geography: "Specific project: Brazilian Amazon · Rioterra" },
-  { id: "amazon-conservation", label: "Amazon · Amazon Conservation restoration gift", type: "restoration", geography: "Regional attribution: Amazon rainforest" },
+  { id: "amazon-saving-the-amazon", label: "Amazon rainforest · Saving The Amazon", type: "tree", geography: "Regional attribution: Amazon rainforest" },
   { id: "arizona-living-tribute", label: "Arizona forests · A Living Tribute", type: "tree", geography: "State-level attribution: Arizona" },
   { id: "georgia-living-tribute", label: "Georgia forests · A Living Tribute", type: "tree", geography: "State-level attribution: Georgia" },
   { id: "texas-living-tribute", label: "Texas forests · A Living Tribute", type: "tree", geography: "State-level attribution: Texas" },
   { id: "colorado-csfs", label: "Colorado · Colorado State Forest Service", type: "tree", geography: "State-level attribution: Colorado" },
   { id: "california-living-tribute", label: "California forests · A Living Tribute", type: "tree", geography: "State-level attribution: California" },
-  { id: "massachusetts-esplanade", label: "Boston, Massachusetts · Esplanade Association", type: "tree", geography: "Specific project: Charles River Esplanade, Boston" },
+  { id: "massachusetts-tree-boston", label: "Boston, Massachusetts · Tree Boston", type: "tree", geography: "City-level attribution: Boston, Massachusetts" },
   { id: "new-england-neff", label: "New England · NEFF restoration gift", type: "restoration", geography: "Regional attribution: New England" },
 ] as const;
 
@@ -89,13 +88,14 @@ export default function DedicationForm() {
           {contributionRoutes.map((route) => <option key={route.id} value={route.id}>{route.label}</option>)}
         </select>
       </label>
-      {isTree && <label>Number of trees <small>(use the provider’s quantity)</small><input name="treeCount" type="number" min={1} max={10000} step={1} required inputMode="numeric" /></label>}
+      {isTree && <label>Number of trees <small>(use the provider’s quantity)</small><input key={routeId} name="treeCount" type="number" min={1} max={routeId === "massachusetts-tree-boston" ? 1 : 10000} step={1} required inputMode="numeric" defaultValue={routeId === "massachusetts-tree-boston" ? 1 : undefined} /></label>}
       <label>Confirmation / order no. <small>(optional)</small><input name="confirmationRef" maxLength={120} autoComplete="off" /></label>
       <label>Email <small>(optional, kept private)</small><input name="email" type="email" maxLength={200} autoComplete="email" /></label>
     </div>
     {selectedRoute && <p className="tree-geography-guidance"><strong>Location recorded:</strong> {selectedRoute.geography}</p>}
     {selectedRoute?.type === "restoration" && <p className="tree-count-guidance">This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.</p>}
-    {isTree && <p className="tree-count-guidance">Enter only the exact number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.</p>}
+    {isTree && routeId === "massachusetts-tree-boston" && <p className="tree-count-guidance">Choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000), then record 1 tree. Other donation amounts should not be converted into a tree count.</p>}
+    {isTree && routeId !== "massachusetts-tree-boston" && <p className="tree-count-guidance">Enter only the exact number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.</p>}
     <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I confirm that the payment completed successfully and that the tree quantity, when entered, matches the provider’s stated quantity or published conversion.</label>
     <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
     <button type="submit" disabled={busy || !selectedRoute}>{busy ? "Submitting…" : "Record my living tribute"}</button>
