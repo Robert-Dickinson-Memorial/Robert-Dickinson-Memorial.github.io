@@ -1,5 +1,6 @@
 import { ArrowLeft, ExternalLink, Globe2, MapPin, ShieldCheck, Sprout } from "lucide-react";
 import Link from "next/link";
+import { env } from "cloudflare:workers";
 import { SiteNav } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 import ContributionLink from "./contribution-link";
@@ -117,6 +118,18 @@ const restorationProjects = [
 export default async function TreeDedicationPage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
+  let treeTotal = 0;
+  let restorationGifts = 0;
+  try {
+    if (env.DB) {
+      const [trees, restoration] = await Promise.all([
+        env.DB.prepare("SELECT COALESCE(SUM(reported_tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1").first<{ total: number }>(),
+        env.DB.prepare("SELECT COUNT(*) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'restoration' AND payment_confirmed = 1").first<{ total: number }>(),
+      ]);
+      treeTotal = Number(trees?.total ?? 0);
+      restorationGifts = Number(restoration?.total ?? 0);
+    }
+  } catch {}
 
   return (
     <main className="tree-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
@@ -126,6 +139,7 @@ export default async function TreeDedicationPage() {
         <h1>{copy["tree.pageTitle"]}</h1>
         <p>{copy["tree.pageIntro"]}</p>
         <small>Payments are completed on each provider’s official website. The memorial never receives card numbers, CVVs, bank details, or payment credentials.</small>
+        <div className="tree-live-total"><span><strong>{treeTotal}</strong> {treeTotal === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory{restorationGifts > 0 ? ` · ${restorationGifts} additional restoration ${restorationGifts === 1 ? "gift" : "gifts"}` : ""}</span></div>
         <div className="tree-page-intro-actions">
           <a className="tree-intro-primary" href="#restoration-projects">Choose a planting location ↓</a>
           <a className="tree-intro-record" href="#record-tribute">Already contributed? Record your trees →</a>
