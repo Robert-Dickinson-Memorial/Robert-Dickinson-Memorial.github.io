@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout } from "lucide-react";
+import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, Waves, ChartNoAxesColumnIncreasing, Settings, Satellite, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
 import { SiteFooter, SiteNav } from "./site-chrome";
@@ -8,7 +8,6 @@ import {
   getSiteContent,
   type HomeLegacyCard,
   type LegacyThread,
-  type SecondaryLegacyTopic,
   type SiteAsset,
 } from "./site-data";
 
@@ -26,17 +25,27 @@ function ScientificLegacyStory({
 }) {
   return <div className="home-science-story">
     <div className="science-highlight-stream">
-      {highlights.map((highlight, index) => <article className="science-highlight" key={`${index}-${highlight.title}`}>
-        <span className="science-highlight-dot" aria-hidden="true" />
+      {highlights.map((highlight, index) => {const Icon = contributionIcons[index % contributionIcons.length]; return <article className="science-highlight" key={`${index}-${highlight.title}`}>
+        <Icon className="home-contribution-icon" size={32} strokeWidth={1.5} aria-hidden="true" />
         <h3>{highlight.title}</h3>
         <p>{highlight.text}</p>
-      </article>)}
+      </article>;})}
     </div>
 
   </div>;
 }
 
-const diagramLabels = ["Atmospheric Dynamics", "Climate Change", "Climate Modeling", "Land-Atmosphere Interactions", "Satellite Remote Sensing", "A Coupled Earth"];
+const threadIcons = [Waves, ChartNoAxesColumnIncreasing, Settings, Sprout, Satellite, Globe2];
+const contributionIcons = [Globe2, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
+function HomeThreads({ threads, label, hint }: { threads: LegacyThread[]; label: string; hint: string }) {
+  return <div className="home-earth-map">
+    <div className="home-map-heading"><h3>{label}</h3><p>{hint}</p></div>
+    <div className="home-earth-layout">
+      <figure className="home-earth"><div className="home-earth-orbit"><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div><figcaption>NASA / Earth Observatory</figcaption></figure>
+      {threads.map((thread,index) => {const Icon=threadIcons[index % threadIcons.length];return <article className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><span className="home-line-icon"><Icon size={28} strokeWidth={1.5}/></span><div><h4>{thread.title}</h4><p>{thread.text}</p></div></article>;})}
+    </div>
+  </div>;
+}
 
 function OtherFrontiers({ topics, label }: { topics: string[]; label: string }) {
   return <div className="science-secondary-band science-secondary-band-home">
@@ -70,22 +79,21 @@ export default async function Home() {
     : copy["home.galleryEmpty"];
 
   return (
-    <main data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+    <main className="home-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="home" />
       <header id="top" className={`hero hero-portrait-${content.siteAssets.portrait.layout === "portrait" ? "portrait" : "landscape"}`}>
         <img className="hero-art" src={assetUrl(content.siteAssets.horizon)} alt={content.siteAssets.horizon.alt} aria-hidden={!content.siteAssets.horizon.alt} />
         <div className="hero-shade" />
         <div className="hero-copy">
           <p className="eyebrow">{copy["home.heroEyebrow"]}</p>
-          <h1>{copy["home.heroNameLine1"]}<br /><em>{copy["home.heroNameLine2"]}</em></h1>
+          <h1>{copy["home.heroNameLine1"]}{" "}<em>{copy["home.heroNameLine2"]}</em></h1>
           <p className="life-dates">{copy["home.lifeDates"]}</p>
           <p className="hero-intro">{content.heroIntro}</p>
           <Link className="scroll-cue" href="/life">{copy["home.readStory"]} <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
         <figure className="portrait-card">
           <img src={assetUrl(content.siteAssets.portrait)} alt={content.siteAssets.portrait.alt} />
-          <blockquote>{copy["home.portraitQuote"]}</blockquote>
-          <figcaption>{copy["home.portraitCaption"]}</figcaption>
+
         </figure>
       </header>
 
@@ -97,10 +105,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="home-story-preview">
-        <div><p className="section-kicker">{copy["home.storyKicker"]}</p><h2>{copy["home.storyTitleLine1"]}<br />{copy["home.storyTitleLine2"]}</h2><span>{copy["home.storyYears"]}</span></div>
-        <div className="home-story-copy">{introduction.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={paragraph.slice(0, 30)}>{paragraph}</p>)}<Link className="text-link" href="/life">{copy["home.storyReadLink"]} <ArrowRight size={16} /></Link></div>
-      </section>
+      <figure className="home-quote-band"><blockquote>{copy["home.portraitQuote"]}</blockquote><figcaption>{copy["home.portraitCaption"]}</figcaption></figure>
 
       <section className="home-legacy-preview">
         <div className="home-preview-heading home-preview-heading-integrated">
@@ -109,8 +114,7 @@ export default async function Home() {
             <div className="home-legacy-intro-block"><p>{content.homeLegacyIntro}</p></div>
           </div>
           <div className="home-thread-visual">
-            <div className="home-thread-art" role="img" aria-label={`Six connected research threads: ${diagramLabels.join(", ")}`} style={{ backgroundImage: 'url("/legacy-threads-large-labels.webp")' }} />
-            <ul className="home-thread-mobile-list" aria-label="Six enduring scientific threads">{diagramLabels.map((label) => <li key={label}>{label}</li>)}</ul>
+            <HomeThreads threads={content.legacyThreads} label={copy["home.legacyMapPrimary"]} hint={copy["home.legacyMapHint"]} />
             <OtherFrontiers topics={content.homeFrontierLabels} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>
@@ -118,11 +122,16 @@ export default async function Home() {
         <Link className="light-button" href="/legacy">{copy["home.legacyCta"]} <ArrowRight size={17} /></Link>
       </section>
 
+      <section className="home-story-preview">
+        <div><p className="section-kicker">{copy["home.storyKicker"]}</p><h2>{copy["home.storyTitleLine1"]}<br />{copy["home.storyTitleLine2"]}</h2><span>{copy["home.storyYears"]}</span></div>
+        <div className="home-story-copy">{introduction.map((paragraph, index) => <p className={index === 0 ? "lead" : undefined} key={paragraph.slice(0, 30)}>{paragraph}</p>)}<Link className="text-link" href="/life">{copy["home.storyReadLink"]} <ArrowRight size={16} /></Link></div>
+      </section>
+
       <section className="home-community">
         <div className="home-community-heading"><p className="section-kicker">{copy["home.communityKicker"]}</p><h2>{copy["home.communityTitle"]}</h2><p>{copy["home.communityIntro"]}</p></div>
         <div className="home-community-grid">
-          <Link href="/events"><CalendarDays size={25} /><small>{copy["home.eventsKicker"]}</small><h3>{copy["home.eventsTitle"]}</h3><p>{eventsText}</p><b>{copy["home.eventsCta"]}</b></Link>
-          <Link href="/gallery"><Images size={25} /><small>{copy["home.galleryKicker"]}</small><h3>{copy["home.galleryTitle"]}</h3><p>{galleryText}</p><b>{copy["home.galleryCta"]}</b></Link>
+          <Link href="/events"><CalendarDays size={25} /><small>{copy["home.eventsKicker"]}</small><h3>{copy["home.eventsTitle"]}</h3><p>{eventsText}</p>{events[0] && <div className="home-event-preview"><time dateTime={events[0].startAt}>{new Intl.DateTimeFormat("en-US", {month:"short",day:"numeric",timeZone:"America/Los_Angeles"}).format(new Date(events[0].startAt))}</time><div><strong>{events[0].title}</strong><span>{events[0].location?.split("\n")[0]}</span></div></div>}<b>{copy["home.eventsCta"]}</b></Link>
+          <Link href="/gallery"><Images size={25} /><small>{copy["home.galleryKicker"]}</small><h3>{copy["home.galleryTitle"]}</h3><p>{galleryText}</p><div className="home-gallery-strip">{gallery.filter(item => item.kind === "image" && item.objectKey).slice(0,4).map(item => <img key={item.id} src={`/api/gallery/photos/${item.objectKey!.split("/").map(encodeURIComponent).join("/")}`} alt={item.title} loading="lazy" />)}</div><b>{copy["home.galleryCta"]}</b></Link>
           <Link href="/memories"><MessageSquareText size={25} /><small>{copy["home.memoriesKicker"]}</small><h3>{copy["home.memoriesTitle"]}</h3><p>{copy["home.memoriesText"]}</p><b>{copy["home.memoriesCta"]}</b></Link>
         </div>
       </section>

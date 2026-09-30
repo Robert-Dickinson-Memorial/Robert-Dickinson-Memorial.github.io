@@ -259,6 +259,40 @@ document.addEventListener("DOMContentLoaded", () => {
     illuminateLifeTimeline();
   }
 
+  // Fixed SVG paths only; all owner-authored text continues to use textContent.
+  function homeIcon(kind, className = "home-contribution-icon") {
+    const paths = {
+      globe: '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6h14M5 18h14"/>',
+      waves: '<path d="M2 6q3-4 6 0t6 0t6 0M2 12q3-4 6 0t6 0t6 0M2 18q3-4 6 0t6 0t6 0"/>',
+      bars: '<path d="M3 21h18M5 21V12h3v9M11 21V7h3v14M17 21V3h3v18"/>',
+      model: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/>',
+      leaf: '<path d="M4 21C4 9 12 3 21 3c0 10-7 17-15 14M4 21 16 9"/>',
+      satellite: '<path d="m7 8 4-4 9 9-4 4zM3 10l3-3 4 4-3 3zM13 20l3-3 4 4-3 3zM9 17l-5 5M3 17l4 4"/>',
+      cap: '<path d="m2 8 10-5 10 5-10 5zM6 10v7q6 5 12 0v-7M22 8v9"/>',
+      people: '<circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path d="M1 21v-4a7 7 0 0 1 14 0v4M16 13a6 6 0 0 1 7 6v2"/>'
+    };
+    const span=node("span",{className,attrs:{"aria-hidden":"true"}});
+    span.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${paths[kind] || paths.globe}</svg>`;
+    return span;
+  }
+  async function hydrateHomePreviews() {
+    const eventTarget=document.querySelector("[data-home-event]"), galleryTarget=document.querySelector("[data-home-gallery]");
+    if (!eventTarget && !galleryTarget) return;
+    await Promise.allSettled([
+      (async()=>{if(!eventTarget)return; const {events=[]}=await getJson("/api/events");eventTarget.replaceChildren();
+        const summary=eventTarget.parentElement.querySelector("p");
+        if(events.length && summary) summary.textContent=(editableCopy[events.length===1?"home.eventsCountOne":"home.eventsCountMany"] || "{count} memorial events currently listed.").replace("{count}",String(events.length));
+        if(!events.length)return;const event=events[0], card=node("div",{className:"home-event-preview"}), date=new Date(event.startAt);
+        card.append(node("time",{text:new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"America/Los_Angeles"}).format(date),attrs:{datetime:event.startAt}}));
+        const body=node("div");body.append(node("strong",{text:event.title}),node("span",{text:(event.location||"").split("\n")[0]}));card.append(body);eventTarget.append(card);
+      })(),
+      (async()=>{if(!galleryTarget)return;const {gallery=[]}=await getJson("/api/gallery");galleryTarget.replaceChildren();
+        const summary=galleryTarget.parentElement.querySelector("p");if(gallery.length && summary)summary.textContent=(editableCopy[gallery.length===1?"home.galleryCountOne":"home.galleryCountMany"] || "{count} photographs or videos in the public collection.").replace("{count}",String(gallery.length));
+        gallery.filter(item=>item.kind==="image"&&item.objectKey).slice(0,4).forEach(item=>galleryTarget.append(node("img",{attrs:{src:objectUrl("/api/gallery/photos",item.objectKey),alt:item.title||"",loading:"lazy"}})));
+      })()
+    ]);
+  }
+
   function renderHomeLegacy(threads, highlights, frontierLabels, copy) {
     const target = document.querySelector("[data-home-scientific-story]");
     const secondaryTarget = document.querySelector("[data-home-secondary]");
@@ -268,6 +302,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const frontiers = Array.isArray(frontierLabels) ? frontierLabels : ["Tropical Deforestation", "Carbon & Nitrogen cycling", "Regional Climate Modeling", "Solar Geoengineering", "Canopy Radiative Transfer"];
     const diagramLabels = ["Atmospheric Dynamics", "Climate Change", "Climate Modeling", "Land-Atmosphere Interactions", "Satellite Remote Sensing", "A Coupled Earth"];
 
+    const earthMap=document.querySelector("[data-home-earth-threads]");
+    if(earthMap){
+      earthMap.querySelectorAll(".home-thread-card").forEach(card=>card.remove());
+      threads.forEach((thread,index)=>{const card=node("article",{className:`home-thread-card home-thread-card-${index+1}`}),body=node("div");body.append(node("h4",{text:thread.title||""}),node("p",{text:thread.text||""}));card.append(homeIcon(["waves","bars","model","leaf","satellite","globe"][index%6],"home-line-icon"),body);earthMap.append(card);});
+      document.querySelectorAll(".home-redesign .tribute-action-icon").forEach((icon,i)=>icon.replaceChildren(homeIcon(i===0?"leaf":"people","")));
+    }
     if (headingThreads instanceof HTMLElement) {
       headingThreads.replaceChildren(...threads.map((thread) => node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
     }
@@ -279,9 +319,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!(target instanceof HTMLElement)) return;
     const stream = node("div", { className: "science-highlight-stream" });
-    highlights.forEach((highlight) => {
+    highlights.forEach((highlight, index) => {
       const article = node("article", { className: "science-highlight" });
-      article.append(node("span", { className: "science-highlight-dot", attrs: { "aria-hidden": "true" } }));
+      article.append(earthMap ? homeIcon(["globe","bars","leaf","cap"][index % 4]) : node("span", { className: "science-highlight-dot", attrs: { "aria-hidden": "true" } }));
       article.append(node("h3", { text: highlight.title || "" }), node("p", { text: highlight.text || "" }));
       stream.append(article);
     });
@@ -1027,9 +1067,9 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((manifest) => { mirroredMedia = manifest.media || {}; })
     .catch(() => {});
   const liveRefreshers = [
-    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents, hydrateGallery], true],
-    ["/api/events", [hydrateEvents], Boolean(document.querySelector("[data-events]"))],
-    ["/api/gallery", [hydrateGallery, hydrateMemoryBook], Boolean(document.querySelector("[data-gallery], [data-memory-book]"))],
+    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents, hydrateGallery, hydrateHomePreviews], true],
+    ["/api/events", [hydrateEvents, hydrateHomePreviews], Boolean(document.querySelector("[data-events], [data-home-event]"))],
+    ["/api/gallery", [hydrateGallery, hydrateMemoryBook, hydrateHomePreviews], Boolean(document.querySelector("[data-gallery], [data-memory-book], [data-home-gallery]"))],
     ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-memory-book]"))],
     ["/api/participation", [hydrateParticipation], Boolean(document.querySelector("[data-participation-count]"))],
   ];
@@ -1046,6 +1086,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   mirrorReady.then(async () => {
     await Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook(), hydrateParticipation()]);
+    await hydrateHomePreviews();
     initialHydrated = true;
     refreshPublicData();
   });
