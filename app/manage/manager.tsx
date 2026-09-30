@@ -27,6 +27,74 @@ const copyGroups = [
   { id: "copy-book", prefix: ["book."], page: "Memory book", title: "Cover, headings & print labels" },
 ] as const;
 
+const treeCardCopyGroups = [
+  {
+    title: "Featured Minnesota section",
+    fields: [
+      { key: "tree.featuredKicker", label: "Section label" },
+      { key: "tree.featuredTitle", label: "Section title" },
+      { key: "tree.chippewaWhyTitle", label: "Why Chippewa — heading" },
+      { key: "tree.chippewaWhyText", label: "Why Chippewa — text", long: true },
+    ],
+  },
+  {
+    title: "Chippewa National Forest · Arbor Day Foundation",
+    fields: [
+      { key: "tree.arborLocation", label: "Location label" },
+      { key: "tree.arborProvider", label: "Provider name" },
+      { key: "tree.arborText", label: "Card description", long: true },
+      { key: "tree.arborButton", label: "Button text" },
+    ],
+  },
+  {
+    title: "Alternative · Minnesota Forests · A Living Tribute",
+    fields: [
+      { key: "tree.minnesotaLocation", label: "Location label" },
+      { key: "tree.minnesotaProvider", label: "Provider name" },
+      { key: "tree.minnesotaProviderNote", label: "Provider note" },
+      { key: "tree.minnesotaText", label: "Card description", long: true },
+      { key: "tree.minnesotaButton", label: "Button text" },
+    ],
+  },
+  {
+    title: "Other landscapes section",
+    fields: [
+      { key: "tree.projectsKicker", label: "Section label" },
+      { key: "tree.projectsTitle", label: "Section title" },
+      { key: "tree.projectsIntro", label: "Section introduction", long: true },
+    ],
+  },
+  ...[
+    ["amazon", "Amazon rainforest · Saving The Amazon"],
+    ["arizona", "Arizona · A Living Tribute"],
+    ["georgia", "Georgia · A Living Tribute"],
+    ["texas", "Texas · A Living Tribute"],
+    ["colorado", "Colorado · Colorado State Forest Service"],
+    ["california", "California · A Living Tribute"],
+    ["boston", "Massachusetts · Boston · Tree Boston"],
+    ["international", "International option · One Tree Planted"],
+  ].map(([id, title]) => ({
+    title,
+    fields: [
+      { key: `tree.card.${id}.region`, label: "Region / location label" },
+      { key: `tree.card.${id}.title`, label: "Card title" },
+      { key: `tree.card.${id}.text`, label: "Card description", long: true },
+      { key: `tree.card.${id}.provider`, label: "Provider name" },
+      { key: `tree.card.${id}.geography`, label: "Geography label" },
+      { key: `tree.card.${id}.button`, label: "Main button text" },
+      { key: `tree.card.${id}.note`, label: "Card note", long: true },
+      ...(id === "colorado" ? [{ key: "tree.card.colorado.detailsButton", label: "Details link text" }] : []),
+      ...(id === "boston" ? [
+        { key: "tree.card.boston.alternativeLabel", label: "Alternative label" },
+        { key: "tree.card.boston.alternativeButton", label: "NEFF button text" },
+        { key: "tree.card.boston.alternativeNote", label: "NEFF note", long: true },
+      ] : []),
+    ],
+  })),
+] as const;
+
+const treeCardManagedKeys = new Set(treeCardCopyGroups.flatMap((group) => group.fields.map((field) => field.key)));
+
 const copyFieldNames: Record<string, string> = {
   wordmark: "Navigation site name",
   footerName: "Footer name",
@@ -671,12 +739,23 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
 
-      <section id="edit-tree-content" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Living tribute</p><h2>Restoration projects</h2><p>Edit the two narrative paragraphs used in the featured Chippewa National Forest section. The researched regional project cards and their official donation/source links are maintained in the site code; headings, guidance, FAQ text, and buttons remain editable below.</p><a className="manager-section-link" href="#copy-tree">Edit Living tribute headings, guidance & FAQ ↓</a></div>
-        <div className="manager-form">
-          <label>Minnesota connection — tribute text<textarea rows={5} value={contentValues.treeTribute} onChange={(e) => setContentValues({ ...contentValues, treeTribute: e.target.value })} /></label>
-          <label>Chippewa project — restoration details<textarea rows={5} value={contentValues.treeDetail} onChange={(e) => setContentValues({ ...contentValues, treeDetail: e.target.value })} /></label>
-          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save Living tribute text</button>
+      <section id="edit-tree-content" className="manager-panel manager-panel-wide">
+        <div className="manager-panel-heading"><p className="section-kicker">Living tribute</p><h2>Restoration projects</h2><p>Edit the text shown in every Plant-a-Tree card here. Provider URLs and contribution-routing rules remain maintained in the site code so editing copy cannot accidentally break payment or tree-count logic.</p><a className="manager-section-link" href="#copy-tree">Edit remaining Living tribute headings, guidance & FAQ ↓</a></div>
+        <div className="manager-form manager-stack">
+          <div className="manager-subcard">
+            <h3>Featured Chippewa narrative</h3>
+            <label>Minnesota connection — tribute text<textarea rows={5} value={contentValues.treeTribute} onChange={(e) => setContentValues({ ...contentValues, treeTribute: e.target.value })} /></label>
+            <label>Chippewa project — restoration details<textarea rows={5} value={contentValues.treeDetail} onChange={(e) => setContentValues({ ...contentValues, treeDetail: e.target.value })} /></label>
+          </div>
+          {treeCardCopyGroups.map((group) => <div className="manager-subcard" key={group.title}>
+            <h3>{group.title}</h3>
+            {group.fields.map((field) => <label key={field.key}>{field.label}
+              {"long" in field && field.long
+                ? <textarea rows={4} value={contentValues.pageCopy[field.key] ?? ""} onChange={(e) => updatePageCopy(field.key, e.target.value)} />
+                : <input value={contentValues.pageCopy[field.key] ?? ""} onChange={(e) => updatePageCopy(field.key, e.target.value)} />}
+            </label>)}
+          </div>)}
+          <button type="button" className="manager-primary" disabled={busy} onClick={saveContent}><Save size={18} /> Save Living tribute cards</button>
         </div>
       </section>
 
@@ -684,7 +763,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
         <div className="manager-panel-heading"><p className="section-kicker">Page headings, labels & buttons</p><h2>Text organized by public page</h2><p>Use the same page names as the public memorial. Open a page below to edit its headings, buttons, navigation labels, form labels, and other interface text.</p></div>
         <div className="manager-form manager-stack manager-copy-groups">
           {copyGroups.map((group) => {
-            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)) && !/^legacy\.(?:scale|threads|frontiers)/.test(key) && key !== "legacy.heroTitle" && !["life.storyHeading", "life.personalPortraitIntro", "life.personalPortraitText"].includes(key));
+            const entries = Object.entries(contentValues.pageCopy).filter(([key]) => group.prefix.some((prefix) => key.startsWith(prefix)) && !treeCardManagedKeys.has(key) && !/^legacy\.(?:scale|threads|frontiers)/.test(key) && key !== "legacy.heroTitle" && !["life.storyHeading", "life.personalPortraitIntro", "life.personalPortraitText"].includes(key));
             return <details className="manager-copy-group" id={group.id} key={group.id} open={group.id === "copy-home"}>
               <summary><span>{group.page}</span><strong>{group.title}</strong><small>{entries.length} editable text fields</small></summary>
               <div className="manager-copy-group-body">
