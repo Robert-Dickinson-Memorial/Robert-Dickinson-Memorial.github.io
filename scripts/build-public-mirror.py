@@ -30,7 +30,8 @@ QUERIES = {
                      WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
                      ELSE 2 END,
                      created_at ASC, id ASC""",
-    "tree_total": "SELECT COALESCE(SUM(tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved'",
+    "tree_total": "SELECT COALESCE(SUM(reported_tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1",
+    "restoration_total": "SELECT COUNT(*) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'restoration' AND payment_confirmed = 1",
 }
 
 
@@ -122,13 +123,15 @@ def gallery_year(item):
 def main():
     (OUTPUT / "api").mkdir(parents=True, exist_ok=True)
     (OUTPUT / "media").mkdir(parents=True, exist_ok=True)
-    rows = {name: query(sql) for name, sql in QUERIES.items() if name != "tree_total"}
+    rows = {name: query(sql) for name, sql in QUERIES.items() if name not in ("tree_total", "restoration_total")}
     try:
         rows["tree_total"] = query(QUERIES["tree_total"])
+        rows["restoration_total"] = query(QUERIES["restoration_total"])
     except (RuntimeError, HTTPError):
         # Backend migrations and Pages deploy on separate jobs. The live API
-        # will supply the total once the tree-dedication table is available.
+        # will supply the totals once the tree-dedication table is available.
         rows["tree_total"] = []
+        rows["restoration_total"] = []
     raw = OUTPUT / "site-content-rows.json"
     raw.write_text(json.dumps(rows["site_content"], ensure_ascii=False), encoding="utf-8")
     subprocess.run(["node", "scripts/render-public-content.mjs", str(raw), str(OUTPUT / "api" / "content.json")], check=True)
@@ -138,12 +141,17 @@ def main():
     memories = rows["memories"]
     for name, value in (("events", rows["events"]), ("gallery", gallery), ("memories", memories)):
         (OUTPUT / "api" / f"{name}.json").write_text(json.dumps({name: value}, ensure_ascii=False), encoding="utf-8")
-    (OUTPUT / "api" / "participation.json").write_text(json.dumps({"memories": len(memories), "trees": int(rows["tree_total"][0]["total"]) if rows["tree_total"] else 0}), encoding="utf-8")
+    tree_total = int(rows["tree_total"][0]["total"]) if rows["tree_total"] else 0
+    restoration_total = int(rows["restoration_total"][0]["total"]) if rows["restoration_total"] else 0
+    (OUTPUT / "api" / "participation.json").write_text(
+        json.dumps({"memories": len(memories), "trees": tree_total, "restorationGifts": restoration_total}),
+        encoding="utf-8"
+    )
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         media = dict(pool.map(copy_media, public_keys(content, gallery, memories)))
     (OUTPUT / "manifest.json").write_text(json.dumps({"media": media}), encoding="utf-8")
-    print(f"Mirrored {len(gallery)} gallery items, {len(memories)} approved memories, and {len(media)} public media files.")
+    print(f"Mirrored {len(gallery)} gallery items, {len(memories)} approved memories, {tree_total} dedicated trees, {restoration_total} restoration gifts, and {len(media)} public media files.")
 
 
 if __name__ == "__main__":
