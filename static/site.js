@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "minnesota-living-tribute": "Minnesota forests · A Living Tribute",
     "global-one-tree-planted": "Where needed most · One Tree Planted",
     "chippewa-usda": "Chippewa requested · USDA Forest Service",
+    "amazon-saving-the-amazon": "Amazon rainforest · Saving The Amazon",
     "amazon-tree-nation": "Amazon · Tree-Nation / Rioterra",
     "amazon-conservation": "Amazon · Amazon Conservation",
     "arizona-living-tribute": "Arizona · A Living Tribute",
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "texas-living-tribute": "Texas · A Living Tribute",
     "colorado-csfs": "Colorado · Colorado State Forest Service",
     "california-living-tribute": "California · A Living Tribute",
+    "massachusetts-tree-boston": "Boston, Massachusetts · Tree Boston",
     "massachusetts-esplanade": "Massachusetts · Esplanade Association",
     "new-england-neff": "New England · NEFF",
   };
@@ -862,7 +864,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (countField instanceof HTMLElement) countField.hidden = !isTree;
       if (countInput instanceof HTMLInputElement) {
         countInput.required = isTree;
-        if (!isTree) countInput.value = "";
+        if (!isTree) {
+          countInput.value = "";
+          countInput.max = "10000";
+        } else if (selected?.value === "massachusetts-tree-boston") {
+          countInput.min = "1";
+          countInput.max = "1";
+          countInput.value = "1";
+        } else {
+          countInput.min = "1";
+          countInput.max = "10000";
+          if (countInput.value === "1") countInput.value = "";
+        }
       }
       if (countGuidance instanceof HTMLElement) {
         if (!type) {
@@ -870,7 +883,9 @@ document.addEventListener("DOMContentLoaded", () => {
           countGuidance.textContent = "";
         } else if (isTree) {
           countGuidance.hidden = false;
-          countGuidance.textContent = "Enter only the number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.";
+          countGuidance.textContent = selected?.value === "massachusetts-tree-boston"
+            ? "Choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000), then record 1 tree. Other donation amounts should not be converted into a tree count."
+            : "Enter only the number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.";
         } else {
           countGuidance.hidden = false;
           countGuidance.textContent = "This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.";
