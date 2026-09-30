@@ -173,6 +173,7 @@ export default async function TreeDedicationPage() {
             <article className="tree-route-card tree-route-alternative">
               <span className="tree-route-location">Alternative · Minnesota Forests</span>
               <h3>A Living Tribute</h3>
+              <small className="tree-provider-note">(International Payment Option available)</small>
               <p>For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.</p>
               <ContributionLink
                 className="tree-project-secondary-action"
