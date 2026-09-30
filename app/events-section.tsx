@@ -2,7 +2,7 @@ import { CalendarDays, MapPin } from "lucide-react";
 import type { MemorialEvent } from "./site-data";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "America/Los_Angeles" }).format(new Date(value)) + " Pacific Time";
+  return new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "America/Los_Angeles" }).format(new Date(value));
 }
 
 export default function EventsSection({ events, copy }: { events: MemorialEvent[]; copy: Record<string, string> }) {
@@ -15,7 +15,7 @@ export default function EventsSection({ events, copy }: { events: MemorialEvent[
         <div className="events-list">
           {events.map((event) => (
             <article className="event-card" key={event.id}>
-              <time dateTime={event.startAt}>{formatDate(event.startAt)}</time>
+              <time dateTime={event.startAt}>{formatDate(event.startAt)}{event.endAt ? " – " + new Intl.DateTimeFormat("en-US", { timeStyle: "short", timeZone: "America/Los_Angeles" }).format(new Date(event.endAt)) : ""} Pacific Time</time>
               <h3>{event.title}</h3>
               {event.location && <p className="event-location"><MapPin size={16} /> {event.location}</p>}
               {event.description && <p className="event-description">{event.description.split(/(https?:\/\/[^\s]+)/g).map((part, i) => /^https?:\/\//.test(part) ? <a key={i} href={part} target="_blank" rel="noopener noreferrer">{part.endsWith(".pdf") ? "View / download announcement (PDF)" : part === "https://robert-dickinson-memorial.github.io/" ? "Visit Robert’s memorial website" : part}</a> : part)}</p>}

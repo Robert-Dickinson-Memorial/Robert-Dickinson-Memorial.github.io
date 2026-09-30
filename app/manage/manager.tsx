@@ -1,5 +1,6 @@
 "use client";
 
+import { eventLocalInput } from "../event-time";
 import { FormEvent, useState } from "react";
 import { BookOpen, CalendarPlus, FileUp, FileX, ImageOff, ImagePlus, Save, Trash2, Video } from "lucide-react";
 import type { GalleryItem, LegacyChapter, LegacyPublication, MemorialEvent, SiteContent } from "../site-data";
@@ -666,7 +667,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       <section id="edit-events" className="manager-panel">
         <div className="manager-panel-heading"><p className="section-kicker">Events</p><h2>Memorial events</h2><p>Add or edit the services, gatherings, lectures, and scientific tributes listed on the Events page.</p><a className="manager-section-link" href="#copy-events">Edit Events headings & messages ↓</a></div>
         <form className="manager-form" onSubmit={addEvent}>
-          <div className="manager-row"><label>Event title<input name="title" required /></label><label>Date and time<input name="startAt" type="datetime-local" required /></label></div>
+          <div className="manager-row"><label>Event title<input name="title" required /></label><label>Start (Pacific Time)<input name="startAt" type="datetime-local" required /></label><label>End (Pacific Time)<input name="endAt" type="datetime-local" /></label></div>
           <label>Location<input name="location" placeholder="Venue, campus, or online" /></label>
           <label>Description<textarea name="description" rows={5} /></label>
           <div className="manager-row"><label>Link label<input name="linkLabel" placeholder="Register or view details" /></label><label>Event URL<input name="linkUrl" type="url" placeholder="https://…" /></label></div>
@@ -675,8 +676,8 @@ export default function Manager({ content, events, media, publishedMemories, edi
         <div className="manager-edit-list">
           {events.map((item) => <form className="manager-edit-card manager-form" key={item.id} onSubmit={addEvent}>
             <input type="hidden" name="id" value={item.id} />
-            <div className="manager-row"><label>Event title<input name="title" defaultValue={item.title} required /></label><label>Date and time<input name="startAt" type="datetime-local" defaultValue={item.startAt.slice(0, 16)} required /></label></div>
-            <label>Location<input name="location" defaultValue={item.location ?? ""} /></label>
+            <div className="manager-row"><label>Event title<input name="title" defaultValue={item.title} required /></label><label>Start (Pacific Time)<input name="startAt" type="datetime-local" defaultValue={eventLocalInput(item.startAt)} required /></label><label>End (Pacific Time)<input name="endAt" type="datetime-local" defaultValue={eventLocalInput(item.endAt)} /></label></div>
+            <label>Location<textarea name="location" rows={3} defaultValue={item.location ?? ""} /></label>
             <label>Description<textarea name="description" rows={4} defaultValue={item.description ?? ""} /></label>
             <div className="manager-row"><label>Link label<input name="linkLabel" defaultValue={item.linkLabel ?? ""} /></label><label>Event URL<input name="linkUrl" type="url" defaultValue={item.linkUrl ?? ""} /></label></div>
             <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save event</button><button type="button" className="manager-danger" onClick={() => remove("events", item.id)}><Trash2 size={16} /> Delete event</button></div>

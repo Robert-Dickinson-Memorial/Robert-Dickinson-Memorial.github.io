@@ -92,6 +92,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function getJson(path) {
     if (livePayloads.has(path)) return livePayloads.get(path);
+    // Events are edited frequently: prefer the saved record, retaining the mirror when unreachable.
+    if (path === "/api/events") {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      try {
+        const response = await fetch(apiUrl(path), { cache: "no-store", signal: controller.signal });
+        if (response.ok) {
+          const payload = await response.json();
+          if (Array.isArray(payload.events)) {
+            livePayloads.set(path, payload);
+            payloadSignatures.set(path, JSON.stringify(payload));
+            return payload;
+          }
+        }
+      } catch {} finally { clearTimeout(timer); }
+    }
     const snapshotPath = `/mirror${path}.json`;
     try {
       const response = await fetch(snapshotPath, { cache: "no-store" });
@@ -463,11 +479,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = document.querySelector("[data-events]");
     if (!(target instanceof HTMLElement)) return;
     const { events = [] } = await getJson("/api/events");
-    if (!events.length) return;
+    if (!events.length) {
+      target.replaceChildren(node("div", { className: "events-empty", text: editableCopy["events.empty"] || "No events have been announced yet." }));
+      return;
+    }
     const list = node("div", { className: "events-list" });
     events.forEach((event) => {
       const article = node("article", { className: "event-card" });
-      article.append(node("time", { text: new Intl.DateTimeFormat("en-US", {dateStyle:"long", timeStyle:"short", timeZone:"America/Los_Angeles"}).format(new Date(event.startAt)) + " Pacific Time", attrs: { datetime: event.startAt } }), node("h3", { text: event.title }));
+      article.append(node("time", { text: new Intl.DateTimeFormat("en-US", {dateStyle:"long", timeStyle:"short", timeZone:"America/Los_Angeles"}).format(new Date(event.startAt)) + (event.endAt ? " – " + new Intl.DateTimeFormat("en-US", {timeStyle:"short", timeZone:"America/Los_Angeles"}).format(new Date(event.endAt)) : "") + " Pacific Time", attrs: { datetime: event.startAt } }), node("h3", { text: event.title }));
       if (event.location) article.append(node("p", { className: "event-location", text: event.location }));
       if (event.description) {
         const description = node("p", { className: "event-description" });

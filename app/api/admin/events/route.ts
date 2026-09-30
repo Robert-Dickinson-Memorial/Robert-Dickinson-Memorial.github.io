@@ -1,3 +1,4 @@
+import { eventInstant } from "../../../event-time";
 import { env } from "cloudflare:workers";
 import { isEditorRequest } from "../../../moderation";
 
@@ -15,10 +16,12 @@ export async function POST(request: Request) {
   if (!env.DB) return Response.json({ error: "The memorial archive is unavailable." }, { status: 503 });
   const body = await request.json() as Record<string, unknown>;
   const title = clean(body.title, 180);
-  const startAt = clean(body.startAt, 50);
-  if (title.length < 2 || Number.isNaN(Date.parse(startAt))) return Response.json({ error: "Title and a valid start date are required." }, { status: 400 });
+  const startAt = eventInstant(clean(body.startAt, 50));
+  const endAt = eventInstant(clean(body.endAt, 50));
+  if (title.length < 2 || !startAt) return Response.json({ error: "Title and a valid start date are required." }, { status: 400 });
+  if ((body.endAt && !endAt) || (endAt && Date.parse(endAt) <= Date.parse(startAt))) return Response.json({ error: "End time must be valid and later than the start time." }, { status: 400 });
   const id = Number(body.id);
-  const values = [title, startAt, clean(body.endAt, 50) || null, clean(body.location, 300) || null, clean(body.description, 4000) || null, clean(body.linkLabel, 100) || null, safeUrl(body.linkUrl)];
+  const values = [title, startAt, endAt || null, clean(body.location, 300) || null, clean(body.description, 4000) || null, clean(body.linkLabel, 100) || null, safeUrl(body.linkUrl)];
   if (Number.isInteger(id) && id > 0) {
     await env.DB.prepare(
       `UPDATE events SET title=?, start_at=?, end_at=?, location=?, description=?, link_label=?, link_url=? WHERE id=?`
