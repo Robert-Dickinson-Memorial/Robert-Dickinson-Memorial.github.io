@@ -3872,3 +3872,138 @@ html[data-page="events"] .interior-hero > p:last-child { max-width:none; }
   .site-footer .footer-links {justify-self:start;justify-content:flex-start;}
 }
 @media print {.site-footer{display:none}}
+
+
+/* Scientific Legacy and Memories: shared ivory, navy, and forest-green palette.
+   Appearance only: retain existing content, layout, media, forms, and interactions. */
+:is(.legacy-page, .memories-page, html[data-page="legacy"], html[data-page="memories"]) { --public-paper:#faf9f5; --public-card:#fdfcf9; --public-ink:#112f45; --public-text:#405967; --public-muted:#566d79; --public-green:#406e55; --public-soft:#eef3ed; --public-line:#d9ded8; background:var(--public-paper); color:var(--public-ink); }
+:is(.legacy-page, .memories-page, html[data-page="legacy"], html[data-page="memories"]) .interior-hero { background:linear-gradient(90deg,#102f3bdd,#102f3b70),url("/memorial-horizon.png") center 50%/cover; color:#fffdf7; }
+html:is([data-page="legacy"], [data-page="memories"]) .interior-hero { background-image:linear-gradient(90deg,#102f3bdd,#102f3b70),url("/assets/memorial-horizon.png"); }
+:is(.legacy-page, .memories-page, html[data-page="legacy"], html[data-page="memories"]) .interior-hero h1 { color:#fffdf7; }
+:is(.legacy-page, .memories-page, html[data-page="legacy"], html[data-page="memories"]) .interior-hero >p:last-child { color:#f5f3ed; }
+:is(.legacy-page, .memories-page, html[data-page="legacy"], html[data-page="memories"]) .interior-hero .section-kicker { color:#e4d5b4; }
+:is(.legacy-page, html[data-page="legacy"]) .legacy-section,
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail { background:var(--public-paper);color:var(--public-ink); }
+:is(.legacy-page, html[data-page="legacy"]) .legacy-section :is(h2,h3,h4),
+:is(.legacy-page, html[data-page="legacy"]) .honors-grid .honor-item strong { color:var(--public-ink); }
+:is(.legacy-page, html[data-page="legacy"]) .legacy-section .section-kicker,
+:is(.legacy-page, html[data-page="legacy"]) .journey-label,
+:is(.legacy-page, html[data-page="legacy"]) .journey-chapter header p,
+:is(.legacy-page, html[data-page="legacy"]) .journey-number,
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail a span,
+:is(.legacy-page, html[data-page="legacy"]) .honors-grid .honor-item span,
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-year { color:var(--public-green); }
+:is(.legacy-page, html[data-page="legacy"]) .legacy-personal-quotes blockquote,
+:is(.legacy-page, html[data-page="legacy"]) .journey-detail blockquote { border-color:#87a18c; }
+:is(.legacy-page, html[data-page="legacy"]) .legacy-personal-quotes blockquote p,
+:is(.legacy-page, html[data-page="legacy"]) .journey-detail blockquote span { color:#294f47; }
+:is(.legacy-page, html[data-page="legacy"]) .legacy-personal-quotes footer,
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail a small,
+:is(.legacy-page, html[data-page="legacy"]) .journey-scale small,
+:is(.legacy-page, html[data-page="legacy"]) .journey-chapter header p span,
+:is(.legacy-page, html[data-page="legacy"]) .honors-grid .honor-item small,
+:is(.legacy-page, html[data-page="legacy"]) .journey-chapter-photo figcaption small { color:var(--public-muted); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail a,
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail a:last-child { color:var(--public-ink);border-color:var(--public-line); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail a:hover { color:var(--public-green);background:var(--public-soft); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-number { background:var(--public-soft);border-color:#a1b6a3; }
+:is(.legacy-page, html[data-page="legacy"]) .journey-chapter,
+:is(.legacy-page, html[data-page="legacy"]) .journey-scale,
+:is(.legacy-page, html[data-page="legacy"]) .journey-detail li,
+:is(.legacy-page, html[data-page="legacy"]) .legacy-service,
+:is(.legacy-page, html[data-page="legacy"]) .legacy-service li,
+:is(.legacy-page, html[data-page="legacy"]) .honors-block,
+:is(.legacy-page, html[data-page="legacy"]) .honors-grid .honor-item,
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-caption >p { border-color:var(--public-line); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-summary,
+:is(.legacy-page, html[data-page="legacy"]) .journey-detail li,
+:is(.legacy-page, html[data-page="legacy"]) .journey-scale strong,
+:is(.legacy-page, html[data-page="legacy"]) .legacy-service li p,
+:is(.legacy-page, html[data-page="legacy"]) .honors-grid .honor-item,
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-caption p,
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-caption cite { color:var(--public-text); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-detail li::before { color:var(--public-green); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-chapter-photo,
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-card { background:var(--public-card);color:var(--public-ink);border-color:var(--public-line);box-shadow:0 8px 24px #112f4509; }
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-card:hover { box-shadow:0 12px 30px #112f4512; }
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-card >img { background:#f0f2eb;border-color:var(--public-line); }
+:is(.legacy-page, html[data-page="legacy"]) .journey-chapter-photo figcaption { color:var(--public-text); }
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-actions a { color:var(--public-green);border-color:#9fb5a5; }
+:is(.legacy-page, html[data-page="legacy"]) .journey-tags span { background:var(--public-soft);color:#36564b;border-color:#cbd8cc; }
+:is(.legacy-page, html[data-page="legacy"]) .journey-rail a:focus-visible,
+:is(.legacy-page, html[data-page="legacy"]) .landmark-paper-actions a:focus-visible { outline:3px solid #548eb3;outline-offset:3px; }
+:is(.memories-page, html[data-page="memories"]) .memories-section { background:var(--public-paper);color:var(--public-ink); }
+:is(.memories-page, html[data-page="memories"]) .memories-section :is(h2,h3),
+:is(.memories-page, html[data-page="memories"]) .share-copy h2,
+:is(.memories-page, html[data-page="memories"]) .memory-reader h2,
+:is(.memories-page, html[data-page="memories"]) .memory-author strong,
+:is(.memories-page, html[data-page="memories"]) .memory-share-panel summary strong { color:var(--public-ink); }
+:is(.memories-page, html[data-page="memories"]) .memories-section .section-kicker,
+:is(.memories-page, html[data-page="memories"]) .share-copy .section-kicker,
+:is(.memories-page, html[data-page="memories"]) .share-copy >svg,
+:is(.memories-page, html[data-page="memories"]) .memory-reader-author,
+:is(.memories-page, html[data-page="memories"]) .memory-empty a,
+:is(.memories-page, html[data-page="memories"]) .memory-link-input svg { color:var(--public-green); }
+:is(.memories-page, html[data-page="memories"]) .memory-share-panel { background:#eef3f6;border-color:#cbdce5; }
+:is(.memories-page, html[data-page="memories"]) .memory-share-panel[open] >summary { border-color:#cbdce5; }
+:is(.memories-page, html[data-page="memories"]) .memory-share-panel summary small,
+:is(.memories-page, html[data-page="memories"]) .share-copy >p:not(.section-kicker),
+:is(.memories-page, html[data-page="memories"]) .moderation-note,
+:is(.memories-page, html[data-page="memories"]) .memory-card >p,
+:is(.memories-page, html[data-page="memories"]) .memory-author >div >span,
+:is(.memories-page, html[data-page="memories"]) .memory-reader-story,
+:is(.memories-page, html[data-page="memories"]) .private-preview-note { color:var(--public-text); }
+:is(.memories-page, html[data-page="memories"]) .share-section { background:#eef3f6;color:var(--public-ink); }
+:is(.memories-page, html[data-page="memories"]) .memory-form,
+:is(.memories-page, html[data-page="memories"]) .success-card,
+:is(.memories-page, html[data-page="memories"]) .memory-card,
+:is(.memories-page, html[data-page="memories"]) .memory-reader { background:var(--public-card);color:var(--public-ink);border-color:var(--public-line);box-shadow:0 8px 26px #112f450d; }
+:is(.memories-page, html[data-page="memories"]) .memory-card { border-top-color:#75947d; }
+:is(.memories-page, html[data-page="memories"]) .memory-author,
+:is(.memories-page, html[data-page="memories"]) .memory-card footer,
+:is(.memories-page, html[data-page="memories"]) .memory-card .memory-attachments,
+:is(.memories-page, html[data-page="memories"]) .moderation-note { border-color:var(--public-line); }
+:is(.memories-page, html[data-page="memories"]) .memory-author-mark { background:#dfe9df;color:#365b44; }
+:is(.memories-page, html[data-page="memories"]) .memory-card >img,
+:is(.memories-page, html[data-page="memories"]) .memory-card >img[src*="/extracted-memory-previews/"] { background:#f0f2ed; }
+:is(.memories-page, html[data-page="memories"]) .memory-form label,
+:is(.memories-page, html[data-page="memories"]) .memory-form input,
+:is(.memories-page, html[data-page="memories"]) .memory-form textarea { color:var(--public-ink); }
+:is(.memories-page, html[data-page="memories"]) .memory-form label >span,
+:is(.memories-page, html[data-page="memories"]) .memory-form input::placeholder,
+:is(.memories-page, html[data-page="memories"]) .memory-form textarea::placeholder,
+:is(.memories-page, html[data-page="memories"]) .memory-card footer span { color:var(--public-muted);opacity:1; }
+:is(.memories-page, html[data-page="memories"]) .memory-form input,
+:is(.memories-page, html[data-page="memories"]) .memory-form textarea,
+:is(.memories-page, html[data-page="memories"]) .photo-field { border-color:#b8c8bc; }
+:is(.memories-page, html[data-page="memories"]) .memory-form input:focus,
+:is(.memories-page, html[data-page="memories"]) .memory-form textarea:focus { border-color:var(--public-green);box-shadow:0 1px 0 var(--public-green); }
+:is(.memories-page, html[data-page="memories"]) .memory-form input[type="checkbox"] { accent-color:var(--public-green); }
+:is(.memories-page, html[data-page="memories"]) .memory-form .upload-options .photo-field { background:#f4f6f1; }
+:is(.memories-page, html[data-page="memories"]) .memory-form .upload-options input[type="file"]::file-selector-button { background:#dfe9df;color:#284f3c; }
+:is(.memories-page, html[data-page="memories"]) .share-panel-action,
+:is(.memories-page, html[data-page="memories"]) .submit-button,
+:is(.memories-page, html[data-page="memories"]) .success-card button,
+:is(.memories-page, html[data-page="memories"]) .dark-book-button,
+:is(.memories-page, html[data-page="memories"]) .private-preview-actions button { background:var(--public-green);color:#fff;border-color:var(--public-green); }
+:is(.memories-page, html[data-page="memories"]) .submit-button:hover,
+:is(.memories-page, html[data-page="memories"]) .success-card button:hover,
+:is(.memories-page, html[data-page="memories"]) .dark-book-button:hover,
+:is(.memories-page, html[data-page="memories"]) .private-preview-actions button:hover { background:#335b44;color:#fff; }
+:is(.memories-page, html[data-page="memories"]) .memory-read-more,
+:is(.memories-page, html[data-page="memories"]) .memory-attachments a,
+:is(.memories-page, html[data-page="memories"]) .memory-reader-close,
+:is(.memories-page, html[data-page="memories"]) .private-preview-link { color:var(--public-green);border-color:#b1c5b5; }
+:is(.memories-page, html[data-page="memories"]) .memory-attachments a:hover,
+:is(.memories-page, html[data-page="memories"]) .memory-reader-close:hover { background:var(--public-soft);border-color:#75947d; }
+:is(.memories-page, html[data-page="memories"]) .memory-read-more:hover { color:#284f3c; }
+:is(.memories-page, html[data-page="memories"]) .memory-reader-close { background:var(--public-card); }
+:is(.memories-page, html[data-page="memories"]) .memory-reader::backdrop { background:#112f45ad; }
+:is(.memories-page, html[data-page="memories"]) .private-memory-preview { background:var(--public-soft);border-color:#cbd8cc;color:var(--public-ink); }
+:is(.memories-page, html[data-page="memories"]) .private-preview-actions button +button,
+:is(.memories-page, html[data-page="memories"]) .private-preview-link { background:var(--public-card);color:var(--public-green); }
+:is(.memories-page, html[data-page="memories"]) .memory-share-panel >summary:focus-visible,
+:is(.memories-page, html[data-page="memories"]) .memory-read-more:focus-visible,
+:is(.memories-page, html[data-page="memories"]) .memory-reader-close:focus-visible { outline:3px solid #548eb3;outline-offset:3px; }
+@media(max-width:720px) { :is(.legacy-page, html[data-page="legacy"]) .journey-rail a { background:var(--public-card);border-color:var(--public-line); } }
+html:is([data-page="legacy"], [data-page="memories"]) main { background:var(--public-paper);color:var(--public-ink); }
