@@ -337,7 +337,7 @@ function initializeMemorialPage() {
     const earthMap=pageDocument.querySelector("[data-home-earth-threads]");
     if(earthMap){
       earthMap.querySelectorAll(".home-thread-card").forEach(card=>card.remove());
-      threads.forEach((thread,index)=>{const card=node("details",{className:`home-thread-card home-thread-card-${index+1}`,attrs:{name:"home-science-threads"}});card.open=index===0;card.append(node("summary",{text:thread.title||""}),node("p",{text:thread.text||""}));earthMap.append(card);});
+      threads.forEach((thread,index)=>{const card=node("article",{className:`home-thread-card home-thread-card-${index+1}`}),body=node("div");body.append(node("h4",{text:thread.title||""}),node("p",{text:thread.text||""}));card.append(homeIcon(["waves","bars","model","leaf","satellite","globe"][index%6],"home-line-icon"),body);earthMap.append(card);});
       pageDocument.querySelectorAll(".home-redesign .tribute-action-icon").forEach((icon,i)=>icon.replaceChildren(homeIcon(i===0?"leaf":"people","")));
     }
     if (headingThreads instanceof HTMLElement) {

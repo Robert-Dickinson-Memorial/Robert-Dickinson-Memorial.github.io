@@ -9,3 +9,9 @@
 Validation: production build; layout and all six disclosures at 1440, 1100, 900, 768, 390 and 320 pixels; seven-page persistent-navigation and memory/gallery-control checks at desktop and phone widths.
 
 Previous version: f2a1e4e3781b96d148f8b2811eb91e1ddb7408b8. Existing named backups are untouched.
+
+## Reference-based replacement
+
+Replaced the experimental clickable orbit with the supplied September 30 screenshot's composition: central globe, fine circular dotted orbit, six open nodes, outlined green/blue scientific icons, and three thread descriptions visible on either side. All thread titles and complete descriptions continue to use the existing backend fields. On phones the globe precedes readable icon-and-text rows. The sidebar, portrait quote, contribution cards and other homepage changes remain. Unverified quotations in the mockup were not added.
+
+Production build and five viewport checks (1440 through 320 px) passed with all descriptions visible and no horizontal overflow. Previous version: 833dead79977fff61cc288e74ae4e2251bb43470.

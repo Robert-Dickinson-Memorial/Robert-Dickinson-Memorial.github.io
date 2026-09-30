@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, ChartNoAxesColumnIncreasing, GraduationCap } from "lucide-react";
+import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, Waves, Settings, Satellite, ChartNoAxesColumnIncreasing, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
 import { SharedHeroArt, SiteFooter, SiteNav } from "./site-chrome";
@@ -29,14 +29,14 @@ function ScientificLegacyStory({
   </div>;
 }
 
-const contributionIcons = [Globe2, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
+const threadIcons = [Waves, ChartNoAxesColumnIncreasing, Settings, Sprout, Satellite, Globe2];
+const contributionIcons = [Globe2, Waves, Settings, Satellite, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
 function HomeThreads({ threads, label, hint }: { threads: LegacyThread[]; label: string; hint: string }) {
   return <div className="home-earth-map">
     <div className="home-map-heading"><h3>{label}</h3><p>{hint}</p></div>
     <div className="home-earth-layout">
-<svg className="home-thread-arcs" viewBox="0 0 900 500" preserveAspectRatio="none" aria-hidden="true"><ellipse cx="450" cy="250" rx="245" ry="180" /><path d="M205 250 C240 115 640 80 695 250 C660 385 260 420 205 250" /><circle cx="327.5" cy="94.1" r="5" /><circle cx="572.5" cy="94.1" r="5" /><circle cx="695" cy="250" r="5" /><circle cx="572.5" cy="405.9" r="5" /><circle cx="327.5" cy="405.9" r="5" /><circle cx="205" cy="250" r="5" /></svg>
-      <figure className="home-earth"><div className="home-earth-orbit"><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div></figure>
-      {threads.map((thread,index) => <details name="home-science-threads" open={index === 0} className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><summary>{thread.title}</summary><p>{thread.text}</p></details>)}
+      <figure className="home-earth"><div className="home-earth-orbit"><svg className="home-thread-ring" viewBox="0 0 300 300" aria-hidden="true"><circle className="thread-orbit-line" cx="150" cy="150" r="140" /><circle className="thread-orbit-dot" cx="42.75" cy="60" r="4" /><circle className="thread-orbit-dot" cx="10" cy="150" r="4" /><circle className="thread-orbit-dot" cx="42.75" cy="240" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="60" r="4" /><circle className="thread-orbit-dot" cx="290" cy="150" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="240" r="4" /></svg><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div></figure>
+      {threads.map((thread,index) => {const Icon=threadIcons[index % threadIcons.length];return <article className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><span className="home-line-icon" aria-hidden="true"><Icon size={28} strokeWidth={1.5} /></span><div><h4>{thread.title}</h4><p>{thread.text}</p></div></article>;})}
     </div>
   </div>;
 }
