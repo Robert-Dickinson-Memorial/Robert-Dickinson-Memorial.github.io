@@ -9,6 +9,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   const form = document.querySelector("[data-migration-form]");
   const treeForm = document.querySelector("[data-tree-dedication-form]");
+  const tributeReturnBar = document.querySelector("[data-tribute-return-bar]");
+  const tributeReturnLabel = document.querySelector("[data-tribute-return-label]");
+  const tributeRouteLabels = {
+    "chippewa-arbor-day": "Chippewa · Arbor Day Foundation",
+    "chippewa-living-tribute": "Chippewa · A Living Tribute",
+    "chippewa-usda": "Chippewa · USDA Forest Service",
+    "amazon-tree-nation": "Amazon · Tree-Nation / Rioterra",
+    "amazon-conservation": "Amazon · Amazon Conservation",
+    "arizona-living-tribute": "Arizona · A Living Tribute",
+    "georgia-living-tribute": "Georgia · A Living Tribute",
+    "texas-living-tribute": "Texas · A Living Tribute",
+    "colorado-csfs": "Colorado · Colorado State Forest Service",
+    "california-living-tribute": "California · A Living Tribute",
+    "massachusetts-esplanade": "Massachusetts · Esplanade Association",
+    "new-england-neff": "New England · NEFF",
+  };
+  const updateTributeReturnBar = (route) => {
+    if (!(tributeReturnBar instanceof HTMLElement)) return;
+    if (!route || !tributeRouteLabels[route]) {
+      tributeReturnBar.hidden = true;
+      return;
+    }
+    if (tributeReturnLabel instanceof HTMLElement) tributeReturnLabel.textContent = `You chose ${tributeRouteLabels[route]}. Return here to record the trees or restoration gift.`;
+    tributeReturnBar.hidden = false;
+  };
+  updateTributeReturnBar(sessionStorage.getItem("livingTributeRoute"));
+  window.addEventListener("livingTributeRouteSelected", (event) => updateTributeReturnBar(event.detail));
+  window.addEventListener("livingTributeRecorded", () => updateTributeReturnBar(""));
   document.querySelectorAll("[data-contribution-route]").forEach((link) => {
     link.addEventListener("click", () => {
       const route = link.getAttribute("data-contribution-route");
@@ -877,6 +905,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!response.ok) throw new Error(result.error || "Unable to record the living tribute.");
         treeForm.reset();
         sessionStorage.removeItem("livingTributeRoute");
+        window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
         updateTreeRoute();
         if (status) status.textContent = result.contributionType === "tree"
           ? "Thank you. Your tree dedication has been submitted for review. After approval, the reported trees will join Robert’s lifetime total."
