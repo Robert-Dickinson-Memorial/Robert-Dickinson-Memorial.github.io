@@ -4018,12 +4018,12 @@ main .shared-portrait-hero.shared-portrait-hero {
 main .shared-portrait-hero.shared-portrait-hero::before, main .shared-portrait-hero.shared-portrait-hero::after {display:none;}
 main .shared-hero-inner {position:relative;display:block;max-width:1240px;min-height:390px;margin:0 auto;isolation:isolate;}
 main .shared-hero-background {position:absolute;z-index:-2;inset:-28px -15vw -24px;width:130vw;height:calc(100% + 52px);max-width:none;object-fit:cover;object-position:center 64%;opacity:.13;filter:saturate(.45);pointer-events:none;}
-main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy {position:relative;z-index:1;width:56%;max-width:none;padding:26px 22px 24px 0;margin:0;text-align:left;}
+main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy {position:relative;z-index:1;width:56%;max-width:none;padding:26px 0 24px 22px;margin:0 0 0 44%;text-align:left;}
 main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy h1 {font:400 clamp(36px,3.8vw,58px)/1.08 Georgia,'Times New Roman',serif;letter-spacing:-.035em;color:#112f45;text-shadow:none;max-width:none;margin:0 0 18px;text-wrap:balance;overflow-wrap:break-word;}
 main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy h1 em {font-style:normal;color:inherit;}
 main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy > p:last-of-type {font:400 19px/1.5 Georgia,'Times New Roman',serif;color:#405967;max-width:620px;margin:0 0 20px;text-shadow:none;}
 main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy :is(.section-kicker,.eyebrow) {color:#63745e;font:500 11px/1.5 Arial,sans-serif;letter-spacing:.2em;margin:0 0 16px;}
-main .shared-hero-portrait {position:absolute;z-index:0;top:0;right:-2%;width:46%;height:390px;min-height:0;margin:0;padding:0;overflow:hidden;background:none;border:0;border-radius:0;box-shadow:none;transform:none;
+main .shared-hero-portrait {position:absolute;z-index:0;top:0;left:-2%;right:auto;width:46%;height:390px;min-height:0;margin:0;padding:0;overflow:hidden;background:none;border:0;border-radius:0;box-shadow:none;transform:none;
   -webkit-mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 78%,transparent),linear-gradient(to right,transparent,#000 18%,#000 80%,transparent);
   -webkit-mask-composite:source-in;
   mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 78%,transparent),linear-gradient(to right,transparent,#000 18%,#000 80%,transparent);
@@ -4046,21 +4046,21 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-years::after {ma
 @media(max-width:760px) {
   main .shared-portrait-hero.shared-portrait-hero {padding:24px 24px 18px;}
   main .shared-hero-inner {min-height:330px;}
-  main .shared-hero-portrait {height:310px;width:46%;right:-3%;}
-  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy {width:58%;padding:12px 12px 12px 0;}
+  main .shared-hero-portrait {height:310px;width:46%;left:-3%;right:auto;}
+  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy {width:58%;margin-left:42%;padding:12px 0 12px 12px;}
   main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy h1 {font-size:36px;}
   main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy > p:last-of-type {font-size:17px;}
 }
 @media(max-width:540px) {
   main .shared-portrait-hero.shared-portrait-hero {padding:20px 20px 12px;}
   main .shared-hero-inner {min-height:0;}
-  main .shared-hero-portrait {height:230px;width:51%;right:-7%;top:0;}
-  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy {width:100%;padding:8px 0 0;}
-  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy h1 {font-size:30px;width:58%;min-height:150px;margin-bottom:18px;}
-  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy :is(.section-kicker,.eyebrow) {width:59%;font-size:10px;margin-bottom:14px;}
+  main .shared-hero-portrait {height:230px;width:51%;left:-7%;right:auto;top:0;}
+  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy {width:100%;margin-left:0;padding:8px 0 0;}
+  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy h1 {font-size:30px;width:58%;min-height:150px;margin:0 0 18px 42%;}
+  main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy :is(.section-kicker,.eyebrow) {width:58%;font-size:10px;margin:0 0 14px 42%;}
   main .shared-portrait-hero.shared-portrait-hero .shared-hero-copy > p:last-of-type {font-size:17px;line-height:1.5;}
-  main .shared-portrait-hero.shared-portrait-hero .life-reference-name {font-size:17px;width:58%;}
-  main .shared-portrait-hero.shared-portrait-hero .life-reference-years {width:58%;font-size:10px;}
+  main .shared-portrait-hero.shared-portrait-hero .life-reference-name {font-size:17px;width:58%;margin-left:42%;}
+  main .shared-portrait-hero.shared-portrait-hero .life-reference-years {width:58%;font-size:10px;margin-left:42%;}
   main .shared-portrait-hero.shared-portrait-hero .life-reference-years::after {display:none;}
   main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {min-height:115px;}
   main .shared-portrait-hero.shared-portrait-hero .life-dates {font-size:15px;margin-top:8px;}

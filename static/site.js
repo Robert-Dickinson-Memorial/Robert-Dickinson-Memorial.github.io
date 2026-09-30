@@ -1,25 +1,46 @@
-document.addEventListener("DOMContentLoaded", () => {
+let disposeMemorialPage = () => {};
+function initializeMemorialPage() {
+  disposeMemorialPage();
+  const lifecycle = new AbortController();
+  const cleanups = [];
+  disposeMemorialPage = () => { lifecycle.abort(); cleanups.forEach(cleanup => cleanup()); };
+  // Delayed responses from a previous page must never repaint the current page.
+  const pageDocument = {
+    querySelector: selector => lifecycle.signal.aborted ? null : document.querySelector(selector),
+    querySelectorAll: selector => lifecycle.signal.aborted ? [] : document.querySelectorAll(selector),
+  };
+  const listen = (target, event, handler) => target.addEventListener(event, handler, { signal: lifecycle.signal });
+  async function pageFetch(url, options = {}) {
+    if (lifecycle.signal.aborted) throw new DOMException("Page changed", "AbortError");
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    const signals = [lifecycle.signal, options.signal].filter(Boolean);
+    signals.forEach(signal => { if (signal.aborted) abort(); else signal.addEventListener("abort", abort, { once: true }); });
+    try { return await fetch(url, { ...options, signal: controller.signal }); }
+    finally { signals.forEach(signal => signal.removeEventListener("abort", abort)); }
+  }
+
   let editableCopy = {};
   const treeText = (key, fallback) => editableCopy[`tree.ui.${key}`] ?? fallback;
   const apiBase = String(window.MEMORIAL_API_BASE || "").replace(/\/$/, "");
   const currentNavPage = location.pathname.split("/").filter(Boolean)[0] || "home";
-  document.querySelectorAll(".site-nav [data-nav]").forEach(link => {
+  pageDocument.querySelectorAll(".site-nav [data-nav]").forEach(link => {
     const active = link.dataset.nav === currentNavPage;
     link.classList.toggle("active", active);
     if (active) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
-  const mobileMenu = document.querySelector(".mobile-nav");
+  const mobileMenu = pageDocument.querySelector(".mobile-nav");
   if (mobileMenu instanceof HTMLDetailsElement) {
-    document.addEventListener("keydown", (event) => { if (event.key === "Escape") mobileMenu.open = false; });
-    document.addEventListener("click", (event) => {
+    listen(document, "keydown", (event) => { if (event.key === "Escape") mobileMenu.open = false; });
+    listen(document, "click", (event) => {
       if (mobileMenu.open && !mobileMenu.contains(event.target)) mobileMenu.open = false;
     });
   }
-  const form = document.querySelector("[data-migration-form]");
-  const treeForm = document.querySelector("[data-tree-dedication-form]");
-  const tributeReturnBar = document.querySelector("[data-tribute-return-bar]");
-  const tributeReturnLabel = document.querySelector("[data-tribute-return-label]");
+  const form = pageDocument.querySelector("[data-migration-form]");
+  const treeForm = pageDocument.querySelector("[data-tree-dedication-form]");
+  const tributeReturnBar = pageDocument.querySelector("[data-tribute-return-bar]");
+  const tributeReturnLabel = pageDocument.querySelector("[data-tribute-return-label]");
   const tributeRouteLabels = {
     "chippewa-arbor-day": "Chippewa National Forest · Arbor Day Foundation",
     "chippewa-living-tribute": "Minnesota forests · A Living Tribute",
@@ -49,9 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
     tributeReturnBar.hidden = false;
   };
   updateTributeReturnBar(sessionStorage.getItem("livingTributeRoute"));
-  window.addEventListener("livingTributeRouteSelected", (event) => updateTributeReturnBar(event.detail));
-  window.addEventListener("livingTributeRecorded", () => updateTributeReturnBar(""));
-  document.querySelectorAll("[data-contribution-route]").forEach((link) => {
+  listen(window, "livingTributeRouteSelected", (event) => updateTributeReturnBar(event.detail));
+  listen(window, "livingTributeRecorded", () => updateTributeReturnBar(""));
+  pageDocument.querySelectorAll("[data-contribution-route]").forEach((link) => {
     link.addEventListener("click", () => {
       const route = link.getAttribute("data-contribution-route");
       if (route) {
@@ -60,18 +81,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-  const sharePanel = document.querySelector("details.memory-share-panel");
+  const sharePanel = pageDocument.querySelector("details.memory-share-panel");
   const revealShareForm = () => {
     if (location.hash === "#share" && sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
   };
   revealShareForm();
-  window.addEventListener("hashchange", revealShareForm);
-  document.querySelectorAll('a[href="#share"]').forEach(link => link.addEventListener("click", () => {
+  listen(window, "hashchange", revealShareForm);
+  pageDocument.querySelectorAll('a[href="#share"]').forEach(link => link.addEventListener("click", () => {
     if (sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
   }));
 
 
-  const message = document.querySelector("[data-migration-message]");
+  const message = pageDocument.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;
   let mirroredMedia = {};
   let eventPortrait = "/assets/robert-dickinson.jpg";
@@ -105,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 5000);
       try {
-        const response = await fetch(apiUrl(path), { cache: "no-store", signal: controller.signal });
+        const response = await pageFetch(apiUrl(path), { cache: "no-store", signal: controller.signal });
         if (response.ok) {
           const payload = await response.json();
           if (Array.isArray(payload.events)) {
@@ -118,14 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const snapshotPath = `/mirror${path}.json`;
     try {
-      const response = await fetch(snapshotPath, { cache: "no-store" });
+      const response = await pageFetch(snapshotPath, { cache: "no-store" });
       if (response.ok) {
         const snapshot = await response.json();
         payloadSignatures.set(path, JSON.stringify(snapshot));
         return snapshot;
       }
     } catch {}
-    const response = await fetch(apiUrl(path), { cache: "no-store" });
+    const response = await pageFetch(apiUrl(path), { cache: "no-store" });
     if (!response.ok) throw new Error("Unable to load memorial updates.");
     return response.json();
   }
@@ -134,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 8000);
     try {
-      const response = await fetch(apiUrl(path), { cache: "no-store", signal: controller.signal });
+      const response = await pageFetch(apiUrl(path), { cache: "no-store", signal: controller.signal });
       if (!response.ok) return;
       const payload = await response.json();
       const listKey = { "/api/memories": "memories", "/api/gallery": "gallery", "/api/events": "events" }[path];
@@ -159,20 +180,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyPageCopy(copy) {
     if (!copy || typeof copy !== "object") return;
-    document.querySelectorAll("[data-copy]").forEach((element) => {
+    pageDocument.querySelectorAll("[data-copy]").forEach((element) => {
       if (!(element instanceof HTMLElement)) return;
       const key = element.dataset.copy;
       if (key && typeof copy[key] === "string" && element.textContent !== copy[key]) element.textContent = copy[key];
     });
-    document.querySelectorAll("[data-copy-href]").forEach((element) => {
+    pageDocument.querySelectorAll("[data-copy-href]").forEach((element) => {
       const key = element.getAttribute("data-copy-href");
       if (key && typeof copy[key] === "string") element.setAttribute("href", copy[key]);
     });
-    document.querySelectorAll("[data-copy-geography]").forEach((element) => {
+    pageDocument.querySelectorAll("[data-copy-geography]").forEach((element) => {
       const key = element.getAttribute("data-copy-geography");
       if (key && typeof copy[key] === "string") element.setAttribute("data-geography", copy[key]);
     });
-    document.querySelectorAll("[data-copy-placeholder]").forEach((element) => {
+    pageDocument.querySelectorAll("[data-copy-placeholder]").forEach((element) => {
       const key = element.getAttribute("data-copy-placeholder");
       if (key && typeof copy[key] === "string") element.setAttribute("placeholder", copy[key]);
     });
@@ -183,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const assets = content && content.siteAssets;
     if (!assets || typeof assets !== "object") return;
     if (assets.portrait) eventPortrait = assets.portrait.objectKey ? objectUrl("/api/site-assets", assets.portrait.objectKey) : `/assets/${String(assets.portrait.asset || "robert-dickinson.jpg").replace(/^\//, "")}`;
-    document.querySelectorAll("[data-site-asset]").forEach((element) => {
+    pageDocument.querySelectorAll("[data-site-asset]").forEach((element) => {
       if (!(element instanceof HTMLImageElement)) return;
       const id = element.dataset.siteAsset;
       const asset = id && assets[id];
@@ -191,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
       element.src = asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
       element.alt = element.getAttribute("aria-hidden") === "true" ? "" : asset.alt || "";
     });
-    const hero = document.querySelector(".hero");
+    const hero = pageDocument.querySelector(".hero");
     if (hero instanceof HTMLElement) {
       hero.classList.remove("hero-portrait-landscape", "hero-portrait-portrait");
       hero.classList.add(assets.portrait?.layout === "portrait" ? "hero-portrait-portrait" : "hero-portrait-landscape");
@@ -199,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function applyTheme(content) {
-    const main = document.querySelector("main");
+    const main = pageDocument.querySelector("main");
     if (!(main instanceof HTMLElement)) return;
     if (typeof content.bodyFont === "string") main.dataset.bodyFont = content.bodyFont;
     if (typeof content.headingFont === "string") main.dataset.headingFont = content.headingFont;
@@ -217,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return figure;
   }
   function renderLifePhotos(photos) {
-    const target = document.querySelector("[data-life-photos]");
+    const target = pageDocument.querySelector("[data-life-photos]");
     if (!(target instanceof HTMLElement)) return;
     const early = (Array.isArray(photos) ? photos : []).filter((photo) => !photo.milestoneId);
     if (!early.length) {
@@ -227,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     target.replaceChildren(...early.map((photo) => lifePhotoFigure(photo)));
   }
   function illuminateLifeTimeline() {
-    const entries = document.querySelectorAll(".life-reference-entry");
+    const entries = pageDocument.querySelectorAll(".life-reference-entry");
     if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       entries.forEach((entry) => entry.classList.add("is-reached"));
       return;
@@ -240,11 +261,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }, { rootMargin: "0px 0px -14% 0px", threshold: 0 });
+    cleanups.push(() => observer.disconnect());
     entries.forEach((entry) => observer.observe(entry));
     return () => observer.disconnect();
   }
   function renderLifeTimeline(items, photos = []) {
-    const target = document.querySelector("[data-life-timeline]");
+    const target = pageDocument.querySelector("[data-life-timeline]");
     if (!(target instanceof HTMLElement) || !Array.isArray(items)) return;
     target.replaceChildren(...items.map((item, index) => {
       const article = node("article", { className: "life-scroll-entry life-reference-entry" });
@@ -283,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return span;
   }
   async function hydrateHomePreviews() {
-    const eventTarget=document.querySelector("[data-home-event]"), galleryTarget=document.querySelector("[data-home-gallery]");
+    const eventTarget=pageDocument.querySelector("[data-home-event]"), galleryTarget=pageDocument.querySelector("[data-home-gallery]");
     if (!eventTarget && !galleryTarget) return;
     await Promise.allSettled([
       (async()=>{if(!eventTarget)return; const {events=[]}=await getJson("/api/events");eventTarget.replaceChildren();
@@ -301,26 +323,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderHomeLegacy(threads, highlights, frontierLabels, copy) {
-    const target = document.querySelector("[data-home-scientific-story]");
-    const secondaryTarget = document.querySelector("[data-home-secondary]");
-    const headingThreads = document.querySelector("[data-home-heading-threads]");
-    const threadList = document.querySelector("[data-home-thread-list]");
+    const target = pageDocument.querySelector("[data-home-scientific-story]");
+    const secondaryTarget = pageDocument.querySelector("[data-home-secondary]");
+    const headingThreads = pageDocument.querySelector("[data-home-heading-threads]");
+    const threadList = pageDocument.querySelector("[data-home-thread-list]");
     if (!Array.isArray(threads) || !Array.isArray(highlights)) return;
     const frontiers = Array.isArray(frontierLabels) ? frontierLabels : ["Tropical Deforestation", "Carbon & Nitrogen cycling", "Regional Climate Modeling", "Solar Geoengineering", "Canopy Radiative Transfer"];
     const diagramLabels = ["Atmospheric Dynamics", "Climate Change", "Climate Modeling", "Land-Atmosphere Interactions", "Satellite Remote Sensing", "A Coupled Earth"];
 
-    const earthMap=document.querySelector("[data-home-earth-threads]");
+    const earthMap=pageDocument.querySelector("[data-home-earth-threads]");
     if(earthMap){
       earthMap.querySelectorAll(".home-thread-card").forEach(card=>card.remove());
       threads.forEach((thread,index)=>{const card=node("article",{className:`home-thread-card home-thread-card-${index+1}`}),body=node("div");body.append(node("h4",{text:thread.title||""}),node("p",{text:thread.text||""}));card.append(homeIcon(["waves","bars","model","leaf","satellite","globe"][index%6],"home-line-icon"),body);earthMap.append(card);});
-      document.querySelectorAll(".home-redesign .tribute-action-icon").forEach((icon,i)=>icon.replaceChildren(homeIcon(i===0?"leaf":"people","")));
+      pageDocument.querySelectorAll(".home-redesign .tribute-action-icon").forEach((icon,i)=>icon.replaceChildren(homeIcon(i===0?"leaf":"people","")));
     }
     if (headingThreads instanceof HTMLElement) {
       headingThreads.replaceChildren(...threads.map((thread) => node("span", { text: thread.title || "", attrs: { title: thread.text || "" } })));
     }
     if (threadList instanceof HTMLElement) {
       threadList.replaceChildren(...diagramLabels.map((label) => node("li", { text: label })));
-      const art = document.querySelector(".home-thread-art");
+      const art = pageDocument.querySelector(".home-thread-art");
       if (art instanceof HTMLElement) art.setAttribute("aria-label", `Six connected research threads: ${diagramLabels.join(", ")}`);
     }
 
@@ -371,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const chapters = Array.isArray(content.legacyChapters) ? content.legacyChapters : [];
     if (!chapters.length) return;
 
-    const scale = document.querySelector("[data-legacy-scale]");
+    const scale = pageDocument.querySelector("[data-legacy-scale]");
     if (scale instanceof HTMLElement) {
       scale.replaceChildren(...chapters.map((chapter) => {
         const item = node("li");
@@ -380,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
     }
 
-    const nav = document.querySelector("[data-legacy-nav]");
+    const nav = pageDocument.querySelector("[data-legacy-nav]");
     if (nav instanceof HTMLElement) {
       nav.replaceChildren(...chapters.map((chapter) => {
         const link = node("a", { attrs: { href: `#${chapter.id}` } });
@@ -389,7 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
     }
 
-    const target = document.querySelector("[data-legacy-journey]");
+    const target = pageDocument.querySelector("[data-legacy-journey]");
     if (target instanceof HTMLElement) {
       target.replaceChildren(...chapters.map((chapter) => {
         const publications = chapterPublications(chapter);
@@ -458,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
     }
 
-    const threadTarget = document.querySelector("[data-legacy-threads]");
+    const threadTarget = pageDocument.querySelector("[data-legacy-threads]");
     if (threadTarget instanceof HTMLElement && Array.isArray(content.legacyThreads)) {
       threadTarget.replaceChildren(...content.legacyThreads.map((thread, index) => {
         const article = node("article");
@@ -467,7 +489,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
     }
 
-    const frontierTarget = document.querySelector("[data-legacy-frontiers]");
+    const frontierTarget = pageDocument.querySelector("[data-legacy-frontiers]");
     if (frontierTarget instanceof HTMLElement && Array.isArray(content.secondaryLegacyTopics)) {
       frontierTarget.replaceChildren(...content.secondaryLegacyTopics.map((topic) => {
         const article = node("article");
@@ -479,7 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
     }
 
-    const honors = document.querySelector("[data-legacy-honors]");
+    const honors = pageDocument.querySelector("[data-legacy-honors]");
     if (honors instanceof HTMLElement && Array.isArray(content.honors)) {
       honors.replaceChildren(...content.honors.map((honor) => {
         const item = node("div", { className: "honor-item" });
@@ -487,7 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return item;
       }));
     }
-    const honorsNote = document.querySelector("[data-honors-note]");
+    const honorsNote = pageDocument.querySelector("[data-honors-note]");
     if (honorsNote instanceof HTMLElement && typeof content.honorsNote === "string") honorsNote.textContent = content.honorsNote;
   }
 
@@ -504,13 +526,13 @@ document.addEventListener("DOMContentLoaded", () => {
     applySiteAssets(content);
 
     Object.entries(content).forEach(([key, value]) => {
-      const targets = document.querySelectorAll(`[data-content="${key}"]`);
+      const targets = pageDocument.querySelectorAll(`[data-content="${key}"]`);
       targets.forEach((target) => {
         if (!(target instanceof HTMLElement) || typeof value !== "string") return;
         if (key === "obituaryStory") target.replaceChildren(...value.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph })));
         else target.textContent = value;
       });
-      const preview = document.querySelector(`[data-content-preview="${key}"]`);
+      const preview = pageDocument.querySelector(`[data-content-preview="${key}"]`);
       if (preview instanceof HTMLElement && typeof value === "string" && key === "obituaryStory") {
         const paragraphs = value.split(/\n\s*\n/).filter(Boolean).slice(0, 2).map((paragraph, index) => node("p", { className: index === 0 ? "lead" : "", text: paragraph }));
         const link = node("a", { className: "text-link", text: `${editableCopy["home.storyReadLink"] || "Read Robert’s full story"} →`, attrs: { href: "./life/" } });
@@ -526,7 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let eventFilter = "upcoming";
   async function hydrateEvents() {
-    const target = document.querySelector("[data-events]");
+    const target = pageDocument.querySelector("[data-events]");
     if (!(target instanceof HTMLElement)) return;
     const { events = [] } = await getJson("/api/events");
     const defaults = {"upcoming": "Upcoming", "past": "Past events", "all": "All events", "emptyUpcoming": "No upcoming events have been announced.", "emptyPast": "Past gatherings will appear here after they take place.", "emptyAll": "No events have been announced yet.", "calendar": "Add to calendar", "details": "Event information", "directions": "Get directions", "planning": "Planning to attend?", "planningIntro": "Find the information you need for joining us in person or online.", "venueTitle": "Venue & parking", "venueText": "The venue, address, and available parking information are listed with each event.", "onlineTitle": "Join online", "onlineText": "Use the livestream link on the event card to join remotely.", "rememberTitle": "Continue his legacy", "rememberText": "Remember Robert through a tree planted or a memory shared.", "tree": "Plant a Tree", "memory": "Share a Memory"};
@@ -573,7 +595,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for(const text of [item.title,item.caption||""]){const match=String(text).match(/(?:^|[^\d])((?:18|19|20|21)\d{2})(?!\d)/);if(match)return Number(match[1]);}return null;
   };
   async function hydrateGallery() {
-    const target=document.querySelector("[data-gallery]");if(!(target instanceof HTMLElement)||target.querySelector('dialog[open]'))return;
+    const target=pageDocument.querySelector("[data-gallery]");if(!(target instanceof HTMLElement)||target.querySelector('dialog[open]'))return;
     const {gallery=[]}=await getJson("/api/gallery");
     const defaults={"title": "Photos by year", "all": "All years", "oldest": "Oldest first", "newest": "Newest first", "sort": "Photo order", "more": "Load more photos", "undated": "Year unknown", "close": "Close", "previous": "Previous", "next": "Next", "open": "View full photograph", "none": "No photographs in this selection."},c=k=>editableCopy[`gallery.design.${k}`]??defaults[k];
     const decades=[...new Set(gallery.map(galleryYear).filter(y=>y!==null).map(y=>Math.floor(y/10)*10))].sort((a,b)=>a-b);
@@ -598,7 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function hydrateMemories() {
-    const wallTarget = document.querySelector("[data-memory-wall]");
+    const wallTarget = pageDocument.querySelector("[data-memory-wall]");
     if (!(wallTarget instanceof HTMLElement)) return;
     const [{ memories = [] }, { content = {} }] = await Promise.all([
       getJson("/api/memories"),
@@ -659,9 +681,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function hydrateParticipation() {
-    if (!document.querySelector("[data-participation-count]")) return;
+    if (!pageDocument.querySelector("[data-participation-count]")) return;
     const counts = await getJson("/api/participation");
-    document.querySelectorAll("[data-participation-count]").forEach((element) => {
+    pageDocument.querySelectorAll("[data-participation-count]").forEach((element) => {
       const kind = element.getAttribute("data-participation-count");
       const count = counts[kind];
       if (!Number.isSafeInteger(count) || count < 0) return;
@@ -670,7 +692,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : `${count === 1 ? "memory shared" : "memories shared"}`;
       if (element.hasAttribute("data-count-only")) {
         element.textContent = count.toLocaleString();
-        const gifts = document.querySelector("[data-restoration-total]");
+        const gifts = pageDocument.querySelector("[data-restoration-total]");
         if (gifts) gifts.textContent = counts.restorationGifts > 0 ? treeText("restorationTotal", "Plus {count} forest-restoration gifts").replace("{count}", counts.restorationGifts) : "";
       } else element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
       element.hidden = false;
@@ -679,7 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   async function hydrateMemoryBook() {
-    const target = document.querySelector("[data-memory-book]");
+    const target = pageDocument.querySelector("[data-memory-book]");
     if (!(target instanceof HTMLElement)) return;
     const [{ content }, { memories = [] }, { gallery = [] }] = await Promise.all([
       getJson("/api/content"),
@@ -1000,7 +1022,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const savedRoute = rawSavedRoute === "chippewa-living-tribute" ? "minnesota-living-tribute" : rawSavedRoute;
       if (savedRoute && Array.from(routeSelect.options).some((option) => option.value === savedRoute)) routeSelect.value = savedRoute;
       routeSelect.addEventListener("change", updateTreeRoute);
-      window.addEventListener("livingTributeRouteSelected", (event) => {
+      listen(window, "livingTributeRouteSelected", (event) => {
         const rawRoute = event.detail;
         const route = rawRoute === "chippewa-living-tribute" ? "minnesota-living-tribute" : rawRoute;
         if (typeof route === "string" && Array.from(routeSelect.options).some((option) => option.value === route)) {
@@ -1009,7 +1031,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
       updateTreeRoute();
-      window.addEventListener("memorialCopyUpdated", updateTreeRoute);
+      listen(window, "memorialCopyUpdated", updateTreeRoute);
     }
 
     treeForm.querySelectorAll("[data-tree-step]").forEach((button) => button.addEventListener("click", () => {
@@ -1029,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (status instanceof HTMLElement) status.classList.remove("is-success", "is-error");
       if (button) { button.disabled = true; button.textContent = treeText("formBusy", "Recording…"); }
       try {
-        const response = await fetch(apiUrl("/api/participation"), {
+        const response = await pageFetch(apiUrl("/api/participation"), {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
@@ -1069,16 +1091,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const mirrorReady = fetch("/mirror/manifest.json", { cache: "no-store" })
+  const mirrorReady = pageFetch("/mirror/manifest.json", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : { media: {} })
     .then((manifest) => { mirroredMedia = manifest.media || {}; })
     .catch(() => {});
   const liveRefreshers = [
     ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents, hydrateGallery, hydrateHomePreviews], true],
-    ["/api/events", [hydrateEvents, hydrateHomePreviews], Boolean(document.querySelector("[data-events], [data-home-event]"))],
-    ["/api/gallery", [hydrateGallery, hydrateMemoryBook, hydrateHomePreviews], Boolean(document.querySelector("[data-gallery], [data-memory-book], [data-home-gallery]"))],
-    ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-memory-book]"))],
-    ["/api/participation", [hydrateParticipation], Boolean(document.querySelector("[data-participation-count]"))],
+    ["/api/events", [hydrateEvents, hydrateHomePreviews], Boolean(pageDocument.querySelector("[data-events], [data-home-event]"))],
+    ["/api/gallery", [hydrateGallery, hydrateMemoryBook, hydrateHomePreviews], Boolean(pageDocument.querySelector("[data-gallery], [data-memory-book], [data-home-gallery]"))],
+    ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(pageDocument.querySelector("[data-memory-wall], [data-memory-book]"))],
+    ["/api/participation", [hydrateParticipation], Boolean(pageDocument.querySelector("[data-participation-count]"))],
   ];
   let refreshInProgress = false;
   let initialHydrated = false;
@@ -1092,23 +1114,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   mirrorReady.then(async () => {
+    if (lifecycle.signal.aborted) return;
     await Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook(), hydrateParticipation()]);
     await hydrateHomePreviews();
     initialHydrated = true;
     refreshPublicData();
   });
-  window.addEventListener("focus", refreshPublicData);
-  document.addEventListener("visibilitychange", refreshPublicData);
-  setInterval(refreshPublicData, 60000);
+  listen(window, "focus", refreshPublicData);
+  listen(document, "visibilitychange", refreshPublicData);
+  const refreshTimer = setInterval(refreshPublicData, 60000);
+  cleanups.push(() => clearInterval(refreshTimer));
 
-  const privatePreview = document.querySelector("[data-private-preview]");
+  const privatePreview = pageDocument.querySelector("[data-private-preview]");
   let editAccess = null;
   let previewBlobs = [];
+  cleanups.push(() => previewBlobs.forEach(URL.revokeObjectURL));
   const accessFromHash = () => {
     const match = location.hash.match(/^#preview=(\d+)\.([a-f0-9]{64})$/);
     return match ? { id: Number(match[1]), token: match[2] } : null;
   };
-  const previewRequest = (path) => fetch(apiUrl(path), { headers: { authorization: `Bearer ${editAccess.token}` }, cache: "no-store" });
+  const previewRequest = (path) => pageFetch(apiUrl(path), { headers: { authorization: `Bearer ${editAccess.token}` }, cache: "no-store" });
   async function showPrivatePreview(scroll = false) {
     if (!(privatePreview instanceof HTMLElement) || !editAccess) return;
     previewBlobs.forEach(URL.revokeObjectURL);
@@ -1193,7 +1218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   editAccess = accessFromHash();
   if (editAccess) showPrivatePreview();
-  window.addEventListener("hashchange", () => {
+  listen(window, "hashchange", () => {
     const access = accessFromHash();
     if (access) { editAccess = access; showPrivatePreview(true); }
   });
@@ -1215,7 +1240,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const button = form.querySelector("button[type=submit]");
     if (button instanceof HTMLButtonElement) { button.disabled = true; button.textContent = editableCopy["memories.formSending"] || "Sending…"; }
     try {
-      const response = await fetch(apiUrl("/api/memories"), { method: "POST", body: formData });
+      const response = await pageFetch(apiUrl("/api/memories"), { method: "POST", body: formData });
       const responseData = await response.json();
       if (!response.ok) throw new Error(responseData.error || "Unable to submit this memory.");
       editAccess = { id: responseData.id, token: responseData.editToken };
@@ -1229,4 +1254,101 @@ document.addEventListener("DOMContentLoaded", () => {
       if (button instanceof HTMLButtonElement) { button.disabled = false; button.textContent = editAccess ? "Save revised memory →" : `${editableCopy["memories.formSubmit"] || "Submit for review"} →`; }
     }
   });
+}
+
+// Public Pages navigation keeps the actual header node mounted, not a snapshot.
+// Management, downloads, the print book and external destinations stay native.
+function installMemorialNavigation() {
+  const routes = new Set(["/", "/life/", "/legacy/", "/events/", "/gallery/", "/memories/", "/tree/"]);
+  const canonical = path => path === "/" ? path : path.replace(/\/$/, "") + "/";
+  const nav = document.querySelector(".site-nav");
+  const main = document.querySelector("main");
+  if (!nav || !main || !routes.has(canonical(location.pathname))) return;
+  // The homepage uses relative head URLs. Anchor them before pushState changes
+  // the document base URL, including the stylesheet version comparison below.
+  document.head.querySelectorAll("[href], [src]").forEach(element => {
+    for (const attr of ["href", "src"]) {
+      const value = element.getAttribute(attr);
+      if (value) element.setAttribute(attr, new URL(value, location.href).href);
+    }
+  });
+  document.body.insertBefore(nav, main);
+  let displayedPath = canonical(location.pathname);
+  let pending = null;
+  history.scrollRestoration = "manual";
+
+  async function navigate(url, back = false, scroll = null) {
+    pending?.abort();
+    const request = new AbortController();
+    pending = request;
+    try {
+      const response = await fetch(url.pathname + url.search, { signal: request.signal, cache: "no-cache" });
+      if (!response.ok) throw new Error("Page unavailable");
+      const markup = await response.text();
+      if (request.signal.aborted) return;
+      const next = new DOMParser().parseFromString(markup, "text/html");
+      const nextMain = next.querySelector("main");
+      if (!nextMain || !nextMain.querySelector(".site-nav")) throw new Error("Native page required");
+      const stylesheet = next.querySelector('link[rel="stylesheet"]');
+      const currentStylesheet = document.querySelector('link[rel="stylesheet"]');
+      // A new deployment may require new CSS and JavaScript; load it normally.
+      if (!stylesheet || new URL(stylesheet.getAttribute("href"), url).href !== currentStylesheet?.href) throw new Error("New deployment");
+      nextMain.querySelector(".site-nav").remove();
+      // Preserve page-relative asset/link URLs when importing another document.
+      nextMain.querySelectorAll("[href], [src], [poster], [action]").forEach(element => {
+        for (const attr of ["href", "src", "poster", "action"]) {
+          const value = element.getAttribute(attr);
+          if (value && !value.startsWith("#")) element.setAttribute(attr, new URL(value, url).href);
+        }
+      });
+      disposeMemorialPage();
+      if (!back) {
+        history.replaceState({ ...history.state, memorialScroll: [scrollX, scrollY] }, "");
+        history.pushState({ memorialScroll: [0, 0] }, "", url);
+      }
+      const page = canonical(url.pathname).split("/").filter(Boolean)[0];
+      if (page && page !== "tree") document.documentElement.dataset.page = page;
+      else delete document.documentElement.dataset.page;
+      document.title = next.title;
+      const description = next.querySelector('meta[name="description"]');
+      if (description) document.querySelector('meta[name="description"]')?.setAttribute("content", description.content);
+      document.querySelector("main").replaceWith(document.importNode(nextMain, true));
+      displayedPath = canonical(url.pathname);
+      nav.querySelector("details")?.removeAttribute("open");
+      initializeMemorialPage();
+      const heading = [...document.querySelectorAll("main h1")].find(element => element.getClientRects().length);
+      if (heading) { heading.setAttribute("tabindex", "-1"); heading.focus({ preventScroll: true }); }
+      let anchor = null;
+      try { anchor = url.hash && document.getElementById(decodeURIComponent(url.hash.slice(1))); } catch {}
+      if (anchor) anchor.scrollIntoView({ behavior: "instant" });
+      else window.scrollTo({ left: scroll?.[0] || 0, top: scroll?.[1] || 0, behavior: "instant" });
+    } catch (error) {
+      if (!request.signal.aborted) location.assign(url.href);
+    }
+  }
+  document.addEventListener("click", event => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href);
+    if (url.origin !== location.origin || !routes.has(canonical(url.pathname)) || url.search) return;
+    if (canonical(url.pathname) === displayedPath && canonical(location.pathname) === displayedPath) {
+      pending?.abort();
+      if (!url.hash) { event.preventDefault(); nav.querySelector("details")?.removeAttribute("open"); window.scrollTo({ top: 0, behavior: "instant" }); }
+      return;
+    }
+    event.preventDefault();
+    url.pathname = canonical(url.pathname);
+    navigate(url);
+  });
+  window.addEventListener("popstate", event => {
+    if (canonical(location.pathname) === displayedPath) return;
+    if (!routes.has(canonical(location.pathname))) { location.reload(); return; }
+    navigate(new URL(location.href), true, event.state?.memorialScroll);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  installMemorialNavigation();
+  initializeMemorialPage();
 });
