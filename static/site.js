@@ -901,6 +901,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = new FormData(treeForm);
       const selected = routeSelect instanceof HTMLSelectElement ? routeSelect.selectedOptions[0] : null;
       const isTree = selected?.dataset.type === "tree";
+      if (status instanceof HTMLElement) status.classList.remove("is-success", "is-error");
       if (button) button.disabled = true;
       try {
         const response = await fetch(apiUrl("/api/participation"), {
@@ -922,11 +923,18 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem("livingTributeRoute");
         window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
         updateTreeRoute();
-        if (status) status.textContent = result.contributionType === "tree"
-          ? `Thank you. Your trees are now part of Robert’s living-tribute total and are recorded under ${result.geographicLabel || "the provider’s stated location"}.`
-          : "Thank you. Your restoration gift is now recorded in Robert’s living tribute, separately from the exact tree total.";
+        if (status instanceof HTMLElement) {
+          status.textContent = result.contributionType === "tree"
+            ? "✓ Thank you — your contribution has been successfully recorded. Your trees are now included in Robert’s living-tribute total."
+            : "✓ Thank you — your contribution has been successfully recorded in Robert’s living tribute.";
+          status.classList.add("is-success");
+          window.setTimeout(() => status.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
+        }
       } catch (error) {
-        if (status) status.textContent = error.message || "Please try again.";
+        if (status instanceof HTMLElement) {
+          status.textContent = error.message || "Please try again.";
+          status.classList.add("is-error");
+        }
       } finally {
         if (status) status.hidden = false;
         if (button) button.disabled = false;
