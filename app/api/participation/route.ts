@@ -173,7 +173,7 @@ export async function POST(request: Request) {
     const legacyTreeCount = route.type === "tree" ? treeCount : 1;
 
     await env.DB.prepare(
-      "INSERT INTO tree_dedications (name, email, project, provider, contribution_type, tree_count, reported_tree_count, count_basis, geographic_scope, geographic_label, confirmation_ref, payment_confirmed, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'pending', ?)"
+      "INSERT INTO tree_dedications (name, email, project, provider, contribution_type, tree_count, reported_tree_count, count_basis, geographic_scope, geographic_label, confirmation_ref, payment_confirmed, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'approved', ?)"
     ).bind(
       name,
       email || null,
@@ -191,7 +191,7 @@ export async function POST(request: Request) {
 
     return publicJson({
       ok: true,
-      status: "pending_review",
+      status: "recorded",
       contributionType: route.type,
       geographicScope: route.geographicScope,
       geographicLabel: route.geographicLabel,
