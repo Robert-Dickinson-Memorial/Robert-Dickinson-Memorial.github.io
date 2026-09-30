@@ -5,7 +5,7 @@ import { stripTypeScriptTypes } from "node:module";
 // The fake DB exposes only the public site_content rows queried by the mirror job.
 const rows = JSON.parse(await readFile(process.argv[2], "utf8"));
 const sources = await Promise.all([
-  "app/gallery-order.ts", "app/editorial-revision.ts", "app/site-data.ts",
+  "app/gallery-order.ts", "app/editorial-revision.ts", "app/tree/page-copy.ts", "app/site-data.ts",
 ].map((path) => readFile(path, "utf8")));
 const code = sources.map((source) => source.replace(/^import .*;\s*$/gm, "").replace(/^export /gm, "")).join("\n");
 const env = { DB: { prepare: () => ({ all: async () => ({ results: rows }) }) } };
