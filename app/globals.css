@@ -3588,3 +3588,25 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-redesign .tree-project-preview > summary::-webkit-details-marker { display:none; }
 .tree-redesign .tree-expand-label::before { content:"▸ "; display:inline-block; margin-right:4px; }
 .tree-redesign .tree-project-preview[open] > summary .tree-expand-label::before { content:"▾ "; }
+
+/* Compact Minnesota overview, with readable provider details. */
+.tree-redesign .tree-project-featured { grid-template-columns:minmax(0,32%) minmax(0,68%); align-items:start; }
+.tree-redesign .tree-project-featured > .tree-scene-minnesota { align-self:center; width:calc(100% - 24px); aspect-ratio:1.5; min-height:0; max-height:260px; margin:24px 0 24px 24px; border-radius:4px; }
+.tree-redesign .tree-project-featured > .tree-featured-copy { padding:24px; }
+.tree-redesign .tree-project-featured .tree-chippewa-routes { grid-column:1/-1; max-width:none; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; padding:0 24px 24px; }
+.tree-redesign .tree-route-card { grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:6px 16px; }
+.tree-redesign .tree-route-card > h3 { grid-column:1; grid-row:1; }
+.tree-redesign .tree-route-card > .tree-route-location { display:block; color:#53616b; font-size:.86rem; font-weight:500; letter-spacing:0; grid-column:1; grid-row:2; line-height:1.4; }
+.tree-redesign .tree-route-card > .tree-provider-note { grid-column:1; grid-row:3; font-size:.82rem; }
+.tree-redesign .tree-route-card > a { grid-column:2; grid-row:1/4; white-space:nowrap; max-width:none; }
+.tree-redesign .tree-route-card > details { grid-column:1/-1; grid-row:4; min-width:0; margin-top:4px; }
+.tree-redesign .tree-project-preview[open] .tree-minnesota-description { display:block; -webkit-line-clamp:unset; line-clamp:unset; overflow:visible; max-height:none; height:auto; white-space:pre-line; overflow-wrap:anywhere; }
+.tree-redesign .tree-project-preview[open] { max-height:none; overflow:visible; }
+.tree-redesign .tree-project-preview[open] > p { display:block; max-height:none; overflow:visible; -webkit-line-clamp:unset; white-space:pre-line; overflow-wrap:anywhere; }
+.tree-redesign .tree-route-card .tree-project-preview[open] .tree-expand-label { margin-top:8px; }
+@media(max-width:800px) {
+ .tree-redesign .tree-project-featured { grid-template-columns:1fr; }
+ .tree-redesign .tree-project-featured > .tree-scene-minnesota { width:calc(100% - 40px); max-width:420px; max-height:240px; margin:20px auto 0; }
+ .tree-redesign .tree-project-featured .tree-chippewa-routes { grid-template-columns:1fr; gap:8px; padding:0 20px 20px; }
+ .tree-redesign .tree-project-featured > .tree-featured-copy { padding:20px; }
+}

@@ -503,12 +503,12 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.arborProvider": "Arbor Day Foundation",
   "tree.arborProviderNote": "(US payment only)",
   "tree.arborText": "Honor Robert with memorial trees in Chippewa National Forest, supporting forest restoration in his home state. This option is for U.S. contributors and requires a U.S. address. Select Chippewa National Forest at checkout, then record the exact tree quantity confirmed by the provider.",
-  "tree.arborButton": "Continue with Arbor Day",
+  "tree.arborButton": "Plant a tree",
   "tree.minnesotaLocation": "Alternative · Minnesota Forests",
   "tree.minnesotaProvider": "A Living Tribute",
   "tree.minnesotaProviderNote": "(International Payment Option available)",
   "tree.minnesotaText": "Dedicate trees to Robert in Minnesota forests through A Living Tribute, with an international payment option and smaller gifts available. Planting locations depend on current restoration need; Chippewa National Forest is not guaranteed. After payment, record the provider’s confirmed tree quantity here.",
-  "tree.minnesotaButton": "Continue with A Living Tribute",
+  "tree.minnesotaButton": "Plant a tree",
   "tree.chippewaWhyTitle": "Why Chippewa comes first",
   "tree.chippewaWhyText": "Minnesota was Robert’s childhood home. Placing Chippewa National Forest at the heart of this tribute connects his beginnings with his lifelong work to understand our changing planet. A tree here honors both his roots and his enduring scientific legacy.",
   "tree.projectsKicker": "Other landscapes",
@@ -1062,6 +1062,8 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["tree.arborText"] === "For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.") saved["tree.arborText"] = defaultPageCopy["tree.arborText"];
         if (saved["tree.minnesotaText"] === "For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.") saved["tree.minnesotaText"] = defaultPageCopy["tree.minnesotaText"];
         if (saved["tree.chippewaWhyText"] === "Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.") saved["tree.chippewaWhyText"] = defaultPageCopy["tree.chippewaWhyText"];
+        if (saved["tree.arborButton"] === "Continue with Arbor Day") saved["tree.arborButton"] = "Plant a tree";
+        if (saved["tree.minnesotaButton"] === "Continue with A Living Tribute") saved["tree.minnesotaButton"] = "Plant a tree";
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));

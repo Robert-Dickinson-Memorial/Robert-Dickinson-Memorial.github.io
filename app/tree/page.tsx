@@ -152,11 +152,12 @@ export default async function TreeDedicationPage() {
           <p className="tree-featured-intro">{copy["tree.ui.featuredIntro"]}</p>
           <p className="tree-featured-summary">{copy["tree.chippewaWhyText"]}</p>
 
+        </div>
           <div className="tree-chippewa-routes">
             <article className="tree-route-card tree-route-primary">
-              <h3>{copy["tree.arborProvider"]}</h3>
+              <h3>{copy["tree.arborProvider"]}</h3><span className="tree-route-location">{copy["tree.arborLocation"]}</span>
               <small className="tree-provider-note">{copy["tree.arborProviderNote"]}</small>
-              <details className="tree-project-preview"><summary><span className="tree-preview-text">{copy["tree.arborText"]}</span><span className="tree-expand-label">{copy["tree.ui.expand"]}</span></summary><span className="tree-route-location">{copy["tree.arborLocation"]}</span><p>{copy["tree.arborText"]}</p></details>
+              <details className="tree-project-preview"><summary><span className="tree-preview-text tree-minnesota-description">{copy["tree.arborText"]}</span><span className="tree-expand-label">{copy["tree.ui.expand"]}</span></summary></details>
               <ContributionLink
                 className="tree-project-donate"
                 href="https://shop.arborday.org/tree-dedication/commemorative-trees-for-others?producttype=TIM"
@@ -167,9 +168,9 @@ export default async function TreeDedicationPage() {
             </article>
 
             <article className="tree-route-card tree-route-alternative">
-              <h3>{copy["tree.minnesotaProvider"]}</h3>
+              <h3>{copy["tree.minnesotaProvider"]}</h3><span className="tree-route-location">{copy["tree.minnesotaLocation"]}</span>
               <small className="tree-provider-note">{copy["tree.minnesotaProviderNote"]}</small>
-              <details className="tree-project-preview"><summary><span className="tree-preview-text">{copy["tree.minnesotaText"]}</span><span className="tree-expand-label">{copy["tree.ui.expand"]}</span></summary><span className="tree-route-location">{copy["tree.minnesotaLocation"]}</span><p>{copy["tree.minnesotaText"]}</p></details>
+              <details className="tree-project-preview"><summary><span className="tree-preview-text tree-minnesota-description">{copy["tree.minnesotaText"]}</span><span className="tree-expand-label">{copy["tree.ui.expand"]}</span></summary></details>
               <ContributionLink
                 className="tree-project-secondary-action"
                 href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate"
@@ -180,7 +181,7 @@ export default async function TreeDedicationPage() {
             </article>
           </div>
 
-        </div>
+        
       </section>
 
       <section className="tree-restoration-collection" aria-labelledby="tree-places-title">
