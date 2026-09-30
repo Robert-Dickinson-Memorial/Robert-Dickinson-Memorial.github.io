@@ -36,7 +36,7 @@ const restorationProjects = [
     provider: "A Living Tribute",
     route: "arizona-living-tribute",
     donateLabel: "Plant trees in Arizona",
-    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-arizona",
+    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
     sourceLabel: "Arizona planting details",
     sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-arizona",
     geography: "State-level · Arizona",
@@ -49,7 +49,7 @@ const restorationProjects = [
     provider: "A Living Tribute",
     route: "georgia-living-tribute",
     donateLabel: "Plant trees in Georgia",
-    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-georgia",
+    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
     sourceLabel: "Georgia planting details",
     sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-georgia",
     geography: "State-level · Georgia",
@@ -62,7 +62,7 @@ const restorationProjects = [
     provider: "A Living Tribute",
     route: "texas-living-tribute",
     donateLabel: "Plant trees in Texas",
-    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-texas",
+    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
     sourceLabel: "Texas planting details",
     sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-texas",
     geography: "State-level · Texas",
@@ -88,7 +88,7 @@ const restorationProjects = [
     provider: "A Living Tribute",
     route: "california-living-tribute",
     donateLabel: "Plant trees in California",
-    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-california",
+    donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
     sourceLabel: "California planting details",
     sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-california",
     geography: "State-level · California",
@@ -173,7 +173,7 @@ export default async function TreeDedicationPage() {
               <p>For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.</p>
               <ContributionLink
                 className="tree-project-secondary-action"
-                href="https://shop.alivingtribute.org/products/plant-a-tree-minnesota"
+                href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate"
                 route="minnesota-living-tribute"
               >
                 Continue with A Living Tribute
