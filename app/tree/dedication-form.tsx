@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 const contributionRoutes = [
   { id: "chippewa-arbor-day", label: "Chippewa National Forest · Arbor Day Foundation", type: "tree", geography: "Exact forest: Chippewa National Forest" },
@@ -20,6 +20,8 @@ const contributionRoutes = [
 
 export default function DedicationForm() {
   const [message, setMessage] = useState("");
+  const [messageIsSuccess, setMessageIsSuccess] = useState(false);
+  const messageRef = useRef<HTMLParagraphElement>(null);
   const [busy, setBusy] = useState(false);
   const [routeId, setRouteId] = useState("");
 
@@ -41,7 +43,7 @@ export default function DedicationForm() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    setBusy(true); setMessage("");
+    setBusy(true); setMessage(""); setMessageIsSuccess(false);
     try {
       const response = await fetch("/api/participation", {
         method: "POST",
@@ -66,10 +68,13 @@ export default function DedicationForm() {
       setRouteId("");
       window.sessionStorage.removeItem("livingTributeRoute");
       window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
+      setMessageIsSuccess(true);
       setMessage(result.contributionType === "tree"
-        ? `Thank you. Your trees are now part of Robert’s living-tribute total and are recorded under ${result.geographicLabel || "the provider’s stated location"}.`
-        : "Thank you. Your restoration gift is now recorded in Robert’s living tribute, separately from the exact tree total.");
+        ? "Thank you — your contribution has been successfully recorded. Your trees are now included in Robert’s living-tribute total."
+        : "Thank you — your contribution has been successfully recorded in Robert’s living tribute.");
+      window.setTimeout(() => messageRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
     } catch (error) {
+      setMessageIsSuccess(false);
       setMessage(error instanceof Error ? error.message : "Please try again.");
     } finally {
       setBusy(false);
@@ -95,6 +100,6 @@ export default function DedicationForm() {
     <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I confirm that the payment completed successfully and that the tree quantity, when entered, matches the provider’s stated quantity or published conversion.</label>
     <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
     <button type="submit" disabled={busy || !selectedRoute}>{busy ? "Submitting…" : "Record my living tribute"}</button>
-    {message && <p role="status" className="tree-dedication-message">{message}</p>}
+    {message && <p ref={messageRef} role="status" className={`tree-dedication-message ${messageIsSuccess ? "is-success" : "is-error"}`}>{messageIsSuccess && <span aria-hidden="true">✓</span>} {message}</p>}
   </form>;
 }
