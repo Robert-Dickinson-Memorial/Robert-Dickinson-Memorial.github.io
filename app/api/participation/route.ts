@@ -45,6 +45,15 @@ const contributionRoutes = {
     geographicScope: "greatest_need",
     geographicLabel: "Where needed most",
   },
+  "amazon-saving-the-amazon": {
+    project: "Amazon rainforest",
+    provider: "Saving The Amazon",
+    type: "tree",
+    basis: "provider-reported exact tree quantity",
+    geographicScope: "region",
+    geographicLabel: "Amazon rainforest",
+  },
+  // Legacy routes retained so historical records and already-open browser tabs remain valid.
   "amazon-tree-nation": {
     project: "Amazon rainforest",
     provider: "Tree-Nation / Rioterra",
@@ -101,6 +110,15 @@ const contributionRoutes = {
     geographicScope: "state",
     geographicLabel: "California",
   },
+  "massachusetts-tree-boston": {
+    project: "Boston, Massachusetts",
+    provider: "Tree Boston",
+    type: "tree",
+    basis: "one tree at a provider-listed one-tree impact level ($100, $500, or $1,000)",
+    geographicScope: "city",
+    geographicLabel: "Boston, Massachusetts",
+  },
+  // Legacy Esplanade route retained for historical records and already-open browser tabs.
   "massachusetts-esplanade": {
     project: "Massachusetts",
     provider: "Esplanade Association",
@@ -158,7 +176,14 @@ export async function POST(request: Request) {
 
     if (body.website) return publicJson({ ok: true, status: "pending_review" }, { status: 201 });
 
-    const treeQuantityValid = route?.type === "restoration" || (Number.isSafeInteger(treeCount) && treeCount >= 1 && treeCount <= 10000);
+    const treeQuantityValid = route?.type === "restoration" ||
+      (routeId === "massachusetts-tree-boston"
+        ? treeCount === 1
+        : (Number.isSafeInteger(treeCount) && treeCount >= 1 && treeCount <= 10000));
+    if (routeId === "massachusetts-tree-boston" && treeCount !== 1) {
+      return publicJson({ error: "For Tree Boston, record 1 tree only when you selected one of its listed one-tree impact options ($100, $500, or $1,000)." }, { status: 400 });
+    }
+
     if (
       name.length < 2 ||
       !route ||
