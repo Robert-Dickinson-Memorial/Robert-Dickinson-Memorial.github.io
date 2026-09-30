@@ -3565,3 +3565,6 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-redesign #record-tribute::before { display:none; }
 .tree-redesign .tree-dedication-form { width:100%; }
 .tree-redesign .tree-total-icon svg { width:100%; height:100%; }
+
+.tree-redesign .tree-payment-disclaimer { max-width:900px; margin:16px auto 0; color:#53616b; font-size:.9rem; line-height:1.55; }
+.tree-redesign .tree-featured-summary { color:#53616b; font-size:.94rem; line-height:1.6; margin:0 0 20px; }

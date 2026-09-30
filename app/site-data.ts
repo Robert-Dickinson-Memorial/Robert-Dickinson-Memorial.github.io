@@ -487,6 +487,8 @@ export const defaultPageCopy: Record<string, string> = {
   "nav.life": "His Life",
   "nav.legacy": "Scientific Legacy",
   "nav.tree": "Plant a Tree",
+  "tree.design.paymentDisclaimer": "This memorial website does not collect or process payments. All donations are made directly through the professional planting and conservation programs linked below.",
+  "tree.design.minnesotaSummary": "Choose Chippewa National Forest through Arbor Day Foundation, or support Minnesota forests through A Living Tribute, where the specific planting location depends on current need.",
   "tree.design.title": "A living tribute.",
   "tree.design.subtitle": "Plant a tree in Robert’s memory.",
   "tree.design.intro": "Support the landscapes connected to his life and science.",

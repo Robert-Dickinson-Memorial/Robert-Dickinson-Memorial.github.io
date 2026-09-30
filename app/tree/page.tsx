@@ -142,7 +142,7 @@ export default async function TreeDedicationPage() {
         <a className="tree-gold-button" href="#restoration-projects">Choose a place ↓</a><a className="tree-record-shortcut" href="#record-tribute">Already donated? Record my trees →</a></div>
         <TreeTotal initialTotal={treeTotal} initialGifts={restorationGifts} />
       </header>
-      <div className="tree-steps"><ol><li><span>1</span> Choose a place</li><li><span>2</span> Donate with the provider</li><li><span>3</span> Record your tribute</li></ol><small>Payments are made on the provider’s website.</small></div>
+      <div className="tree-steps"><ol><li><span>1</span> Choose a place</li><li><span>2</span> Donate with the provider</li><li><span>3</span> Record your tribute</li></ol><p className="tree-payment-disclaimer">{copy["tree.design.paymentDisclaimer"]}</p></div>
 
       <section id="restoration-projects" className="tree-project tree-project-featured">
         <div className="tree-landscape tree-scene-minnesota" role="img" aria-label="Illustrated Minnesota forest and lake" />
@@ -150,13 +150,13 @@ export default async function TreeDedicationPage() {
           <p className="section-kicker light">{copy["tree.featuredKicker"]}</p>
           <h2>{copy["tree.featuredTitle"]}</h2>
           <p className="tree-featured-intro">Honor Robert’s Minnesota roots by supporting forest restoration.</p>
+          <p className="tree-featured-summary">{copy["tree.design.minnesotaSummary"]}</p>
 
           <div className="tree-chippewa-routes">
             <article className="tree-route-card tree-route-primary">
               <span className="tree-route-location">{copy["tree.arborLocation"]}</span>
               <h3>{copy["tree.arborProvider"]}</h3>
               <small className="tree-provider-note">{copy["tree.arborProviderNote"]}</small>
-              <details><summary>Planting details</summary><p>{copy["tree.arborText"]}</p></details>
               <ContributionLink
                 className="tree-project-donate"
                 href="https://shop.arborday.org/tree-dedication/commemorative-trees-for-others?producttype=TIM"
@@ -170,7 +170,6 @@ export default async function TreeDedicationPage() {
               <span className="tree-route-location">{copy["tree.minnesotaLocation"]}</span>
               <h3>{copy["tree.minnesotaProvider"]}</h3>
               <small className="tree-provider-note">{copy["tree.minnesotaProviderNote"]}</small>
-              <details><summary>Planting details</summary><p>{copy["tree.minnesotaText"]}</p></details>
               <ContributionLink
                 className="tree-project-secondary-action"
                 href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate"
@@ -182,8 +181,6 @@ export default async function TreeDedicationPage() {
           </div>
 
         </div>
-
-        <details className="tree-featured-details"><summary>About this tribute and planting locations</summary><p>{content.treeTribute}</p><p>{content.treeDetail}</p><strong>{copy["tree.chippewaWhyTitle"]}</strong><p>{copy["tree.chippewaWhyText"]}</p></details>
       </section>
 
       <section className="tree-restoration-collection" aria-labelledby="tree-places-title">

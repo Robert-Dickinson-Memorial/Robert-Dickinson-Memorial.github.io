@@ -32,6 +32,8 @@ const treeCardCopyGroups = [
     { key: "tree.design.title", label: "Main heading" },
     { key: "tree.design.subtitle", label: "Subtitle" },
     { key: "tree.design.intro", label: "Introduction", long: true },
+    { key: "tree.design.paymentDisclaimer", label: "Payment disclaimer", long: true },
+    { key: "tree.design.minnesotaSummary", label: "Minnesota planting explanation", long: true },
   ] },
   {
     title: "Featured Minnesota section",
