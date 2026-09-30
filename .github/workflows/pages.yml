@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   workflow_run:
-    workflows: ['Extract shared-memory PDF text and previews']
+    workflows: ['Extract shared-memory PDF text and previews', 'Deploy memorial submission service']
     types: [completed]
   schedule:
     - cron: '7 * * * *'
@@ -63,6 +63,7 @@ jobs:
           cp public/legacy-threads-large-labels.webp _site/assets/legacy-threads-large-labels.webp
           cp public/landmarks/*.svg _site/assets/landmarks/
           cp public/tree-landscapes.webp _site/tree-landscapes.webp
+          cp public/celebrating-a-life-in-science.pdf _site/celebrating-a-life-in-science.pdf
           cp public/favicon.svg _site/favicon.svg
           touch _site/.nojekyll
           node -e 'require("node:fs").writeFileSync("_site/config.js", `window.MEMORIAL_API_BASE = ${JSON.stringify(process.env.MEMORIAL_API_BASE || "")};\n`)'

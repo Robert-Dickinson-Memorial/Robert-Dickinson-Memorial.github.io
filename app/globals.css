@@ -3610,3 +3610,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
  .tree-redesign .tree-project-featured .tree-chippewa-routes { grid-template-columns:1fr; gap:8px; padding:0 20px 20px; }
  .tree-redesign .tree-project-featured > .tree-featured-copy { padding:20px; }
 }
+
+/* Preserve the announcement’s paragraphs and address on every screen. */
+.event-card .event-description, .event-card .event-location { white-space:pre-line; overflow-wrap:anywhere; }
+.event-card .event-description a { display:inline; }

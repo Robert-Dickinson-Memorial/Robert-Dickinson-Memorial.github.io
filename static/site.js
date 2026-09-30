@@ -467,9 +467,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const list = node("div", { className: "events-list" });
     events.forEach((event) => {
       const article = node("article", { className: "event-card" });
-      article.append(node("time", { text: new Date(event.startAt).toLocaleString(), attrs: { datetime: event.startAt } }), node("h3", { text: event.title }));
+      article.append(node("time", { text: new Intl.DateTimeFormat("en-US", {dateStyle:"long", timeStyle:"short", timeZone:"America/Los_Angeles"}).format(new Date(event.startAt)) + " Pacific Time", attrs: { datetime: event.startAt } }), node("h3", { text: event.title }));
       if (event.location) article.append(node("p", { className: "event-location", text: event.location }));
-      if (event.description) article.append(node("p", { text: event.description }));
+      if (event.description) {
+        const description = node("p", { className: "event-description" });
+        event.description.split(/(https?:\/\/[^\s]+)/g).forEach((part) => {
+          if (/^https?:\/\//.test(part)) description.append(node("a", { text: part.endsWith(".pdf") ? "View / download announcement (PDF)" : part === "https://robert-dickinson-memorial.github.io/" ? "Visit Robert’s memorial website" : part, attrs: { href: part, target: "_blank", rel: "noopener noreferrer" } }));
+          else description.append(document.createTextNode(part));
+        });
+        article.append(description);
+      }
       if (event.linkUrl) article.append(node("a", { text: event.linkLabel || editableCopy["events.defaultLink"] || "Event details", attrs: { href: event.linkUrl, target: "_blank", rel: "noopener noreferrer" } }));
       list.append(article);
     });
