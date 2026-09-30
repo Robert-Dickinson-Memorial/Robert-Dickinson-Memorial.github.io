@@ -15,6 +15,7 @@ const restorationProjects = [
     title: "Plant a native tree in the Amazon",
     text: "Robert’s work on tropical deforestation makes the Amazon a scientifically meaningful part of this tribute. Saving The Amazon works with Indigenous communities to plant and care for native trees in the Amazon.",
     provider: "Saving The Amazon",
+    copyId: "amazon",
     route: "amazon-saving-the-amazon",
     donateLabel: "Plant a tree in the Amazon",
     donateUrl: "https://savingtheamazon.org/en/dona-un-arbol",
@@ -26,6 +27,7 @@ const restorationProjects = [
     title: "Arizona forest restoration",
     text: "Arizona was Robert’s home during his University of Arizona years. A Living Tribute offers exact tree quantities for restoration within Arizona forests affected by wildfire, disease, and environmental stress.",
     provider: "A Living Tribute",
+    copyId: "arizona",
     route: "arizona-living-tribute",
     donateLabel: "Plant trees in Arizona",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
@@ -37,6 +39,7 @@ const restorationProjects = [
     title: "Georgia forest restoration",
     text: "Georgia became another home during Robert’s Georgia Tech years. This route supports exact-tree restoration within Georgia, including high-need public forest landscapes.",
     provider: "A Living Tribute",
+    copyId: "georgia",
     route: "georgia-living-tribute",
     donateLabel: "Plant trees in Georgia",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
@@ -48,6 +51,7 @@ const restorationProjects = [
     title: "Texas landscape restoration",
     text: "Texas was Robert’s home during his UT Austin chapter. This route funds exact-tree restoration across Texas forests, floodplains, and wildfire-affected landscapes.",
     provider: "A Living Tribute",
+    copyId: "texas",
     route: "texas-living-tribute",
     donateLabel: "Plant trees in Texas",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
@@ -59,6 +63,7 @@ const restorationProjects = [
     title: "Restoring Colorado’s Forests Fund",
     text: "Colorado was central to Robert’s long NCAR chapter. The Colorado State Forest Service provides seedlings for reforestation of Colorado lands damaged by wildfire and other major disturbances.",
     provider: "Colorado State Forest Service · Colorado State University",
+    copyId: "colorado",
     route: "colorado-csfs",
     donateLabel: "Support Colorado reforestation",
     donateUrl: "https://give.colostate.edu/campaigns/45077/donations/new",
@@ -72,6 +77,7 @@ const restorationProjects = [
     title: "California forest restoration",
     text: "Robert’s final professional chapter was at UCLA. This route supports exact-tree restoration within California forests affected by wildfire and other disturbances.",
     provider: "A Living Tribute",
+    copyId: "california",
     route: "california-living-tribute",
     donateLabel: "Plant trees in California",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
@@ -83,6 +89,7 @@ const restorationProjects = [
     title: "Grow Boston’s urban forest",
     text: "Massachusetts connects to Robert’s Harvard and MIT years. Tree Boston offers practical one-tree impact levels: $100 provides a free tree to a Boston community member to plant, while $500 or $1,000 supports planting one tree in a backyard or public/community space.",
     provider: "Tree Boston",
+    copyId: "boston",
     route: "massachusetts-tree-boston",
     donateLabel: "Support one tree in Boston",
     donateUrl: "https://treeboston.org/support/online/",
@@ -100,6 +107,7 @@ const restorationProjects = [
     title: "Outside the U.S. or having payment trouble?",
     text: "One Tree Planted is a simple fallback when another provider’s checkout is not practical. Choose the number of memorial trees directly; the trees are planted where restoration is needed most rather than assigned to a Robert-specific location.",
     provider: "One Tree Planted",
+    copyId: "international",
     route: "global-one-tree-planted",
     donateLabel: "Continue with One Tree Planted",
     donateUrl: "https://onetreeplanted.org/products/gift-trees-in-memory",
@@ -141,36 +149,36 @@ export default async function TreeDedicationPage() {
 
       <section id="restoration-projects" className="tree-project tree-project-featured">
         <div>
-          <p className="section-kicker light">Featured tribute · Minnesota</p>
-          <h2>Chippewa National Forest</h2>
+          <p className="section-kicker light">{copy["tree.featuredKicker"]}</p>
+          <h2>{copy["tree.featuredTitle"]}</h2>
           <p>{content.treeTribute}</p>
           <p>{content.treeDetail}</p>
 
           <div className="tree-chippewa-routes">
             <article className="tree-route-card tree-route-primary">
-              <span className="tree-route-location">Chippewa National Forest</span>
-              <h3>Arbor Day Foundation</h3>
-              <p>For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.</p>
+              <span className="tree-route-location">{copy["tree.arborLocation"]}</span>
+              <h3>{copy["tree.arborProvider"]}</h3>
+              <p>{copy["tree.arborText"]}</p>
               <ContributionLink
                 className="tree-project-donate"
                 href="https://shop.arborday.org/tree-dedication/commemorative-trees-for-others?producttype=TIM"
                 route="chippewa-arbor-day"
               >
-                Continue with Arbor Day
+                {copy["tree.arborButton"]}
               </ContributionLink>
             </article>
 
             <article className="tree-route-card tree-route-alternative">
-              <span className="tree-route-location">Alternative · Minnesota Forests</span>
-              <h3>A Living Tribute</h3>
-              <small className="tree-provider-note">(International Payment Option available)</small>
-              <p>For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.</p>
+              <span className="tree-route-location">{copy["tree.minnesotaLocation"]}</span>
+              <h3>{copy["tree.minnesotaProvider"]}</h3>
+              <small className="tree-provider-note">{copy["tree.minnesotaProviderNote"]}</small>
+              <p>{copy["tree.minnesotaText"]}</p>
               <ContributionLink
                 className="tree-project-secondary-action"
                 href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate"
                 route="minnesota-living-tribute"
               >
-                Continue with A Living Tribute
+                {copy["tree.minnesotaButton"]}
               </ContributionLink>
             </article>
           </div>
@@ -178,39 +186,41 @@ export default async function TreeDedicationPage() {
         </div>
 
         <div className="tree-project-note">
-          <strong>Why Chippewa comes first</strong>
-          <p>Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.</p>
+          <strong>{copy["tree.chippewaWhyTitle"]}</strong>
+          <p>{copy["tree.chippewaWhyText"]}</p>
         </div>
       </section>
 
       <section className="tree-restoration-collection" aria-labelledby="tree-places-title">
         <div className="tree-section-heading tree-collection-heading">
-          <p className="section-kicker">Other landscapes</p>
-          <h2 id="tree-places-title">Places that shaped his life and science</h2>
-          <p>Each landscape is connected to Robert’s life or scientific work. We favor exact-tree routes tied to the named project, state, or region; when a provider cannot guarantee a particular forest, the memorial does not imply that it can.</p>
+          <p className="section-kicker">{copy["tree.projectsKicker"]}</p>
+          <h2 id="tree-places-title">{copy["tree.projectsTitle"]}</h2>
+          <p>{copy["tree.projectsIntro"]}</p>
         </div>
 
         <div className="tree-project-grid">
-          {restorationProjects.map((project) => (
-            <article className={`tree-project-card${project.region === "International option" ? " tree-project-card-international" : ""}`} key={project.region}>
-              <p className="tree-project-region">{project.region}</p>
-              {project.region === "International option" && <Globe2 className="tree-international-card-icon" size={30} aria-hidden="true" />}
-              <h3>{project.title}</h3>
-              <p>{project.text}</p>
-              <span className="tree-project-provider">{project.provider}</span>
-              <span className="tree-geography-tag"><MapPin size={13} aria-hidden="true" /> {project.geography}</span>
+          {restorationProjects.map((project) => {
+            const prefix = `tree.card.${project.copyId}`;
+            const isInternational = project.copyId === "international";
+            return <article className={`tree-project-card${isInternational ? " tree-project-card-international" : ""}`} key={project.route}>
+              <p className="tree-project-region">{copy[`${prefix}.region`] || project.region}</p>
+              {isInternational && <Globe2 className="tree-international-card-icon" size={30} aria-hidden="true" />}
+              <h3>{copy[`${prefix}.title`] || project.title}</h3>
+              <p>{copy[`${prefix}.text`] || project.text}</p>
+              <span className="tree-project-provider">{copy[`${prefix}.provider`] || project.provider}</span>
+              <span className="tree-geography-tag"><MapPin size={13} aria-hidden="true" /> {copy[`${prefix}.geography`] || project.geography}</span>
               <div className="tree-card-links">
-                <ContributionLink href={project.donateUrl} route={project.route}>{project.donateLabel}</ContributionLink>
-                {"sourceUrl" in project && <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">{project.sourceLabel} <ExternalLink size={14} aria-hidden="true" /></a>}
+                <ContributionLink href={project.donateUrl} route={project.route}>{copy[`${prefix}.button`] || project.donateLabel}</ContributionLink>
+                {"sourceUrl" in project && <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">{copy[`${prefix}.detailsButton`] || project.sourceLabel} <ExternalLink size={14} aria-hidden="true" /></a>}
               </div>
-              <small className="tree-card-note">{project.note}</small>
+              <small className="tree-card-note">{copy[`${prefix}.note`] || project.note}</small>
               {"alternative" in project && project.alternative && <div className="tree-card-alternative">
-                <strong>Alternative</strong>
-                <ContributionLink href={project.alternative.url} route={project.alternative.route}>{project.alternative.label}</ContributionLink>
-                <small>{project.alternative.note}</small>
+                <strong>{copy[`${prefix}.alternativeLabel`] || "Alternative"}</strong>
+                <ContributionLink href={project.alternative.url} route={project.alternative.route}>{copy[`${prefix}.alternativeButton`] || project.alternative.label}</ContributionLink>
+                <small>{copy[`${prefix}.alternativeNote`] || project.alternative.note}</small>
               </div>}
-            </article>
-          ))}
+            </article>;
+          })}
         </div>
 
       </section>
