@@ -4151,3 +4151,9 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-years::after {ma
  .home-redesign .home-thread-card >p {font-size:16px;padding:15px;}
  .home-redesign .science-secondary-terms {grid-template-columns:1fr;gap:12px;}
 }
+
+/* Keep the two sentiments on separate lines without changing saved copy. */
+main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {white-space:pre-line;}
+@media(max-width:540px) {
+ main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {font-size:clamp(17px,4.9vw,26px);}
+}

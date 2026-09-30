@@ -24,7 +24,7 @@ export default async function LifePage() {
           <p className="section-kicker">{copy["life.heroKicker"]}</p>
           <p className="life-reference-name">{copy["life.heroName"]}</p>
           <span className="life-reference-years">{copy["life.years"]}</span>
-          <h1>{copy["life.heroTitle"]}</h1>
+          <h1>{copy["life.heroTitle"].replace(/\.\s+(?=A generous spirit)/i, ".\n")}</h1>
           <p className="life-reference-hero-intro">{copy["life.heroIntro"]}</p>
         </div>
         <SharedHeroArt assets={content.siteAssets} />

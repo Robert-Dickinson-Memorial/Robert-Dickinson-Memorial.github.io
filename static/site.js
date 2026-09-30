@@ -183,7 +183,10 @@ function initializeMemorialPage() {
     pageDocument.querySelectorAll("[data-copy]").forEach((element) => {
       if (!(element instanceof HTMLElement)) return;
       const key = element.dataset.copy;
-      if (key && typeof copy[key] === "string" && element.textContent !== copy[key]) element.textContent = copy[key];
+      if (key && typeof copy[key] === "string") {
+        const text = key === "life.heroTitle" ? copy[key].replace(/\.\s+(?=A generous spirit)/i, ".\n") : copy[key];
+        if (element.textContent !== text) element.textContent = text;
+      }
     });
     pageDocument.querySelectorAll("[data-copy-href]").forEach((element) => {
       const key = element.getAttribute("data-copy-href");
