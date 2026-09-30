@@ -1,4 +1,4 @@
-import { ArrowLeft, ExternalLink, Globe2, MapPin, ShieldCheck, Sprout } from "lucide-react";
+import { ArrowLeft, ExternalLink, Globe2, MapPin, Sprout } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
 import { SiteNav } from "../site-chrome";
@@ -105,6 +105,17 @@ const restorationProjects = [
       note: "Regional forest stewardship gift; recorded separately because no exact tree quantity is assigned.",
     },
   },
+  {
+    region: "International option",
+    title: "Outside the U.S. or having payment trouble?",
+    text: "One Tree Planted is a simple fallback when another provider’s checkout is not practical. Choose the number of memorial trees directly; the trees are planted where restoration is needed most rather than assigned to a Robert-specific location.",
+    provider: "One Tree Planted",
+    route: "global-one-tree-planted",
+    donateLabel: "Continue with One Tree Planted",
+    donateUrl: "https://onetreeplanted.org/products/gift-trees-in-memory",
+    geography: "Where needed most",
+    note: "Exact tree quantity; recorded in Robert’s lifetime total without assigning the trees to a specific landscape.",
+  },
 ] as const;
 
 export default async function TreeDedicationPage() {
@@ -173,15 +184,6 @@ export default async function TreeDedicationPage() {
             </article>
           </div>
 
-          <div className="tree-international-fallback">
-            <Globe2 size={22} aria-hidden="true" />
-            <div>
-              <strong>Outside the U.S. or having payment trouble?</strong>
-              <p>Use our global reforestation fallback. One Tree Planted lets you choose an exact number of memorial trees and uses a secure Shopify checkout, but the trees are planted where restoration is needed most rather than assigned to Chippewa or another Robert-specific location.</p>
-              <ContributionLink href="https://onetreeplanted.org/products/gift-trees-in-memory" route="global-one-tree-planted">Plant trees where needed most</ContributionLink>
-            </div>
-          </div>
-
           <details className="tree-official-fallback">
             <summary>Official U.S. Forest Service option</summary>
             <p>USDA Plant-A-Tree remains available for U.S.-accessible visitors who specifically want a Forest Service contribution. USDA does not assign an exact tree quantity to an individual gift and may redirect funds if the requested forest has no immediate planting need, so we record it as a restoration gift rather than as exact trees.</p>
@@ -236,14 +238,6 @@ export default async function TreeDedicationPage() {
           ))}
         </div>
 
-        <div className="tree-universal-fallback">
-          <ShieldCheck size={24} aria-hidden="true" />
-          <div>
-            <strong>Payment from your country is not working?</strong>
-            <p>Use One Tree Planted’s memorial-tree checkout as a global, non-location-specific fallback when its checkout is available in your country. Your exact tree quantity still joins Robert’s lifetime total, but its geographic attribution is recorded as <em>Where needed most</em>.</p>
-            <ContributionLink href="https://onetreeplanted.org/products/gift-trees-in-memory" route="global-one-tree-planted">Use the global tree option</ContributionLink>
-          </div>
-        </div>
       </section>
 
       <section className="tree-faq" aria-labelledby="tree-faq-title">
