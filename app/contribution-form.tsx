@@ -103,7 +103,13 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
 
   return (
     <form ref={formRef} className="memory-form" onSubmit={onSubmit}>
-      <label>{copy["memories.formStory"]} <span>{copy["memories.formStoryNote"]}</span><textarea name="story" minLength={20} maxLength={6000} rows={4} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
+      <div className="field-row">
+        <label>{copy["memories.formName"]}<input name="name" required minLength={2} maxLength={100} placeholder={copy["memories.formNamePlaceholder"]} /></label>
+        <label>{copy["memories.formRelationship"]}<input name="relationship" required maxLength={120} placeholder={copy["memories.formRelationshipPlaceholder"]} /></label>
+      </div>
+      <label>{copy["memories.formTitle"]}<input name="title" required minLength={2} maxLength={160} placeholder={copy["memories.formTitlePlaceholder"]} /></label>
+      <label>{copy["memories.formStory"]} <span>{copy["memories.formStoryNote"]}</span><textarea name="story" minLength={20} maxLength={6000} rows={7} placeholder={copy["memories.formStoryPlaceholder"]} /></label>
+      <label>{copy["memories.formSocial"]} <span>{copy["memories.formSocialNote"]}</span><span className="memory-link-input"><Link2 size={18} aria-hidden="true" /><input name="socialUrl" type="url" maxLength={1000} placeholder={copy["memories.formSocialPlaceholder"]} /></span></label>
       <div className="upload-options">
       <label className="photo-field">
         <FileText size={22} aria-hidden="true" />
@@ -120,14 +126,6 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
         <input name="video" type="file" accept="video/mp4,video/webm,.mp4,.webm" />
       </label>
       </div>
-
-      <div className="field-row">
-        <label>{copy["memories.formName"]}<input name="name" required minLength={2} maxLength={100} placeholder={copy["memories.formNamePlaceholder"]} /></label>
-        <label>{copy["memories.formRelationship"]}<input name="relationship" required maxLength={120} placeholder={copy["memories.formRelationshipPlaceholder"]} /></label>
-      </div>
-      <label>{copy["memories.formTitle"]}<input name="title" required minLength={2} maxLength={160} placeholder={copy["memories.formTitlePlaceholder"]} /></label>
-
-      <label>{copy["memories.formSocial"]} <span>{copy["memories.formSocialNote"]}</span><span className="memory-link-input"><Link2 size={18} aria-hidden="true" /><input name="socialUrl" type="url" maxLength={1000} placeholder={copy["memories.formSocialPlaceholder"]} /></span></label>
       <label className="consent-field">
         <input name="consent" type="checkbox" required />
         <span>{copy["memories.formConsent"]}</span>

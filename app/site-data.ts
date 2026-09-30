@@ -757,7 +757,6 @@ export const defaultPageCopy: Record<string, string> = {
   "gallery.empty": "Photos and videos added by the memorial editors will appear here.",
   "gallery.watchVideo": "Watch video ↗",
 
-  "memories.design.readStories": "Read community memories",
   "memories.heroKicker": "From the community",
   "memories.heroTitle": "Memories, in many voices",
   "memories.heroIntro": "Stories from Robert’s students, postdoctoral scholars, colleagues, friends, and family—shared here after review.",
