@@ -60,7 +60,7 @@ export default function TreeReview({ pending, approved }: { pending: TreeDedicat
 
   return <section className="tree-review" aria-labelledby="tree-review-title">
     <h2 id="tree-review-title">Living tribute reports</h2>
-    <p>These are honor-system reports of completed payments made directly to outside organizations. Approve only a plausible entry. Exact provider-reported tree quantities enter the public tree total; restoration gifts are preserved separately. The memorial stores no card or banking information.</p>
+    <p>These are honor-system reports of completed payments made directly to outside organizations. Confirmed reports enter the public totals immediately; use “Void record” if an entry is incorrect or implausible. The memorial stores no card or banking information.</p>
     {error && <p role="alert" className="review-error">{error}</p>}
 
     <h3>Waiting for review ({queue.length})</h3>
