@@ -3026,3 +3026,75 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   .tree-project-actions-stacked { width: 100%; }
   .tree-project-actions-stacked a { box-sizing: border-box; width: 100%; }
 }
+
+
+/* Make the post-payment reporting step impossible to miss. */
+.tree-page-intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.tree-page-intro-actions a {
+  align-items: center;
+  display: inline-flex;
+  font-size: .86rem;
+  font-weight: 700;
+  min-height: 44px;
+  padding: 11px 16px;
+}
+.tree-intro-primary {
+  background: var(--memorial-gold, #d5b879);
+  color: var(--memorial-navy, #0b2239);
+}
+.tree-intro-record {
+  border: 1px solid rgba(255,255,255,.46);
+  color: var(--memorial-ivory, #f4f0e8);
+}
+#record-tribute {
+  border-top: 5px solid var(--memorial-gold, #d5b879);
+  scroll-margin-top: 92px;
+}
+#record-tribute::before {
+  color: #82642e;
+  content: "AFTER PAYMENT";
+  display: block;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .15em;
+  margin-bottom: 10px;
+}
+.tree-return-bar {
+  align-items: center;
+  background: #153b34;
+  border-top: 3px solid #d5b879;
+  bottom: 0;
+  box-shadow: 0 -10px 32px rgba(7,24,39,.22);
+  color: #fff;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  left: 0;
+  padding: 14px clamp(18px, 5vw, 70px);
+  position: fixed;
+  right: 0;
+  z-index: 60;
+}
+.tree-return-bar[hidden] { display: none; }
+.tree-return-bar > div { display: grid; gap: 2px; }
+.tree-return-bar strong { color: #f0d89f; font-size: .92rem; }
+.tree-return-bar span { color: rgba(255,255,255,.78); font-size: .78rem; line-height: 1.4; }
+.tree-return-bar > a {
+  background: #e1c37d;
+  color: #153129;
+  flex: 0 0 auto;
+  font-size: .82rem;
+  font-weight: 800;
+  padding: 11px 15px;
+}
+@media (max-width: 700px) {
+  .tree-page-intro-actions { display: grid; }
+  .tree-page-intro-actions a { justify-content: center; text-align: center; width: 100%; }
+  .tree-return-bar { align-items: stretch; display: grid; gap: 10px; padding: 12px 16px; }
+  .tree-return-bar > a { text-align: center; }
+}
