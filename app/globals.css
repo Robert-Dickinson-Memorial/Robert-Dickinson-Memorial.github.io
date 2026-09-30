@@ -3297,3 +3297,42 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-route-card > a {
   margin-top: 5px;
 }
+
+
+/* Prominent living-tribute totals on the home and Plant-a-Tree pages. */
+.tribute-participation-prominent {
+  background: #edf2e9;
+  border-left: 4px solid #7c936b;
+  color: #284337;
+  display: block;
+  font-style: normal;
+  line-height: 1.35;
+  margin: 14px 0 2px;
+  padding: 10px 12px;
+}
+.tribute-participation-prominent strong {
+  font-family: Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin-right: 2px;
+}
+.tree-live-total {
+  margin-top: 20px;
+}
+.tree-live-total > span {
+  align-items: baseline;
+  background: rgba(213,184,121,.14);
+  border: 1px solid rgba(213,184,121,.45);
+  color: #f4ead1;
+  display: inline-flex;
+  font-size: .9rem;
+  gap: 4px;
+  padding: 10px 14px;
+}
+.tree-live-total strong {
+  color: #f0d89f;
+  font-family: Georgia, serif;
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1;
+}
