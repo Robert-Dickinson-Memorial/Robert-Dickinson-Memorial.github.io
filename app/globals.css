@@ -3675,3 +3675,10 @@ html[data-page="events"] .site-nav .nav-links a[data-nav="events"], .events-rede
 .event-designed-section .event-feature-list { margin-top:28px; }
 .event-planning-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
 @media(max-width:760px) { .event-planning-grid { grid-template-columns:1fr; } }
+/* Give the Events introduction the available hero width. */
+.events-redesign .interior-hero > p:last-child,
+html[data-page="events"] .interior-hero > p:last-child { max-width:none; }
+@media(min-width:1100px) {
+ .events-redesign .interior-hero > p:last-child,
+ html[data-page="events"] .interior-hero > p:last-child { white-space:nowrap; font-size:clamp(.95rem,1.2vw,1.08rem); }
+}
