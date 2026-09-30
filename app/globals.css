@@ -3416,3 +3416,13 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-project-card-international .tree-card-note {
   color: rgba(255,255,255,.64);
 }
+
+
+.tree-provider-note {
+  color: #ead7a3;
+  display: block;
+  font-size: .9rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin: -2px 0 10px;
+}
