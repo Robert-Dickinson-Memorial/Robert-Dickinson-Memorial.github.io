@@ -20,7 +20,7 @@ export default async function LifePage() {
     ? `/api/site-assets/${portrait.objectKey.split("/").map(encodeURIComponent).join("/")}`
     : `/assets/${portrait.asset.replace(/^\//, "")}`;
 
-  return <main className="interior-page life-reference-page life-page-active" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+  return <main id="page-top" className="interior-page life-reference-page life-page-active" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="life" />
     <header className="life-reference-hero">
       <div className="life-reference-hero-inner">

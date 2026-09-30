@@ -1,7 +1,6 @@
-import { ArrowLeft, ExternalLink, Globe2, MapPin } from "lucide-react";
-import Link from "next/link";
+import { ExternalLink, Globe2, MapPin } from "lucide-react";
 import { env } from "cloudflare:workers";
-import { SiteNav } from "../site-chrome";
+import { SiteNav, SiteFooter } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 import ContributionLink from "./contribution-link";
 import ContributionReturnBar from "./contribution-return-bar";
@@ -134,7 +133,7 @@ export default async function TreeDedicationPage() {
   } catch {}
 
   return (
-    <main className="tree-page tree-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+    <main id="page-top" className="tree-page tree-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="tree" />
 
       <header id="top" className="tree-design-hero">
@@ -234,11 +233,7 @@ export default async function TreeDedicationPage() {
 
       <ContributionReturnBar copy={copy} />
 
-      <footer className="site-footer">
-        <div className="wordmark footer-mark"><span className="wordmark-mark">∞</span><span>{copy["global.footerName"]}</span></div>
-        <p>{copy["global.footerText"]}</p>
-        <div className="footer-links"><Link href="/"><ArrowLeft size={14} />{copy["tree.ui.footerHome"]}</Link><a href="#top">{copy["tree.ui.footerTop"]}</a></div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

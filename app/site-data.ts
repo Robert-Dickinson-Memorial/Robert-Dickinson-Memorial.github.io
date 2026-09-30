@@ -485,6 +485,7 @@ export const defaultPageCopy: Record<string, string> = {
   "global.footerName": "Robert E. Dickinson",
   "global.footerText": "Created with love by his academic community.",
   "global.footerHome": "Memorial home ↑",
+  "global.footerTop": "Return to top ↑",
   "nav.home": "Home",
   "nav.life": "His Life",
   "nav.legacy": "Scientific Legacy",

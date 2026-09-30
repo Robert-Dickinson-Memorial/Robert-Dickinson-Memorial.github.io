@@ -1,3 +1,4 @@
+import { SiteFooter } from "../site-chrome";
 import { env } from "cloudflare:workers";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -52,7 +53,7 @@ export default async function MemoryBookPage() {
   const horizon = assetUrl(content.siteAssets.horizon);
 
   return (
-    <main className="book-shell" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+    <><main id="page-top" className="book-shell" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <div className="book-toolbar"><Link href="/"><ArrowLeft size={17} /> {copy["book.toolbarReturn"]}</Link><PrintButton label={copy["book.print"]} /></div>
       <article className="memory-book editorial-book">
         <header className="book-spread book-cover-spread">
@@ -168,6 +169,6 @@ export default async function MemoryBookPage() {
         {!memories.length && <section className="book-spread book-empty"><h2>{copy["book.emptyTitle"]}</h2><p>{copy["memories.emptyText"]}</p></section>}
         <footer className="book-spread book-end-spread"><span>∞</span><h2>{copy["book.endTitle"]}</h2><p>{copy["book.endFooter"]}</p></footer>
       </article>
-    </main>
+    </main><SiteFooter /></>
   );
 }

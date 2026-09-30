@@ -38,9 +38,9 @@ export async function SiteFooter() {
   const copy = content.pageCopy;
   return (
     <footer className="site-footer">
-      <Link className="wordmark footer-mark" href="/"><span className="wordmark-mark">∞</span><span>{copy["global.footerName"]}</span></Link>
+      <Link className="wordmark footer-mark" href="/"><span className="wordmark-mark" aria-hidden="true">∞</span><span>{copy["global.footerName"]}</span></Link>
       <p>{copy["global.footerText"]}</p>
-      <div className="footer-links"><ReviewLink /><Link href="/">{copy["global.footerHome"]}</Link></div>
+      <div className="footer-links"><ReviewLink /><Link href="/">{copy["global.footerHome"]}</Link><a href="#page-top">{copy["global.footerTop"]}</a></div>
     </footer>
   );
 }

@@ -19,7 +19,7 @@ function publicationPdfUrl(publication: { url?: string; pdfUrl?: string }): stri
 export default async function LegacyPage() {
   const content = await getSiteContent();
   const copy = content.pageCopy;
-  return <main className="interior-page legacy-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+  return <main id="page-top" className="interior-page legacy-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
     <SiteNav active="legacy" />
     <InteriorHero kicker={copy["legacy.heroKicker"]} title={copy["home.legacyTitle"]} intro={copy["legacy.heroIntro"]} />
     <section className="legacy-section legacy-page-content">
