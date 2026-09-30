@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 
 const labels: Record<string, string> = {
   "chippewa-arbor-day": "Chippewa · Arbor Day Foundation",
-  "chippewa-living-tribute": "Chippewa · A Living Tribute",
+  "chippewa-living-tribute": "Minnesota forests · A Living Tribute",
+  "minnesota-living-tribute": "Minnesota forests · A Living Tribute",
+  "global-one-tree-planted": "Where needed most · One Tree Planted",
   "chippewa-usda": "Chippewa · USDA Forest Service",
   "amazon-tree-nation": "Amazon · Tree-Nation / Rioterra",
   "amazon-conservation": "Amazon · Amazon Conservation",
