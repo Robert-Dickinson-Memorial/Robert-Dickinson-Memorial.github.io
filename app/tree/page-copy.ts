@@ -29,6 +29,8 @@ export const treeUiDefaults: Record<string, string> = {
   "tree.ui.footerHome": "Return to memorial",
   "tree.ui.footerTop": "Return to top ↑",
   "tree.ui.expand": "Project details",
+  "tree.ui.faqQuestion6": "Will I receive a certificate?",
+  "tree.ui.faqAnswer6": "If your selected planting program offers a certificate, you will receive it directly from the provider. Check the certificate and dedication options at checkout, and enter Robert E. Dickinson’s name where available. Certificate availability, format, and delivery vary by program; not every provider offers one. Recording your trees on this website does not issue a provider certificate.",
   "tree.ui.faqQuestion1": "Does the memorial website handle my payment?",
   "tree.ui.faqAnswer1": "No. Payment takes place entirely on the selected provider’s website. The memorial stores only the contribution record you report afterward and never receives your card or banking credentials.",
   "tree.ui.faqQuestion2": "About the landscape images",

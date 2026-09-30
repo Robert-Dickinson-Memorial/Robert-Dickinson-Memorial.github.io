@@ -225,6 +225,7 @@ export default async function TreeDedicationPage() {
       <section className="tree-faq" aria-labelledby="tree-faq-title">
         <h2 id="tree-faq-title">{copy["tree.ui.faqHeading"]}</h2>
         <details><summary>{copy["tree.ui.faqQuestion1"]}</summary><p>{copy["tree.ui.faqAnswer1"]}</p></details>
+        <details><summary>{copy["tree.ui.faqQuestion6"]}</summary><p>{copy["tree.ui.faqAnswer6"]}</p></details>
         <details><summary>{copy["tree.ui.faqQuestion2"]}</summary><p>{copy["tree.ui.faqAnswer2"]}</p></details>
         <details><summary>{copy["tree.ui.faqQuestion3"]}</summary><p>{copy["tree.ui.faqAnswer3"]}</p></details>
         <details><summary>{copy["tree.ui.faqQuestion4"]}</summary><p>{copy["tree.ui.faqAnswer4"]}</p></details>
