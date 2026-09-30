@@ -4205,3 +4205,23 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {wh
 .home-redesign .home-gallery-strip img {aspect-ratio:1.08;}
 @media(max-width:760px){.home-redesign .home-preview-header{gap:10px}.home-redesign .home-preview-header h3,.home-redesign .home-community-grid>a:last-child h3{font-size:22px}}
 @media(max-width:380px){.home-redesign .home-preview-header{grid-template-columns:22px minmax(0,1fr)}.home-redesign .home-preview-header b,.home-redesign .home-community-grid>a:last-child .home-preview-header b{grid-column:2;margin:0}}
+
+/* Make the live dedication and memory totals immediately noticeable. */
+.home-redesign .tribute-action-card .tribute-participation {
+  display:block;margin:16px 0 5px;padding:14px 18px;
+  background:#e0ebda;border:1px solid #c6d8bd;border-left:4px solid #477452;
+  border-radius:4px;color:#31583e;font:500 15px/1.45 Arial,Helvetica,sans-serif;opacity:1;
+}
+.home-redesign .tribute-action-card .tribute-participation[hidden] {display:none;}
+.home-redesign .tribute-action-card .tribute-participation strong {
+  display:block;margin:0 0 4px;font:600 44px/1 Georgia,serif;
+  letter-spacing:-.025em;font-variant-numeric:tabular-nums;color:#2f6141;
+}
+.home-redesign .memory-card-cta .tribute-participation {
+  background:#dfeaf2;border-color:#bfd2e0;border-left-color:#477a9a;color:#2e5773;
+}
+.home-redesign .memory-card-cta .tribute-participation strong {color:#295e80;}
+@media(max-width:540px){
+  .home-redesign .tribute-action-card .tribute-participation {padding:12px 14px;font-size:14px;}
+  .home-redesign .tribute-action-card .tribute-participation strong {font-size:40px;}
+}
