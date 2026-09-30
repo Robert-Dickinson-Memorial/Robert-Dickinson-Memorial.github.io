@@ -59,6 +59,7 @@ export default function DedicationForm() {
       form.reset();
       setRouteId("");
       window.sessionStorage.removeItem("livingTributeRoute");
+      window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
       setMessage(result.contributionType === "tree"
         ? "Thank you. Your tree dedication has been submitted for review. After approval, the reported trees will join Robert’s lifetime total."
         : "Thank you. Your restoration gift has been submitted for review. It will be preserved separately from the exact tree total.");
