@@ -141,31 +141,29 @@ export default async function TreeDedicationPage() {
 
           <div className="tree-chippewa-routes">
             <article className="tree-route-card tree-route-primary">
-              <span className="tree-route-badge">U.S. contributors · exact Chippewa</span>
-              <h3>Plant directly for Chippewa National Forest</h3>
-              <p>Arbor Day Foundation provides an exact tree quantity and currently lets the donor select Chippewa National Forest. Our checkout testing found that its current address form accepts U.S. addresses only.</p>
+              <span className="tree-route-location">Chippewa National Forest</span>
+              <h3>Arbor Day Foundation</h3>
+              <p>For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.</p>
               <ContributionLink
                 className="tree-project-donate"
                 href="https://shop.arborday.org/tree-dedication/commemorative-trees-for-others?producttype=TIM"
                 route="chippewa-arbor-day"
               >
-                Plant in Chippewa through Arbor Day
+                Continue with Arbor Day
               </ContributionLink>
-              <small><MapPin size={13} aria-hidden="true" /> Recorded as: <strong>Chippewa National Forest</strong></small>
             </article>
 
-            <article className="tree-route-card">
-              <span className="tree-route-badge">Minnesota alternative · exact tree count</span>
-              <h3>Plant trees in Minnesota forests</h3>
-              <p>A Living Tribute’s Minnesota program provides an exact tree quantity and plants within Minnesota forests in need. Chippewa is a past planting location, but the current checkout does not guarantee Chippewa specifically.</p>
+            <article className="tree-route-card tree-route-alternative">
+              <span className="tree-route-location">Alternative · Minnesota Forests</span>
+              <h3>A Living Tribute</h3>
+              <p>For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.</p>
               <ContributionLink
                 className="tree-project-secondary-action"
                 href="https://shop.alivingtribute.org/products/plant-a-tree-minnesota"
                 route="minnesota-living-tribute"
               >
-                Plant trees in Minnesota
+                Continue with A Living Tribute
               </ContributionLink>
-              <small><MapPin size={13} aria-hidden="true" /> Recorded as: <strong>Minnesota</strong></small>
             </article>
           </div>
 
@@ -187,7 +185,7 @@ export default async function TreeDedicationPage() {
 
         <div className="tree-project-note">
           <strong>Why Chippewa comes first</strong>
-          <p>Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. We give the exact-Chippewa route first priority while providing geographically honest alternatives for contributors who cannot use it.</p>
+          <p>Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.</p>
         </div>
       </section>
 
