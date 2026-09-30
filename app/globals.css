@@ -3336,3 +3336,30 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   font-weight: 600;
   line-height: 1;
 }
+
+
+/* Clear confirmation after a living-tribute record is submitted. */
+.tree-dedication-message {
+  border-radius: 5px;
+  font-size: .9rem;
+  font-weight: 650;
+  line-height: 1.5;
+  max-width: 760px;
+  padding: 13px 15px;
+}
+.tree-dedication-message.is-success {
+  background: #e4efe7;
+  border: 1px solid #9bb7a2;
+  color: #24543c;
+}
+.tree-dedication-message.is-success > span {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 900;
+  margin-right: 4px;
+}
+.tree-dedication-message.is-error {
+  background: #f5e8e5;
+  border: 1px solid #cda9a0;
+  color: #7b3429;
+}
