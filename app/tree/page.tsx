@@ -184,28 +184,11 @@ export default async function TreeDedicationPage() {
             </article>
           </div>
 
-          <details className="tree-official-fallback">
-            <summary>Official U.S. Forest Service option</summary>
-            <p>USDA Plant-A-Tree remains available for U.S.-accessible visitors who specifically want a Forest Service contribution. USDA does not assign an exact tree quantity to an individual gift and may redirect funds if the requested forest has no immediate planting need, so we record it as a restoration gift rather than as exact trees.</p>
-            <ContributionLink href="https://plantatree.fs.usda.gov/tree-donation" route="chippewa-usda">Open USDA Plant-A-Tree</ContributionLink>
-          </details>
         </div>
 
         <div className="tree-project-note">
           <strong>Why Chippewa comes first</strong>
           <p>Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.</p>
-        </div>
-      </section>
-
-      <section className="tree-geography-principle" aria-labelledby="geography-principle-title">
-        <div>
-          <p className="section-kicker">How we keep the record honest</p>
-          <h2 id="geography-principle-title">We count the trees exactly—and the location only as precisely as the provider guarantees.</h2>
-        </div>
-        <div className="tree-geography-levels">
-          <span><MapPin size={17} /><strong>Exact forest/project</strong><small>Chippewa · Amazon/Rioterra · Charles River Esplanade</small></span>
-          <span><MapPin size={17} /><strong>State/region</strong><small>Minnesota · Arizona · Georgia · Texas · Colorado · California</small></span>
-          <span><Globe2 size={17} /><strong>Where needed most</strong><small>Exact trees, but not assigned to a Robert-specific landscape</small></span>
         </div>
       </section>
 
@@ -218,8 +201,9 @@ export default async function TreeDedicationPage() {
 
         <div className="tree-project-grid">
           {restorationProjects.map((project) => (
-            <article className="tree-project-card" key={project.region}>
+            <article className={`tree-project-card${project.region === "International option" ? " tree-project-card-international" : ""}`} key={project.region}>
               <p className="tree-project-region">{project.region}</p>
+              {project.region === "International option" && <Globe2 className="tree-international-card-icon" size={30} aria-hidden="true" />}
               <h3>{project.title}</h3>
               <p>{project.text}</p>
               <span className="tree-project-provider">{project.provider}</span>
