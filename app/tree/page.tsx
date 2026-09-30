@@ -37,8 +37,6 @@ const restorationProjects = [
     route: "arizona-living-tribute",
     donateLabel: "Plant trees in Arizona",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
-    sourceLabel: "Arizona planting details",
-    sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-arizona",
     geography: "State-level · Arizona",
     note: "The tree count is exact; the memorial records these trees to Arizona, not to a specific forest unless the provider explicitly guarantees that forest at checkout.",
   },
@@ -50,8 +48,6 @@ const restorationProjects = [
     route: "georgia-living-tribute",
     donateLabel: "Plant trees in Georgia",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
-    sourceLabel: "Georgia planting details",
-    sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-georgia",
     geography: "State-level · Georgia",
     note: "Exact tree quantity; attributed to Georgia rather than to an individual forest unless explicitly guaranteed at checkout.",
   },
@@ -63,8 +59,6 @@ const restorationProjects = [
     route: "texas-living-tribute",
     donateLabel: "Plant trees in Texas",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
-    sourceLabel: "Texas planting details",
-    sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-texas",
     geography: "State-level · Texas",
     note: "Exact tree quantity; the memorial records Texas as the geographic attribution.",
   },
@@ -89,8 +83,6 @@ const restorationProjects = [
     route: "california-living-tribute",
     donateLabel: "Plant trees in California",
     donateUrl: "https://shop.alivingtribute.org/products/plant-a-tree-ecertificate",
-    sourceLabel: "California planting details",
-    sourceUrl: "https://shop.alivingtribute.org/products/plant-a-tree-california",
     geography: "State-level · California",
     note: "Angeles National Forest appears among the provider’s California restoration landscapes, but the memorial attributes the gift only to California unless checkout explicitly guarantees Angeles.",
   },
@@ -232,7 +224,7 @@ export default async function TreeDedicationPage() {
               <span className="tree-geography-tag"><MapPin size={13} aria-hidden="true" /> {project.geography}</span>
               <div className="tree-card-links">
                 <ContributionLink href={project.donateUrl} route={project.route}>{project.donateLabel}</ContributionLink>
-                <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">{project.sourceLabel} <ExternalLink size={14} aria-hidden="true" /></a>
+                {"sourceUrl" in project && <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">{project.sourceLabel} <ExternalLink size={14} aria-hidden="true" /></a>}
               </div>
               <small className="tree-card-note">{project.note}</small>
               {"alternative" in project && project.alternative && <div className="tree-card-alternative">
