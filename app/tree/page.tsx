@@ -173,7 +173,7 @@ export default async function TreeDedicationPage() {
             <Globe2 size={22} aria-hidden="true" />
             <div>
               <strong>Outside the U.S. or having payment trouble?</strong>
-              <p>Use our universal exact-tree fallback. One Tree Planted lets you choose an exact number of memorial trees and uses a secure Shopify checkout, but the trees are planted where restoration is needed most rather than assigned to Chippewa or another Robert-specific location.</p>
+              <p>Use our global reforestation fallback. One Tree Planted lets you choose an exact number of memorial trees and uses a secure Shopify checkout, but the trees are planted where restoration is needed most rather than assigned to Chippewa or another Robert-specific location.</p>
               <ContributionLink href="https://onetreeplanted.org/products/gift-trees-in-memory" route="global-one-tree-planted">Plant trees where needed most</ContributionLink>
             </div>
           </div>
@@ -236,8 +236,8 @@ export default async function TreeDedicationPage() {
           <ShieldCheck size={24} aria-hidden="true" />
           <div>
             <strong>Payment from your country is not working?</strong>
-            <p>Use One Tree Planted’s memorial-tree checkout as the universal fallback. Your exact tree quantity still joins Robert’s lifetime total, but its geographic attribution is recorded as <em>Where needed most</em>.</p>
-            <ContributionLink href="https://onetreeplanted.org/products/gift-trees-in-memory" route="global-one-tree-planted">Use the universal tree option</ContributionLink>
+            <p>Use One Tree Planted’s memorial-tree checkout as a global, non-location-specific fallback when its checkout is available in your country. Your exact tree quantity still joins Robert’s lifetime total, but its geographic attribution is recorded as <em>Where needed most</em>.</p>
+            <ContributionLink href="https://onetreeplanted.org/products/gift-trees-in-memory" route="global-one-tree-planted">Use the global tree option</ContributionLink>
           </div>
         </div>
       </section>
