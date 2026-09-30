@@ -3363,3 +3363,61 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   border: 1px solid #cda9a0;
   color: #7b3429;
 }
+
+
+/* Make the international fallback impossible to miss in the project grid. */
+.tree-project-card-international {
+  background: #173747;
+  border: 2px solid var(--memorial-gold, #d5b879);
+  box-shadow: 0 14px 34px rgba(11, 34, 57, .14);
+  color: #fff;
+  grid-column: 1 / -1;
+  min-height: 0;
+  padding: clamp(30px, 4vw, 46px);
+  position: relative;
+}
+.tree-project-card-international .tree-project-region {
+  color: #e9cd8d !important;
+  margin-bottom: 12px !important;
+}
+.tree-project-card-international .tree-international-card-icon {
+  color: #e9cd8d;
+  display: block;
+  font-size: 2rem;
+  height: auto;
+  margin-bottom: 12px;
+  width: auto;
+}
+.tree-project-card-international h3 {
+  color: #fff;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin-bottom: 14px;
+}
+.tree-project-card-international > p:not(.tree-project-region) {
+  color: rgba(255,255,255,.78);
+  max-width: 860px;
+}
+.tree-project-card-international .tree-project-provider {
+  border-top-color: rgba(255,255,255,.18);
+  color: #e9cd8d;
+  margin-top: 26px;
+}
+.tree-project-card-international .tree-geography-tag {
+  background: rgba(255,255,255,.10);
+  color: #f4e7c7;
+}
+.tree-project-card-international .tree-card-links a {
+  background: var(--memorial-gold, #d5b879);
+  border: 0;
+  color: var(--memorial-navy, #0b2239);
+  font-size: .86rem;
+  padding: 11px 14px;
+}
+.tree-project-card-international .tree-card-note {
+  color: rgba(255,255,255,.64);
+}
+@media (max-width: 680px) {
+  .tree-project-card-international {
+    grid-column: auto;
+  }
+}
