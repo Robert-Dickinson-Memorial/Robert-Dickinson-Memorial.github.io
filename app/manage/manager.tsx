@@ -42,6 +42,7 @@ const treeCardCopyGroups = [
     fields: [
       { key: "tree.arborLocation", label: "Location label" },
       { key: "tree.arborProvider", label: "Provider name" },
+      { key: "tree.arborProviderNote", label: "Provider note" },
       { key: "tree.arborText", label: "Card description", long: true },
       { key: "tree.arborButton", label: "Button text" },
     ],
@@ -61,6 +62,7 @@ const treeCardCopyGroups = [
     fields: [
       { key: "tree.projectsKicker", label: "Section label" },
       { key: "tree.projectsTitle", label: "Section title" },
+      { key: "tree.projectsPaymentNote", label: "Payment availability note" },
       { key: "tree.projectsIntro", label: "Section introduction", long: true },
     ],
   },

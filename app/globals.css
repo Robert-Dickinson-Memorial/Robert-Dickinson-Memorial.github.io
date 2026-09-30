@@ -3367,21 +3367,21 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 
 /* Make the international fallback impossible to miss in the project grid. */
 .tree-project-card-international {
-  background: #173747;
-  border: 2px solid var(--memorial-gold, #d5b879);
-  box-shadow: 0 14px 34px rgba(11, 34, 57, .14);
-  color: #fff;
+  background: #e8eeea;
+  border: 1px solid #c5d1ca;
+  box-shadow: 0 8px 22px rgba(11, 34, 57, .07);
+  color: var(--memorial-navy, #0b2239);
   grid-column: auto;
   min-height: 430px;
   padding: clamp(30px, 4vw, 46px);
   position: relative;
 }
 .tree-project-card-international .tree-project-region {
-  color: #e9cd8d !important;
+  color: #6f806f !important;
   margin-bottom: 12px !important;
 }
 .tree-project-card-international .tree-international-card-icon {
-  color: #e9cd8d;
+  color: #758d7c;
   display: block;
   font-size: 2rem;
   height: auto;
@@ -3389,40 +3389,66 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   width: auto;
 }
 .tree-project-card-international h3 {
-  color: #fff;
+  color: var(--memorial-navy, #0b2239);
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   margin-bottom: 14px;
 }
 .tree-project-card-international > p:not(.tree-project-region) {
-  color: rgba(255,255,255,.78);
+  color: var(--memorial-muted, #586571);
   max-width: 860px;
 }
 .tree-project-card-international .tree-project-provider {
-  border-top-color: rgba(255,255,255,.18);
-  color: #e9cd8d;
+  border-top-color: #c7d2cb;
+  color: #647c6d;
   margin-top: auto;
 }
 .tree-project-card-international .tree-geography-tag {
-  background: rgba(255,255,255,.10);
-  color: #f4e7c7;
+  background: rgba(255,255,255,.58);
+  color: #526b5d;
 }
 .tree-project-card-international .tree-card-links a {
-  background: var(--memorial-gold, #d5b879);
-  border: 0;
-  color: var(--memorial-navy, #0b2239);
+  background: #f8faf8;
+  border: 1px solid #9caf9f;
+  color: #294b3a;
   font-size: .86rem;
   padding: 11px 14px;
 }
 .tree-project-card-international .tree-card-note {
-  color: rgba(255,255,255,.64);
+  color: #66746d;
 }
 
 
 .tree-provider-note {
   color: #ead7a3;
   display: block;
-  font-size: .9rem;
+  font-size: 1.35rem;
   font-weight: 800;
   line-height: 1.35;
   margin: -2px 0 10px;
+}
+
+.tree-project-featured > div:first-child > h2,
+.tree-collection-heading > h2 {
+  font-size: clamp(2.35rem, 4vw, 4.35rem);
+  white-space: nowrap;
+}
+.tree-collection-heading > h2,
+.tree-collection-heading > .tree-payment-availability-note,
+.tree-collection-heading > p:last-child {
+  grid-column: 1 / -1;
+}
+.tree-collection-heading > .tree-payment-availability-note {
+  color: var(--memorial-bronze, #806335);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin: -18px 0 -10px;
+  max-width: none;
+}
+
+@media (max-width: 900px) {
+  .tree-project-featured > div:first-child > h2,
+  .tree-collection-heading > h2 {
+    white-space: normal;
+  }
 }

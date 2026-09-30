@@ -494,6 +494,7 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.featuredTitle": "Chippewa National Forest",
   "tree.arborLocation": "Chippewa National Forest",
   "tree.arborProvider": "Arbor Day Foundation",
+  "tree.arborProviderNote": "(US payment only)",
   "tree.arborText": "For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.",
   "tree.arborButton": "Continue with Arbor Day",
   "tree.minnesotaLocation": "Alternative · Minnesota Forests",
@@ -505,6 +506,7 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.chippewaWhyText": "Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.",
   "tree.projectsKicker": "Other landscapes",
   "tree.projectsTitle": "Places that shaped his life and science",
+  "tree.projectsPaymentNote": "(International Payment Option available)",
   "tree.projectsIntro": "Each landscape is connected to Robert’s life or scientific work. We favor exact-tree routes tied to the named project, state, or region; when a provider cannot guarantee a particular forest, the memorial does not imply that it can.",
 
   "tree.card.amazon.region": "Amazon rainforest",

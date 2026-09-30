@@ -158,6 +158,7 @@ export default async function TreeDedicationPage() {
             <article className="tree-route-card tree-route-primary">
               <span className="tree-route-location">{copy["tree.arborLocation"]}</span>
               <h3>{copy["tree.arborProvider"]}</h3>
+              <small className="tree-provider-note">{copy["tree.arborProviderNote"]}</small>
               <p>{copy["tree.arborText"]}</p>
               <ContributionLink
                 className="tree-project-donate"
@@ -195,6 +196,7 @@ export default async function TreeDedicationPage() {
         <div className="tree-section-heading tree-collection-heading">
           <p className="section-kicker">{copy["tree.projectsKicker"]}</p>
           <h2 id="tree-places-title">{copy["tree.projectsTitle"]}</h2>
+          <p className="tree-payment-availability-note">{copy["tree.projectsPaymentNote"]}</p>
           <p>{copy["tree.projectsIntro"]}</p>
         </div>
 
