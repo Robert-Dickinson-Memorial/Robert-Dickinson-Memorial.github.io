@@ -3371,8 +3371,8 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
   border: 2px solid var(--memorial-gold, #d5b879);
   box-shadow: 0 14px 34px rgba(11, 34, 57, .14);
   color: #fff;
-  grid-column: 1 / -1;
-  min-height: 0;
+  grid-column: auto;
+  min-height: 430px;
   padding: clamp(30px, 4vw, 46px);
   position: relative;
 }
@@ -3400,7 +3400,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-project-card-international .tree-project-provider {
   border-top-color: rgba(255,255,255,.18);
   color: #e9cd8d;
-  margin-top: 26px;
+  margin-top: auto;
 }
 .tree-project-card-international .tree-geography-tag {
   background: rgba(255,255,255,.10);
@@ -3415,9 +3415,4 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 }
 .tree-project-card-international .tree-card-note {
   color: rgba(255,255,255,.64);
-}
-@media (max-width: 680px) {
-  .tree-project-card-international {
-    grid-column: auto;
-  }
 }
