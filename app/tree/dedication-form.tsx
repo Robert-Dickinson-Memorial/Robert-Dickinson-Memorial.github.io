@@ -35,10 +35,17 @@ export default function DedicationForm() {
   }, []);
 
   const selectedRoute = useMemo(() => contributionRoutes.find((route) => route.id === routeId), [routeId]);
-  const isTree = selectedRoute?.type === "tree";
+  const isTree = selectedRoute?.type !== "restoration";
+  const countRef = useRef<HTMLInputElement>(null);
+  function stepCount(direction: number) {
+    const input = countRef.current;
+    if (!input) return;
+    input.value = String(Math.min(Number(input.max), Math.max(1, (Number(input.value) || 1) + direction)));
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (busy) return;
     const form = event.currentTarget;
     const data = new FormData(form);
     setBusy(true); setMessage(""); setMessageIsSuccess(false);
@@ -81,24 +88,24 @@ export default function DedicationForm() {
 
   return <form className="tree-dedication-form" onSubmit={submit}>
     <div className="tree-dedication-fields">
-      <label>Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" /></label>
-      <label>Contribution made
+      <label>Your name<input placeholder="Name for your tribute" name="name" required minLength={2} maxLength={100} autoComplete="name" /></label>
+      <label>Planting project
         <select name="route" required value={routeId} onChange={(event) => setRouteId(event.target.value)}>
-          <option value="" disabled>Choose the project and provider</option>
+          <option value="" disabled>Choose your project</option>
           {contributionRoutes.map((route) => <option key={route.id} value={route.id}>{route.label}</option>)}
         </select>
       </label>
-      {isTree && <label>Number of trees <small>(use the provider’s quantity)</small><input key={routeId} name="treeCount" type="number" min={1} max={routeId === "massachusetts-tree-boston" ? 1 : 10000} step={1} required inputMode="numeric" defaultValue={routeId === "massachusetts-tree-boston" ? 1 : undefined} /></label>}
-      <label>Confirmation / order no. <small>(optional)</small><input name="confirmationRef" maxLength={120} autoComplete="off" /></label>
-      <label>Email <small>(optional, kept private)</small><input name="email" type="email" maxLength={200} autoComplete="email" /></label>
+      {isTree && <label>Number of trees<span className="tree-count-stepper"><button type="button" aria-label="One fewer tree" onClick={() => stepCount(-1)}>−</button><input ref={countRef} key={routeId} name="treeCount" type="number" min={1} max={routeId === "massachusetts-tree-boston" ? 1 : 10000} step={1} required inputMode="numeric" defaultValue={1} /><button type="button" aria-label="One more tree" onClick={() => stepCount(1)}>+</button></span></label>}
     </div>
+    <details className="tree-optional"><summary>Add a donation reference (optional)</summary><label>Confirmation / order no.<input name="confirmationRef" maxLength={120} autoComplete="off" /></label></details>
     {selectedRoute && <p className="tree-geography-guidance"><strong>Location recorded:</strong> {selectedRoute.geography}</p>}
     {selectedRoute?.type === "restoration" && <p className="tree-count-guidance">This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.</p>}
     {isTree && routeId === "massachusetts-tree-boston" && <p className="tree-count-guidance">Choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000), then record 1 tree. Other donation amounts should not be converted into a tree count.</p>}
     {isTree && routeId !== "massachusetts-tree-boston" && <p className="tree-count-guidance">Enter only the exact number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.</p>}
-    <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I confirm that the payment completed successfully and that the tree quantity, when entered, matches the provider’s stated quantity or published conversion.</label>
+    <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I have completed my donation.</label>
     <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
-    <button type="submit" disabled={busy || !selectedRoute}>{busy ? "Submitting…" : "Record my living tribute"}</button>
+    <button type="submit" disabled={busy || !selectedRoute}>{busy ? "Submitting…" : "Record my trees →"}</button>
+    <small className="tree-form-note">Only record the tree quantity confirmed by your provider.</small>
     {message && <p ref={messageRef} role="status" className={`tree-dedication-message ${messageIsSuccess ? "is-success" : "is-error"}`}>{messageIsSuccess && <span aria-hidden="true">✓</span>} {message}</p>}
   </form>;
 }

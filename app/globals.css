@@ -3452,3 +3452,116 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
     white-space: normal;
   }
 }
+
+/* Approved September 2026 Plant a Tree design. Scoped to this page. */
+.tree-redesign { background:#f8f5ef; color:#102b40; }
+.tree-redesign h1,.tree-redesign h2,.tree-redesign h3 { font-family:Georgia,'Times New Roman',serif; }
+.tree-redesign summary { cursor:pointer; font-size:.85rem; line-height:1.5; padding:8px 0; }
+.tree-redesign details p { font-size:.92rem; line-height:1.65; color:#53616b; }
+.tree-redesign :is(a,button,input,select,summary):focus-visible { outline:3px solid #b48934; outline-offset:4px; }
+.tree-design-hero { position:relative; isolation:isolate; color:#fffaf0; padding:140px max(5vw,24px) 44px; display:grid; grid-template-columns:1.4fr 1fr; gap:24px; align-items:end; overflow:hidden; min-height:460px; background:#0b2639; }
+.tree-design-hero::before { content:""; position:absolute; inset:0; z-index:-2; background:url('/tree-landscapes.webp') 0 0 / 300% 300%; }
+.tree-design-hero::after { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,rgba(5,25,42,.94),rgba(5,25,42,.53) 55%,rgba(5,25,42,.10)); }
+.tree-hero-copy h1 { font-size:clamp(2.8rem,5vw,4.8rem); font-weight:400; line-height:1.08; margin:0 0 8px; letter-spacing:-.025em; }
+.tree-hero-copy h2 { font-size:clamp(1.8rem,3.1vw,3rem); font-weight:400; line-height:1.18; margin:0; }
+.tree-hero-copy p { margin:18px 0 24px; font-size:1.08rem; color:#e8edf0; }
+.tree-gold-button { display:inline-flex; padding:12px 25px; background:linear-gradient(110deg,#dfba63,#c29a48); color:#0b2639; border:1px solid #e5c377; border-radius:3px; font:600 1.05rem Georgia,serif; min-height:48px; align-items:center; }
+.tree-record-shortcut { display:block; margin-top:14px; width:fit-content; border-bottom:1px solid #b3bfc4; padding-bottom:4px; font-size:.95rem; }
+.tree-total-panel { display:flex; gap:20px; align-items:center; border:1px solid #d7b469; border-radius:6px; padding:22px; background:rgba(6,30,48,.94); box-shadow:0 6px 24px #051c3430; max-width:510px; justify-self:end; }
+.tree-total-panel > strong { color:#e5bc66; font:400 clamp(3.5rem,6vw,5.5rem)/1 Georgia,serif; }
+.tree-total-panel > div { font:1.1rem/1.4 Georgia,serif; }
+.tree-total-panel small { display:block; font: .72rem/1.45 Arial,sans-serif; margin-top:10px; color:#d8e0e4; }
+.tree-total-icon { color:#d7b469; width:38px; height:46px; font-size:3rem; flex-shrink:0; }
+.tree-steps { padding:24px 5vw 20px; text-align:center; }
+.tree-steps ol { display:flex; justify-content:center; gap:clamp(24px,6vw,100px); padding:0; margin:0 0 8px; list-style:none; }
+.tree-steps li { display:flex; align-items:center; gap:12px; font:1rem Georgia,serif; }
+.tree-steps li span { display:grid; place-items:center; border-radius:50%; width:40px; height:40px; color:white; background:#b7954e; flex-shrink:0; }
+.tree-steps > small { color:#59656c; font-size:.76rem; }
+.tree-redesign .tree-project-featured { margin:0 auto; width:calc(100% - 64px); max-width:1320px; padding:0; display:grid; grid-template-columns:44% 56%; background:#fffcf7; border:1px solid #e3ddd1; border-radius:7px; box-shadow:0 3px 14px #182c3e12; overflow:hidden; color:#102b40; }
+.tree-redesign .tree-project-featured::before { display:none; }
+.tree-landscape { background-image:url('/tree-landscapes.webp'); background-size:300% 300%; background-repeat:no-repeat; }
+.tree-scene-minnesota { background-position:50% 0; min-height:360px; }
+.tree-scene-blackjaguar { background-position:100% 0; }
+.tree-scene-arizona { background-position:0 50%; }
+.tree-scene-georgia { background-position:50% 50%; }
+.tree-scene-texas { background-position:100% 50%; }
+.tree-scene-colorado { background-position:0 100%; }
+.tree-scene-california { background-position:50% 100%; }
+.tree-scene-boston { background-position:100% 100%; }
+.tree-featured-copy { padding:30px; min-width:0; }
+.tree-redesign .tree-featured-copy .section-kicker { color:#997a34; font-size:.74rem; margin:0 0 12px; }
+.tree-redesign .tree-featured-copy h2 { color:#102b40; font-size:clamp(1.8rem,2.7vw,2.8rem); line-height:1.15; margin:0 0 12px; white-space:normal; }
+.tree-redesign .tree-featured-intro { color:#53616b; font-size:.98rem; margin:0 0 16px; }
+.tree-redesign .tree-chippewa-routes { display:block; margin:0; }
+.tree-redesign .tree-route-card { display:grid; grid-template-columns:1fr auto; align-items:center; gap:5px 16px; padding:15px 0; margin:0; border:0; border-top:1px solid #e2dbce; background:transparent; color:#102b40; }
+.tree-redesign .tree-route-location { display:none; }
+.tree-redesign .tree-route-card h3 { color:#102b40; font-size:1.05rem; margin:0; }
+.tree-redesign .tree-provider-note { color:#3d5f48; font-size:.87rem; font-weight:600; margin:0; grid-column:1; }
+.tree-redesign .tree-route-card > a { grid-column:2; grid-row:1 / 3; background:#102b40; color:white; border:1px solid #102b40; border-radius:4px; padding:11px 14px; margin:0; font-size:.86rem; max-width:200px; line-height:1.4; }
+.tree-redesign .tree-route-alternative > a { color:#102b40; background:transparent; }
+.tree-redesign .tree-route-card details { grid-column:1 / -1; }
+.tree-redesign .tree-route-card details p { color:#53616b; font-size:.9rem; }
+.tree-featured-details { grid-column:1 / -1; padding:0 24px 8px; border-top:1px solid #e2dbce; }
+.tree-redesign .tree-restoration-collection { background:transparent; max-width:1384px; margin:auto; padding:38px 32px 28px; }
+.tree-redesign .tree-collection-heading { text-align:center; margin:0 0 24px; }
+.tree-redesign .tree-collection-heading > .section-kicker { display:none; }
+.tree-redesign .tree-collection-heading h2 { font-size:clamp(1.7rem,3vw,2.8rem); white-space:normal; line-height:1.2; margin:0 0 10px; }
+.tree-redesign .tree-collection-heading p { margin:5px 0; font-size:1rem; }
+.tree-redesign .tree-payment-availability-note { font-size:.95rem; color:#46654f; }
+.tree-redesign .tree-project-grid { gap:22px; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:start; }
+.tree-redesign .tree-project-card { padding:0 0 16px; border:1px solid #e4ddd1; border-radius:6px; overflow:hidden; min-height:0; background:#fffcf7; box-shadow:0 3px 10px #172b3f0d; }
+.tree-redesign .tree-project-card > .tree-landscape { width:100%; aspect-ratio:1.7; }
+.tree-redesign .tree-project-card > :not(.tree-landscape) { margin-left:18px!important; margin-right:18px!important; }
+.tree-redesign .tree-project-region { color:#102b40!important; font:600 1.2rem/1.3 Georgia,serif!important; letter-spacing:0; text-transform:none; margin-top:14px!important; margin-bottom:7px!important; }
+.tree-redesign .tree-project-provider { color:#53616b; font-size:.94rem; font-weight:400; letter-spacing:0; text-transform:none; padding:0; margin-top:0; border:0; }
+.tree-redesign .tree-geography-tag { display:none; }
+.tree-redesign .tree-card-links { margin-top:12px; gap:5px; }
+.tree-redesign .tree-card-links a { font-size:.92rem; font-weight:500; min-height:36px; }
+.tree-redesign .tree-card-details { margin-top:8px; }
+.tree-redesign .tree-card-details summary { color:#5a6972; font-size:.79rem; }
+.tree-redesign .tree-card-details h3 { font-size:1.25rem; margin-top:10px; }
+.tree-redesign .tree-card-note { font-size:.83rem; }
+.tree-redesign .tree-card-boston { grid-column:1 / -1; display:grid; grid-template-columns:34% 1fr; column-gap:4px; }
+.tree-redesign .tree-card-boston > .tree-landscape { grid-row:1 / 6; height:100%; min-height:160px; aspect-ratio:auto; }
+.tree-redesign .tree-card-boston > :not(.tree-landscape) { grid-column:2; }
+.tree-redesign .tree-project-card-international { grid-column:1 / -1; background:#e9eee4; display:grid; grid-template-columns:1fr auto; padding:16px 8px; align-items:center; }
+.tree-redesign .tree-project-card-international .tree-international-card-icon { display:none; }
+.tree-redesign .tree-project-card-international .tree-project-region { margin-top:0!important; }
+.tree-redesign .tree-project-card-international .tree-card-links { grid-column:2; grid-row:1 / 3; margin-top:0; }
+.tree-redesign .tree-project-card-international .tree-card-details { grid-column:1 / -1; }
+.tree-redesign .tree-dedication-report { background:#0b2639; color:#fffaf0; padding:42px max(4vw,24px); display:grid; grid-template-columns:1fr 1.8fr; gap:32px; align-items:center; }
+.tree-record-heading h2 { font-size:clamp(2rem,3.2vw,3rem); font-weight:400; line-height:1.14; margin:0 0 18px; }
+.tree-record-heading p { color:#d8e0e5; font-size:.98rem; }
+.tree-record-heading::after { content:""; display:block; width:52px; height:2px; background:#caa654; margin-top:20px; }
+.tree-redesign .tree-dedication-form { padding:24px; border-radius:6px; background:#fffcf7; color:#102b40; margin:0; min-width:0; }
+.tree-redesign .tree-dedication-fields { grid-template-columns:1fr 1.25fr .85fr; gap:14px; }
+.tree-redesign .tree-dedication-fields label { min-width:0; font-size:.9rem; }
+.tree-redesign .tree-dedication-fields input,.tree-redesign .tree-dedication-fields select,.tree-optional input { min-height:46px; border:1px solid #d6cdbc; background:#fffefa; border-radius:4px; font-size:1rem; padding:9px; width:100%; color:#102b40; }
+.tree-count-stepper { display:flex; min-width:0; align-items:stretch; }
+.tree-redesign .tree-count-stepper input { width:100%; min-width:0; text-align:center; appearance:textfield; border-radius:0; }
+.tree-count-stepper input::-webkit-inner-spin-button { -webkit-appearance:none; }
+.tree-redesign .tree-count-stepper button { width:40px; min-width:36px; padding:0; margin:0; background:#eee8dc; color:#102b40; border:1px solid #d6cdbc; border-radius:3px; font-size:1.2rem; }
+.tree-optional { background:#f1ede6; padding:0 10px; margin:15px 0 10px; border:1px solid #e2dbcf; border-radius:4px; }
+.tree-optional label { display:block; font-size:.9rem; padding:8px 0; }
+.tree-redesign .tree-dedication-confirm { font-size:.87rem; color:#263b48; margin:14px 0; align-items:center; }
+.tree-redesign .tree-dedication-confirm input { width:20px; height:20px; flex-shrink:0; }
+.tree-redesign .tree-dedication-form > button { display:block; width:100%; min-height:48px; margin:0; background:linear-gradient(110deg,#dfba63,#c29a48); color:#102b40; border:1px solid #bc9545; border-radius:4px; font:600 1.05rem Georgia,serif; }
+.tree-form-note { display:block; text-align:center; color:#53616b; font-size:.76rem; margin-top:10px; }
+.tree-redesign .tree-geography-guidance,.tree-redesign .tree-count-guidance { font-size:.8rem; padding:9px; margin:10px 0; }
+.tree-redesign .tree-faq { background:#0b2639; color:#fffaf0; padding:0 max(4vw,24px) 32px; }
+.tree-redesign .tree-faq h2 { font-size:1.15rem; margin:0; padding-top:18px; border-top:1px solid #73818a; }
+.tree-redesign .tree-faq details { border-color:#526675; padding:7px 0; }
+.tree-redesign .tree-faq summary { color:#e3e8eb; }
+.tree-redesign .tree-faq details p { color:#ccd6dc; }
+.tree-redesign .site-footer { padding-top:30px; padding-bottom:80px; }
+.tree-redesign [hidden] { display:none!important; }
+@media(min-width:1500px) { .tree-design-hero { padding-left:calc((100vw - 1320px)/2); padding-right:calc((100vw - 1320px)/2); } }
+@media(max-width:1000px) { .tree-design-hero { grid-template-columns:1fr; padding-top:120px; } .tree-total-panel { justify-self:start; } .tree-redesign .tree-dedication-report { grid-template-columns:1fr; } .tree-redesign .tree-featured-copy { padding:22px; } .tree-redesign .tree-route-card { grid-template-columns:1fr; } .tree-redesign .tree-route-card > a { grid-column:1; grid-row:auto; max-width:none; width:fit-content; } }
+@media(max-width:700px) { .tree-design-hero { padding:110px 22px 30px; gap:24px; } .tree-total-panel { width:100%; padding:16px; gap:14px; justify-self:stretch; } .tree-total-panel > div { font-size:1rem; } .tree-total-icon { width:28px; } .tree-steps { padding:22px 16px; } .tree-steps ol { gap:12px; align-items:start; } .tree-steps li { flex-direction:column; gap:8px; font-size:.84rem; flex:1; line-height:1.3; } .tree-redesign .tree-project-featured { width:calc(100% - 32px); grid-template-columns:1fr; } .tree-scene-minnesota { min-height:0; aspect-ratio:1.7; } .tree-redesign .tree-restoration-collection { padding:30px 16px 24px; } .tree-redesign .tree-project-grid { grid-template-columns:1fr; gap:18px; } .tree-redesign .tree-card-boston { display:flex; } .tree-redesign .tree-card-boston > .tree-landscape { height:auto; aspect-ratio:1.7; } .tree-redesign .tree-project-card-international { display:flex; align-items:stretch; } .tree-redesign .tree-project-card-international .tree-card-links { margin-top:12px; } .tree-redesign .tree-dedication-report { padding:30px 16px; gap:18px; } .tree-redesign .tree-dedication-form { padding:20px; } .tree-redesign .tree-dedication-fields { grid-template-columns:1fr; } .tree-redesign .tree-count-stepper button { width:48px; } .tree-redesign .tree-route-card { grid-template-columns:1fr auto; } .tree-redesign .tree-route-card > a { grid-column:2; grid-row:1 / 3; max-width:155px; } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+.tree-redesign .tree-project-featured { gap:0; }
+.tree-redesign .tree-collection-heading { display:block; }
+.tree-redesign .tree-collection-heading > p:last-child { max-width:none; }
+.tree-redesign #record-tribute::before { display:none; }
+.tree-redesign .tree-dedication-form { width:100%; }
+.tree-redesign .tree-total-icon svg { width:100%; height:100%; }

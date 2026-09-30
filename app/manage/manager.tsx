@@ -28,6 +28,11 @@ const copyGroups = [
 ] as const;
 
 const treeCardCopyGroups = [
+  { title: "Plant a Tree — landscape hero", fields: [
+    { key: "tree.design.title", label: "Main heading" },
+    { key: "tree.design.subtitle", label: "Subtitle" },
+    { key: "tree.design.intro", label: "Introduction", long: true },
+  ] },
   {
     title: "Featured Minnesota section",
     fields: [

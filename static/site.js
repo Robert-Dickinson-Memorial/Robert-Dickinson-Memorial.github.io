@@ -571,7 +571,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const label = kind === "trees"
         ? `${count === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory${Number.isSafeInteger(counts.restorationGifts) && counts.restorationGifts > 0 ? ` · ${counts.restorationGifts} additional restoration ${counts.restorationGifts === 1 ? "gift" : "gifts"}` : ""}`
         : `${count === 1 ? "memory shared" : "memories shared"}`;
-      element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
+      if (element.hasAttribute("data-count-only")) {
+        element.textContent = count.toLocaleString();
+        const gifts = document.querySelector("[data-restoration-total]");
+        if (gifts) gifts.textContent = counts.restorationGifts > 0 ? `Plus ${counts.restorationGifts} forest-restoration gifts` : "";
+      } else element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
       element.hidden = false;
     });
   }
@@ -862,11 +866,11 @@ document.addEventListener("DOMContentLoaded", () => {
         geographyGuidance.hidden = !geography;
         geographyGuidance.textContent = geography ? `Location recorded: ${geography}` : "";
       }
-      if (countField instanceof HTMLElement) countField.hidden = !isTree;
+      if (countField instanceof HTMLElement) countField.hidden = type === "restoration";
       if (countInput instanceof HTMLInputElement) {
         countInput.required = isTree;
         if (!isTree) {
-          countInput.value = "";
+          countInput.value = "1";
           countInput.max = "10000";
         } else if (selected?.value === "massachusetts-tree-boston") {
           countInput.min = "1";
@@ -875,7 +879,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           countInput.min = "1";
           countInput.max = "10000";
-          if (countInput.value === "1") countInput.value = "";
+          if (!countInput.value) countInput.value = "1";
         }
       }
       if (countGuidance instanceof HTMLElement) {
@@ -910,15 +914,22 @@ document.addEventListener("DOMContentLoaded", () => {
       updateTreeRoute();
     }
 
+    treeForm.querySelectorAll("[data-tree-step]").forEach((button) => button.addEventListener("click", () => {
+      if (!(countInput instanceof HTMLInputElement)) return;
+      countInput.value = String(Math.min(Number(countInput.max), Math.max(1, (Number(countInput.value) || 1) + Number(button.dataset.treeStep))));
+    }));
+    let treeSubmitting = false;
     treeForm.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (treeSubmitting) return;
+      treeSubmitting = true;
       const status = treeForm.querySelector("[data-tree-dedication-message]");
       const button = treeForm.querySelector('button[type="submit"]');
       const data = new FormData(treeForm);
       const selected = routeSelect instanceof HTMLSelectElement ? routeSelect.selectedOptions[0] : null;
       const isTree = selected?.dataset.type === "tree";
       if (status instanceof HTMLElement) status.classList.remove("is-success", "is-error");
-      if (button) button.disabled = true;
+      if (button) { button.disabled = true; button.textContent = "Recording…"; }
       try {
         const response = await fetch(apiUrl("/api/participation"), {
           method: "POST",
@@ -939,6 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem("livingTributeRoute");
         window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
         updateTreeRoute();
+        refreshLive("/api/participation", [hydrateParticipation]);
         if (status instanceof HTMLElement) {
           status.textContent = result.contributionType === "tree"
             ? "✓ Thank you — your contribution has been successfully recorded. Your trees are now included in Robert’s living-tribute total."
@@ -953,7 +965,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } finally {
         if (status) status.hidden = false;
-        if (button) button.disabled = false;
+        treeSubmitting = false;
+        if (button) { button.disabled = false; button.textContent = "Record my trees →"; }
       }
     });
   }

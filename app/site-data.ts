@@ -487,6 +487,9 @@ export const defaultPageCopy: Record<string, string> = {
   "nav.life": "His Life",
   "nav.legacy": "Scientific Legacy",
   "nav.tree": "Plant a Tree",
+  "tree.design.title": "A living tribute.",
+  "tree.design.subtitle": "Plant a tree in Robert’s memory.",
+  "tree.design.intro": "Support the landscapes connected to his life and science.",
   "tree.pageTitle": "Living Tribute",
   "tree.pageIntro": "Honor Robert by supporting forests and ecosystems connected to his life and work.",
 

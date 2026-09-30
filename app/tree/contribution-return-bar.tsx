@@ -16,6 +16,7 @@ const labels: Record<string, string> = {
   "texas-living-tribute": "Texas · A Living Tribute",
   "colorado-csfs": "Colorado · Colorado State Forest Service",
   "california-living-tribute": "California · A Living Tribute",
+  "massachusetts-tree-boston": "Boston · Tree Boston",
   "massachusetts-esplanade": "Massachusetts · Esplanade Association",
   "new-england-neff": "New England · NEFF",
 };

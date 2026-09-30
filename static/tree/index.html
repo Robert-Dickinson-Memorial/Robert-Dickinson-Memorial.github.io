@@ -13,37 +13,30 @@
     <script src="../config.js"></script><script src="../site.js" defer></script>
   </head>
   <body>
-    <main class="tree-page" data-body-font="system-sans" data-heading-font="classic-serif">
+    <main class="tree-page tree-redesign" data-body-font="system-sans" data-heading-font="classic-serif">
       <nav class="site-nav" aria-label="Main navigation">
         <a class="wordmark" href="../#top" aria-label="Robert Dickinson memorial home"><span class="wordmark-mark">∞</span><span data-copy="global.wordmark">Robert Dickinson</span></a>
         <div class="nav-links"><a href="../" data-copy="nav.home">Home</a><a href="../life/" data-copy="nav.life">His Life</a><a href="../legacy/" data-copy="nav.legacy">Scientific Legacy</a><a class="active" aria-current="page" href="../tree/" data-copy="nav.tree">Plant a Tree</a><a href="../events/" data-copy="nav.events">Events</a><a href="../gallery/" data-copy="nav.gallery">Gallery</a><a class="nav-memory-cta" href="../memories/#share" data-copy="nav.memories">Share A Memory</a></div>
         <details class="mobile-nav"><summary>Menu <span aria-hidden="true">☰</span></summary><div class="mobile-nav-panel"><a href="../" data-copy="nav.home">Home</a><a href="../life/" data-copy="nav.life">His Life</a><a href="../legacy/" data-copy="nav.legacy">Scientific Legacy</a><a class="active" aria-current="page" href="../tree/" data-copy="nav.tree">Plant a Tree</a><a href="../events/" data-copy="nav.events">Events</a><a href="../gallery/" data-copy="nav.gallery">Gallery</a><a class="nav-memory-cta" href="../memories/#share" data-copy="nav.memories">Share A Memory</a></div></details>
       </nav>
 
-      <header id="top" class="tree-page-intro">
-        <h1 data-copy="tree.pageTitle">Living Tribute</h1>
-        <p data-copy="tree.pageIntro">Honor Robert by supporting forests and ecosystems connected to his life and work.</p>
-        <small>Payments are completed on each provider’s official website. The memorial never receives card numbers, CVVs, bank details, or payment credentials.</small>
-        <div class="tree-live-total"><span data-participation-count="trees">Updating tree total…</span></div>
-        <div class="tree-page-intro-actions">
-          <a class="tree-intro-primary" href="#restoration-projects">Choose a planting location ↓</a>
-          <a class="tree-intro-record" href="#record-tribute">Already contributed? Record your trees →</a>
-        </div>
-      </header>
-
+      <header id="top" class="tree-design-hero"><div class="tree-hero-copy"><h1 data-copy="tree.design.title">A living tribute.</h1><h2 data-copy="tree.design.subtitle">Plant a tree in Robert’s memory.</h2><p data-copy="tree.design.intro">Support the landscapes connected to his life and science.</p><a class="tree-gold-button" href="#restoration-projects">Choose a place ↓</a><a class="tree-record-shortcut" href="#record-tribute">Already donated? Record my trees →</a></div><div class="tree-total-panel" aria-live="polite"><span class="tree-total-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 6 9h3l-5 7h5l-3 4h12l-3-4h5l-5-7h3L12 2Z M12 20v4"/></svg></span><strong data-participation-count="trees" data-count-only>—</strong><div>Trees dedicated<br />in Robert’s memory<small>Reported by contributors after donating.</small><small data-restoration-total></small></div></div></header>
+      <div class="tree-steps"><ol><li><span>1</span> Choose a place</li><li><span>2</span> Donate with the provider</li><li><span>3</span> Record your tribute</li></ol><small>Payments are made on the provider’s website.</small></div>
       <section id="restoration-projects" class="tree-project tree-project-featured">
-        <div>
+        <div class="tree-landscape tree-scene-minnesota" role="img" aria-label="Illustrated Minnesota forest and lake"></div>
+        <div class="tree-featured-copy">
           <p class="section-kicker light" data-copy="tree.featuredKicker">Featured tribute · Minnesota</p>
           <h2 data-copy="tree.featuredTitle">Chippewa National Forest</h2>
-          <p data-content="treeTribute">Robert grew up in Minnesota. A memorial tree in the Chippewa National Forest honors that connection while helping restore a landscape of pine, spruce, cedar, lakes, and headwater streams.</p>
-          <p data-content="treeDetail">Reforestation projects in the Chippewa restore native trees, strengthen wildlife habitat, and improve the forest’s resilience to wind damage, insects, disease, and a changing climate.</p>
 
+
+
+          <p class="tree-featured-intro">Honor Robert’s Minnesota roots by supporting forest restoration.</p>
           <div class="tree-chippewa-routes">
             <article class="tree-route-card tree-route-primary">
               <span class="tree-route-location" data-copy="tree.arborLocation">Chippewa National Forest</span>
               <h3 data-copy="tree.arborProvider">Arbor Day Foundation</h3>
               <small class="tree-provider-note" data-copy="tree.arborProviderNote">(US payment only)</small>
-              <p data-copy="tree.arborText">For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.</p>
+              <details><summary>Planting details</summary><p data-copy="tree.arborText">For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.</p></details>
               <a class="tree-project-donate" data-contribution-route="chippewa-arbor-day" href="https://shop.arborday.org/tree-dedication/commemorative-trees-for-others?producttype=TIM" target="_blank" rel="noopener noreferrer"><span data-copy="tree.arborButton">Continue with Arbor Day</span> ↗</a>
             </article>
 
@@ -51,17 +44,17 @@
               <span class="tree-route-location" data-copy="tree.minnesotaLocation">Alternative · Minnesota Forests</span>
               <h3 data-copy="tree.minnesotaProvider">A Living Tribute</h3>
               <small class="tree-provider-note" data-copy="tree.minnesotaProviderNote">(International Payment Option available)</small>
-              <p data-copy="tree.minnesotaText">For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.</p>
+              <details><summary>Planting details</summary><p data-copy="tree.minnesotaText">For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.</p></details>
               <a class="tree-project-secondary-action" data-contribution-route="minnesota-living-tribute" href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate" target="_blank" rel="noopener noreferrer"><span data-copy="tree.minnesotaButton">Continue with A Living Tribute</span> ↗</a>
             </article>
           </div>
 
         </div>
 
-        <div class="tree-project-note">
+<details class="tree-featured-details"><summary>About this tribute and planting locations</summary>          <p data-content="treeTribute">Robert grew up in Minnesota. A memorial tree in the Chippewa National Forest honors that connection while helping restore a landscape of pine, spruce, cedar, lakes, and headwater streams.</p>          <p data-content="treeDetail">Reforestation projects in the Chippewa restore native trees, strengthen wildlife habitat, and improve the forest’s resilience to wind damage, insects, disease, and a changing climate.</p>
           <strong data-copy="tree.chippewaWhyTitle">Why Chippewa comes first</strong>
           <p data-copy="tree.chippewaWhyText">Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.</p>
-        </div>
+        </details>
       </section>
 
       <section class="tree-restoration-collection" aria-labelledby="tree-places-title">
@@ -69,113 +62,103 @@
           <p class="section-kicker" data-copy="tree.projectsKicker">Other landscapes</p>
           <h2 id="tree-places-title" data-copy="tree.projectsTitle">Places that shaped his life and science</h2>
           <p class="tree-payment-availability-note" data-copy="tree.projectsPaymentNote">(International Payment Option available)</p>
-          <p data-copy="tree.projectsIntro">Each landscape is connected to Robert’s life or scientific work. We favor exact-tree routes tied to the named project, state, or region; when a provider cannot guarantee a particular forest, the memorial does not imply that it can.</p>
+          <p>Choose a landscape that holds meaning for you.</p><details><summary>About these projects</summary><p data-copy="tree.projectsIntro">Each landscape is connected to Robert’s life or scientific work. We favor exact-tree routes tied to the named project, state, or region; when a provider cannot guarantee a particular forest, the memorial does not imply that it can.</p></details>
         </div>
 
         <div class="tree-project-grid">
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-blackjaguar"><div class="tree-landscape tree-scene-blackjaguar" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.blackjaguar.region">Brazil · Amazon–Cerrado</p>
-            <h3 data-copy="tree.card.blackjaguar.title">Restore Brazil’s Amazon–Cerrado corridor</h3>
-            <p data-copy="tree.card.blackjaguar.text">Robert’s work on tropical deforestation makes Brazil’s forests a meaningful part of this tribute. Black Jaguar Foundation restores native vegetation with local landowners in the Araguaia Biodiversity Corridor, spanning the Amazon rainforest and Cerrado.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.blackjaguar.provider">Black Jaguar Foundation</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.blackjaguar.geography">Brazil · Amazon–Cerrado</span></span>
             <div class="tree-card-links"><a data-contribution-route="brazil-black-jaguar" href="https://www.black-jaguar.org/donate-tree/" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.blackjaguar.button">Plant trees with Black Jaguar</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.blackjaguar.note">Choose a tree quantity at checkout and record that number here after payment. Guest payment is available. Trees support the Amazon–Cerrado corridor, not an Amazon-only site. A memorial certificate is not promised; your dedication is recorded on Robert’s website.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.blackjaguar.title">Restore Brazil’s Amazon–Cerrado corridor</h3><p data-copy="tree.card.blackjaguar.text">Robert’s work on tropical deforestation makes Brazil’s forests a meaningful part of this tribute. Black Jaguar Foundation restores native vegetation with local landowners in the Araguaia Biodiversity Corridor, spanning the Amazon rainforest and Cerrado.</p><small class="tree-card-note" data-copy="tree.card.blackjaguar.note">Choose a tree quantity at checkout and record that number here after payment. Guest payment is available. Trees support the Amazon–Cerrado corridor, not an Amazon-only site. A memorial certificate is not promised; your dedication is recorded on Robert’s website.</small>
+          </details></article>
 
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-arizona"><div class="tree-landscape tree-scene-arizona" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.arizona.region">Arizona</p>
-            <h3 data-copy="tree.card.arizona.title">Arizona forest restoration</h3>
-            <p data-copy="tree.card.arizona.text">Arizona was Robert’s home during his University of Arizona years. A Living Tribute offers exact tree quantities for restoration within Arizona forests affected by wildfire, disease, and environmental stress.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.arizona.provider">A Living Tribute</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.arizona.geography">State-level · Arizona</span></span>
             <div class="tree-card-links"><a data-contribution-route="arizona-living-tribute" href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.arizona.button">Plant trees in Arizona</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.arizona.note">Exact tree quantity; attributed to Arizona rather than to a specific forest unless the provider explicitly guarantees that forest at checkout.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.arizona.title">Arizona forest restoration</h3><p data-copy="tree.card.arizona.text">Arizona was Robert’s home during his University of Arizona years. A Living Tribute offers exact tree quantities for restoration within Arizona forests affected by wildfire, disease, and environmental stress.</p><small class="tree-card-note" data-copy="tree.card.arizona.note">Exact tree quantity; attributed to Arizona rather than to a specific forest unless the provider explicitly guarantees that forest at checkout.</small>
+          </details></article>
 
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-georgia"><div class="tree-landscape tree-scene-georgia" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.georgia.region">Georgia</p>
-            <h3 data-copy="tree.card.georgia.title">Georgia forest restoration</h3>
-            <p data-copy="tree.card.georgia.text">Georgia became another home during Robert’s Georgia Tech years. This route supports exact-tree restoration within Georgia, including high-need public forest landscapes.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.georgia.provider">A Living Tribute</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.georgia.geography">State-level · Georgia</span></span>
             <div class="tree-card-links"><a data-contribution-route="georgia-living-tribute" href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.georgia.button">Plant trees in Georgia</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.georgia.note">Exact tree quantity; attributed to Georgia rather than to an individual forest unless explicitly guaranteed at checkout.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.georgia.title">Georgia forest restoration</h3><p data-copy="tree.card.georgia.text">Georgia became another home during Robert’s Georgia Tech years. This route supports exact-tree restoration within Georgia, including high-need public forest landscapes.</p><small class="tree-card-note" data-copy="tree.card.georgia.note">Exact tree quantity; attributed to Georgia rather than to an individual forest unless explicitly guaranteed at checkout.</small>
+          </details></article>
 
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-texas"><div class="tree-landscape tree-scene-texas" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.texas.region">Texas</p>
-            <h3 data-copy="tree.card.texas.title">Texas landscape restoration</h3>
-            <p data-copy="tree.card.texas.text">Texas was Robert’s home during his UT Austin chapter. This route funds exact-tree restoration across Texas forests, floodplains, and wildfire-affected landscapes.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.texas.provider">A Living Tribute</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.texas.geography">State-level · Texas</span></span>
             <div class="tree-card-links"><a data-contribution-route="texas-living-tribute" href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.texas.button">Plant trees in Texas</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.texas.note">Exact tree quantity; the memorial records Texas as the geographic attribution.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.texas.title">Texas landscape restoration</h3><p data-copy="tree.card.texas.text">Texas was Robert’s home during his UT Austin chapter. This route funds exact-tree restoration across Texas forests, floodplains, and wildfire-affected landscapes.</p><small class="tree-card-note" data-copy="tree.card.texas.note">Exact tree quantity; the memorial records Texas as the geographic attribution.</small>
+          </details></article>
 
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-colorado"><div class="tree-landscape tree-scene-colorado" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.colorado.region">Colorado</p>
-            <h3 data-copy="tree.card.colorado.title">Restoring Colorado’s Forests Fund</h3>
-            <p data-copy="tree.card.colorado.text">Colorado was central to Robert’s long NCAR chapter. The Colorado State Forest Service provides seedlings for reforestation of Colorado lands damaged by wildfire and other major disturbances.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.colorado.provider">Colorado State Forest Service · Colorado State University</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.colorado.geography">State-level · Colorado</span></span>
             <div class="tree-card-links"><a data-contribution-route="colorado-csfs" href="https://give.colostate.edu/campaigns/45077/donations/new" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.colorado.button">Support Colorado reforestation</span> ↗</a><a href="https://csfs.colostate.edu/seedling-tree-nursery/restoring-colorados-forests-fund-program/" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.colorado.detailsButton">Official program details</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.colorado.note">The program publishes a $2-per-seedling conversion, allowing the memorial to record an exact funded-seedling quantity.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.colorado.title">Restoring Colorado’s Forests Fund</h3><p data-copy="tree.card.colorado.text">Colorado was central to Robert’s long NCAR chapter. The Colorado State Forest Service provides seedlings for reforestation of Colorado lands damaged by wildfire and other major disturbances.</p><small class="tree-card-note" data-copy="tree.card.colorado.note">The program publishes a $2-per-seedling conversion, allowing the memorial to record an exact funded-seedling quantity.</small>
+          </details></article>
 
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-california"><div class="tree-landscape tree-scene-california" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.california.region">California · Los Angeles connection</p>
-            <h3 data-copy="tree.card.california.title">California forest restoration</h3>
-            <p data-copy="tree.card.california.text">Robert’s final professional chapter was at UCLA. This route supports exact-tree restoration within California forests affected by wildfire and other disturbances.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.california.provider">A Living Tribute</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.california.geography">State-level · California</span></span>
             <div class="tree-card-links"><a data-contribution-route="california-living-tribute" href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.california.button">Plant trees in California</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.california.note">Angeles National Forest appears among the provider’s California restoration landscapes, but the memorial attributes the gift only to California unless checkout explicitly guarantees Angeles.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.california.title">California forest restoration</h3><p data-copy="tree.card.california.text">Robert’s final professional chapter was at UCLA. This route supports exact-tree restoration within California forests affected by wildfire and other disturbances.</p><small class="tree-card-note" data-copy="tree.card.california.note">Angeles National Forest appears among the provider’s California restoration landscapes, but the memorial attributes the gift only to California unless checkout explicitly guarantees Angeles.</small>
+          </details></article>
 
-          <article class="tree-project-card">
+          <article class="tree-project-card tree-card-boston"><div class="tree-landscape tree-scene-boston" role="img" aria-label="Illustrated regional landscape"></div>
             <p class="tree-project-region" data-copy="tree.card.boston.region">Massachusetts · Boston</p>
-            <h3 data-copy="tree.card.boston.title">Grow Boston’s urban forest</h3>
-            <p data-copy="tree.card.boston.text">Massachusetts connects to Robert’s Harvard and MIT years. Tree Boston offers practical one-tree impact levels: $100 provides a free tree to a Boston community member to plant, while $500 or $1,000 supports planting one tree in a backyard or public/community space.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.boston.provider">Tree Boston</span>
             <span class="tree-geography-tag">📍 <span data-copy="tree.card.boston.geography">Boston · Massachusetts</span></span>
             <div class="tree-card-links"><a data-contribution-route="massachusetts-tree-boston" href="https://treeboston.org/support/online/" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.boston.button">Support one tree in Boston</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.boston.note">For Robert’s tree total, record 1 tree only when you choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000). Other donation amounts should not be converted into a tree count.</small>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.boston.title">Grow Boston’s urban forest</h3><p data-copy="tree.card.boston.text">Massachusetts connects to Robert’s Harvard and MIT years. Tree Boston offers practical one-tree impact levels: $100 provides a free tree to a Boston community member to plant, while $500 or $1,000 supports planting one tree in a backyard or public/community space.</p><small class="tree-card-note" data-copy="tree.card.boston.note">For Robert’s tree total, record 1 tree only when you choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000). Other donation amounts should not be converted into a tree count.</small>
             <div class="tree-card-alternative"><strong data-copy="tree.card.boston.alternativeLabel">Alternative</strong><a data-contribution-route="new-england-neff" href="https://newenglandforestry.org/support/donate/" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.boston.alternativeButton">Support New England forest stewardship</span> ↗</a><small data-copy="tree.card.boston.alternativeNote">Regional forest conservation/restoration gift; recorded separately because NEFF does not assign an exact tree quantity.</small></div>
-          </article>
+          </details></article>
 
-          <article class="tree-project-card tree-project-card-international">
+          <article class="tree-project-card tree-card-international tree-project-card-international">
             <p class="tree-project-region" data-copy="tree.card.international.region">International option</p>
             <span class="tree-international-card-icon" aria-hidden="true">🌎</span>
-            <h3 data-copy="tree.card.international.title">Outside the U.S. or having payment trouble?</h3>
-            <p data-copy="tree.card.international.text">One Tree Planted is a simple fallback when another provider’s checkout is not practical. Choose the number of memorial trees directly; the trees are planted where restoration is needed most rather than assigned to a Robert-specific location.</p>
+
+
             <span class="tree-project-provider" data-copy="tree.card.international.provider">One Tree Planted</span>
             <span class="tree-geography-tag">🌎 <span data-copy="tree.card.international.geography">Where needed most</span></span>
             <div class="tree-card-links"><a data-contribution-route="global-one-tree-planted" href="https://onetreeplanted.org/products/gift-trees-in-memory" target="_blank" rel="noopener noreferrer"><span data-copy="tree.card.international.button">Continue with One Tree Planted</span> ↗</a></div>
-            <small class="tree-card-note" data-copy="tree.card.international.note">Exact tree quantity; recorded in Robert’s lifetime total without assigning the trees to a specific landscape.</small>
-          </article>
+            <details class="tree-card-details"><summary>Project details &amp; how to count</summary><h3 data-copy="tree.card.international.title">Outside the U.S. or having payment trouble?</h3><p data-copy="tree.card.international.text">One Tree Planted is a simple fallback when another provider’s checkout is not practical. Choose the number of memorial trees directly; the trees are planted where restoration is needed most rather than assigned to a Robert-specific location.</p><small class="tree-card-note" data-copy="tree.card.international.note">Exact tree quantity; recorded in Robert’s lifetime total without assigning the trees to a specific landscape.</small>
+          </details></article>
         </div>
 
       </section>
 
-      <section class="tree-faq" aria-labelledby="tree-faq-title">
-        <div class="tree-section-heading"><p class="section-kicker">Questions</p><h2 id="tree-faq-title">Before you give</h2></div>
-        <details open><summary>Does the memorial website handle my payment?</summary><p>No. Payment takes place entirely on the selected provider’s website. The memorial stores only the contribution record you report afterward and never receives your card or banking credentials.</p></details>
-        <details><summary>How are tree totals and locations counted?</summary><p>After successful payment, report the exact tree quantity shown by the provider. We record both that quantity and the geographic level the provider actually guarantees: exact forest/project, state/region, or where needed most.</p></details>
-        <details><summary>What if the provider does not state an exact number of trees?</summary><p>The gift is preserved as a restoration contribution but is not converted into an estimated number of trees.</p></details>
-        <details><summary>What if the provider I chose will not accept my international payment?</summary><p>Use the universal One Tree Planted route or another accessible exact-tree option. The trees still count in Robert’s lifetime total; they are simply attributed to the location level the provider can honestly support.</p></details>
-      </section>
-
       <section id="record-tribute" class="tree-dedication-report" aria-labelledby="tree-dedication-title">
-        <p class="section-kicker">A growing tribute</p>
-        <h2 id="tree-dedication-title">Already completed your contribution?</h2>
-        <p>After payment succeeds on the provider’s website, return here to record it. Exact provider-reported tree quantities join Robert’s lifetime total immediately, together with the geographic level the provider actually guarantees. General restoration gifts are preserved separately. No payment information is collected here.</p>
+<div class="tree-record-heading"><h2 id="tree-dedication-title">Already donated?<br />Record your trees.</h2><p>No account needed. Takes about 30 seconds.</p></div>
         <form class="tree-dedication-form" data-tree-dedication-form>
           <div class="tree-dedication-fields">
-            <label>Your name<input name="name" required minlength="2" maxlength="100" autocomplete="name" /></label>
-            <label>Contribution made
+            <label>Your name<input placeholder="Name for your tribute" name="name" required minlength="2" maxlength="100" autocomplete="name" /></label>
+            <label>Planting project
               <select name="route" required data-tree-route-select>
-                <option value="" disabled selected>Choose the project and provider</option>
+                <option value="" disabled selected>Choose your project</option>
                 <option value="chippewa-arbor-day" data-type="tree" data-geography="Exact forest: Chippewa National Forest">Chippewa National Forest · Arbor Day Foundation</option>
                 <option value="minnesota-living-tribute" data-type="tree" data-geography="State-level attribution: Minnesota (specific forest not guaranteed)">Minnesota forests · A Living Tribute</option>
                 <option value="global-one-tree-planted" data-type="tree" data-geography="Global / greatest-need attribution; not assigned to a Robert-specific location">Where needed most · One Tree Planted</option>
@@ -189,19 +172,24 @@
                 <option value="new-england-neff" data-type="restoration" data-geography="Regional attribution: New England">New England · NEFF restoration gift</option>
               </select>
             </label>
-            <label data-tree-count-field hidden>Number of trees <small>(use the provider’s quantity)</small><input name="treeCount" type="number" min="1" max="10000" step="1" inputmode="numeric" /></label>
-            <label>Confirmation / order no. <small>(optional)</small><input name="confirmationRef" maxlength="120" autocomplete="off" /></label>
-            <label>Email <small>(optional, kept private)</small><input name="email" type="email" maxlength="200" autocomplete="email" /></label>
-          </div>
+            <label data-tree-count-field>Number of trees <span class="tree-count-stepper"><button type="button" data-tree-step="-1" aria-label="One fewer tree">−</button><input name="treeCount" type="number" min="1" max="10000" step="1" inputmode="numeric" value="1" /><button type="button" data-tree-step="1" aria-label="One more tree">+</button></span></label>
+          </div><details class="tree-optional"><summary>Add a donation reference (optional)</summary><label>Confirmation / order no.<input name="confirmationRef" maxlength="120" autocomplete="off" /></label></details>
           <p class="tree-geography-guidance" data-tree-geography-guidance hidden></p>
           <p class="tree-count-guidance" data-tree-count-guidance hidden></p>
-          <label class="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I confirm that the payment completed successfully and that the tree quantity, when entered, matches the provider’s stated quantity or published conversion.</label>
+          <label class="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I have completed my donation.</label>
           <label class="form-honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
-          <button type="submit">Record my living tribute</button><p role="status" class="tree-dedication-message" data-tree-dedication-message hidden></p>
+          <button type="submit">Record my trees →</button><small class="tree-form-note">Only record the tree quantity confirmed by your provider.</small><p role="status" class="tree-dedication-message" data-tree-dedication-message hidden></p>
         </form>
       </section>
 
-      <section class="tree-final-cta"><span aria-hidden="true">♧</span><h2>One living tribute, many meaningful landscapes.</h2><p>Choose the place that holds meaning. We will preserve the tree count and geographic attribution as carefully as the provider allows.</p><a class="tree-primary-action" href="#restoration-projects">Explore the projects again ↑</a></section>
+      <section class="tree-faq" aria-labelledby="tree-faq-title">
+        <h2 id="tree-faq-title">Questions about tree counts and payments</h2>
+        <details><summary>Does the memorial website handle my payment?</summary><p>No. Payment takes place entirely on the selected provider’s website. The memorial stores only the contribution record you report afterward and never receives your card or banking credentials.</p></details>
+        <details><summary>About the landscape images</summary><p>The landscape artwork evokes the regions connected to Robert’s life. It does not depict or guarantee a specific planting site.</p></details>
+        <details><summary>How are tree totals and locations counted?</summary><p>After successful payment, report the exact tree quantity shown by the provider. We record both that quantity and the geographic level the provider actually guarantees: exact forest/project, state/region, or where needed most.</p></details>
+        <details><summary>What if the provider does not state an exact number of trees?</summary><p>The gift is preserved as a restoration contribution but is not converted into an estimated number of trees.</p></details>
+        <details><summary>What if the provider I chose will not accept my international payment?</summary><p>Use the universal One Tree Planted route or another accessible exact-tree option. The trees still count in Robert’s lifetime total; they are simply attributed to the location level the provider can honestly support.</p></details>
+      </section>
 
       <aside class="tree-return-bar" data-tribute-return-bar hidden aria-label="Record completed living tribute">
         <div><strong>Finished your payment?</strong><span data-tribute-return-label>Return here to record the trees or restoration gift.</span></div>

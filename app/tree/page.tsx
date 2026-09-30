@@ -1,10 +1,11 @@
-import { ArrowLeft, ExternalLink, Globe2, MapPin, Sprout } from "lucide-react";
+import { ArrowLeft, ExternalLink, Globe2, MapPin } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
 import { SiteNav } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 import ContributionLink from "./contribution-link";
 import ContributionReturnBar from "./contribution-return-bar";
+import TreeTotal from "./tree-total";
 import DedicationForm from "./dedication-form";
 
 export const dynamic = "force-dynamic";
@@ -133,33 +134,29 @@ export default async function TreeDedicationPage() {
   } catch {}
 
   return (
-    <main className="tree-page" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+    <main className="tree-page tree-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="tree" />
 
-      <header id="top" className="tree-page-intro">
-        <h1>{copy["tree.pageTitle"]}</h1>
-        <p>{copy["tree.pageIntro"]}</p>
-        <small>Payments are completed on each provider’s official website. The memorial never receives card numbers, CVVs, bank details, or payment credentials.</small>
-        <div className="tree-live-total"><span><strong>{treeTotal}</strong> {treeTotal === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory{restorationGifts > 0 ? ` · ${restorationGifts} additional restoration ${restorationGifts === 1 ? "gift" : "gifts"}` : ""}</span></div>
-        <div className="tree-page-intro-actions">
-          <a className="tree-intro-primary" href="#restoration-projects">Choose a planting location ↓</a>
-          <a className="tree-intro-record" href="#record-tribute">Already contributed? Record your trees →</a>
-        </div>
+      <header id="top" className="tree-design-hero">
+        <div className="tree-hero-copy"><h1>{copy["tree.design.title"]}</h1><h2>{copy["tree.design.subtitle"]}</h2><p>{copy["tree.design.intro"]}</p>
+        <a className="tree-gold-button" href="#restoration-projects">Choose a place ↓</a><a className="tree-record-shortcut" href="#record-tribute">Already donated? Record my trees →</a></div>
+        <TreeTotal initialTotal={treeTotal} initialGifts={restorationGifts} />
       </header>
+      <div className="tree-steps"><ol><li><span>1</span> Choose a place</li><li><span>2</span> Donate with the provider</li><li><span>3</span> Record your tribute</li></ol><small>Payments are made on the provider’s website.</small></div>
 
       <section id="restoration-projects" className="tree-project tree-project-featured">
-        <div>
+        <div className="tree-landscape tree-scene-minnesota" role="img" aria-label="Illustrated Minnesota forest and lake" />
+        <div className="tree-featured-copy">
           <p className="section-kicker light">{copy["tree.featuredKicker"]}</p>
           <h2>{copy["tree.featuredTitle"]}</h2>
-          <p>{content.treeTribute}</p>
-          <p>{content.treeDetail}</p>
+          <p className="tree-featured-intro">Honor Robert’s Minnesota roots by supporting forest restoration.</p>
 
           <div className="tree-chippewa-routes">
             <article className="tree-route-card tree-route-primary">
               <span className="tree-route-location">{copy["tree.arborLocation"]}</span>
               <h3>{copy["tree.arborProvider"]}</h3>
               <small className="tree-provider-note">{copy["tree.arborProviderNote"]}</small>
-              <p>{copy["tree.arborText"]}</p>
+              <details><summary>Planting details</summary><p>{copy["tree.arborText"]}</p></details>
               <ContributionLink
                 className="tree-project-donate"
                 href="https://shop.arborday.org/tree-dedication/commemorative-trees-for-others?producttype=TIM"
@@ -173,7 +170,7 @@ export default async function TreeDedicationPage() {
               <span className="tree-route-location">{copy["tree.minnesotaLocation"]}</span>
               <h3>{copy["tree.minnesotaProvider"]}</h3>
               <small className="tree-provider-note">{copy["tree.minnesotaProviderNote"]}</small>
-              <p>{copy["tree.minnesotaText"]}</p>
+              <details><summary>Planting details</summary><p>{copy["tree.minnesotaText"]}</p></details>
               <ContributionLink
                 className="tree-project-secondary-action"
                 href="https://shop.alivingtribute.org/products/plant-a-tree-ecertificate"
@@ -186,10 +183,7 @@ export default async function TreeDedicationPage() {
 
         </div>
 
-        <div className="tree-project-note">
-          <strong>{copy["tree.chippewaWhyTitle"]}</strong>
-          <p>{copy["tree.chippewaWhyText"]}</p>
-        </div>
+        <details className="tree-featured-details"><summary>About this tribute and planting locations</summary><p>{content.treeTribute}</p><p>{content.treeDetail}</p><strong>{copy["tree.chippewaWhyTitle"]}</strong><p>{copy["tree.chippewaWhyText"]}</p></details>
       </section>
 
       <section className="tree-restoration-collection" aria-labelledby="tree-places-title">
@@ -197,56 +191,46 @@ export default async function TreeDedicationPage() {
           <p className="section-kicker">{copy["tree.projectsKicker"]}</p>
           <h2 id="tree-places-title">{copy["tree.projectsTitle"]}</h2>
           <p className="tree-payment-availability-note">{copy["tree.projectsPaymentNote"]}</p>
-          <p>{copy["tree.projectsIntro"]}</p>
+          <p>Choose a landscape that holds meaning for you.</p><details><summary>About these projects</summary><p>{copy["tree.projectsIntro"]}</p></details>
         </div>
 
         <div className="tree-project-grid">
           {restorationProjects.map((project) => {
             const prefix = `tree.card.${project.copyId}`;
             const isInternational = project.copyId === "international";
-            return <article className={`tree-project-card${isInternational ? " tree-project-card-international" : ""}`} key={project.route}>
+            return <article className={`tree-project-card tree-card-${project.copyId}${isInternational ? " tree-project-card-international" : ""}`} key={project.route}>
+              {!isInternational && <div className={`tree-landscape tree-scene-${project.copyId}`} role="img" aria-label={`Illustrated ${project.region} landscape`} />}
               <p className="tree-project-region">{copy[`${prefix}.region`] || project.region}</p>
               {isInternational && <Globe2 className="tree-international-card-icon" size={30} aria-hidden="true" />}
-              <h3>{copy[`${prefix}.title`] || project.title}</h3>
-              <p>{copy[`${prefix}.text`] || project.text}</p>
+
               <span className="tree-project-provider">{copy[`${prefix}.provider`] || project.provider}</span>
               <span className="tree-geography-tag"><MapPin size={13} aria-hidden="true" /> {copy[`${prefix}.geography`] || project.geography}</span>
               <div className="tree-card-links">
                 <ContributionLink href={project.donateUrl} route={project.route}>{copy[`${prefix}.button`] || project.donateLabel}</ContributionLink>
                 {"sourceUrl" in project && <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">{copy[`${prefix}.detailsButton`] || project.sourceLabel} <ExternalLink size={14} aria-hidden="true" /></a>}
               </div>
+              <details className="tree-card-details"><summary>Project details &amp; how to count</summary><h3>{copy[`${prefix}.title`] || project.title}</h3><p>{copy[`${prefix}.text`] || project.text}</p>
               <small className="tree-card-note">{copy[`${prefix}.note`] || project.note}</small>
               {"alternative" in project && project.alternative && <div className="tree-card-alternative">
                 <strong>{copy[`${prefix}.alternativeLabel`] || "Alternative"}</strong>
                 <ContributionLink href={project.alternative.url} route={project.alternative.route}>{copy[`${prefix}.alternativeButton`] || project.alternative.label}</ContributionLink>
                 <small>{copy[`${prefix}.alternativeNote`] || project.alternative.note}</small>
               </div>}
+              </details>
             </article>;
           })}
         </div>
 
       </section>
 
+      <section id="record-tribute" className="tree-dedication-report" aria-labelledby="tree-dedication-title"><div className="tree-record-heading"><h2 id="tree-dedication-title">Already donated?<br />Record your trees.</h2><p>No account needed. Takes about 30 seconds.</p></div><DedicationForm /></section>
       <section className="tree-faq" aria-labelledby="tree-faq-title">
-        <div className="tree-section-heading"><p className="section-kicker">Questions</p><h2 id="tree-faq-title">Before you give</h2></div>
-        <details open><summary>Does the memorial website handle my payment?</summary><p>No. Payment takes place entirely on the selected provider’s website. The memorial stores only the contribution record you report afterward and never receives your card or banking credentials.</p></details>
+        <h2 id="tree-faq-title">Questions about tree counts and payments</h2>
+        <details><summary>Does the memorial website handle my payment?</summary><p>No. Payment takes place entirely on the selected provider’s website. The memorial stores only the contribution record you report afterward and never receives your card or banking credentials.</p></details>
+        <details><summary>About the landscape images</summary><p>The landscape artwork evokes the regions connected to Robert’s life. It does not depict or guarantee a specific planting site.</p></details>
         <details><summary>How are tree totals and locations counted?</summary><p>After successful payment, report the exact tree quantity shown by the provider. We record both that quantity and the geographic level the provider actually guarantees: exact forest/project, state/region, or where needed most.</p></details>
         <details><summary>What if the provider does not state an exact number of trees?</summary><p>The gift is preserved as a restoration contribution but is not converted into an estimated number of trees.</p></details>
         <details><summary>What if the provider I chose will not accept my international payment?</summary><p>Use the universal One Tree Planted route or another accessible exact-tree option. The trees still count in Robert’s lifetime total; they are simply attributed to the location level the provider can honestly support.</p></details>
-      </section>
-
-      <section id="record-tribute" className="tree-dedication-report" aria-labelledby="tree-dedication-title">
-        <p className="section-kicker">A growing tribute</p>
-        <h2 id="tree-dedication-title">Already completed your contribution?</h2>
-        <p>After payment succeeds on the provider’s website, return here to record it. Exact provider-reported tree quantities join Robert’s lifetime total immediately, together with the geographic level the provider actually guarantees. General restoration gifts are preserved separately. No payment information is collected here.</p>
-        <DedicationForm />
-      </section>
-
-      <section className="tree-final-cta">
-        <Sprout size={42} aria-hidden="true" />
-        <h2>One living tribute, many meaningful landscapes.</h2>
-        <p>Choose the place that holds meaning. We will preserve the tree count and geographic attribution as carefully as the provider allows.</p>
-        <a className="tree-primary-action" href="#restoration-projects">Explore the projects again <span aria-hidden="true">↑</span></a>
       </section>
 
       <ContributionReturnBar />
