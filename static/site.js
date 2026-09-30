@@ -170,7 +170,8 @@ function initializeMemorialPage() {
       if (signature === payloadSignatures.get(path)) return;
       livePayloads.set(path, payload);
       payloadSignatures.set(path, signature);
-      await Promise.allSettled(renderers.map((render) => render()));
+      // Content must finish first: dependent renderers read its saved labels and image choices.
+      for (const render of renderers) { try { await render(); } catch {} }
     } catch {
       // Visitors who cannot reach the service continue to see the same-site mirror.
     } finally {
@@ -214,6 +215,13 @@ function initializeMemorialPage() {
       if (!asset) return;
       element.src = asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
       element.alt = element.getAttribute("aria-hidden") === "true" ? "" : asset.alt || "";
+    });
+    const main = pageDocument.querySelector("main");
+    ["horizon", "lifeBackground", "treeLandscapes"].forEach(id => {
+      const asset = assets[id];
+      if (!main || !asset) return;
+      const src = asset.objectKey ? objectUrl("/api/site-assets", asset.objectKey) : `/assets/${String(asset.asset || "").replace(/^\//, "")}`;
+      main.style.setProperty(`--site-${id}`, `url(${JSON.stringify(src)})`);
     });
     const hero = pageDocument.querySelector(".hero");
     if (hero instanceof HTMLElement) {
@@ -444,7 +452,7 @@ function initializeMemorialPage() {
         const imageSrc = chapterPhotoUrl(chapter.photo);
         if (publications.length) {
           const landmarkWork = node("section", { className: "landmark-work", attrs: { "aria-label": `Landmark publications from ${chapter.institution || ""}` } });
-          landmarkWork.append(node("p", { className: "journey-label", text: "Landmark Publication" }));
+          landmarkWork.append(node("p", { className: "journey-label", text: copy?.["legacy.publicationLabel"] ?? "Landmark Publication" }));
           const grid = node("div", { className: `landmark-grid ${publications.length === 1 ? "single" : ""}` });
           publications.forEach((publication) => {
             const card = node("article", { className: "landmark-paper-card" });
@@ -457,9 +465,9 @@ function initializeMemorialPage() {
               node("h4", { text: publication.title || "" }), node("cite", { text: publication.citation || "" }),
               node("p", { text: publication.note || "" }));
             const actions = node("div", { className: "landmark-paper-actions" });
-            if (/^https:\/\//i.test(publication.url || "")) actions.append(node("a", { text: "Open publication page ↗", attrs: { href: publication.url, target: "_blank", rel: "noopener noreferrer" } }));
+            if (/^https:\/\//i.test(publication.url || "")) actions.append(node("a", { text: copy?.["legacy.publicationLink"] ?? "Open publication page ↗", attrs: { href: publication.url, target: "_blank", rel: "noopener noreferrer" } }));
             const pdfUrl = publicationPdfUrl(publication);
-            if (pdfUrl && pdfUrl !== publication.url) actions.append(node("a", { text: "Open PDF ↗", attrs: { href: pdfUrl, target: "_blank", rel: "noopener noreferrer", type: "application/pdf" } }));
+            if (pdfUrl && pdfUrl !== publication.url) actions.append(node("a", { text: copy?.["legacy.pdfLink"] ?? "Open PDF ↗", attrs: { href: pdfUrl, target: "_blank", rel: "noopener noreferrer", type: "application/pdf" } }));
             if (actions.childNodes.length) caption.append(actions);
             card.append(caption);
             grid.append(card);
@@ -522,8 +530,6 @@ function initializeMemorialPage() {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
     editableCopy = { ...content.pageCopy };
-    if (editableCopy["nav.tree"] === "Living Tribute") editableCopy["nav.tree"] = "Plant a Tree";
-    if (editableCopy["nav.memories"] === "Memories") editableCopy["nav.memories"] = "Share A Memory";
     applyTheme(content);
     applyPageCopy(editableCopy);
     applySiteAssets(content);
@@ -690,9 +696,10 @@ function initializeMemorialPage() {
       const kind = element.getAttribute("data-participation-count");
       const count = counts[kind];
       if (!Number.isSafeInteger(count) || count < 0) return;
-      const label = kind === "trees"
-        ? `${count === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory${Number.isSafeInteger(counts.restorationGifts) && counts.restorationGifts > 0 ? ` · ${counts.restorationGifts} additional restoration ${counts.restorationGifts === 1 ? "gift" : "gifts"}` : ""}`
-        : `${count === 1 ? "memory shared" : "memories shared"}`;
+      let label = kind === "trees"
+        ? (editableCopy[count === 1 ? "home.treeTotalOne" : "home.treeTotalMany"] ?? `${count === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory`)
+        : (editableCopy[count === 1 ? "home.memoryTotalOne" : "home.memoryTotalMany"] ?? (count === 1 ? "memory shared" : "memories shared"));
+      if (kind === "trees" && Number.isSafeInteger(counts.restorationGifts) && counts.restorationGifts > 0) label += " · " + (editableCopy[counts.restorationGifts === 1 ? "home.restorationTotalOne" : "home.restorationTotalMany"] ?? "{count} additional restoration gifts").replace("{count}", counts.restorationGifts);
       if (element.hasAttribute("data-count-only")) {
         element.textContent = count.toLocaleString();
         const gifts = pageDocument.querySelector("[data-restoration-total]");
@@ -1099,7 +1106,7 @@ function initializeMemorialPage() {
     .then((manifest) => { mirroredMedia = manifest.media || {}; })
     .catch(() => {});
   const liveRefreshers = [
-    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents, hydrateGallery, hydrateHomePreviews], true],
+    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents, hydrateGallery, hydrateHomePreviews, hydrateParticipation], true],
     ["/api/events", [hydrateEvents, hydrateHomePreviews], Boolean(pageDocument.querySelector("[data-events], [data-home-event]"))],
     ["/api/gallery", [hydrateGallery, hydrateMemoryBook, hydrateHomePreviews], Boolean(pageDocument.querySelector("[data-gallery], [data-memory-book], [data-home-gallery]"))],
     ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(pageDocument.querySelector("[data-memory-wall], [data-memory-book]"))],
@@ -1118,7 +1125,8 @@ function initializeMemorialPage() {
   }
   mirrorReady.then(async () => {
     if (lifecycle.signal.aborted) return;
-    await Promise.allSettled([hydrateContent(), hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook(), hydrateParticipation()]);
+    await hydrateContent().catch(() => {});
+    await Promise.allSettled([hydrateEvents(), hydrateGallery(), hydrateMemories(), hydrateMemoryBook(), hydrateParticipation()]);
     await hydrateHomePreviews();
     initialHydrated = true;
     refreshPublicData();

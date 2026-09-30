@@ -1,13 +1,14 @@
 import { ArrowRight, CalendarDays, Images, MessageSquareText, Sprout, Globe2, Waves, Settings, Satellite, ChartNoAxesColumnIncreasing, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { env } from "cloudflare:workers";
-import { SharedHeroArt, SiteFooter, SiteNav } from "./site-chrome";
+import { siteAssetUrl, SharedHeroArt, SiteFooter, SiteNav } from "./site-chrome";
 import {
   getPublishedEvents,
   getPublishedGallery,
   getSiteContent,
   type HomeLegacyCard,
   type LegacyThread,
+  type SiteAsset,
 } from "./site-data";
 
 export const dynamic = "force-dynamic";
@@ -31,10 +32,10 @@ function ScientificLegacyStory({
 
 const threadIcons = [Waves, ChartNoAxesColumnIncreasing, Settings, Sprout, Satellite, Globe2];
 const contributionIcons = [Globe2, ChartNoAxesColumnIncreasing, Sprout, GraduationCap];
-function HomeThreads({ threads }: { threads: LegacyThread[] }) {
+function HomeThreads({ threads, earth }: { threads: LegacyThread[]; earth: SiteAsset }) {
   return <div className="home-earth-map">
     <div className="home-earth-layout">
-      <figure className="home-earth"><div className="home-earth-orbit"><svg className="home-thread-ring" viewBox="0 0 300 300" aria-hidden="true"><circle className="thread-orbit-line" cx="150" cy="150" r="140" /><circle className="thread-orbit-dot" cx="42.75" cy="60" r="4" /><circle className="thread-orbit-dot" cx="10" cy="150" r="4" /><circle className="thread-orbit-dot" cx="42.75" cy="240" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="60" r="4" /><circle className="thread-orbit-dot" cx="290" cy="150" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="240" r="4" /></svg><img src="/home-earth.jpg" alt="Earth, NASA Blue Marble composite" loading="lazy" /></div></figure>
+      <figure className="home-earth"><div className="home-earth-orbit"><svg className="home-thread-ring" viewBox="0 0 300 300" aria-hidden="true"><circle className="thread-orbit-line" cx="150" cy="150" r="140" /><circle className="thread-orbit-dot" cx="42.75" cy="60" r="4" /><circle className="thread-orbit-dot" cx="10" cy="150" r="4" /><circle className="thread-orbit-dot" cx="42.75" cy="240" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="60" r="4" /><circle className="thread-orbit-dot" cx="290" cy="150" r="4" /><circle className="thread-orbit-dot" cx="257.25" cy="240" r="4" /></svg><img src={siteAssetUrl(earth)} alt={earth.alt} loading="lazy" /></div></figure>
       {threads.map((thread,index) => {const Icon=threadIcons[index % threadIcons.length];return <article className={`home-thread-card home-thread-card-${index+1}`} key={thread.id}><span className="home-line-icon" aria-hidden="true"><Icon size={28} strokeWidth={1.5} /></span><div><h4>{thread.title}</h4><p>{thread.text}</p></div></article>;})}
     </div>
   </div>;
@@ -42,7 +43,7 @@ function HomeThreads({ threads }: { threads: LegacyThread[] }) {
 
 function OtherFrontiers({ topics, label }: { topics: string[]; label: string }) {
   return <div className="science-secondary-band science-secondary-band-home">
-    <div className="science-secondary-intro"><span className="science-secondary-label">{label === "Other frontiers" ? "Other frontiers with pioneer contribution" : label}</span></div>
+    <div className="science-secondary-intro"><span className="science-secondary-label">{label}</span></div>
     <div className="science-secondary-terms">
       {topics.filter((topic) => topic.trim()).map((topic, index) => <span key={index}>{topic}</span>)}
     </div>
@@ -82,8 +83,8 @@ export default async function Home() {
       <section className="tribute-actions" aria-labelledby="tribute-actions-title">
         <div className="tribute-actions-copy"><p className="section-kicker">{copy["home.tributeKicker"]}</p><h2 id="tribute-actions-title">{copy["home.tributeTitle"]}</h2></div>
         <div className="tribute-action-grid">
-          <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>{copy["home.treeKicker"]}</small><strong>{copy["home.treeTitle"]}</strong><em>{copy["home.treeText"]}</em>{participation && <span className="tribute-participation tribute-participation-prominent"><strong>{participation.trees}</strong> {participation.trees === 1 ? "tree dedicated" : "trees dedicated"} in Robert’s memory{participation.restorationGifts > 0 ? ` · ${participation.restorationGifts} additional restoration ${participation.restorationGifts === 1 ? "gift" : "gifts"}` : ""}</span>}<b>{copy["home.treeCta"]}</b></span></Link>
-          <Link className="tribute-action-card memory-card-cta" href="/memories/#share"><span className="tribute-action-icon"><MessageSquareText size={28} /></span><span><small>{copy["home.shareMemoryKicker"]}</small><strong>{copy["home.shareMemoryTitle"]}</strong><em>{copy["home.shareMemoryText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.memories}</strong> {participation.memories === 1 ? "memory shared" : "memories shared"}</span>}<b>{copy["home.shareMemoryCta"]}</b></span></Link>
+          <Link className="tribute-action-card tree-card" href="/tree"><span className="tribute-action-icon"><Sprout size={28} /></span><span><small>{copy["home.treeKicker"]}</small><strong>{copy["home.treeTitle"]}</strong><em>{copy["home.treeText"]}</em>{participation && <span className="tribute-participation tribute-participation-prominent"><strong>{participation.trees}</strong> {copy[participation.trees === 1 ? "home.treeTotalOne" : "home.treeTotalMany"]}{participation.restorationGifts > 0 ? ` · ${copy[participation.restorationGifts === 1 ? "home.restorationTotalOne" : "home.restorationTotalMany"].replace("{count}", String(participation.restorationGifts))}` : ""}</span>}<b>{copy["home.treeCta"]}</b></span></Link>
+          <Link className="tribute-action-card memory-card-cta" href="/memories/#share"><span className="tribute-action-icon"><MessageSquareText size={28} /></span><span><small>{copy["home.shareMemoryKicker"]}</small><strong>{copy["home.shareMemoryTitle"]}</strong><em>{copy["home.shareMemoryText"]}</em>{participation && <span className="tribute-participation"><strong>{participation.memories}</strong> {copy[participation.memories === 1 ? "home.memoryTotalOne" : "home.memoryTotalMany"]}</span>}<b>{copy["home.shareMemoryCta"]}</b></span></Link>
         </div>
       </section>
 
@@ -96,7 +97,7 @@ export default async function Home() {
           </div>
           <div className="home-map-heading"><h3>{copy["home.legacyIdeasTitle"]}</h3><p>{copy["home.legacyMapHint"]}</p></div>
           <div className="home-thread-visual">
-            <HomeThreads threads={content.legacyThreads} />
+            <HomeThreads earth={content.siteAssets.earth} threads={content.legacyThreads} />
             <OtherFrontiers topics={content.homeFrontierLabels} label={copy["home.legacyMapSecondary"]} />
           </div>
         </div>

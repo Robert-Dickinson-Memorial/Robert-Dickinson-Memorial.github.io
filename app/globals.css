@@ -4225,3 +4225,9 @@ main .shared-portrait-hero.shared-portrait-hero .life-reference-hero-copy h1 {wh
   .home-redesign .tribute-action-card .tribute-participation {padding:12px 14px;font-size:14px;}
   .home-redesign .tribute-action-card .tribute-participation strong {font-size:40px;}
 }
+
+/* Owner-managed artwork uses the same saved assets in both public renderers. */
+html[data-page="life"] .life-reference-page,.life-page-active {background-image:var(--site-lifeBackground,url("/life-reference-background-v1.webp"));}
+.tree-design-hero::before,.tree-landscape {background-image:var(--site-treeLandscapes,url("/tree-landscapes.webp"));}
+.events-redesign .interior-hero,html[data-page="events"] .interior-hero[data-route="events"] {background-image:linear-gradient(90deg,rgba(8,30,39,.85),rgba(8,30,39,.24)),var(--site-horizon,url('/assets/memorial-horizon.png'));}
+.gallery-redesign .interior-hero,html[data-page="gallery"] .interior-hero[data-route="gallery"] {background-image:linear-gradient(90deg,#102f3bc9,#102f3b33),var(--site-horizon,url('/assets/memorial-horizon.png'));}

@@ -19,7 +19,7 @@ export async function SiteNav({ active }: { active?: string }) {
     <nav className="site-nav" aria-label="Main navigation">
       <Link className="wordmark" href="/" aria-label="Return to the Robert Dickinson memorial home" title="Memorial home"><span className="wordmark-mark" aria-hidden="true">∞</span><span>{copy["global.wordmark"]}</span></Link>
       <div className="nav-links">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : link.key === "tree" ? "nav-tree-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div>
-      <details className="mobile-nav"><summary>Menu <span aria-hidden="true">☰</span></summary><div className="mobile-nav-panel">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : link.key === "tree" ? "nav-tree-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div></details>
+      <details className="mobile-nav"><summary>{copy["global.menuLabel"]} <span aria-hidden="true">☰</span></summary><div className="mobile-nav-panel">{links.map((link) => <Link className={[active === link.key ? "active" : "", link.key === "memories" ? "nav-memory-cta" : link.key === "tree" ? "nav-tree-cta" : ""].filter(Boolean).join(" ") || undefined} aria-current={active === link.key ? "page" : undefined} href={link.href} key={link.key}>{link.label}</Link>)}</div></details>
     </nav>
   );
 }
@@ -55,4 +55,11 @@ export function SharedHeroArt({ assets }: { assets: SiteAssets }) {
 export function InteriorHero({ kicker, title, intro, assets }: { kicker: string; title: string; intro: string; assets?: SiteAssets }) {
   if (assets) return <header className="interior-hero shared-portrait-hero"><div className="shared-hero-inner"><div className="shared-hero-copy"><p className="section-kicker">{kicker}</p><h1>{title}</h1><p className="shared-hero-intro">{intro}</p></div><SharedHeroArt assets={assets} /></div></header>;
   return <header className="interior-hero"><p className="section-kicker light">{kicker}</p><h1>{title}</h1><p>{intro}</p></header>;
+}
+
+export function siteAssetUrl(asset: SiteAssets[keyof SiteAssets]) {
+  return asset.objectKey ? `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}` : `/${asset.asset.replace(/^\//, "")}`;
+}
+export function siteImageVariables(assets: SiteAssets): Record<`--${string}`, string> {
+  return Object.fromEntries(["horizon", "lifeBackground", "treeLandscapes"].map(id => [`--site-${id}`, `url(${JSON.stringify(siteAssetUrl(assets[id as keyof SiteAssets]))})`]));
 }

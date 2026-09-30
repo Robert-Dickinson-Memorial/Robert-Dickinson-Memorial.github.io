@@ -1,6 +1,7 @@
 import { ExternalLink, Globe2, MapPin } from "lucide-react";
 import { env } from "cloudflare:workers";
 import { SiteNav, SiteFooter } from "../site-chrome";
+import { siteImageVariables } from "../site-chrome";
 import { getSiteContent } from "../site-data";
 import ContributionLink from "./contribution-link";
 import ContributionReturnBar from "./contribution-return-bar";
@@ -133,7 +134,7 @@ export default async function TreeDedicationPage() {
   } catch {}
 
   return (
-    <main id="page-top" className="tree-page tree-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
+    <main style={siteImageVariables(content.siteAssets)} id="page-top" className="tree-page tree-redesign" data-body-font={content.bodyFont} data-heading-font={content.headingFont}>
       <SiteNav active="tree" />
 
       <header id="top" className="tree-design-hero">

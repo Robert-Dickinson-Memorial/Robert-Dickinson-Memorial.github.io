@@ -34,14 +34,14 @@ export default async function LegacyPage() {
             <p className="journey-summary">{chapter.summary}</p>
             <div className="journey-detail"><div><p className="journey-label">{copy["legacy.contributionsLabel"]}</p><ul>{chapter.contributions.map((item) => <li key={item}>{item}</li>)}</ul></div><blockquote><p className="journey-label">{copy["legacy.impactLabel"]}</p><span>{chapter.impact}</span></blockquote></div>
             {publications.length > 0 && <section className="landmark-work" aria-label={`Landmark publications from ${chapter.institution}`}>
-              <p className="journey-label">Landmark Publication</p>
+              <p className="journey-label">{copy["legacy.publicationLabel"]}</p>
               <div className={`landmark-grid ${publications.length === 1 ? "single" : ""}`}>
                 {publications.map((publication) => <article className="landmark-paper-card" key={`${publication.year}-${publication.title}`}>
                   {publication.image && <img src={`/${publication.image.replace(/^[/]+/, "")}`} alt="" aria-hidden="true" loading="lazy" />}
                   <div className="landmark-paper-caption"><span className="landmark-paper-year">{publication.year}</span><h4>{publication.title}</h4><cite>{publication.citation}</cite><p>{publication.note}</p>
                     <div className="landmark-paper-actions">
-                      {publication.url?.startsWith("https://") && <a href={publication.url} target="_blank" rel="noopener noreferrer">Open publication page ↗</a>}
-                      {publicationPdfUrl(publication) && publicationPdfUrl(publication) !== publication.url && <a href={publicationPdfUrl(publication)} target="_blank" rel="noopener noreferrer" type="application/pdf">Open PDF ↗</a>}
+                      {publication.url?.startsWith("https://") && <a href={publication.url} target="_blank" rel="noopener noreferrer">{copy["legacy.publicationLink"]}</a>}
+                      {publicationPdfUrl(publication) && publicationPdfUrl(publication) !== publication.url && <a href={publicationPdfUrl(publication)} target="_blank" rel="noopener noreferrer" type="application/pdf">{copy["legacy.pdfLink"]}</a>}
                     </div>
                   </div>
                 </article>)}

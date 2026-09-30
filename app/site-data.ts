@@ -100,6 +100,10 @@ export type SiteAssets = {
   lifePortrait: SiteAsset;
   portrait: SiteAsset;
   horizon: SiteAsset;
+  earth: SiteAsset;
+  lifeBackground: SiteAsset;
+  treeLandscapes: SiteAsset;
+
 };
 
 export type LifePhoto = { milestoneId?: string; id: string; objectKey: string; caption: string; date: string; alt: string };
@@ -627,6 +631,16 @@ export const defaultPageCopy: Record<string, string> = {
   "home.communityKicker": "Explore the memorial",
   "home.communityTitle": "A life remembered in many forms",
   "home.communityIntro": "Visit each collection when you are ready. The homepage offers a quiet starting point rather than the entire archive at once.",
+  "global.menuLabel": "Menu",
+  "home.treeTotalOne": "tree dedicated in Robert’s memory",
+  "home.treeTotalMany": "trees dedicated in Robert’s memory",
+  "home.memoryTotalOne": "memory shared",
+  "home.memoryTotalMany": "memories shared",
+  "home.restorationTotalOne": "{count} additional restoration gift",
+  "home.restorationTotalMany": "{count} additional restoration gifts",
+  "legacy.publicationLabel": "Landmark Publication",
+  "legacy.publicationLink": "Open publication page ↗",
+  "legacy.pdfLink": "Open PDF ↗",
   "home.eventsPreviewTitle": "Upcoming Events",
   "home.eventsPreviewIntro": "Talks, memorials, and celebrations of his life and work.",
   "home.galleryPreviewIntro": "Photos from a life well lived.",
@@ -918,6 +932,10 @@ export const defaultPageCopy: Record<string, string> = {
 };
 
 export const defaultSiteAssets: SiteAssets = {
+  earth: { asset: "home-earth.jpg", objectKey: null, alt: "Earth, NASA Blue Marble composite" },
+  lifeBackground: { asset: "life-reference-background-v1.webp", objectKey: null, alt: "His Life background artwork" },
+  treeLandscapes: { asset: "tree-landscapes.webp", objectKey: null, alt: "Plant a Tree landscape artwork" },
+
   lifePortrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors" },
   portrait: { asset: "robert-dickinson.jpg", objectKey: null, alt: "Robert E. Dickinson outdoors", layout: "landscape" },
   horizon: { asset: "memorial-horizon.png", objectKey: null, alt: "Earth horizon artwork" },
@@ -960,6 +978,10 @@ function alignSiteAssets(value: string | undefined): SiteAssets {
     lifePortrait: { ...defaultSiteAssets.lifePortrait, ...(saved.lifePortrait ?? {}) },
     portrait: { ...defaultSiteAssets.portrait, ...(saved.portrait ?? {}), layout: saved.portrait?.layout === "portrait" ? "portrait" : "landscape" },
     horizon: { ...defaultSiteAssets.horizon, ...(saved.horizon ?? {}) },
+    earth: { ...defaultSiteAssets.earth, ...(saved.earth ?? {}) },
+    lifeBackground: { ...defaultSiteAssets.lifeBackground, ...(saved.lifeBackground ?? {}) },
+    treeLandscapes: { ...defaultSiteAssets.treeLandscapes, ...(saved.treeLandscapes ?? {}) },
+
   };
 }
 

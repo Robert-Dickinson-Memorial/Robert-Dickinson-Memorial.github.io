@@ -193,7 +193,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setBusy(true); setMessage("");
     try {
       await responseData(await fetch("/api/admin/content", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ values: contentValues }) }));
-      setMessage("Memorial content saved. The public site will use these changes immediately.");
+      setMessage("Memorial content saved. The public site checks for updates when opened or focused, and every minute while open. The fallback copy refreshes hourly for visitors unable to reach the live service.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); }
     finally { setBusy(false); }
   }
@@ -202,20 +202,20 @@ export default function Manager({ content, events, media, publishedMemories, edi
     setContentValues((current) => ({ ...current, pageCopy: { ...current.pageCopy, [key]: value } }));
   }
 
-  function updateSiteAssetAlt(assetId: "portrait" | "horizon" | "lifePortrait", value: string) {
+  function updateSiteAssetAlt(assetId: keyof SiteContent["siteAssets"], value: string) {
     setContentValues((current) => ({
       ...current,
       siteAssets: { ...current.siteAssets, [assetId]: { ...current.siteAssets[assetId], alt: value } },
     }));
   }
 
-  function siteAssetSrc(assetId: "portrait" | "horizon" | "lifePortrait") {
+  function siteAssetSrc(assetId: keyof SiteContent["siteAssets"]) {
     const asset = contentValues.siteAssets[assetId];
     if (asset.objectKey) return `/api/site-assets/${asset.objectKey.split("/").map(encodeURIComponent).join("/")}`;
     return `/${asset.asset.replace(/^\//, "")}`;
   }
 
-  async function uploadSiteAsset(event: FormEvent<HTMLFormElement>, assetId: "portrait" | "horizon" | "lifePortrait") {
+  async function uploadSiteAsset(event: FormEvent<HTMLFormElement>, assetId: keyof SiteContent["siteAssets"]) {
     event.preventDefault();
     const formElement = event.currentTarget;
     const form = new FormData(formElement);
@@ -231,7 +231,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
     finally { setBusy(false); }
   }
 
-  async function resetSiteAsset(assetId: "portrait" | "horizon" | "lifePortrait") {
+  async function resetSiteAsset(assetId: keyof SiteContent["siteAssets"]) {
     if (!window.confirm("Restore the original built-in image?")) return;
     setBusy(true); setMessage("");
     try {
@@ -508,11 +508,11 @@ export default function Manager({ content, events, media, publishedMemories, edi
       </section>
 
       <section id="edit-home" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Shared banner images</h2><p>One portrait and one background are shared by Home, His Life, Scientific Legacy, and Share A Memory. Upload a replacement here to update all four pages. Portrait edges blend automatically into the banner; the original upload is preserved.</p><a className="manager-section-link" href="#copy-home">Edit Home headings, buttons & labels ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home</p><h2>Shared images & backgrounds</h2><p>Manage the shared portrait, banner background, homepage globe, His Life background, and Plant a Tree landscape artwork here. Page photographs remain in their corresponding photo editors below. Replacement images keep their original files.</p><a className="manager-section-link" href="#copy-home">Edit Home headings, buttons & labels ↓</a></div>
         <div className="manager-form manager-stack">
-          {(["portrait", "horizon"] as const).map((assetId) => {
+          {(["portrait", "horizon", "earth", "lifeBackground", "treeLandscapes"] as const).map((assetId) => {
             const asset = contentValues.siteAssets[assetId];
-            const label = assetId === "portrait" ? "Shared portrait — all four pages" : "Shared banner background — all four pages";
+            const label = { portrait: "Shared portrait — Home, His Life, Scientific Legacy, Memories and Events", horizon: "Shared banner background — all page banners", earth: "Home — globe in Ideas That Endure", lifeBackground: "His Life — full-page background", treeLandscapes: "Plant a Tree — landscape grid (retain the 3 × 3 layout)" }[assetId];
             return <div className="manager-edit-card manager-asset-editor" key={assetId}>
               <strong>{label}</strong>
               <img className={`manager-image-preview ${assetId === "portrait" && asset.layout !== "portrait" ? "manager-image-preview-landscape" : ""}`} src={siteAssetSrc(assetId)} alt={asset.alt} />
@@ -530,7 +530,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
 
 
       <section id="edit-home-story" className="manager-panel">
-        <div className="manager-panel-heading"><p className="section-kicker">Home · Memory book</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The complete biography is preserved in the Memory book; its first two paragraphs also appear on Home. His Life displays six editable qualities beside the timeline.</p><a className="manager-section-link" href="#copy-life">Edit the six qualities on His Life ↓</a></div>
+        <div className="manager-panel-heading"><p className="section-kicker">Home · Memory book</p><h2>Biography & homepage introduction</h2><a className="manager-section-link" href="#edit-life-photos">Manage biography & career photographs ↓</a><p>The complete biography is preserved in the Memory book; the homepage introduction is edited separately below. His Life displays six editable qualities beside the timeline.</p><a className="manager-section-link" href="#copy-life">Edit the six qualities on His Life ↓</a></div>
         <div className="manager-form">
           <label>Home — hero introduction<textarea rows={3} value={contentValues.heroIntro} onChange={(e) => setContentValues({ ...contentValues, heroIntro: e.target.value })} /></label>
           <label>Memory book — full biographical story <span>Separate paragraphs with a blank line. The six qualities on His Life are edited separately.</span><textarea rows={18} value={contentValues.obituaryStory} onChange={(e) => setContentValues({ ...contentValues, obituaryStory: e.target.value })} /></label>
