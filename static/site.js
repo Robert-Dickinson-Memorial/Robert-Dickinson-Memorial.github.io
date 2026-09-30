@@ -521,25 +521,33 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
+  let galleryDecade = "all", galleryOrder = "oldest", galleryLimit = 12;
+  const galleryYear = item => {
+    for(const text of [item.title,item.caption||""]){const match=String(text).match(/(?:^|[^\d])((?:18|19|20|21)\d{2})(?!\d)/);if(match)return Number(match[1]);}return null;
+  };
   async function hydrateGallery() {
-    const target = document.querySelector("[data-gallery]");
-    if (!(target instanceof HTMLElement)) return;
-    const { gallery = [] } = await getJson("/api/gallery");
-    if (!gallery.length) return;
-    const grid = node("div", { className: "gallery-grid" });
-    gallery.forEach((item) => {
-      const figure = node("figure", { className: "gallery-card" });
-      if (item.kind === "image" && item.objectKey) figure.append(node("img", { attrs: { src: objectUrl("/api/gallery/photos", item.objectKey), alt: item.title, loading: "lazy" } }));
-      if (item.kind === "video" && item.externalUrl) {
-        const embed = videoEmbedUrl(item.externalUrl);
-        if (embed) figure.append(node("iframe", { attrs: { src: embed, title: item.title, loading: "lazy", allowfullscreen: "" } }));
-        else figure.append(node("a", { className: "video-link", text: editableCopy["gallery.watchVideo"] || "Watch video ↗", attrs: { href: item.externalUrl, target: "_blank", rel: "noopener noreferrer" } }));
-      }
-      const caption = node("figcaption"); caption.append(node("strong", { text: item.title }));
-      if (item.caption) caption.append(node("span", { text: item.caption }));
-      figure.append(caption); grid.append(figure);
+    const target=document.querySelector("[data-gallery]");if(!(target instanceof HTMLElement)||target.querySelector('dialog[open]'))return;
+    const {gallery=[]}=await getJson("/api/gallery");
+    const defaults={"title": "Photos by year", "all": "All years", "oldest": "Oldest first", "newest": "Newest first", "sort": "Photo order", "more": "Load more photos", "undated": "Year unknown", "close": "Close", "previous": "Previous", "next": "Next", "open": "View full photograph", "none": "No photographs in this selection."},c=k=>editableCopy[`gallery.design.${k}`]??defaults[k];
+    const decades=[...new Set(gallery.map(galleryYear).filter(y=>y!==null).map(y=>Math.floor(y/10)*10))].sort((a,b)=>a-b);
+    const filtered=gallery.filter(i=>galleryDecade==="all"||String(Math.floor((galleryYear(i)??-1)/10)*10)===galleryDecade).sort((a,b)=>{const x=galleryYear(a),y=galleryYear(b);return x===null?(y===null?a.id-b.id:1):y===null?-1:(galleryOrder==="oldest"?x-y:y-x)||a.id-b.id;});
+    const filters=node("div",{className:"gallery-year-filters",attrs:{role:"group","aria-label":"Filter by decade"}});
+    ["all",...decades.map(String)].forEach(d=>{const b=node("button",{text:d==="all"?c("all"):d+"s",attrs:{type:"button","aria-pressed":String(galleryDecade===d)}});b.onclick=()=>{galleryDecade=d;galleryLimit=12;hydrateGallery();};filters.append(b);});
+    const toolbar=node("div",{className:"gallery-toolbar"}),sort=node("select",{attrs:{"aria-label":c("sort")}});["oldest","newest"].forEach(o=>sort.append(node("option",{text:c(o),attrs:{value:o}})));sort.value=galleryOrder;sort.onchange=()=>{galleryOrder=sort.value;galleryLimit=12;hydrateGallery();};toolbar.append(node("h2",{text:c("title")}),sort);
+    const grid=node("div",{className:"gallery-photo-grid"}),photos=filtered.filter(i=>i.kind==="image"&&i.objectKey),dialog=node("dialog",{className:"gallery-viewer",attrs:{"aria-label":c("open")}});
+    let selected=0,opener;
+    function drawViewer(){const item=photos[selected];const close=node("button",{className:"gallery-viewer-close",text:c("close")+" ×",attrs:{type:"button"}});close.onclick=()=>dialog.close();dialog.replaceChildren(close,node("img",{attrs:{src:objectUrl("/api/gallery/photos",item.objectKey),alt:item.title}}),node("h2",{text:item.title}));if(item.caption)dialog.append(node("p",{text:item.caption}));const nav=node("div",{className:"gallery-viewer-nav"}),prev=node("button",{text:"← "+c("previous"),attrs:{type:"button"}}),next=node("button",{text:c("next")+" →",attrs:{type:"button"}});prev.disabled=selected===0;next.disabled=selected===photos.length-1;prev.onclick=()=>{selected--;drawViewer();};next.onclick=()=>{selected++;drawViewer();};nav.append(prev,node("span",{text:`${selected+1} / ${photos.length}`}),next);dialog.append(nav);}
+    dialog.addEventListener("click",e=>{if(e.target===dialog)dialog.close();});dialog.addEventListener("close",()=>opener?.focus());
+    filtered.slice(0,galleryLimit).forEach(item=>{
+      const figure=node("figure",{className:"gallery-tile"});
+      if(item.kind==="image"&&item.objectKey){const button=node("button",{className:"gallery-photo-button",attrs:{type:"button","aria-label":c("open")+": "+item.title}});button.append(node("img",{attrs:{src:objectUrl("/api/gallery/photos",item.objectKey),alt:item.title,loading:"lazy"}}));button.onclick=()=>{opener=button;selected=photos.findIndex(p=>p.id===item.id);drawViewer();dialog.showModal();};figure.append(button);}
+      if(item.kind==="video"&&item.externalUrl){const embed=videoEmbedUrl(item.externalUrl);figure.append(embed?node("iframe",{attrs:{src:embed,title:item.title,loading:"lazy",allowfullscreen:""}}):node("a",{className:"video-link",text:editableCopy["gallery.watchVideo"]||"Watch video ↗",attrs:{href:item.externalUrl,target:"_blank",rel:"noopener noreferrer"}}));}
+      const caption=node("figcaption");caption.append(node("span",{className:"gallery-year",text:galleryYear(item)??c("undated")}),node("strong",{text:item.title}));if(item.caption)caption.append(node("span",{text:item.caption}));figure.append(caption);grid.append(figure);
     });
-    target.replaceChildren(grid);
+    target.replaceChildren(filters,toolbar,grid,dialog);
+    if(!filtered.length)target.append(node("p",{className:"gallery-designed-empty",text:gallery.length?c("none"):(editableCopy["gallery.empty"]||"No photos have been added yet.")}));
+    if(galleryLimit<filtered.length){const more=node("button",{className:"gallery-load-more",text:c("more")+" ↓",attrs:{type:"button"}});more.onclick=()=>{galleryLimit+=12;hydrateGallery();};target.append(more);}
+    target.append(node("a",{className:"gallery-book-link",text:(editableCopy["gallery.bookButton"]||"Turn photos into a book")+" →",attrs:{href:"/memory-book/"}}));
   }
 
   async function hydrateMemories() {
@@ -1019,7 +1027,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((manifest) => { mirroredMedia = manifest.media || {}; })
     .catch(() => {});
   const liveRefreshers = [
-    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents], true],
+    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents, hydrateGallery], true],
     ["/api/events", [hydrateEvents], Boolean(document.querySelector("[data-events]"))],
     ["/api/gallery", [hydrateGallery, hydrateMemoryBook], Boolean(document.querySelector("[data-gallery], [data-memory-book]"))],
     ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-memory-book]"))],
