@@ -27,7 +27,7 @@ export default async function ReviewPage() {
             social_url AS socialUrl, created_at AS createdAt
      FROM memories WHERE status = ? ORDER BY created_at ASC, id ASC`
   ).bind("pending").all<PendingMemory>() : { results: [] };
-  const treeResult = env.DB ? await env.DB.prepare("SELECT id, name, email, project, provider, contribution_type AS contributionType, reported_tree_count AS reportedTreeCount, count_basis AS countBasis, confirmation_ref AS confirmationRef, payment_confirmed AS paymentConfirmed, status, created_at AS createdAt FROM tree_dedications WHERE status IN ('pending', 'approved') ORDER BY created_at DESC, id DESC")
+  const treeResult = env.DB ? await env.DB.prepare("SELECT id, name, email, project, provider, contribution_type AS contributionType, reported_tree_count AS reportedTreeCount, count_basis AS countBasis, geographic_scope AS geographicScope, geographic_label AS geographicLabel, confirmation_ref AS confirmationRef, payment_confirmed AS paymentConfirmed, status, created_at AS createdAt FROM tree_dedications WHERE status IN ('pending', 'approved') ORDER BY created_at DESC, id DESC")
     .all<TreeDedication & { status: string }>() : { results: [] };
   const notificationsReady = emailNotificationsConfigured();
 
