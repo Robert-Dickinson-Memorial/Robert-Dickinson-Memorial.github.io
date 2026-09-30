@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { TreePine } from "lucide-react";
-export default function TreeTotal({initialTotal, initialGifts}: {initialTotal: number; initialGifts: number}) {
+export default function TreeTotal({initialTotal, initialGifts, copy}: {initialTotal: number; initialGifts: number; copy: Record<string, string>}) {
   const [total, setTotal] = useState(initialTotal);
   const [gifts, setGifts] = useState(initialGifts);
   useEffect(() => {
@@ -18,5 +18,5 @@ export default function TreeTotal({initialTotal, initialGifts}: {initialTotal: n
     window.addEventListener("focus", refresh);
     return () => {window.removeEventListener("livingTributeRecorded", refresh); window.removeEventListener("focus", refresh);};
   }, []);
-  return <div className="tree-total-panel" aria-live="polite"><TreePine className="tree-total-icon" aria-hidden="true" /><strong>{total.toLocaleString()}</strong><div>Trees dedicated<br />in Robert’s memory<small>Reported by contributors after donating.</small>{gifts > 0 && <small>Plus {gifts} forest-restoration gifts</small>}</div></div>;
+  return <div className="tree-total-panel" aria-live="polite"><TreePine className="tree-total-icon" aria-hidden="true" /><strong>{total.toLocaleString()}</strong><div>{copy["tree.ui.totalLabel"]}<br />{copy["tree.ui.totalDedication"]}<small>{copy["tree.ui.totalNote"]}</small>{gifts > 0 && <small>{copy["tree.ui.restorationTotal"].replace("{count}", String(gifts))}</small>}</div></div>;
 }

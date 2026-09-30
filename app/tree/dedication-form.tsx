@@ -16,7 +16,7 @@ const contributionRoutes = [
   { id: "new-england-neff", label: "New England · NEFF restoration gift", type: "restoration", geography: "Regional attribution: New England" },
 ] as const;
 
-export default function DedicationForm() {
+export default function DedicationForm({ copy }: { copy: Record<string, string> }) {
   const [message, setMessage] = useState("");
   const [messageIsSuccess, setMessageIsSuccess] = useState(false);
   const messageRef = useRef<HTMLParagraphElement>(null);
@@ -68,19 +68,19 @@ export default function DedicationForm() {
         contributionType?: "tree" | "restoration";
         geographicLabel?: string;
       };
-      if (!response.ok) throw new Error(result.error || "Unable to record the tribute.");
+      if (!response.ok) throw new Error(result.error || copy["tree.ui.formError"]);
       form.reset();
       setRouteId("");
       window.sessionStorage.removeItem("livingTributeRoute");
       window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
       setMessageIsSuccess(true);
       setMessage(result.contributionType === "tree"
-        ? "Thank you — your contribution has been successfully recorded. Your trees are now included in Robert’s living-tribute total."
-        : "Thank you — your contribution has been successfully recorded in Robert’s living tribute.");
+        ? copy["tree.ui.formSuccessTrees"]
+        : copy["tree.ui.formSuccessGift"]);
       window.setTimeout(() => messageRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
     } catch (error) {
       setMessageIsSuccess(false);
-      setMessage(error instanceof Error ? error.message : "Please try again.");
+      setMessage(error instanceof Error ? error.message : copy["tree.ui.formError"]);
     } finally {
       setBusy(false);
     }
@@ -88,24 +88,23 @@ export default function DedicationForm() {
 
   return <form className="tree-dedication-form" onSubmit={submit}>
     <div className="tree-dedication-fields">
-      <label>Your name<input placeholder="Name for your tribute" name="name" required minLength={2} maxLength={100} autoComplete="name" /></label>
-      <label>Planting project
-        <select name="route" required value={routeId} onChange={(event) => setRouteId(event.target.value)}>
-          <option value="" disabled>Choose your project</option>
-          {contributionRoutes.map((route) => <option key={route.id} value={route.id}>{route.label}</option>)}
+      <label>{copy["tree.ui.formName"]}<input placeholder={copy["tree.ui.formNamePlaceholder"]} name="name" required minLength={2} maxLength={100} autoComplete="name" /></label>
+      <label>{copy["tree.ui.formProject"]}<select name="route" required value={routeId} onChange={(event) => setRouteId(event.target.value)}>
+          <option value="" disabled>{copy["tree.ui.formChoose"]}</option>
+          {contributionRoutes.map((route) => <option key={route.id} value={route.id}>{copy[`tree.form.route.${route.id}`] ?? route.label}</option>)}
         </select>
       </label>
-      {isTree && <label>Number of trees<span className="tree-count-stepper"><button type="button" aria-label="One fewer tree" onClick={() => stepCount(-1)}>−</button><input ref={countRef} key={routeId} name="treeCount" type="number" min={1} max={routeId === "massachusetts-tree-boston" ? 1 : 10000} step={1} required inputMode="numeric" defaultValue={1} /><button type="button" aria-label="One more tree" onClick={() => stepCount(1)}>+</button></span></label>}
+      {isTree && <label>{copy["tree.ui.formCount"]}<span className="tree-count-stepper"><button type="button" aria-label="One fewer tree" onClick={() => stepCount(-1)}>−</button><input ref={countRef} key={routeId} name="treeCount" type="number" min={1} max={routeId === "massachusetts-tree-boston" ? 1 : 10000} step={1} required inputMode="numeric" defaultValue={1} /><button type="button" aria-label="One more tree" onClick={() => stepCount(1)}>+</button></span></label>}
     </div>
-    <details className="tree-optional"><summary>Add a donation reference (optional)</summary><label>Confirmation / order no.<input name="confirmationRef" maxLength={120} autoComplete="off" /></label></details>
-    {selectedRoute && <p className="tree-geography-guidance"><strong>Location recorded:</strong> {selectedRoute.geography}</p>}
-    {selectedRoute?.type === "restoration" && <p className="tree-count-guidance">This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.</p>}
-    {isTree && routeId === "massachusetts-tree-boston" && <p className="tree-count-guidance">Choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000), then record 1 tree. Other donation amounts should not be converted into a tree count.</p>}
-    {isTree && routeId !== "massachusetts-tree-boston" && <p className="tree-count-guidance">Enter only the exact number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.</p>}
-    <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required /> I have completed my donation.</label>
+    <details className="tree-optional"><summary>{copy["tree.ui.formOptional"]}</summary><label>{copy["tree.ui.formReference"]}<input name="confirmationRef" maxLength={120} autoComplete="off" /></label></details>
+    {selectedRoute && <p className="tree-geography-guidance"><strong>{copy["tree.ui.formLocation"]}</strong> {copy[`tree.form.geography.${selectedRoute.id}`] ?? selectedRoute.geography}</p>}
+    {selectedRoute?.type === "restoration" && <p className="tree-count-guidance">{copy["tree.ui.formGuidanceGift"]}</p>}
+    {isTree && routeId === "massachusetts-tree-boston" && <p className="tree-count-guidance">{copy["tree.ui.formGuidanceBoston"]}</p>}
+    {isTree && routeId !== "massachusetts-tree-boston" && <p className="tree-count-guidance">{copy["tree.ui.formGuidanceTrees"]}</p>}
+    <label className="tree-dedication-confirm"><input type="checkbox" name="confirmed" required />{copy["tree.ui.formConfirm"]}</label>
     <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
-    <button type="submit" disabled={busy || !selectedRoute}>{busy ? "Submitting…" : "Record my trees →"}</button>
-    <small className="tree-form-note">Only record the tree quantity confirmed by your provider.</small>
+    <button type="submit" disabled={busy || !selectedRoute}>{busy ? copy["tree.ui.formBusy"] : copy["tree.ui.formSubmit"]}</button>
+    <small className="tree-form-note">{copy["tree.ui.formNote"]}</small>
     {message && <p ref={messageRef} role="status" className={`tree-dedication-message ${messageIsSuccess ? "is-success" : "is-error"}`}>{messageIsSuccess && <span aria-hidden="true">✓</span>} {message}</p>}
   </form>;
 }

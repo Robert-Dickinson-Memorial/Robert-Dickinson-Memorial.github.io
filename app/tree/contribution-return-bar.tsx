@@ -21,7 +21,7 @@ const labels: Record<string, string> = {
   "new-england-neff": "New England · NEFF",
 };
 
-export default function ContributionReturnBar() {
+export default function ContributionReturnBar({ copy }: { copy: Record<string, string> }) {
   const [route, setRoute] = useState("");
 
   useEffect(() => {
@@ -41,9 +41,9 @@ export default function ContributionReturnBar() {
 
   return <aside className="tree-return-bar" aria-label="Record completed living tribute">
     <div>
-      <strong>Finished your payment?</strong>
-      <span>You chose {labels[route]}. Return here to record the trees or restoration gift.</span>
+      <strong>{copy["tree.ui.returnHeading"]}</strong>
+      <span>{copy["tree.ui.returnSelected"].replace("{project}", copy[`tree.form.route.${route}`] ?? labels[route])}</span>
     </div>
-    <a href="#record-tribute">Record my contribution →</a>
+    <a href="#record-tribute">{copy["tree.ui.returnButton"]}</a>
   </aside>;
 }

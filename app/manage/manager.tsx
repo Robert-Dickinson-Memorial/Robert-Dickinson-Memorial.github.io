@@ -33,14 +33,12 @@ const treeCardCopyGroups = [
     { key: "tree.design.subtitle", label: "Subtitle" },
     { key: "tree.design.intro", label: "Introduction", long: true },
     { key: "tree.design.paymentDisclaimer", label: "Payment disclaimer", long: true },
-    { key: "tree.design.minnesotaSummary", label: "Minnesota planting explanation", long: true },
   ] },
   {
     title: "Featured Minnesota section",
     fields: [
       { key: "tree.featuredKicker", label: "Section label" },
       { key: "tree.featuredTitle", label: "Section title" },
-      { key: "tree.chippewaWhyTitle", label: "Why Chippewa — heading" },
       { key: "tree.chippewaWhyText", label: "Why Chippewa — text", long: true },
     ],
   },
@@ -67,7 +65,6 @@ const treeCardCopyGroups = [
   {
     title: "Other landscapes section",
     fields: [
-      { key: "tree.projectsKicker", label: "Section label" },
       { key: "tree.projectsTitle", label: "Section title" },
       { key: "tree.projectsPaymentNote", label: "Payment availability note" },
       { key: "tree.projectsIntro", label: "Section introduction", long: true },
@@ -102,7 +99,7 @@ const treeCardCopyGroups = [
   })),
 ] as const;
 
-const treeCardManagedKeys = new Set(treeCardCopyGroups.flatMap((group) => group.fields.map((field) => field.key)));
+const treeCardManagedKeys = new Set([...treeCardCopyGroups.flatMap((group) => group.fields.map((field) => field.key)), "tree.pageTitle", "tree.pageIntro", "tree.design.minnesotaSummary", "tree.chippewaWhyTitle", "tree.projectsKicker"]);
 
 const copyFieldNames: Record<string, string> = {
   wordmark: "Navigation site name",

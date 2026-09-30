@@ -3475,7 +3475,7 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 .tree-steps { padding:24px 5vw 20px; text-align:center; }
 .tree-steps ol { display:flex; justify-content:center; gap:clamp(24px,6vw,100px); padding:0; margin:0 0 8px; list-style:none; }
 .tree-steps li { display:flex; align-items:center; gap:12px; font:1rem Georgia,serif; }
-.tree-steps li span { display:grid; place-items:center; border-radius:50%; width:40px; height:40px; color:white; background:#b7954e; flex-shrink:0; }
+.tree-steps li > span:first-child { display:grid; place-items:center; border-radius:50%; width:40px; height:40px; color:white; background:#b7954e; flex-shrink:0; }
 .tree-steps > small { color:#59656c; font-size:.76rem; }
 .tree-redesign .tree-project-featured { margin:0 auto; width:calc(100% - 64px); max-width:1320px; padding:0; display:grid; grid-template-columns:44% 56%; background:#fffcf7; border:1px solid #e3ddd1; border-radius:7px; box-shadow:0 3px 14px #182c3e12; overflow:hidden; color:#102b40; }
 .tree-redesign .tree-project-featured::before { display:none; }
@@ -3568,3 +3568,23 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 
 .tree-redesign .tree-payment-disclaimer { max-width:900px; margin:16px auto 0; color:#53616b; font-size:.9rem; line-height:1.55; }
 .tree-redesign .tree-featured-summary { color:#53616b; font-size:.94rem; line-height:1.6; margin:0 0 20px; }
+
+/* One description supplies both the preview and expanded project details. */
+.tree-redesign .tree-project-preview { grid-column:1 / -1; margin-top:10px; }
+.tree-redesign .tree-project-preview summary { color:#53616b; font-size:.94rem; line-height:1.55; }
+.tree-redesign .tree-preview-text { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; font-size:.94rem; line-height:1.55; font-weight:400; }
+.tree-redesign .tree-expand-label { display:inline-block; margin-top:6px; color:#254558; font-size:.82rem; text-decoration:underline; text-underline-offset:3px; }
+.tree-redesign .tree-project-preview[open] .tree-preview-text { display:none; }
+.tree-redesign .tree-project-preview[open] .tree-expand-label { margin-top:0; }
+.tree-redesign .tree-project-preview > p { margin:8px 0; }
+.tree-redesign .tree-card-boston > .tree-landscape { grid-row:1 / 7; }
+.tree-redesign .tree-project-card-international .tree-card-links { grid-row:auto; }
+.tree-redesign .tree-project-card-international > .tree-project-preview { grid-column:1 / -1; }
+
+.tree-redesign .tree-project-preview .tree-route-location { display:block; color:#53616b; font-size:.85rem; margin:12px 0 4px; }
+.tree-redesign .tree-project-preview .tree-geography-tag { display:flex; color:#365147; font-size:.8rem; margin:12px 0; }
+
+.tree-redesign .tree-project-preview > summary { list-style:none; }
+.tree-redesign .tree-project-preview > summary::-webkit-details-marker { display:none; }
+.tree-redesign .tree-expand-label::before { content:"▸ "; display:inline-block; margin-right:4px; }
+.tree-redesign .tree-project-preview[open] > summary .tree-expand-label::before { content:"▾ "; }

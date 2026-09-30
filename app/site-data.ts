@@ -1,3 +1,4 @@
+import { treeUiDefaults } from "./tree/page-copy";
 import { sortGalleryByYear } from "./gallery-order";
 import { reviseEditorialText } from "./editorial-revision";
 import { env } from "cloudflare:workers";
@@ -479,6 +480,7 @@ const secondaryLegacyTopics: SecondaryLegacyTopic[] = [
 ];
 
 export const defaultPageCopy: Record<string, string> = {
+  ...treeUiDefaults,
   "global.wordmark": "Robert Dickinson",
   "global.footerName": "Robert E. Dickinson",
   "global.footerText": "Created with love by his academic community.",
@@ -488,7 +490,7 @@ export const defaultPageCopy: Record<string, string> = {
   "nav.legacy": "Scientific Legacy",
   "nav.tree": "Plant a Tree",
   "tree.design.paymentDisclaimer": "This memorial website does not collect or process payments. All donations are made directly through the professional planting and conservation programs linked below.",
-  "tree.design.minnesotaSummary": "Choose Chippewa National Forest through Arbor Day Foundation, or support Minnesota forests through A Living Tribute, where the specific planting location depends on current need.",
+  "tree.design.minnesotaSummary": "Minnesota was Robert’s childhood home. Placing Chippewa National Forest at the heart of this tribute connects his beginnings with his lifelong work to understand our changing planet. A tree here honors both his roots and his enduring scientific legacy.",
   "tree.design.title": "A living tribute.",
   "tree.design.subtitle": "Plant a tree in Robert’s memory.",
   "tree.design.intro": "Support the landscapes connected to his life and science.",
@@ -500,17 +502,17 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.arborLocation": "Chippewa National Forest",
   "tree.arborProvider": "Arbor Day Foundation",
   "tree.arborProviderNote": "(US payment only)",
-  "tree.arborText": "For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.",
+  "tree.arborText": "Honor Robert with memorial trees in Chippewa National Forest, supporting forest restoration in his home state. This option is for U.S. contributors and requires a U.S. address. Select Chippewa National Forest at checkout, then record the exact tree quantity confirmed by the provider.",
   "tree.arborButton": "Continue with Arbor Day",
   "tree.minnesotaLocation": "Alternative · Minnesota Forests",
   "tree.minnesotaProvider": "A Living Tribute",
   "tree.minnesotaProviderNote": "(International Payment Option available)",
-  "tree.minnesotaText": "For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.",
+  "tree.minnesotaText": "Dedicate trees to Robert in Minnesota forests through A Living Tribute, with an international payment option and smaller gifts available. Planting locations depend on current restoration need; Chippewa National Forest is not guaranteed. After payment, record the provider’s confirmed tree quantity here.",
   "tree.minnesotaButton": "Continue with A Living Tribute",
   "tree.chippewaWhyTitle": "Why Chippewa comes first",
-  "tree.chippewaWhyText": "Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.",
+  "tree.chippewaWhyText": "Minnesota was Robert’s childhood home. Placing Chippewa National Forest at the heart of this tribute connects his beginnings with his lifelong work to understand our changing planet. A tree here honors both his roots and his enduring scientific legacy.",
   "tree.projectsKicker": "Other landscapes",
-  "tree.projectsTitle": "Places that shaped his life and science",
+  "tree.projectsTitle": "Places that shaped Robert’s life and science",
   "tree.projectsPaymentNote": "(International Payment Option available)",
   "tree.projectsIntro": "Each landscape is connected to Robert’s life or scientific work. We favor exact-tree routes tied to the named project, state, or region; when a provider cannot guarantee a particular forest, the memorial does not imply that it can.",
 
@@ -786,7 +788,7 @@ export const defaultPageCopy: Record<string, string> = {
   "tree.v2ChippewaNoteTitle": "Why this one comes first",
   "tree.v2ChippewaNoteText": "Minnesota was Robert’s childhood home, so the Chippewa National Forest remains the anchor of this living tribute. The Forest Service notes that if a selected forest has no immediate planting need, a Plant-A-Tree donation may be used for tree planting on another National Forest.",
   "tree.v2CollectionKicker": "Other landscapes",
-  "tree.v2CollectionTitle": "Places that shaped his life and science",
+  "tree.v2CollectionTitle": "Places that shaped Robert’s life and science",
   "tree.v2CollectionIntro": "These projects have equal weight in the memorial. Each was selected for a strong connection to place, credible restoration work, and a direct giving route through a public agency or established conservation organization.",
   "tree.v2CollectionNote": "USDA Plant-A-Tree allows you to request a specific National Forest, but the Forest Service may redirect the gift if that forest has no immediate planting need. The Amazon, Colorado, and New England options support the named organization or fund rather than an individually marked tree. Donation terms can change, so the provider’s page is the authoritative source at the time of giving.",
   "tree.v2FaqKicker": "Questions",
@@ -1055,6 +1057,11 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["life.heroTitle"] === "A curious mind. A generous spirit.") saved["life.heroTitle"] = "A curious Mind. A generous spirit";
         if (saved["life.heroIntro"] === "Robert’s beginnings, his path through life, and the curiosity and generosity colleagues remember.") saved["life.heroIntro"] = "Robert’s path through life and career.";
         delete saved["life.mentorQuote"];
+        if (saved["tree.design.minnesotaSummary"] === "Choose Chippewa National Forest through Arbor Day Foundation, or support Minnesota forests through A Living Tribute, where the specific planting location depends on current need.") saved["tree.design.minnesotaSummary"] = defaultPageCopy["tree.design.minnesotaSummary"];
+        if (saved["tree.projectsTitle"] === "Places that shaped his life and science") saved["tree.projectsTitle"] = defaultPageCopy["tree.projectsTitle"];
+        if (saved["tree.arborText"] === "For U.S. contributors. U.S. address required; select Chippewa National Forest at checkout.") saved["tree.arborText"] = defaultPageCopy["tree.arborText"];
+        if (saved["tree.minnesotaText"] === "For smaller gifts and international contributors. Trees support Minnesota forests; the specific forest depends on current need.") saved["tree.minnesotaText"] = defaultPageCopy["tree.minnesotaText"];
+        if (saved["tree.chippewaWhyText"] === "Minnesota was Robert’s childhood home, so Chippewa National Forest remains the anchor of this living tribute. Chippewa National Forest is the first choice; Minnesota forests provide a simpler alternative for smaller gifts and international contributors.") saved["tree.chippewaWhyText"] = defaultPageCopy["tree.chippewaWhyText"];
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));

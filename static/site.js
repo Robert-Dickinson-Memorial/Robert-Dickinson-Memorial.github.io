@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+  let editableCopy = {};
+  const treeText = (key, fallback) => editableCopy[`tree.ui.${key}`] ?? fallback;
   const apiBase = String(window.MEMORIAL_API_BASE || "").replace(/\/$/, "");
   const mobileMenu = document.querySelector(".mobile-nav");
   if (mobileMenu instanceof HTMLDetailsElement) {
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tributeReturnBar.hidden = true;
       return;
     }
-    if (tributeReturnLabel instanceof HTMLElement) tributeReturnLabel.textContent = `You chose ${tributeRouteLabels[route]}. Return here to record the trees or restoration gift.`;
+    if (tributeReturnLabel instanceof HTMLElement) tributeReturnLabel.textContent = treeText("returnSelected", "You chose {project}. Return here to record the trees or restoration gift.").replace("{project}", editableCopy[`tree.form.route.${route}`] || tributeRouteLabels[route]);
     tributeReturnBar.hidden = false;
   };
   updateTributeReturnBar(sessionStorage.getItem("livingTributeRoute"));
@@ -61,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (sharePanel instanceof HTMLDetailsElement) sharePanel.open = true;
   }));
 
-  let editableCopy = {};
+
   const message = document.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;
   let mirroredMedia = {};
@@ -142,10 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const key = element.getAttribute("data-copy-href");
       if (key && typeof copy[key] === "string") element.setAttribute("href", copy[key]);
     });
+    document.querySelectorAll("[data-copy-geography]").forEach((element) => {
+      const key = element.getAttribute("data-copy-geography");
+      if (key && typeof copy[key] === "string") element.setAttribute("data-geography", copy[key]);
+    });
     document.querySelectorAll("[data-copy-placeholder]").forEach((element) => {
       const key = element.getAttribute("data-copy-placeholder");
       if (key && typeof copy[key] === "string") element.setAttribute("placeholder", copy[key]);
     });
+    window.dispatchEvent(new Event("memorialCopyUpdated"));
   }
 
   function applySiteAssets(content) {
@@ -574,7 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (element.hasAttribute("data-count-only")) {
         element.textContent = count.toLocaleString();
         const gifts = document.querySelector("[data-restoration-total]");
-        if (gifts) gifts.textContent = counts.restorationGifts > 0 ? `Plus ${counts.restorationGifts} forest-restoration gifts` : "";
+        if (gifts) gifts.textContent = counts.restorationGifts > 0 ? treeText("restorationTotal", "Plus {count} forest-restoration gifts").replace("{count}", counts.restorationGifts) : "";
       } else element.replaceChildren(node("strong", { text: count }), document.createTextNode(` ${label}`));
       element.hidden = false;
     });
@@ -845,7 +852,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!apiBase) {
     if (form instanceof HTMLFormElement) form.addEventListener("submit", (event) => { event.preventDefault(); showMessage("Online submissions are temporarily paused while the private review service is being connected. No information was sent or stored."); });
-    if (treeForm instanceof HTMLFormElement) treeForm.addEventListener("submit", (event) => { event.preventDefault(); const status = treeForm.querySelector("[data-tree-dedication-message]"); if (status) { status.textContent = "Dedication reporting is temporarily unavailable."; status.hidden = false; } });
+    if (treeForm instanceof HTMLFormElement) treeForm.addEventListener("submit", (event) => { event.preventDefault(); const status = treeForm.querySelector("[data-tree-dedication-message]"); if (status) { status.textContent = treeText("formUnavailable", "Dedication reporting is temporarily unavailable."); status.hidden = false; } });
     return;
   }
 
@@ -864,7 +871,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const geography = selected?.dataset.geography || "";
       if (geographyGuidance instanceof HTMLElement) {
         geographyGuidance.hidden = !geography;
-        geographyGuidance.textContent = geography ? `Location recorded: ${geography}` : "";
+        geographyGuidance.textContent = geography ? `${treeText("formLocation", "Location recorded:")} ${geography}` : "";
       }
       if (countField instanceof HTMLElement) countField.hidden = type === "restoration";
       if (countInput instanceof HTMLInputElement) {
@@ -889,11 +896,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (isTree) {
           countGuidance.hidden = false;
           countGuidance.textContent = selected?.value === "massachusetts-tree-boston"
-            ? "Choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000), then record 1 tree. Other donation amounts should not be converted into a tree count."
-            : "Enter only the number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.";
+            ? treeText("formGuidanceBoston", "Choose one of Tree Boston’s listed one-tree options ($100, $500, or $1,000), then record 1 tree. Other donation amounts should not be converted into a tree count.")
+            : treeText("formGuidanceTrees", "Enter only the exact number of trees stated by the provider or, for Colorado’s official fund, the quantity implied by its published $2-per-seedling conversion.");
         } else {
           countGuidance.hidden = false;
-          countGuidance.textContent = "This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.";
+          countGuidance.textContent = treeText("formGuidanceGift", "This provider does not assign a defensible exact tree quantity. Your successful gift will be preserved as a forest-restoration contribution and will not be converted into a guessed number of trees.");
         }
       }
     };
@@ -912,6 +919,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
       updateTreeRoute();
+      window.addEventListener("memorialCopyUpdated", updateTreeRoute);
     }
 
     treeForm.querySelectorAll("[data-tree-step]").forEach((button) => button.addEventListener("click", () => {
@@ -929,7 +937,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const selected = routeSelect instanceof HTMLSelectElement ? routeSelect.selectedOptions[0] : null;
       const isTree = selected?.dataset.type === "tree";
       if (status instanceof HTMLElement) status.classList.remove("is-success", "is-error");
-      if (button) { button.disabled = true; button.textContent = "Recording…"; }
+      if (button) { button.disabled = true; button.textContent = treeText("formBusy", "Recording…"); }
       try {
         const response = await fetch(apiUrl("/api/participation"), {
           method: "POST",
@@ -945,7 +953,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }),
         });
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error || "Unable to record the living tribute.");
+        if (!response.ok) throw new Error(result.error || treeText("formError", "Unable to record the tribute. Please try again."));
         treeForm.reset();
         sessionStorage.removeItem("livingTributeRoute");
         window.dispatchEvent(new CustomEvent("livingTributeRecorded"));
@@ -953,8 +961,8 @@ document.addEventListener("DOMContentLoaded", () => {
         refreshLive("/api/participation", [hydrateParticipation]);
         if (status instanceof HTMLElement) {
           status.textContent = result.contributionType === "tree"
-            ? "✓ Thank you — your contribution has been successfully recorded. Your trees are now included in Robert’s living-tribute total."
-            : "✓ Thank you — your contribution has been successfully recorded in Robert’s living tribute.";
+            ? "✓ " + treeText("formSuccessTrees", "Thank you — your contribution has been successfully recorded. Your trees are now included in Robert’s living-tribute total.")
+            : "✓ " + treeText("formSuccessGift", "Thank you — your contribution has been successfully recorded in Robert’s living tribute.");
           status.classList.add("is-success");
           window.setTimeout(() => status.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
         }
@@ -966,7 +974,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } finally {
         if (status) status.hidden = false;
         treeSubmitting = false;
-        if (button) { button.disabled = false; button.textContent = "Record my trees →"; }
+        if (button) { button.disabled = false; button.textContent = treeText("formSubmit", "Record my trees →"); }
       }
     });
   }
