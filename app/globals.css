@@ -3610,3 +3610,64 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
  .tree-redesign .tree-project-featured .tree-chippewa-routes { grid-template-columns:1fr; gap:8px; padding:0 20px 20px; }
  .tree-redesign .tree-project-featured > .tree-featured-copy { padding:20px; }
 }
+
+/* Events: quiet landscape, clear dates, and practical ways to join. */
+.events-redesign, html[data-page="events"] main { background:#faf8f3; color:#142f43; }
+.events-redesign .site-nav, html[data-page="events"] .site-nav { background:#fcfbf8; color:#183347; border-bottom:1px solid #e2ddd3; }
+.events-redesign .nav-links a.active, html[data-page="events"] .nav-links a.active { color:#3f654d; border-bottom:2px solid #3f654d; }
+.events-redesign .interior-hero, html[data-page="events"] .interior-hero[data-route="events"] { background:linear-gradient(90deg,rgba(8,30,39,.85),rgba(8,30,39,.24)),url('/assets/memorial-horizon.png') center 48%/cover; min-height:330px; padding:66px max(5vw,24px) 52px; }
+.events-redesign .interior-hero { background-image:linear-gradient(90deg,rgba(8,30,39,.85),rgba(8,30,39,.24)),url('/memorial-horizon.png'); }
+.events-redesign .interior-hero h1, html[data-page="events"] .interior-hero h1 { font-size:clamp(2.6rem,5vw,4.6rem); margin:12px 0 18px; color:#fffdf7; }
+.events-redesign .interior-hero > p:last-child, html[data-page="events"] .interior-hero > p:last-child { max-width:620px; font-size:1.08rem; line-height:1.65; color:#f5f3ed; }
+.events-section.event-designed-section { max-width:1380px; padding:0 5vw 64px; margin:auto; background:#faf8f3; }
+.event-filter-bar { display:flex; gap:12px; padding:22px 0; border-bottom:1px solid #e1dccf; }
+.event-filter-bar button { border:0; border-radius:30px; padding:11px 24px; background:#eeece6; color:#253e4d; font:inherit; cursor:pointer; }
+.event-filter-bar button[aria-pressed="true"] { background:#476950; color:white; }
+.event-list-heading { display:grid; grid-template-columns:auto 1fr; gap:8px 28px; align-items:center; margin:28px 0 24px; }
+.event-list-heading h2, .event-planning h2 { font:400 clamp(1.8rem,3vw,2.5rem)/1.2 Georgia,serif; margin:0; color:#17364b; }
+.event-list-heading > span { border-top:1px solid #b99b62; }
+.event-list-heading > p { grid-column:1/-1; margin:0; color:#596773; }
+.event-feature-list { display:grid; gap:26px; }
+.event-feature { display:grid; grid-template-columns:minmax(240px,32%) minmax(0,1fr); border:1px solid #e3ded3; border-radius:8px; background:#fffefa; overflow:hidden; box-shadow:0 3px 14px #16304408; }
+.event-feature-photo { position:relative; background:#e3e5dc; }
+.event-feature-photo img { width:100%; height:100%; max-height:680px; object-fit:cover; object-position:50% 35%; display:block; }
+.event-date-badge { position:absolute; top:20px; left:20px; background:#fffdf5f5; border-radius:5px; padding:10px 18px; text-align:center; display:grid; line-height:1.25; box-shadow:0 2px 9px #102c4020; color:#1b384a; }
+.event-date-badge span { font-size:.78rem; text-transform:uppercase; letter-spacing:.07em; }
+.event-date-badge strong { font:400 2.5rem/1.1 Georgia,serif; }
+.event-feature-copy { padding:30px 34px; min-width:0; }
+.event-feature-copy .section-kicker { font-size:.7rem; letter-spacing:.15em; color:#8e723a; margin:0 0 10px; }
+.event-feature-copy h3 { font:400 clamp(1.7rem,2.6vw,2.45rem)/1.2 Georgia,serif; margin:0 0 18px; color:#153449; }
+.event-feature-copy time { display:block; white-space:pre-line; color:#345444; font-size:1rem; line-height:1.65; font-weight:600; }
+.event-venue { white-space:pre-line; color:#53616c; line-height:1.55; font-size:1rem; margin:18px 0; }
+.event-actions { display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; margin:20px 0; }
+.event-actions a, .event-actions button { border:0; background:transparent; color:#315a48; font-family:inherit; font-weight:500; font-size:.88rem; line-height:1.4; padding:10px 0; text-decoration:underline; text-underline-offset:4px; cursor:pointer; }
+.event-actions .event-primary { background:#426650; color:#fff; padding:12px 18px; border-radius:4px; text-decoration:none; }
+.event-story { white-space:pre-line; overflow-wrap:anywhere; color:#5a6570; font-size:.94rem; line-height:1.6; border-top:1px solid #e9e3d8; padding-top:18px; }
+.event-story a, .event-remembrance a { color:#315b49; text-decoration:underline; text-underline-offset:3px; }
+.event-planning { margin-top:38px; padding:28px; border:1px solid #e2dfd5; background:#f2f3ed; border-radius:7px; }
+.event-planning > p { color:#606c74; margin:8px 0 22px; }
+.event-planning-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; }
+.event-planning-grid > div + div { border-left:1px solid #dadfd5; padding-left:24px; }
+.event-planning-grid h3 { font:400 1.18rem Georgia,serif; color:#1a394b; margin:0 0 10px; }
+.event-planning-grid p { font-size:.87rem; line-height:1.6; color:#5c6872; margin:0; }
+.event-remembrance { display:flex; flex-wrap:wrap; gap:7px 14px; margin-top:12px; font-size:.87rem; }
+.event-designed-section button:focus-visible, .event-designed-section a:focus-visible { outline:3px solid #ba9a59; outline-offset:4px; }
+.events-redesign .site-footer, html[data-page="events"] .site-footer { background:#f2f0e9; color:#294456; }
+@media(max-width:760px) {
+ .events-section.event-designed-section { padding:0 20px 40px; }
+ .event-feature { grid-template-columns:1fr; }
+ .event-feature-photo { height:290px; }
+ .event-feature-photo img { object-position:50% 30%; }
+ .event-feature-copy { padding:24px; }
+ .event-planning-grid { grid-template-columns:1fr 1fr; }
+ .event-planning-grid > div + div { border-left:0; padding-left:0; }
+ .event-filter-bar { gap:8px; }
+ .event-filter-bar button { padding:10px 17px; font-size:.88rem; }
+}
+@media(max-width:400px) { .event-planning-grid { grid-template-columns:1fr; } .event-feature-copy { padding:20px; } .event-filter-bar button { padding:10px 12px; } }
+.events-redesign .interior-hero, html[data-page="events"] .interior-hero[data-route="events"] { padding-top:120px; }
+.event-feature-photo img { max-height:none; }
+.events-redesign .site-footer .wordmark, html[data-page="events"] .site-footer .wordmark { color:#294456; }
+html[data-page="events"] .site-nav .nav-links a[data-nav="events"], .events-redesign .site-nav .nav-links a.active { color:#3f654d!important; }
+@media(max-width:760px) { .events-redesign .interior-hero, html[data-page="events"] .interior-hero[data-route="events"] { padding-top:100px; } }
+.event-feature-photo img { object-position:36% 35%; }

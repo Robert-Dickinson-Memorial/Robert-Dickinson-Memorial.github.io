@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const message = document.querySelector("[data-migration-message]");
   const apiUrl = (path) => `${apiBase}${path}`;
   let mirroredMedia = {};
+  let eventPortrait = "/assets/robert-dickinson.jpg";
   const livePayloads = new Map();
   const payloadSignatures = new Map();
   const objectUrl = (path, key) => {
@@ -174,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function applySiteAssets(content) {
     const assets = content && content.siteAssets;
     if (!assets || typeof assets !== "object") return;
+    if (assets.portrait) eventPortrait = assets.portrait.objectKey ? objectUrl("/api/site-assets", assets.portrait.objectKey) : `/assets/${String(assets.portrait.asset || "robert-dickinson.jpg").replace(/^\//, "")}`;
     document.querySelectorAll("[data-site-asset]").forEach((element) => {
       if (!(element instanceof HTMLImageElement)) return;
       const id = element.dataset.siteAsset;
@@ -475,31 +477,39 @@ document.addEventListener("DOMContentLoaded", () => {
     renderLegacy(content, content.pageCopy);
   }
 
+  let eventFilter = "upcoming";
   async function hydrateEvents() {
     const target = document.querySelector("[data-events]");
     if (!(target instanceof HTMLElement)) return;
     const { events = [] } = await getJson("/api/events");
-    if (!events.length) {
-      target.replaceChildren(node("div", { className: "events-empty", text: editableCopy["events.empty"] || "No events have been announced yet." }));
-      return;
-    }
-    const list = node("div", { className: "events-list" });
-    events.forEach((event) => {
-      const article = node("article", { className: "event-card" });
-      article.append(node("time", { text: new Intl.DateTimeFormat("en-US", {dateStyle:"long", timeStyle:"short", timeZone:"America/Los_Angeles"}).format(new Date(event.startAt)) + (event.endAt ? " – " + new Intl.DateTimeFormat("en-US", {timeStyle:"short", timeZone:"America/Los_Angeles"}).format(new Date(event.endAt)) : "") + " Pacific Time", attrs: { datetime: event.startAt } }), node("h3", { text: event.title }));
-      if (event.location) article.append(node("p", { className: "event-location", text: event.location }));
-      if (event.description) {
-        const description = node("p", { className: "event-description" });
-        event.description.split(/(https?:\/\/[^\s]+)/g).forEach((part) => {
-          if (/^https?:\/\//.test(part)) description.append(node("a", { text: part.endsWith(".pdf") ? "View / download announcement (PDF)" : part === "https://robert-dickinson-memorial.github.io/" ? "Visit Robert’s memorial website" : part, attrs: { href: part, target: "_blank", rel: "noopener noreferrer" } }));
-          else description.append(document.createTextNode(part));
-        });
-        article.append(description);
-      }
-      if (event.linkUrl) article.append(node("a", { text: event.linkLabel || editableCopy["events.defaultLink"] || "Event details", attrs: { href: event.linkUrl, target: "_blank", rel: "noopener noreferrer" } }));
-      list.append(article);
+    const defaults = {"upcoming": "Upcoming", "past": "Past events", "all": "All events", "upcomingTitle": "Upcoming events", "pastTitle": "Past tributes & gatherings", "allTitle": "All memorial events", "intro": "Gather to remember Robert, share stories, and honor his life in science.", "emptyUpcoming": "No upcoming events have been announced.", "emptyPast": "Past gatherings will appear here after they take place.", "emptyAll": "No events have been announced yet.", "calendar": "Add to calendar", "details": "Event information", "directions": "Get directions", "planning": "Planning to attend?", "planningIntro": "Find the information you need for joining us in person or online.", "venueTitle": "Venue & parking", "venueText": "The venue, address, and available parking information are listed with each event.", "onlineTitle": "Join online", "onlineText": "Use the livestream link on the event card to join remotely.", "programTitle": "Event announcement", "programText": "Download the original announcement from the event information for details you can save or share.", "rememberTitle": "Continue his legacy", "rememberText": "Remember Robert through a tree planted or a memory shared.", "tree": "Plant a Tree", "memory": "Share a Memory"};
+    const c = key => editableCopy[`events.design.${key}`] ?? defaults[key];
+    const date = (v, opts) => new Intl.DateTimeFormat("en-US", {timeZone:"America/Los_Angeles",...opts}).format(new Date(v));
+    const bar=node("div",{className:"event-filter-bar",attrs:{role:"group","aria-label":"Filter events"}});
+    ["upcoming","past","all"].forEach(f=>{const b=node("button",{text:c(f),attrs:{type:"button","aria-pressed":String(eventFilter===f)}});b.onclick=()=>{eventFilter=f;hydrateEvents();};bar.append(b);});
+    const heading=node("div",{className:"event-list-heading"});heading.append(node("h2",{text:c(eventFilter+"Title")}),node("span"),node("p",{text:c("intro")}));
+    const list=node("div",{className:"event-feature-list",attrs:{"aria-live":"polite"}});
+    const visible=events.filter(e=>eventFilter==="all"||(eventFilter==="past")===(Date.parse(e.endAt||e.startAt)<Date.now()));
+    if(!visible.length)list.append(node("p",{className:"events-empty",text:c("empty"+eventFilter[0].toUpperCase()+eventFilter.slice(1))}));
+    visible.forEach(e=>{
+      const article=node("article",{className:"event-feature"}),photo=node("div",{className:"event-feature-photo"});
+      const img=node("img",{attrs:{src:eventPortrait,alt:"Robert E. Dickinson","data-site-asset":"portrait"}});
+      const badge=node("div",{className:"event-date-badge"});badge.append(node("span",{text:date(e.startAt,{month:"short"})}),node("strong",{text:date(e.startAt,{day:"numeric"})}),node("span",{text:date(e.startAt,{year:"numeric"})}));photo.append(img,badge);
+      const body=node("div",{className:"event-feature-copy"});body.append(node("p",{className:"section-kicker",text:c("details")}),node("h3",{text:e.title}),node("time",{text:date(e.startAt,{weekday:"long",month:"long",day:"numeric",year:"numeric"})+"\n"+date(e.startAt,{timeStyle:"short"})+(e.endAt?" – "+date(e.endAt,{timeStyle:"short"}):"")+" Pacific Time",attrs:{datetime:e.startAt}}));
+      if(e.location)body.append(node("p",{className:"event-venue",text:e.location}));
+      const actions=node("div",{className:"event-actions"});
+      if(e.linkUrl)actions.append(node("a",{className:"event-primary",text:(e.linkLabel||editableCopy["events.defaultLink"]||"Event details")+" ↗",attrs:{href:e.linkUrl,target:"_blank",rel:"noopener noreferrer"}}));
+      const cal=node("button",{text:c("calendar")+" ↓",attrs:{type:"button"}});cal.onclick=()=>{
+        const escape=v=>v.replace(/\\/g,"\\\\").replace(/\r?\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+        const stamp=v=>new Date(v).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+        const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Robert Dickinson Memorial//Events//EN","BEGIN:VEVENT",`UID:memorial-${e.id}@robert-dickinson-memorial.github.io`,`DTSTAMP:${stamp(new Date().toISOString())}`,`DTSTART:${stamp(e.startAt)}`,...(e.endAt?[`DTEND:${stamp(e.endAt)}`]:[]),`SUMMARY:${escape(e.title)}`,`LOCATION:${escape(e.location||"")}`,`DESCRIPTION:${escape((e.description||"")+"\n"+(e.linkUrl||""))}`,"END:VEVENT","END:VCALENDAR"];
+        const url=URL.createObjectURL(new Blob([lines.join("\r\n")+"\r\n"],{type:"text/calendar;charset=utf-8"}));const a=node("a",{attrs:{href:url,download:`robert-dickinson-event-${e.id}.ics`}});a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      };actions.append(cal);
+      if(e.location)actions.append(node("a",{text:c("directions")+" ↗",attrs:{href:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(e.location),target:"_blank",rel:"noopener noreferrer"}}));body.append(actions);
+      if(e.description){const story=node("div",{className:"event-story"});e.description.split(/(https?:\/\/[^\s]+)/g).forEach(p=>{story.append(/^https?:\/\//.test(p)?node("a",{text:p.endsWith(".pdf")?c("programTitle")+" (PDF) ↗":p==="https://robert-dickinson-memorial.github.io/"?"Robert’s memorial website ↗":p,attrs:{href:p,target:"_blank",rel:"noopener noreferrer"}}):document.createTextNode(p));});body.append(story);}
+      article.append(photo,body);list.append(article);
     });
-    target.replaceChildren(list);
+    const planning=node("aside",{className:"event-planning"});planning.append(node("h2",{text:c("planning")}),node("p",{text:c("planningIntro")}));const grid=node("div",{className:"event-planning-grid"});["venue","online","program","remember"].forEach(k=>{const item=node("div");item.append(node("h3",{text:c(k+"Title")}),node("p",{text:c(k+"Text")}));if(k==="remember"){const links=node("div",{className:"event-remembrance"});links.append(node("a",{text:c("tree")+" →",attrs:{href:"/tree/"}}),node("a",{text:c("memory")+" →",attrs:{href:"/memories/"}}));item.append(links);}grid.append(item);});planning.append(grid);target.replaceChildren(bar,heading,list,planning);
   }
 
   function videoEmbedUrl(value) {
@@ -1010,7 +1020,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((manifest) => { mirroredMedia = manifest.media || {}; })
     .catch(() => {});
   const liveRefreshers = [
-    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook], true],
+    ["/api/content", [hydrateContent, hydrateMemories, hydrateMemoryBook, hydrateEvents], true],
     ["/api/events", [hydrateEvents], Boolean(document.querySelector("[data-events]"))],
     ["/api/gallery", [hydrateGallery, hydrateMemoryBook], Boolean(document.querySelector("[data-gallery], [data-memory-book]"))],
     ["/api/memories", [hydrateMemories, hydrateMemoryBook], Boolean(document.querySelector("[data-memory-wall], [data-memory-book]"))],
