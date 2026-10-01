@@ -98,3 +98,185 @@
 .keepsake-book .kb-thread-details {display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin:8px 0 12px;}
 .keepsake-book .kb-thread-details h3 {font-size:17px;line-height:1.25;margin:0 0 5px;}
 .keepsake-book .kb-thread-details p {font-size:14px;line-height:1.4;margin:0;}
+
+/* Editorial edition: distinct chapters, generous photographs, and readable narrative. */
+.keepsake-book {color:#243d48;}
+.keepsake-book h2 {font-size:39px;line-height:1.12;}
+.keepsake-book h3 {font-weight:600;}
+.keepsake-book p {line-height:1.58;}
+.keepsake-book .kb-running {letter-spacing:.16em;font-size:9px;border-color:#bac7bf;}
+.keepsake-book .kb-folio span:last-child {font-size:17px;color:#234d4d;}
+.keepsake-book .kb-kicker {font-weight:700;color:#567668;}
+.keepsake-book .kb-quote {border:0;border-top:2px solid #a68b59;border-bottom:1px solid #d2dacc;padding:24px 0;margin:26px 0;}
+.keepsake-book blockquote {font-size:27px;line-height:1.35;color:#2d615c;}
+.keepsake-book figcaption {font:11px/1.45 Arial,'Memorial CJK',sans-serif;color:#52656b;}
+.keepsake-book .kb-cover {background:#e9ece4;}
+.keepsake-book .kb-cover-art {opacity:.6;}
+.keepsake-book .kb-cover-copy {margin-top:8px;text-align:left;}
+.keepsake-book .kb-cover-copy h1 {font-size:65px;max-width:600px;line-height:1.02;margin:23px 0 16px;}
+.keepsake-book .kb-cover-copy .kb-rule {margin:22px 0;}
+.keepsake-book .kb-cover-copy .kb-kicker {font-size:11px;}
+.keepsake-book .kb-cover-line {font-size:22px;max-width:470px;}
+.keepsake-book .kb-cover-portrait {position:absolute;top:345px;left:110px;right:0;margin:0;}
+.keepsake-book .kb-cover-portrait img {height:470px;object-fit:cover;object-position:center 35%;background:none;}
+.keepsake-book .kb-cover-bottom {text-align:left;bottom:18px;max-width:560px;font:12px/1.5 Arial,sans-serif;letter-spacing:.06em;}
+.keepsake-book .kb-frontispiece {background:#153b45;}
+.keepsake-book .kb-frontispiece .kb-running,.keepsake-book .kb-frontispiece .kb-folio,.keepsake-book .kb-frontispiece .kb-folio span:last-child {color:#c7d7cc;border-color:#5b7576;}
+.keepsake-book .kb-frontispiece .kb-portrait img {height:560px;}
+.keepsake-book .kb-frontispiece figcaption {display:none;}
+.keepsake-book .kb-frontispiece blockquote {color:#f3e9d5;font-size:30px;}
+.keepsake-book .kb-frontispiece cite {color:#c6d4cb;}
+.keepsake-book .kb-frontispiece .kb-quote {border-bottom:0;margin-top:34px;}
+.keepsake-book .kb-contents h2 {font-size:64px;margin-top:28px;}
+.keepsake-book .kb-toc {margin:38px 0 0;counter-reset:contents;}
+.keepsake-book .kb-toc li {padding:15px 0;align-items:baseline;counter-increment:contents;}
+.keepsake-book .kb-toc li::before {content:counter(contents,decimal-leading-zero);font:12px Arial,sans-serif;color:#789180;}
+.keepsake-book .kb-toc a {flex:1;font-size:22px;}
+.keepsake-book .kb-toc li>span {font-size:22px;font-style:italic;}
+.keepsake-book .kb-contents-note {max-width:260px;font-size:22px;line-height:1.4;margin-top:46px;}
+.keepsake-book .kb-contents-portrait {position:absolute;right:0;bottom:0;width:290px;margin:0;}
+.keepsake-book .kb-contents-portrait img {height:225px;object-fit:cover;}
+.keepsake-book .kb-editorial-opener {background:#e5ece2;}
+.keepsake-book .kb-editorial-opener .kb-section-heading {margin:64px 0 28px;position:relative;z-index:2;}
+.keepsake-book .kb-editorial-opener h2 {font-size:66px;line-height:1.03;max-width:620px;margin:15px 0 23px;}
+.keepsake-book .kb-editorial-opener .kb-deck {font-size:22px;line-height:1.35;max-width:590px;}
+.keepsake-book .kb-editorial-opener .kb-section-heading::after {display:none;}
+.keepsake-book .kb-chapter-number {position:absolute;top:-34px;right:0;font:140px/1 Georgia,serif;letter-spacing:-.06em;color:#b9cdbf;}
+.keepsake-book .kb-opener-image {margin:25px 0 0;}
+.keepsake-book .kb-opener-image img {height:490px;object-fit:contain;background:none;}
+.keepsake-book .kb-tone-navy {background:#153b45;}
+.keepsake-book .kb-tone-navy h2,.keepsake-book .kb-tone-navy .kb-deck {color:#f5f0e4;}
+.keepsake-book .kb-tone-navy .kb-chapter-number {color:#30565e;}
+.keepsake-book .kb-tone-navy .kb-kicker,.keepsake-book .kb-tone-navy .kb-running,.keepsake-book .kb-tone-navy .kb-folio,.keepsake-book .kb-tone-navy .kb-folio span:last-child {color:#c6d5c6;}
+.keepsake-book .kb-tone-navy .kb-opener-image img {height:465px;border-radius:50%;width:465px;margin:auto;}
+.keepsake-book .kb-tone-warm {background:#f0e6d5;}
+.keepsake-book .kb-tone-warm .kb-chapter-number {color:#dccab0;}
+.keepsake-book .kb-life-story h2 {font-size:42px;max-width:580px;margin-bottom:32px;white-space:pre-line;}
+.keepsake-book .kb-life-story .kb-prose {font-size:17px;line-height:1.64;}
+.keepsake-book .kb-story-inset {float:left;width:235px;margin:0 26px 18px 0;}
+.keepsake-book .kb-story-inset img {height:330px;background:none;}
+.keepsake-book .kb-mentor-page {background:#e9ede4;}
+.keepsake-book .kb-mentor-page h2 {font-size:46px;}
+.keepsake-book .kb-mentor-page blockquote {font-size:32px;}
+.keepsake-book .kb-mentor-photo {margin:26px 0 0;}
+.keepsake-book .kb-mentor-photo img {height:355px;object-fit:contain;background:transparent;}
+.keepsake-book .kb-childhood h2 {font-size:48px;margin-bottom:34px;}
+.keepsake-book .kb-childhood-mosaic {display:grid;grid-template-columns:1.12fr 1fr;gap:24px;align-items:start;}
+.keepsake-book .kb-childhood-mosaic .kb-figure:first-child {grid-row:span 2;align-self:center;}
+.keepsake-book .kb-childhood-mosaic img {height:330px;background:none;}
+.keepsake-book .kb-childhood-mosaic .kb-figure:first-child img {height:640px;}
+.keepsake-book .kb-childhood-mosaic .kb-figure {margin:0;}
+.keepsake-book .kb-career-page h2 {font-size:35px;margin-bottom:28px;}
+.keepsake-book .kb-career-card {display:grid;grid-template-columns:1fr 1.1fr;gap:30px;min-height:375px;padding:22px 0;border-top:1px solid #b8c8bc;align-items:center;}
+.keepsake-book .kb-career-copy h3 {font-size:30px;font-weight:400;margin-bottom:17px;}
+.keepsake-book .kb-era {font-size:25px;font-style:italic;color:#64816b;margin-bottom:16px;}
+.keepsake-book .kb-career-copy .kb-prose {font-size:17px;line-height:1.45;}
+.keepsake-book .kb-career-card .kb-figure {margin:0;}
+.keepsake-book .kb-career-card img {height:310px;object-fit:contain;background:none;}
+.keepsake-book .kb-career-reverse .kb-career-copy {grid-column:2;grid-row:1;}
+.keepsake-book .kb-career-reverse .kb-figure {grid-column:1;grid-row:1;}
+
+.keepsake-book .kb-science-intro .kb-quote {margin-top:38px;padding:30px 0;}
+.keepsake-book .kb-science-intro blockquote {font-size:35px;line-height:1.38;}
+.keepsake-book .kb-science-intro>.kb-body>.kb-prose {font-size:20px;line-height:1.65;}
+.keepsake-book .kb-ideas-page h2 {font-size:44px;margin:16px 0 20px;}
+.keepsake-book .kb-thread-details {gap:18px 26px;}
+.keepsake-book .kb-thread-details>div {border-top:2px solid #bed0c0;padding-top:11px;}
+.keepsake-book .kb-thread-details h3 {color:#326557;font-size:18px;}
+.keepsake-book .kb-impact-page {background:#eaf0e7;}
+.keepsake-book .kb-impact-page h2 {font-size:48px;margin:15px 0 35px;}
+.keepsake-book .kb-impact-grid {display:grid;grid-template-columns:1fr 1fr;gap:24px 30px;}
+.keepsake-book .kb-impact-card {border-top:2px solid #8caa94;padding:20px 0 10px;}
+.keepsake-book .kb-card-number {font:52px/1 Georgia,serif;color:#88a28c;display:block;margin:0 0 18px;}
+.keepsake-book .kb-impact-card h3 {font-size:25px;line-height:1.15;margin-bottom:20px;}
+.keepsake-book .kb-impact-card p {font-size:16px;line-height:1.5;}
+.keepsake-book .kb-science-feature {display:grid;grid-template-columns:1fr 205px;gap:30px;align-items:start;margin:0 0 25px;padding-bottom:23px;border-bottom:1px solid #b6cabe;}
+.keepsake-book .kb-science-feature h2 {font-size:32px;line-height:1.1;margin:12px 0 16px;}
+.keepsake-book .kb-science-feature .kb-prose {font-size:16px;line-height:1.48;margin:0;}
+.keepsake-book .kb-science-number {font:52px/1 Georgia,serif;color:#94aa97;}
+.keepsake-book .kb-science-portrait {margin:32px 0 0;}
+.keepsake-book .kb-science-portrait img {height:265px;background:none;}
+.keepsake-book .kb-science-chapter>.kb-body>h3 {font:700 11px/1.4 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#47745e;margin:22px 0 14px;}
+.keepsake-book .kb-contribution-item {display:grid;grid-template-columns:26px 1fr;gap:12px;margin:0 0 13px;}
+.keepsake-book .kb-contribution-number {font:italic 18px/1.5 Georgia,serif;color:#729077;}
+.keepsake-book .kb-contribution {border:0;padding:0;margin:0;font-size:16px;line-height:1.5;}
+.keepsake-book .kb-publication {background:#edf0e8;padding:20px 24px;border:0;border-left:3px solid #71907c;}
+.keepsake-book .kb-publication h3 {font-size:21px;line-height:1.25;}
+.keepsake-book .kb-service-page .kb-group {padding:20px 0 16px 28px;border-left:3px solid #adc3ad;margin:25px 0;}
+.keepsake-book .kb-service-page .kb-group h3 {font-size:25px;color:#3d6b5b;}
+.keepsake-book .kb-honors-page .kb-group {display:grid;grid-template-columns:78px 1fr;gap:0 18px;border-top:1px solid #c2cdbf;padding:20px 0 0;margin:24px 0;}
+.keepsake-book .kb-honors-page .kb-group .kb-kicker {grid-row:span 2;font:italic 24px/1.3 Georgia,serif;letter-spacing:0;}
+.keepsake-book .kb-honors-page .kb-group h3 {font-size:22px;}
+.keepsake-book .kb-honors-page .kb-group p:last-child {grid-column:2;font-size:15px;}
+.keepsake-book .kb-memory-collage {gap:16px;margin:60px 0 0;align-items:start;}
+.keepsake-book .kb-memory-collage .kb-figure:nth-child(2) {margin-top:65px;}
+.keepsake-book .kb-memory-collage img {height:330px;background:none;}
+.keepsake-book .kb-memory-page .kb-group {border-top:3px solid #789783;padding-top:22px;margin-bottom:28px;}
+.keepsake-book .kb-memory-page h2 {font-size:38px;margin:8px 0 14px;}
+.keepsake-book .kb-memory-page .kb-byline {font-size:18px;color:#467363;}
+.keepsake-book .kb-memory-page .kb-prose {font-size:17px;line-height:1.65;}
+.keepsake-book .kb-memory-photo {float:left;width:280px;margin:0 26px 18px 0;}
+.keepsake-book .kb-memory-photo img {height:290px;background:none;}
+.keepsake-book .kb-drop-cap::first-letter {float:left;font:58px/.92 Georgia,'Memorial CJK',serif;color:#3a7162;margin:7px 7px 0 0;}
+.keepsake-book .kb-memory-page .kb-online {clear:both;background:#edf1e9;padding:15px 18px;margin-top:25px;}
+.keepsake-book .kb-gallery-year {font:italic 48px/1 Georgia,serif;color:#597c69;border-bottom:1px solid #b8cabb;padding-bottom:17px;margin:0 0 25px;}
+.keepsake-book .kb-gallery-grid {display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:start;}
+.keepsake-book .kb-gallery-grid .kb-figure {margin:0;}
+.keepsake-book .kb-gallery-grid img {background:none;}
+.keepsake-book .kb-gallery-portraits .kb-gallery-grid img {height:670px;}
+.keepsake-book .kb-gallery-portraits .kb-figure:nth-child(2) {margin-top:55px;}
+.keepsake-book .kb-gallery-mosaic .kb-gallery-grid .kb-figure:first-child {grid-column:1/-1;}
+.keepsake-book .kb-gallery-mosaic .kb-gallery-grid .kb-figure:first-child img {height:400px;}
+.keepsake-book .kb-gallery-mosaic .kb-gallery-grid img {height:285px;}
+.keepsake-book .kb-tree-total {font-size:37px;line-height:1.3;border-left:4px solid #759571;padding:28px;}
+.keepsake-book .kb-lasting-page .kb-prose {font-size:19px;line-height:1.65;}
+.keepsake-book .kb-closing h2 {font-size:62px;}
+.keepsake-book .kb-closing .kb-body {padding-top:220px;}
+.keepsake-book .kb-closing .kb-prose {font-size:21px;line-height:1.6;}
+
+.keepsake-book .kb-welcome .kb-wide img {height:195px;}
+.keepsake-book .kb-impact-grid {gap:18px 28px;}
+.keepsake-book .kb-impact-card {padding-top:15px;}
+.keepsake-book .kb-card-number {font-size:35px;margin-bottom:12px;}
+.keepsake-book .kb-impact-card h3 {font-size:22px;line-height:1.14;margin-bottom:13px;}
+.keepsake-book .kb-impact-card p {font-size:15px;line-height:1.46;}
+.keepsake-book .kb-career-final {grid-template-columns:1fr;gap:20px;}
+.keepsake-book .kb-career-final img {height:470px;}
+.keepsake-book .kb-career-final .kb-career-copy {max-width:610px;}
+.keepsake-book .kb-publications-page {background:#f0f2e9;}
+.keepsake-book .kb-publications-page h2 {font-size:43px;margin-bottom:15px;}
+.keepsake-book .kb-publications-page>.kb-body>.kb-prose {font-size:19px;line-height:1.5;}
+.keepsake-book .kb-publications-inset {float:right;width:210px;margin:0 0 20px 28px;}
+.keepsake-book .kb-publications-inset img {height:230px;background:transparent;}
+.keepsake-book .kb-publications-page .kb-publication {clear:both;background:#fcfbf7;margin-top:25px;padding:20px 22px;}
+.keepsake-book .kb-memory-page {padding-top:66px;padding-bottom:98px;}
+.keepsake-book .kb-memory-page .kb-body {height:886px;}
+.keepsake-book .kb-memory-page .kb-prose {font-size:16px;line-height:1.57;margin-bottom:14px;}
+.keepsake-book .kb-memory-page .kb-memory-resources {position:absolute;bottom:47px;left:76px;right:64px;margin:0;padding:8px 0 0;background:transparent;border-top:1px solid #bdcbbb;}
+.keepsake-book .kb-memory-page .kb-memory-resources p {display:none;}
+.keepsake-book .kb-memory-page .kb-memory-resources a {font-size:10px;line-height:1.3;}
+
+.keepsake-book .kb-life-story .kb-prose {font-size:16px;line-height:1.5;}
+.keepsake-book .kb-life-story h2 {font-size:36px;margin-bottom:25px;}
+.keepsake-book .kb-story-inset {width:220px;}
+.keepsake-book .kb-story-inset img {height:260px;}
+.keepsake-book .kb-publications-page h2 {font-size:36px;}
+.keepsake-book .kb-publications-page .kb-era {font-size:22px;margin-bottom:12px;}
+.keepsake-book .kb-publications-inset {width:180px;margin-left:24px;}
+.keepsake-book .kb-publications-inset img {height:155px;}
+.keepsake-book .kb-publications-page>.kb-body>.kb-prose {font-size:17px;line-height:1.48;}
+.keepsake-book .kb-publications-page .kb-publication {padding:16px 20px;margin-top:20px;}
+.keepsake-book .kb-memory-page .kb-prose {line-height:1.52;}
+.keepsake-book .kb-gallery-diptych .kb-gallery-grid {grid-template-columns:1fr;gap:24px;}
+.keepsake-book .kb-gallery-diptych .kb-gallery-grid img {height:335px;}
+.keepsake-book .kb-gallery-reverse .kb-gallery-grid .kb-figure:first-child {grid-column:auto;}
+.keepsake-book .kb-gallery-reverse .kb-gallery-grid .kb-figure:first-child img {height:285px;}
+.keepsake-book .kb-gallery-reverse .kb-gallery-grid .kb-figure:last-child {grid-column:1/-1;}
+.keepsake-book .kb-gallery-reverse .kb-gallery-grid .kb-figure:last-child img {height:400px;}
+
+.keepsake-book .kb-publications-single .kb-publications-inset {width:275px;}
+.keepsake-book .kb-publications-single .kb-publications-inset img {height:340px;}
+.keepsake-book .kb-gallery-grid:has(>.kb-figure:only-child) {display:block;}
+.keepsake-book .kb-gallery-grid:has(>.kb-figure:only-child) img {height:650px;}
+.keepsake-book .kb-memory-closing-photo {margin:30px 0 0;padding-top:20px;border-top:1px solid #bbccbe;}
+.keepsake-book .kb-memory-closing-photo img {height:245px;background:transparent;}
