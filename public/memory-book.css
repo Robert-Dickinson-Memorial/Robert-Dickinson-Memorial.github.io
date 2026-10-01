@@ -1,3 +1,6 @@
+@font-face{font-family:"Book Serif";src:url("/memory-book-fonts/LibreBaskerville-Bold.ttf") format("truetype");font-style:normal;font-weight:700;font-display:block;}
+@font-face{font-family:"Book Serif";src:url("/memory-book-fonts/LibreBaskerville.ttf") format("truetype");font-style:normal;font-weight:400;font-display:block;}
+@font-face{font-family:"Book Serif";src:url("/memory-book-fonts/LibreBaskerville-Italic.ttf") format("truetype");font-style:italic;font-weight:400;font-display:block;}
 @font-face{font-family:"Memorial CJK";src:url("/memory-book/fonts/noto-serif-cjk.otf") format("opentype");font-weight:100 900;font-display:block;unicode-range:U+2E80-9FFF,U+F900-FAFF,U+FF00-FFEF,U+20000-2FFFF;}
 /* Letter portrait, safe binding margins, measured pages shared by screen and PDF. */
 .keepsake-shell {background:#e7e8e4;min-height:100vh;padding:24px 20px 70px;color:#153448;}
@@ -7,14 +10,14 @@
 .keepsake-toolbar button:disabled {opacity:.5;cursor:wait;}
 .keepsake-status {max-width:980px;margin:0 auto 20px;font:14px/1.5 Arial,sans-serif;color:#4c625f;}
 .keepsake-viewport {overflow-x:auto;}
-.keepsake-book {width:816px;margin:0 auto;color:#153448;font:16px/1.55 Georgia,'Times New Roman','Memorial CJK',serif;}
+.keepsake-book {width:816px;margin:0 auto;color:#153448;font:16px/1.55 'Book Serif',Georgia,'Times New Roman','Memorial CJK',serif;}
 .keepsake-book * {box-sizing:border-box;}
 .keepsake-book .kb-page {width:816px;height:1056px;position:relative;padding:72px 64px 64px 76px;margin:0 0 26px;background:#fcfbf7;box-shadow:0 5px 26px #20352d18;break-after:page;overflow:hidden;}
 .keepsake-book .kb-page:nth-child(even){padding-left:64px;padding-right:76px;}
 .keepsake-book .kb-body {height:920px;width:100%;position:relative;z-index:1;display:flow-root;}
 .keepsake-book .kb-running {position:absolute;top:30px;left:76px;right:64px;display:flex;justify-content:space-between;gap:24px;color:#6b7a7b;font:9px/1.3 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #dce1d9;padding-bottom:10px;}
-.keepsake-book .kb-folio {position:absolute;bottom:25px;left:76px;right:64px;display:flex;justify-content:space-between;color:#6b7a7b;font:10px/1.4 Georgia,'Memorial CJK',serif;}
-.keepsake-book h1,.keepsake-book h2,.keepsake-book h3 {color:#143348;font-family:Georgia,'Times New Roman','Memorial CJK',serif;font-weight:400;letter-spacing:-.025em;}
+.keepsake-book .kb-folio {position:absolute;bottom:25px;left:76px;right:64px;display:flex;justify-content:space-between;color:#6b7a7b;font:10px/1.4 'Book Serif',Georgia,'Memorial CJK',serif;}
+.keepsake-book h1,.keepsake-book h2,.keepsake-book h3 {color:#143348;font-family:'Book Serif',Georgia,'Times New Roman','Memorial CJK',serif;font-weight:400;letter-spacing:-.025em;}
 .keepsake-book h1 {font-size:49px;line-height:1.12;margin:26px 0;}
 .keepsake-book h2 {font-size:34px;line-height:1.17;margin:8px 0 24px;text-wrap:balance;}
 .keepsake-book h3 {font-size:21px;line-height:1.25;margin:0 0 9px;}
@@ -27,13 +30,13 @@
 .keepsake-book .kb-group {margin:0 0 24px;}
 .keepsake-book .kb-group p:last-child {margin-bottom:0;}
 .keepsake-book .kb-quote {border-left:2px solid #789080;padding:12px 0 12px 24px;margin:26px 0;}
-.keepsake-book blockquote {font:italic 23px/1.5 Georgia,'Memorial CJK',serif;color:#244960;margin:0 0 12px;white-space:pre-line;}
+.keepsake-book blockquote {font:italic 23px/1.5 'Book Serif',Georgia,'Memorial CJK',serif;color:#244960;margin:0 0 12px;white-space:pre-line;}
 .keepsake-book cite {display:block;font:11px/1.5 Arial,sans-serif;color:#687b80;}
 .keepsake-book a {color:#396957;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;font-size:12px;}
 .keepsake-book .kb-small {font-size:12px;color:#617078;}
 .keepsake-book .kb-figure {margin:0 0 24px;}
 .keepsake-book .kb-figure img {display:block;width:100%;height:330px;object-fit:contain;background:#f1f0e9;}
-.keepsake-book figcaption {font:12px/1.45 Georgia,'Memorial CJK',serif;color:#536875;padding-top:9px;white-space:pre-line;}
+.keepsake-book figcaption {font:12px/1.45 'Book Serif',Georgia,'Memorial CJK',serif;color:#536875;padding-top:9px;white-space:pre-line;}
 .keepsake-book .kb-wide img {height:250px;object-fit:cover;}
 .keepsake-book .kb-portrait img {height:630px;object-fit:cover;object-position:50% 35%;}
 .keepsake-book .kb-photo-pair {display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;margin:16px 0 24px;}
@@ -141,7 +144,7 @@
 .keepsake-book .kb-editorial-opener h2 {font-size:66px;line-height:1.03;max-width:620px;margin:15px 0 23px;}
 .keepsake-book .kb-editorial-opener .kb-deck {font-size:22px;line-height:1.35;max-width:590px;}
 .keepsake-book .kb-editorial-opener .kb-section-heading::after {display:none;}
-.keepsake-book .kb-chapter-number {position:absolute;top:-34px;right:0;font:140px/1 Georgia,serif;letter-spacing:-.06em;color:#b9cdbf;}
+.keepsake-book .kb-chapter-number {position:absolute;top:-34px;right:0;font:140px/1 'Book Serif',Georgia,serif;letter-spacing:-.06em;color:#b9cdbf;}
 .keepsake-book .kb-opener-image {margin:25px 0 0;}
 .keepsake-book .kb-opener-image img {height:490px;object-fit:contain;background:none;}
 .keepsake-book .kb-tone-navy {background:#153b45;}
@@ -187,25 +190,25 @@
 .keepsake-book .kb-impact-page h2 {font-size:48px;margin:15px 0 35px;}
 .keepsake-book .kb-impact-grid {display:grid;grid-template-columns:1fr 1fr;gap:24px 30px;}
 .keepsake-book .kb-impact-card {border-top:2px solid #8caa94;padding:20px 0 10px;}
-.keepsake-book .kb-card-number {font:52px/1 Georgia,serif;color:#88a28c;display:block;margin:0 0 18px;}
+.keepsake-book .kb-card-number {font:52px/1 'Book Serif',Georgia,serif;color:#88a28c;display:block;margin:0 0 18px;}
 .keepsake-book .kb-impact-card h3 {font-size:25px;line-height:1.15;margin-bottom:20px;}
 .keepsake-book .kb-impact-card p {font-size:16px;line-height:1.5;}
 .keepsake-book .kb-science-feature {display:grid;grid-template-columns:1fr 205px;gap:30px;align-items:start;margin:0 0 25px;padding-bottom:23px;border-bottom:1px solid #b6cabe;}
 .keepsake-book .kb-science-feature h2 {font-size:32px;line-height:1.1;margin:12px 0 16px;}
 .keepsake-book .kb-science-feature .kb-prose {font-size:16px;line-height:1.48;margin:0;}
-.keepsake-book .kb-science-number {font:52px/1 Georgia,serif;color:#94aa97;}
+.keepsake-book .kb-science-number {font:52px/1 'Book Serif',Georgia,serif;color:#94aa97;}
 .keepsake-book .kb-science-portrait {margin:32px 0 0;}
 .keepsake-book .kb-science-portrait img {height:265px;background:none;}
 .keepsake-book .kb-science-chapter>.kb-body>h3 {font:700 11px/1.4 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#47745e;margin:22px 0 14px;}
 .keepsake-book .kb-contribution-item {display:grid;grid-template-columns:26px 1fr;gap:12px;margin:0 0 13px;}
-.keepsake-book .kb-contribution-number {font:italic 18px/1.5 Georgia,serif;color:#729077;}
+.keepsake-book .kb-contribution-number {font:italic 18px/1.5 'Book Serif',Georgia,serif;color:#729077;}
 .keepsake-book .kb-contribution {border:0;padding:0;margin:0;font-size:16px;line-height:1.5;}
 .keepsake-book .kb-publication {background:#edf0e8;padding:20px 24px;border:0;border-left:3px solid #71907c;}
 .keepsake-book .kb-publication h3 {font-size:21px;line-height:1.25;}
 .keepsake-book .kb-service-page .kb-group {padding:20px 0 16px 28px;border-left:3px solid #adc3ad;margin:25px 0;}
 .keepsake-book .kb-service-page .kb-group h3 {font-size:25px;color:#3d6b5b;}
 .keepsake-book .kb-honors-page .kb-group {display:grid;grid-template-columns:78px 1fr;gap:0 18px;border-top:1px solid #c2cdbf;padding:20px 0 0;margin:24px 0;}
-.keepsake-book .kb-honors-page .kb-group .kb-kicker {grid-row:span 2;font:italic 24px/1.3 Georgia,serif;letter-spacing:0;}
+.keepsake-book .kb-honors-page .kb-group .kb-kicker {grid-row:span 2;font:italic 24px/1.3 'Book Serif',Georgia,serif;letter-spacing:0;}
 .keepsake-book .kb-honors-page .kb-group h3 {font-size:22px;}
 .keepsake-book .kb-honors-page .kb-group p:last-child {grid-column:2;font-size:15px;}
 .keepsake-book .kb-memory-collage {gap:16px;margin:60px 0 0;align-items:start;}
@@ -217,9 +220,9 @@
 .keepsake-book .kb-memory-page .kb-prose {font-size:17px;line-height:1.65;}
 .keepsake-book .kb-memory-photo {float:left;width:280px;margin:0 26px 18px 0;}
 .keepsake-book .kb-memory-photo img {height:290px;background:none;}
-.keepsake-book .kb-drop-cap::first-letter {float:left;font:58px/.92 Georgia,'Memorial CJK',serif;color:#3a7162;margin:7px 7px 0 0;}
+.keepsake-book .kb-drop-cap::first-letter {float:left;font:58px/.92 'Book Serif',Georgia,'Memorial CJK',serif;color:#3a7162;margin:7px 7px 0 0;}
 .keepsake-book .kb-memory-page .kb-online {clear:both;background:#edf1e9;padding:15px 18px;margin-top:25px;}
-.keepsake-book .kb-gallery-year {font:italic 48px/1 Georgia,serif;color:#597c69;border-bottom:1px solid #b8cabb;padding-bottom:17px;margin:0 0 25px;}
+.keepsake-book .kb-gallery-year {font:italic 48px/1 'Book Serif',Georgia,serif;color:#597c69;border-bottom:1px solid #b8cabb;padding-bottom:17px;margin:0 0 25px;}
 .keepsake-book .kb-gallery-grid {display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:start;}
 .keepsake-book .kb-gallery-grid .kb-figure {margin:0;}
 .keepsake-book .kb-gallery-grid img {background:none;}
@@ -280,3 +283,5 @@
 .keepsake-book .kb-gallery-grid:has(>.kb-figure:only-child) img {height:650px;}
 .keepsake-book .kb-memory-closing-photo {margin:30px 0 0;padding-top:20px;border-top:1px solid #bbccbe;}
 .keepsake-book .kb-memory-closing-photo img {height:245px;background:transparent;}
+
+.keepsake-book {--font-display:"Book Serif",Georgia,"Times New Roman","Memorial CJK",serif;}

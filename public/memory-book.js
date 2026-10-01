@@ -18,7 +18,7 @@ export async function renderMemoryBook(target, data, options={}) {
   const sources=[...Object.keys(content.siteAssets||{}).map(asset),...(content.lifePhotos||[]).map(p=>media('/api/life-photos',p.objectKey)),...gallery.filter(p=>p.kind==='image'&&p.objectKey).map(p=>media('/api/gallery/photos',p.objectKey)),...memories.filter(m=>m.photoKey).map(m=>media('/api/photos',m.photoKey))];
   await Promise.all([...new Set(sources.filter(Boolean))].map(src=>new Promise(resolve=>{const im=new Image();const timer=setTimeout(resolve,30000);im.onload=()=>{clearTimeout(timer);sizes.set(src,{width:im.naturalWidth,height:im.naturalHeight});resolve();};im.onerror=()=>{clearTimeout(timer);resolve();};im.src=options.imageUrl?options.imageUrl(src):src;})));
   // Request the actual characters before measuring; font loading must not repaginate later.
-  await document.fonts.load('16px "Memorial CJK"', JSON.stringify(data));
+  await Promise.all([document.fonts.load('16px "Memorial CJK"',JSON.stringify(data)),document.fonts.load('400 16px "Book Serif"'),document.fonts.load('700 21px "Book Serif"'),document.fonts.load('italic 400 23px "Book Serif"')]);
   await document.fonts.ready;
   function photoPair(items,route){const pair=el('div',null,'kb-photo-pair');if(items.length===2&&items.every(p=>{const d=sizes.get(media(route,p.objectKey));return d&&d.width>d.height*1.1;}))pair.classList.add('kb-photo-pair-landscape');items.forEach(p=>pair.append(figure(media(route,p.objectKey),[p.date,p.caption||p.title].filter(Boolean).join(' · '),p.alt||p.title||'')));return pair;}
 

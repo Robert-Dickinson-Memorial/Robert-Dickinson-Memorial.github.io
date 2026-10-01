@@ -47,6 +47,7 @@ jobs:
           cp static/sitemap.xml _site/sitemap.xml
           cp static/memory-book.html _site/memory-book/index.html
           cp public/memory-book.js public/memory-book.css _site/
+          cp -r public/memory-book-fonts _site/memory-book-fonts
           cp static/tree/index.html _site/tree/index.html
           python3 scripts/add-seo.py
           tail -n +4 app/globals.css > _site/assets/styles.css
