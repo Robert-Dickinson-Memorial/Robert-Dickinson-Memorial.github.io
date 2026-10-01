@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Robert E. Dickinson — In Loving Memory",
   description: "A living memorial honoring Robert E. Dickinson, pioneering climate scientist, teacher, and mentor.",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  verification: {
+    google: "j8s6llKkDApYxxRSTZ3R3q2_fd2ZXQk8zJ7lwPSdueA",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
