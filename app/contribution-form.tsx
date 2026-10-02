@@ -64,6 +64,8 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
     setStatus("sending");
     setMessage("");
     const form = new FormData(event.currentTarget);
+    const photos = form.getAll("photo").filter((file): file is File => file instanceof File && file.size > 0);
+    if (photos.length > 3 || photos.some(file => file.size > 8 * 1024 * 1024)) { setStatus("error"); setMessage("Choose up to three photos, each up to 8 MB."); return; }
     const story = String(form.get("story") || "").trim();
     const socialUrl = String(form.get("socialUrl") || "").trim();
     const pdf = form.get("pdf");
@@ -119,7 +121,7 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
       <label className="photo-field">
         <ImagePlus size={22} aria-hidden="true" />
         <span><strong>{copy["memories.formPhoto"]}</strong><small>{copy["memories.formPhotoHelp"]}</small></span>
-        <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" />
+        <input name="photo" type="file" multiple accept="image/jpeg,image/png,image/webp" />
       </label>
       <label className="photo-field video-field">
         <span aria-hidden="true">▶</span><span><strong>Upload a video</strong><small>MP4 or WebM · up to 50 MB</small></span>

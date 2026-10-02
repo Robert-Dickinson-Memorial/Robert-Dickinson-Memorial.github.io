@@ -9,6 +9,8 @@ export const memories = sqliteTable("memories", {
   story: text("story").notNull(),
   photoKey: text("photo_key"),
   photoName: text("photo_name"),
+  photo2Key: text("photo2_key"), photo2Name: text("photo2_name"),
+  photo3Key: text("photo3_key"), photo3Name: text("photo3_name"),
   videoKey: text("video_key"),
   videoName: text("video_name"),
   pdfKey: text("pdf_key"),

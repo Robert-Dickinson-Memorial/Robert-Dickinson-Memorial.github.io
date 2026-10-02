@@ -530,6 +530,8 @@ function initializeMemorialPage() {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
     editableCopy = { ...content.pageCopy };
+    if (editableCopy["memories.formPhoto"] === "Add a photo") editableCopy["memories.formPhoto"] = "Add up to three photos";
+    if (editableCopy["memories.formPhotoHelp"] === "JPG, PNG or WebP · up to 8 MB") editableCopy["memories.formPhotoHelp"] = "Up to 3 photos · JPG, PNG or WebP · 8 MB each";
     applyTheme(content);
     applyPageCopy(editableCopy);
     applySiteAssets(content);
@@ -657,7 +659,7 @@ function initializeMemorialPage() {
           author.append(node("span", { className: "memory-author-mark", text: initials, attrs: { "aria-hidden": "true" } }), identity);
           article.append(author);
           if (memory.videoKey) article.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
-          else if (memory.photoKey) article.append(node("img", { attrs: { src: objectUrl("/api/photos", memory.photoKey), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean)) article.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
           article.append(node("h3", { text: memory.title }));
           if (memory.story) {
             const longStory = memory.story.length > 420;
@@ -960,6 +962,14 @@ function initializeMemorialPage() {
           : node("img", { attrs: { src: url, alt: `Shared by ${memory.name}` } }));
       }
     }
+    for (const [index, name] of [memory.photoName, memory.photo2Name, memory.photo3Name].entries()) {
+      if (!name || (index === 0 && mediaKind === "photo")) continue;
+      const res = await previewRequest(`/api/memory-preview?id=${editAccess.id}&media=${index === 0 ? "photo" : "photo" + (index + 1)}`);
+      if (res.ok) {
+        const url = URL.createObjectURL(await res.blob()); previewBlobs.push(url);
+        card.append(node("img", { attrs: { src: url, alt: `Photo ${index + 1} shared by ${memory.name}` } }));
+      }
+    }
     card.append(node("h3", { text: memory.title }));
     if (memory.story) card.append(node("p", { className: "memory-story", text: memory.story }));
     const links = node("div", { className: "memory-attachments" });
@@ -1018,6 +1028,8 @@ function initializeMemorialPage() {
     event.preventDefault();
     const formData = new FormData(form);
     if (editAccess) { formData.set("editId", String(editAccess.id)); formData.set("editToken", editAccess.token); }
+    const photos = formData.getAll("photo").filter(file => file instanceof File && file.size > 0);
+    if (photos.length > 3 || photos.some(file => file.size > 8 * 1024 * 1024)) { showMessage("Choose up to three photos, each up to 8 MB."); return; }
     const story = String(formData.get("story") || "").trim();
     const socialUrl = String(formData.get("socialUrl") || "").trim();
     const video = formData.get("video");

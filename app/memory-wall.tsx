@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, FileText, Quote } from "lucide-react";
 
-type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
+type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
 
 function memoryPriority(memory: Memory) {
   if (memory.id === 11) return 0;
@@ -44,7 +44,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
             <div><strong>{memory.name}</strong><span>{memory.relationship}</span></div>
           </header>
           {memory.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
-          {!memory.videoKey && memory.photoKey && <img src={`/api/photos/${memory.photoKey}`} alt="" />}
+          {[memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
           <h3>{memory.title}</h3>
           {memory.story && <p className={`memory-story${memory.story.length > 420 ? " is-collapsed" : ""}`}>{memory.story}</p>}
           {memory.story.length > 420 && <>
