@@ -31,7 +31,8 @@ export async function GET() {
        ORDER BY CASE
          WHEN id = 11 THEN 0
          WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
-         ELSE 2 END,
+         WHEN lower(trim(name)) = 'david schimel' THEN 2
+         ELSE 3 END,
          created_at ASC, id ASC`
     ).bind("approved").all();
     return publicJson({ memories: result.results });

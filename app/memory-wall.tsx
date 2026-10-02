@@ -7,7 +7,8 @@ type Memory = { id: number; name: string; relationship: string; title: string; s
 
 function memoryPriority(memory: Memory) {
   if (memory.id === 11) return 0;
-  return /^(haishan|hanshan) chen$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 1 : 2;
+  return /^(haishan|hanshan) chen$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 1 :
+          /^david schimel$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 2 : 3;
 }
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {

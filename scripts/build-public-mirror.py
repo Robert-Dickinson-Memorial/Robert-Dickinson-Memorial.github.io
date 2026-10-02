@@ -28,7 +28,8 @@ QUERIES = {
                    WHERE status = 'approved' ORDER BY CASE
                      WHEN id = 11 THEN 0
                      WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
-                     ELSE 2 END,
+                     WHEN lower(trim(name)) = 'david schimel' THEN 2
+                     ELSE 3 END,
                      created_at ASC, id ASC""",
     "tree_total": "SELECT COALESCE(SUM(reported_tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1",
     "restoration_total": "SELECT COUNT(*) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'restoration' AND payment_confirmed = 1",
