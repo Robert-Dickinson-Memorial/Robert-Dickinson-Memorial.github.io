@@ -2,9 +2,9 @@ name: Extract shared-memory PDF text and previews
 on:
   workflow_dispatch:
   schedule:
-    # Owner uploads go directly to R2/D1; check for blank PDF-backed stories
-    # throughout the hour so they become editable and visible promptly.
-    - cron: '2,12,22,32,42,52 * * * *'
+    # Five-minute fallback scan for approved PDF/video attachments.
+    # GitHub may delay scheduled runs; this is not an immediate approval trigger.
+    - cron: '2-59/5 * * * *'
   push:
     branches: [main]
     paths:
