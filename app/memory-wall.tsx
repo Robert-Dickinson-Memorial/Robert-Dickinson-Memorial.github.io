@@ -31,7 +31,9 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
       const story = space.querySelector<HTMLElement>(".memory-story");
       if (!active || !story) return;
       const lineHeight = parseFloat(getComputedStyle(story).lineHeight);
-      const lines = Math.max(1, Math.floor((space.getBoundingClientRect().height - 0.5) / lineHeight));
+      const action = space.querySelector<HTMLElement>(".memory-read-more");
+      const actionHeight = action ? action.getBoundingClientRect().height + 8 : 0;
+      const lines = Math.max(1, Math.floor((space.getBoundingClientRect().height - actionHeight - 0.5) / lineHeight));
       story.style.webkitLineClamp = String(lines);
     };
     const observer = new ResizeObserver(entries => entries.forEach(entry => fitSnippet(entry.target as HTMLElement)));
@@ -66,16 +68,15 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
           {[memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
           </div>}
           <h3>{memory.title}</h3>
-          {memory.story && <div className="memory-story-space"><p className="memory-story">{memory.story}</p></div>}
-          {memory.story && <>
-            <button type="button" className="memory-read-more" id={`memory-open-${memory.id}`} aria-haspopup="dialog" onClick={() => (document.getElementById(`memory-reader-${memory.id}`) as HTMLDialogElement | null)?.showModal()}>Read full memory</button>
+          {memory.story && <div className="memory-story-space"><p className="memory-story">{memory.story}</p>
+            <button type="button" className="memory-read-more" id={`memory-open-${memory.id}`} aria-haspopup="dialog" onClick={() => (document.getElementById(`memory-reader-${memory.id}`) as HTMLDialogElement | null)?.showModal()}>Read full story</button>
             <dialog className="memory-reader" id={`memory-reader-${memory.id}`} aria-labelledby={`memory-reader-title-${memory.id}`} onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }} onClose={() => (document.getElementById(`memory-open-${memory.id}`) as HTMLButtonElement | null)?.focus()}>
               <button type="button" className="memory-reader-close" onClick={(event) => event.currentTarget.closest("dialog")?.close()} aria-label="Close full memory">Close ×</button>
               <p className="memory-reader-author">{memory.name} · {memory.relationship}</p>
               <h2 id={`memory-reader-title-${memory.id}`}>{memory.title}</h2>
               <p className="memory-reader-story">{memory.story}</p>
             </dialog>
-          </>}
+          </div>}
           {(memory.pdfKey || memory.socialUrl) && <div className="memory-attachments">
             {memory.pdfKey && <a href={`/api/memory-files/${memory.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer nofollow ugc"><FileText size={16} /> {copy["memories.pdfLink"] || "Read the shared PDF"}</a>}
             {memory.socialUrl && <a href={memory.socialUrl} target="_blank" rel="noopener noreferrer nofollow ugc"><ExternalLink size={16} /> {copy["memories.socialLink"] || "View the shared public post"}</a>}

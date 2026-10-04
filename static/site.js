@@ -678,12 +678,13 @@ function initializeMemorialPage() {
               reader.append(close, node("p", { className: "memory-reader-author", text: `${memory.name} · ${memory.relationship}` }),
                 node("h2", { text: memory.title, attrs: { id: `memory-reader-title-${memory.id}` } }),
                 node("p", { className: "memory-reader-story", text: memory.story }));
-              const toggle = node("button", { className: "memory-read-more", text: "Read full memory", attrs: { type: "button", "aria-haspopup": "dialog" } });
+              const toggle = node("button", { className: "memory-read-more", text: "Read full story", attrs: { type: "button", "aria-haspopup": "dialog" } });
               toggle.addEventListener("click", () => reader.showModal());
               close.addEventListener("click", () => reader.close());
               reader.addEventListener("click", (event) => { if (event.target === reader) reader.close(); });
               reader.addEventListener("close", () => toggle.focus());
-              article.append(toggle, reader);
+              storySpace.append(toggle);
+              article.append(reader);
             }
           }
           if (memory.videoKey) article.append(node("a", { text: "Watch the shared video ↗", attrs: { href: objectUrl("/api/memory-videos", memory.videoKey), target: "_blank", rel: "noopener noreferrer" } }));
@@ -701,7 +702,9 @@ function initializeMemorialPage() {
           const story = space.querySelector(".memory-story");
           if (!story || !space.isConnected || lifecycle.signal.aborted) return;
           const lineHeight = parseFloat(getComputedStyle(story).lineHeight);
-          const lines = Math.max(1, Math.floor((space.getBoundingClientRect().height - 0.5) / lineHeight));
+          const action = space.querySelector(".memory-read-more");
+          const actionHeight = action ? action.getBoundingClientRect().height + 8 : 0;
+          const lines = Math.max(1, Math.floor((space.getBoundingClientRect().height - actionHeight - 0.5) / lineHeight));
           story.style.webkitLineClamp = String(lines);
         };
         memorySnippetObserver = new ResizeObserver(entries => entries.forEach(entry => fitSnippet(entry.target)));
