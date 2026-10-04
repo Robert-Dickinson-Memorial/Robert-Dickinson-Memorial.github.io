@@ -4235,13 +4235,14 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
 /* Compact memory cards: fill available story space and align the reading action. */
 .memory-grid { grid-auto-rows: 560px; }
 .memory-grid > .memory-card { display: flex; flex-direction: column; height: 560px; box-sizing: border-box; }
-.memory-grid > .memory-card > :not(.memory-story) { flex-shrink: 0; }
+.memory-grid > .memory-card > :not(.memory-story-space) { flex-shrink: 0; }
 .memory-card-media { display: flex; gap: 8px; height: 160px; margin-bottom: 12px; }
 .memory-card-media > img, .memory-card-media > .memory-video { flex: 1 1 0; min-width: 0; width: 100%; height: 160px; max-height: 160px; margin: 0; object-fit: contain; border-radius: 6px; background: #f0f2ed; }
-.memory-grid > .memory-card > .memory-story { display: block; flex: 1 1 0; min-height: 0; overflow: hidden; -webkit-line-clamp: unset; }
+.memory-grid > .memory-card > .memory-story-space { flex: 1 1 0; min-height: 0; overflow: hidden; }
+.memory-story-space > .memory-story { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; font-size: .95rem; line-height: 1.65; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .memory-grid > .memory-card > .memory-read-more { order: 10; align-self: flex-start; margin: 14px 0 0; }
 .memory-grid > .memory-card > .memory-author { padding-bottom: 10px; margin-bottom: 12px; }
 .memory-grid > .memory-card > .memory-attachments { display: flex; margin-top: 10px; padding-top: 10px; gap: 6px; }
 .memory-grid > .memory-card > .memory-attachments a { flex: 1 1 0; min-width: 0; padding: 6px 8px; }
 .memory-grid > .memory-card > a { font-size: .76rem; margin-top: 8px; }
-@media print { .memory-grid { grid-auto-rows: auto; } .memory-grid > .memory-card { height: auto; display: block; } .memory-grid > .memory-card > .memory-story { overflow: visible; } }
+@media print { .memory-grid { grid-auto-rows: auto; } .memory-grid > .memory-card { height: auto; display: block; } .memory-grid > .memory-card > .memory-story-space { overflow: visible; } .memory-story-space > .memory-story { display: block; overflow: visible; } }

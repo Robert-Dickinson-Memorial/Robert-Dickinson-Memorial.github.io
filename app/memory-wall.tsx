@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ExternalLink, FileText, Quote } from "lucide-react";
 
 type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
@@ -15,6 +15,7 @@ function memoryPriority(memory: Memory) {
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/memories")
@@ -22,6 +23,22 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
       .then((data) => setMemories(data.memories || []))
       .finally(() => setLoaded(true));
   }, []);
+
+  useEffect(() => {
+    const spaces = [...(gridRef.current?.querySelectorAll<HTMLElement>(".memory-story-space") || [])];
+    let active = true;
+    const fitSnippet = (space: HTMLElement) => {
+      const story = space.querySelector<HTMLElement>(".memory-story");
+      if (!active || !story) return;
+      const lineHeight = parseFloat(getComputedStyle(story).lineHeight);
+      const lines = Math.max(1, Math.floor((space.getBoundingClientRect().height - 0.5) / lineHeight));
+      story.style.webkitLineClamp = String(lines);
+    };
+    const observer = new ResizeObserver(entries => entries.forEach(entry => fitSnippet(entry.target as HTMLElement)));
+    spaces.forEach(space => { fitSnippet(space); observer.observe(space); });
+    document.fonts.ready.then(() => spaces.forEach(fitSnippet));
+    return () => { active = false; observer.disconnect(); };
+  }, [memories, loaded]);
 
   if (!loaded) return <div className="memory-empty">{copy["memories.loading"]}</div>;
   if (!memories.length) {
@@ -36,7 +53,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   }
 
   return (
-    <div className="memory-grid">
+    <div className="memory-grid" ref={gridRef}>
       {[...memories].sort((a, b) => memoryPriority(a) - memoryPriority(b) ||
         (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
@@ -49,7 +66,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
           {[memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
           </div>}
           <h3>{memory.title}</h3>
-          {memory.story && <p className={`memory-story${memory.story.length > 420 ? " is-collapsed" : ""}`}>{memory.story}</p>}
+          {memory.story && <div className="memory-story-space"><p className="memory-story">{memory.story}</p></div>}
           {memory.story && <>
             <button type="button" className="memory-read-more" id={`memory-open-${memory.id}`} aria-haspopup="dialog" onClick={() => (document.getElementById(`memory-reader-${memory.id}`) as HTMLDialogElement | null)?.showModal()}>Read full memory</button>
             <dialog className="memory-reader" id={`memory-reader-${memory.id}`} aria-labelledby={`memory-reader-title-${memory.id}`} onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }} onClose={() => (document.getElementById(`memory-open-${memory.id}`) as HTMLButtonElement | null)?.focus()}>

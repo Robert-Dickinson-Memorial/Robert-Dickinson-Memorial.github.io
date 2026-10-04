@@ -630,6 +630,8 @@ function initializeMemorialPage() {
     target.append(node("a",{className:"gallery-book-link",text:(editableCopy["gallery.bookButton"]||"Turn photos into a book")+" →",attrs:{href:"/memory-book/"}}));
   }
 
+  let memorySnippetObserver;
+  cleanups.push(() => memorySnippetObserver?.disconnect());
   async function hydrateMemories() {
     const wallTarget = pageDocument.querySelector("[data-memory-wall]");
     if (!(wallTarget instanceof HTMLElement)) return;
@@ -667,7 +669,9 @@ function initializeMemorialPage() {
           if (memory.story) {
             const longStory = memory.story.length > 420;
             const story = node("p", { className: `memory-story${longStory ? " is-collapsed" : ""}`, text: memory.story, attrs: { id: `memory-story-${memory.id}` } });
-            article.append(story);
+            const storySpace = node("div", { className: "memory-story-space" });
+            storySpace.append(story);
+            article.append(storySpace);
             {
               const reader = node("dialog", { className: "memory-reader", attrs: { "aria-labelledby": `memory-reader-title-${memory.id}` } });
               const close = node("button", { className: "memory-reader-close", text: "Close ×", attrs: { type: "button", "aria-label": "Close full memory" } });
@@ -691,6 +695,19 @@ function initializeMemorialPage() {
           }
           return article;
         }));
+        memorySnippetObserver?.disconnect();
+        const spaces = [...wallTarget.querySelectorAll(".memory-story-space")];
+        const fitSnippet = (space) => {
+          const story = space.querySelector(".memory-story");
+          if (!story || !space.isConnected || lifecycle.signal.aborted) return;
+          const lineHeight = parseFloat(getComputedStyle(story).lineHeight);
+          const lines = Math.max(1, Math.floor((space.getBoundingClientRect().height - 0.5) / lineHeight));
+          story.style.webkitLineClamp = String(lines);
+        };
+        memorySnippetObserver = new ResizeObserver(entries => entries.forEach(entry => fitSnippet(entry.target)));
+        spaces.forEach(space => { fitSnippet(space); memorySnippetObserver.observe(space); });
+        document.fonts.ready.then(() => spaces.forEach(fitSnippet));
+
       }
     }
   }
