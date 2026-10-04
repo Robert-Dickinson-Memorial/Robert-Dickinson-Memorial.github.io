@@ -4231,3 +4231,15 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
 .tree-design-hero::before,.tree-landscape {background-image:var(--site-treeLandscapes,url("/tree-landscapes.webp"));}
 .events-redesign .interior-hero,html[data-page="events"] .interior-hero[data-route="events"] {background-image:linear-gradient(90deg,rgba(8,30,39,.85),rgba(8,30,39,.24)),var(--site-horizon,url('/assets/memorial-horizon.png'));}
 .gallery-redesign .interior-hero,html[data-page="gallery"] .interior-hero[data-route="gallery"] {background-image:linear-gradient(90deg,#102f3bc9,#102f3b33),var(--site-horizon,url('/assets/memorial-horizon.png'));}
+
+/* Compact memory cards: fill available story space and align the reading action. */
+.memory-grid { grid-auto-rows: 560px; }
+.memory-grid > .memory-card { display: flex; flex-direction: column; height: 560px; box-sizing: border-box; }
+.memory-grid > .memory-card > :not(.memory-story) { flex-shrink: 0; }
+.memory-card-media { display: flex; gap: 8px; height: 185px; margin-bottom: 16px; }
+.memory-card-media > img, .memory-card-media > .memory-video { flex: 1 1 0; min-width: 0; width: 100%; height: 185px; max-height: 185px; margin: 0; object-fit: contain; border-radius: 6px; background: #f0f2ed; }
+.memory-grid > .memory-card > .memory-story { display: block; flex: 1 1 0; min-height: 0; overflow: hidden; -webkit-line-clamp: unset; }
+.memory-grid > .memory-card > .memory-read-more { order: 10; align-self: flex-start; margin: 14px 0 0; }
+.memory-grid > .memory-card > .memory-attachments { margin-top: 12px; padding-top: 12px; gap: 6px; }
+.memory-grid > .memory-card > a { font-size: .76rem; margin-top: 8px; }
+@media print { .memory-grid { grid-auto-rows: auto; } .memory-grid > .memory-card { height: auto; display: block; } .memory-grid > .memory-card > .memory-story { overflow: visible; } }

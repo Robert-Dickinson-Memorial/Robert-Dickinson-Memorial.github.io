@@ -659,14 +659,16 @@ function initializeMemorialPage() {
           identity.append(node("strong", { text: memory.name }), node("span", { text: memory.relationship }));
           author.append(node("span", { className: "memory-author-mark", text: initials, attrs: { "aria-hidden": "true" } }), identity);
           article.append(author);
-          if (memory.videoKey) article.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
-          for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean)) article.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          const media = node("div", { className: "memory-card-media" });
+          if (memory.videoKey) media.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
+          for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean)) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          if (media.childElementCount) article.append(media);
           article.append(node("h3", { text: memory.title }));
           if (memory.story) {
             const longStory = memory.story.length > 420;
             const story = node("p", { className: `memory-story${longStory ? " is-collapsed" : ""}`, text: memory.story, attrs: { id: `memory-story-${memory.id}` } });
             article.append(story);
-            if (longStory) {
+            {
               const reader = node("dialog", { className: "memory-reader", attrs: { "aria-labelledby": `memory-reader-title-${memory.id}` } });
               const close = node("button", { className: "memory-reader-close", text: "Close ×", attrs: { type: "button", "aria-label": "Close full memory" } });
               reader.append(close, node("p", { className: "memory-reader-author", text: `${memory.name} · ${memory.relationship}` }),

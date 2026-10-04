@@ -44,11 +44,13 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
             <span className="memory-author-mark" aria-hidden="true">{memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("")}</span>
             <div><strong>{memory.name}</strong><span>{memory.relationship}</span></div>
           </header>
+          {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key) && <div className="memory-card-media">
           {memory.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
           {[memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
+          </div>}
           <h3>{memory.title}</h3>
           {memory.story && <p className={`memory-story${memory.story.length > 420 ? " is-collapsed" : ""}`}>{memory.story}</p>}
-          {memory.story.length > 420 && <>
+          {memory.story && <>
             <button type="button" className="memory-read-more" id={`memory-open-${memory.id}`} aria-haspopup="dialog" onClick={() => (document.getElementById(`memory-reader-${memory.id}`) as HTMLDialogElement | null)?.showModal()}>Read full memory</button>
             <dialog className="memory-reader" id={`memory-reader-${memory.id}`} aria-labelledby={`memory-reader-title-${memory.id}`} onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }} onClose={() => (document.getElementById(`memory-open-${memory.id}`) as HTMLButtonElement | null)?.focus()}>
               <button type="button" className="memory-reader-close" onClick={(event) => event.currentTarget.closest("dialog")?.close()} aria-label="Close full memory">Close ×</button>
