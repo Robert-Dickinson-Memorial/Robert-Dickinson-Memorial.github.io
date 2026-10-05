@@ -663,8 +663,11 @@ function initializeMemorialPage() {
           author.append(node("span", { className: "memory-author-mark", text: initials, attrs: { "aria-hidden": "true" } }), identity);
           article.append(author);
           const media = node("div", { className: "memory-card-media" });
-          if (memory.videoKey) media.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
-          for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean)) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          if (memory.videoKey) {
+            media.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
+          } else {
+            for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean)) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+          }
           if (media.childElementCount) article.append(media);
           article.append(node("h3", { text: memory.title }));
           if (memory.story) {
@@ -987,7 +990,7 @@ function initializeMemorialPage() {
       }
     }
     for (const [index, name] of [memory.photoName, memory.photo2Name, memory.photo3Name].entries()) {
-      if (!name || (index === 0 && mediaKind === "photo")) continue;
+      if (memory.videoName || !name || (index === 0 && mediaKind === "photo")) continue;
       const res = await previewRequest(`/api/memory-preview?id=${editAccess.id}&media=${index === 0 ? "photo" : "photo" + (index + 1)}`);
       if (res.ok) {
         const url = URL.createObjectURL(await res.blob()); previewBlobs.push(url);
