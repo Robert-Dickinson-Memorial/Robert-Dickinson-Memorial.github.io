@@ -2460,12 +2460,12 @@ html[data-page="life"] .life-reference-page, .life-page-active {
   mask-composite: intersect;
 }
 .life-reference-portrait img { display: block; width: 100%; height: 100%; max-height: none; object-fit: cover; object-position: 42% 29%; filter: saturate(.55); }
-.life-reference-body { position: relative; display: grid; grid-template-columns: 136px minmax(0,1fr); column-gap: 30px; align-items: start; max-width: 1260px; margin: -5px auto 0; padding: 0 28px 38px; background: none; }
+.life-reference-body { position: relative; display: grid; grid-template-columns: 190px minmax(0,1fr); column-gap: 34px; align-items: start; max-width: 1260px; margin: -5px auto 0; padding: 0 28px 38px; background: none; }
 .life-reference-qualities { position: sticky; top: 138px; min-width: 0; padding: 130px 0 0; }
-.life-reference-qualities h2 { font-family: Georgia,serif; font-size: 1.65rem; font-weight: 400; font-style: italic; letter-spacing: -.02em; line-height: 1.18; color: #294354; text-transform: none; margin: 0 0 28px; max-width: 125px; }
+.life-reference-qualities h2 { font-family: Georgia,serif; font-size: 1.65rem; font-weight: 400; font-style: italic; letter-spacing: -.02em; line-height: 1.18; color: #294354; text-transform: none; margin: 0 0 28px; max-width: 170px; }
 .life-reference-qualities h2::after { content: ""; display: block; width: 36px; height: 1px; margin-top: 22px; background: #aa925e; }
 .life-reference-qualities ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 15px; }
-.life-reference-qualities li { font-family: Arial,sans-serif; font-size: .66rem; font-style: normal; font-weight: 400; line-height: 1.5; letter-spacing: .17em; text-transform: uppercase; color: #5c6b73; }
+.life-reference-qualities li { font-family: Arial,sans-serif; font-size: .99rem; font-style: normal; font-weight: 400; line-height: 1.45; letter-spacing: .1em; text-transform: uppercase; color: #5c6b73; }
 .life-reference-qualities .text-link { display: inline-block; margin-top: 28px; max-width: 120px; font-size: .68rem; line-height: 1.5; color: #6d6146; border-color: #beae8e; }
 .life-reference-page .life-reference-timeline { position: relative; min-width: 0; padding: 0; background: none; }
 .life-reference-track { position: relative; margin: 0; --life-date-width: 118px; --life-gap: 66px; --life-axis: 144px; --life-node-y: 37px; }
@@ -2511,13 +2511,13 @@ html[data-page="life"] .sources-section, .life-page-active .sources-section { ba
 
 @media (max-width: 1050px) {
   .life-reference-hero-copy { padding-left: 70px; }
-  .life-reference-body { grid-template-columns: 114px minmax(0,1fr); column-gap: 20px; padding-left: 24px; padding-right: 24px; }
+  .life-reference-body { grid-template-columns: 160px minmax(0,1fr); column-gap: 24px; padding-left: 24px; padding-right: 24px; }
   .life-reference-track { --life-date-width: 100px; --life-gap: 48px; --life-axis: 119px; }
   .life-reference-date { font-size: 1.08rem; }
   .life-reference-card-copy { padding: 13px 16px; }
   .life-reference-card-copy > p { font-size: .98rem; }
   .life-reference-qualities h2 { font-size: 1.45rem; }
-  .life-reference-qualities li { font-size: .59rem; letter-spacing: .12em; }
+  .life-reference-qualities li { font-size: .885rem; letter-spacing: .09em; }
 }
 @media (max-width: 800px) {
   .life-reference-page .life-reference-hero { padding: 108px 20px 0; }
@@ -2529,7 +2529,7 @@ html[data-page="life"] .sources-section, .life-page-active .sources-section { ba
   .life-reference-qualities { position: static; width: 100%; padding: 4px 0 28px; }
   .life-reference-qualities h2 { display: none; }
   .life-reference-qualities ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px 20px; }
-  .life-reference-qualities li { font-size: .62rem; letter-spacing: .11em; }
+  .life-reference-qualities li { font-size: .93rem; letter-spacing: .08em; }
   .life-reference-qualities .text-link { display: block; width: max-content; max-width: 100%; text-align: center; margin: 14px auto 0; }
   .life-reference-timeline { width: 100%; }
   .life-reference-card { grid-template-columns: minmax(0,1fr) 42%; }
