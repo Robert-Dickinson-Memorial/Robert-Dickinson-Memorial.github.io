@@ -10,7 +10,7 @@ export default async function MemoryBookPage() {
       WHEN lower(trim(name)) IN ('haishan chen','hanshan chen') THEN 1
       WHEN lower(trim(name)) = 'david schimel' THEN 2
       WHEN lower(trim(name)) = 'xubin zeng' THEN 3
-      WHEN lower(trim(name)) IN ('zong-liang yang','zong liang yang') THEN 4
+      WHEN lower(name) LIKE '%zong%liang%yang%' THEN 4
       WHEN lower(trim(name)) = 'kaicun wang' THEN 5
       ELSE 6 END, created_at ASC, id ASC`).all() : {results:[]},
     env.DB ? env.DB.prepare("SELECT COALESCE(SUM(reported_tree_count),0) AS trees FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1").first() : {}
