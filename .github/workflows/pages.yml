@@ -4,11 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  workflow_run:
-    workflows: ['Extract shared-memory PDF text and previews', 'Deploy memorial submission service']
-    types: [completed]
-  schedule:
-    - cron: '7 * * * *'
 
 permissions:
   contents: read
@@ -21,7 +16,6 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -85,6 +79,37 @@ jobs:
           export WRANGLER_BIN="$RUNNER_TEMP/memorial-mirror-tools/node_modules/.bin/wrangler"
           python3 scripts/build-public-mirror.py
 
+      - name: Validate public memory order and story cleanup
+        run: |
+          python3 - <<'PY'
+          import json, re
+          from pathlib import Path
+
+          data = json.loads(Path("_site/mirror/api/memories.json").read_text(encoding="utf-8"))["memories"]
+          names = [str(item.get("name") or "") for item in data]
+          norm = lambda value: re.sub(r"[^a-z]+", " ", value.lower()).strip()
+
+          def find_person(tokens):
+              for i, name in enumerate(names):
+                  words = set(norm(name).split())
+                  if all(token in words for token in tokens):
+                      return i
+              raise SystemExit(f"Missing public memory: {' '.join(tokens)}")
+
+          zong = find_person(("zong", "liang", "yang"))
+          kaicun = find_person(("kaicun", "wang"))
+          if zong >= kaicun:
+              raise SystemExit(f"Incorrect memory order: Zong-Liang Yang index {zong}, Kaicun Wang index {kaicun}")
+
+          zong_story = str(data[zong].get("story") or "")
+          caption = re.compile(r"(?im)^\s*(?:fig(?:ure)?\.?|photo|plate)\s*(?:\d+)?\s*[:.\-)–—]?\s+")
+          if caption.search(zong_story):
+              raise SystemExit("Zong-Liang Yang public story still contains a figure/photo caption")
+
+          print("Validated public memory order:", " > ".join(names[:8]))
+          print("Validated Zong-Liang Yang story caption cleanup.")
+          PY
+
       - name: Generate the current printable memory book
         run: |
           python3 -m pip install Pillow fonttools
@@ -112,3 +137,44 @@ jobs:
       - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify published memories edition
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, time, urllib.request
+
+          base = os.environ["PAGE_URL"].rstrip("/")
+          expected = os.environ["GITHUB_SHA"]
+
+          def fetch(path):
+              req = urllib.request.Request(base + path, headers={"Cache-Control":"no-cache", "User-Agent":"memorial-deploy-check"})
+              with urllib.request.urlopen(req, timeout=30) as res:
+                  return res.read()
+
+          # Pages/CDN can take a few seconds after deploy to expose the new artifact.
+          last = None
+          for _ in range(12):
+              try:
+                  js = fetch(f"/site.js?v={expected}").decode("utf-8", "replace")
+                  payload = json.loads(fetch("/mirror/api/memories.json?rev=" + expected))
+                  names = [str(item.get("name") or "") for item in payload["memories"]]
+                  normalize = lambda value: re.sub(r"[^a-z]+", " ", value.lower()).strip()
+                  zong = next(i for i,n in enumerate(names) if {"zong","liang","yang"} <= set(normalize(n).split()))
+                  kaicun = next(i for i,n in enumerate(names) if {"kaicun","wang"} <= set(normalize(n).split()))
+                  if 'path === "/api/memories"' not in js:
+                      raise AssertionError("published site.js is not the live-first memories renderer")
+                  if zong >= kaicun:
+                      raise AssertionError(f"published order wrong: Zong={zong}, Kaicun={kaicun}")
+                  story = str(payload["memories"][zong].get("story") or "")
+                  if re.search(r"(?im)^\s*(?:fig(?:ure)?\.?|photo|plate)\s*(?:\d+)?\s*[:.\-)–—]?\s+", story):
+                      raise AssertionError("published Zong story still contains a figure/photo caption")
+                  print("Published site verified:", " > ".join(names[:8]))
+                  break
+              except Exception as exc:
+                  last = exc
+                  time.sleep(5)
+          else:
+              raise SystemExit(f"Published-site verification failed: {last}")
+          PY
