@@ -15,7 +15,8 @@ from PIL import Image
 
 PLACEHOLDERS = {'see the attached audio/pdf file for detail', 'see attached', 'see attached pdf', 'please see attached', 'see attached file'}
 FIGURE_CAPTION = re.compile(
-    r'^\s*(?:fig(?:ure)?\.?|photo|plate|图|照片|图片)\s*[0-9０-９一二三四五六七八九十]+'
+    r'^\s*(?:fig(?:ure)?\.?|photo|plate|图|照片|图片)\b'
+    r'(?:\s*[0-9０-９一二三四五六七八九十]+)?'
     r'(?:\s*[.:：、)）-]\s*|\s+|$)', re.IGNORECASE)
 
 def needs_story(story):
@@ -39,9 +40,15 @@ def extract_pdf(path, image_path):
             blocks = page.get_text('blocks', sort=True)
             for block in blocks:
                 if block[6] == 0:
-                    # Caption and prose can share one PDF text block. Filter individual
-                    # lines before joining wrapped prose so the prose is retained.
-                    lines = [line for line in block[4].splitlines() if not is_figure_caption(line)]
+                    raw_lines = [line for line in block[4].splitlines() if line.strip()]
+                    # Figure/photo captions are commonly stored as their own wrapped text
+                    # block. If the block begins as a caption, drop the whole block so
+                    # continuation lines do not leak into the full story.
+                    if raw_lines and is_figure_caption(raw_lines[0]):
+                        continue
+                    # If prose and a caption share a block, remove any standalone caption
+                    # line while retaining the surrounding narrative.
+                    lines = [line for line in raw_lines if not is_figure_caption(line)]
                     text = re.sub(r'[ \t]+', ' ', '\n'.join(lines)).strip()
                     # Rejoin PDF line wrapping while retaining paragraph boundaries.
                     text = re.sub(r'(?<=\w)-\n(?=[a-z])', '', text)
@@ -103,8 +110,8 @@ def main():
                          WHERE m.status = 'approved' AND (m.pdf_key IS NOT NULL OR m.video_key IS NOT NULL)""")['results']
     updated = 0
     for row in rows:
-        normalized_name = re.sub(r'\s+', ' ', (row.get('name') or '').strip()).lower()
-        force_full_pdf_text = normalized_name in {'zong-liang yang', 'zong liang yang'} and bool(row['pdf_key'])
+        normalized_name = re.sub(r'[^a-z]+', ' ', (row.get('name') or '').lower()).strip()
+        force_full_pdf_text = all(token in normalized_name.split() for token in ('zong', 'liang', 'yang')) and bool(row['pdf_key'])
         need_text = (needs_story(row['story'] or '') or force_full_pdf_text) and row['pdf_key']
         need_photo = not row['photo_key']
         # Clean earlier automatic extractions, but never rewrite an owner's edit.
