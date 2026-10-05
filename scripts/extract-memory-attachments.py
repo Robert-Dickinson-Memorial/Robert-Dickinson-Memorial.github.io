@@ -98,12 +98,14 @@ def main():
     query('''CREATE TABLE IF NOT EXISTS memory_attachment_backups (
       memory_id INTEGER PRIMARY KEY, previous_story TEXT, previous_photo_key TEXT,
       previous_photo_name TEXT, applied_story TEXT, applied_photo_key TEXT, created_at TEXT)''')
-    rows = query("""SELECT m.id, m.story, m.photo_key, m.photo_name, m.pdf_key, m.video_key,
+    rows = query("""SELECT m.id, m.name, m.story, m.photo_key, m.photo_name, m.pdf_key, m.video_key,
                          b.applied_story FROM memories m LEFT JOIN memory_attachment_backups b ON b.memory_id = m.id
                          WHERE m.status = 'approved' AND (m.pdf_key IS NOT NULL OR m.video_key IS NOT NULL)""")['results']
     updated = 0
     for row in rows:
-        need_text = needs_story(row['story'] or '') and row['pdf_key']
+        normalized_name = re.sub(r'\s+', ' ', (row.get('name') or '').strip()).lower()
+        force_full_pdf_text = normalized_name in {'zong-liang yang', 'zong liang yang'} and bool(row['pdf_key'])
+        need_text = (needs_story(row['story'] or '') or force_full_pdf_text) and row['pdf_key']
         need_photo = not row['photo_key']
         # Clean earlier automatic extractions, but never rewrite an owner's edit.
         clean_captions = (bool(row['pdf_key']) and bool(row['applied_story'])
