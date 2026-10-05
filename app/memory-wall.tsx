@@ -65,8 +65,9 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
             <div><strong>{memory.name}</strong><span>{memory.relationship}</span></div>
           </header>
           {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key) && <div className="memory-card-media">
-          {memory.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
-          {[memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
+          {memory.videoKey
+            ? <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />
+            : [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
           </div>}
           <h3>{memory.title}</h3>
           {memory.story && <div className="memory-story-space"><p className="memory-story">{memory.story}</p>
