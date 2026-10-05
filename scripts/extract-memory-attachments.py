@@ -110,14 +110,7 @@ def main():
                          WHERE m.status = 'approved' AND (m.pdf_key IS NOT NULL OR m.video_key IS NOT NULL)""")['results']
     updated = 0
     for row in rows:
-        normalized_name = re.sub(r'[^a-z]+', ' ', (row.get('name') or '').lower()).strip()
-        print(f"Inspect memory {row['id']}: name={row.get('name')!r}, pdf={bool(row['pdf_key'])}, video={bool(row['video_key'])}, story_len={len(row['story'] or '')}")
-        if row['id'] == 23:
-            print("MEMORY23_STORY_BEGIN")
-            print(row['story'] or '')
-            print("MEMORY23_STORY_END")
-        force_full_pdf_text = all(token in normalized_name.split() for token in ('zong', 'liang', 'yang')) and bool(row['pdf_key'])
-        need_text = (needs_story(row['story'] or '') or force_full_pdf_text) and row['pdf_key']
+        need_text = needs_story(row['story'] or '') and row['pdf_key']
         need_photo = not row['photo_key']
         # Clean earlier automatic extractions, but never rewrite an owner's edit.
         clean_captions = (bool(row['pdf_key']) and bool(row['applied_story'])
