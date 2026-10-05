@@ -56,7 +56,7 @@ export async function GET() {
          ELSE 6 END,
          created_at ASC, id ASC`
     ).bind("approved").all();
-    return publicJson({ memories: result.results });
+    return publicJson({ memories: result.results }, { headers: { "cache-control": "no-store, max-age=0" } });
   } catch {
     return publicJson({ error: "Memories are temporarily unavailable." }, { status: 503 });
   }
