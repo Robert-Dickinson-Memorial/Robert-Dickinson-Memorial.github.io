@@ -111,6 +111,7 @@ def main():
     updated = 0
     for row in rows:
         normalized_name = re.sub(r'[^a-z]+', ' ', (row.get('name') or '').lower()).strip()
+        print(f"Inspect memory {row['id']}: name={row.get('name')!r}, pdf={bool(row['pdf_key'])}, video={bool(row['video_key'])}, story_len={len(row['story'] or '')}")
         force_full_pdf_text = all(token in normalized_name.split() for token in ('zong', 'liang', 'yang')) and bool(row['pdf_key'])
         need_text = (needs_story(row['story'] or '') or force_full_pdf_text) and row['pdf_key']
         need_photo = not row['photo_key']
