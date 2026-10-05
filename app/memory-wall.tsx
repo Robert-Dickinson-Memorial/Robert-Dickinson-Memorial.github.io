@@ -9,7 +9,8 @@ function memoryPriority(memory: Memory) {
   if (memory.id === 11) return 0;
   return /^(haishan|hanshan) chen$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 1 :
           /^david schimel$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 2 :
-          /^kaicun wang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 3 : 4;
+          /^xubin zeng$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 3 :
+          /^kaicun wang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 4 : 5;
 }
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
