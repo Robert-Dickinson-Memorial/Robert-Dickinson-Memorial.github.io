@@ -7,11 +7,14 @@ type Memory = { id: number; name: string; relationship: string; title: string; s
 
 function memoryPriority(memory: Memory) {
   if (memory.id === 11) return 0;
-  return /^(haishan|hanshan) chen$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 1 :
-          /^david schimel$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 2 :
-          /^xubin zeng$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 3 :
-          /^zong(?:-| )liang yang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 4 :
-          /^kaicun wang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 5 : 6;
+  const name = memory.name.toLowerCase().replace(/[^a-z]+/g, " ").trim();
+  const words = new Set(name.split(/\s+/));
+  if (/^(haishan|hanshan) chen$/.test(name)) return 1;
+  if (name === "david schimel") return 2;
+  if (name === "xubin zeng") return 3;
+  if (words.has("zong") && words.has("liang") && words.has("yang")) return 4;
+  if (name === "kaicun wang") return 5;
+  return 6;
 }
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
