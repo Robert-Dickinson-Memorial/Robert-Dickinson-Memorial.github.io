@@ -71,6 +71,9 @@ jobs:
       - name: Deploy Worker
         run: pnpm exec wrangler deploy --config dist/server/wrangler.deploy.json
 
+      - name: Verify public memories API
+        run: curl --fail --silent --show-error --retry 5 --retry-delay 2 "https://robert-dickinson-memorial-api.gisgter2008.workers.dev/api/memories" > /dev/null
+
       - name: Activate Brevo email service
         if: ${{ env.BREVO_API_KEY != '' }}
         run: printf '%s' "$BREVO_API_KEY" | pnpm exec wrangler secret put BREVO_API_KEY --config dist/server/wrangler.deploy.json
