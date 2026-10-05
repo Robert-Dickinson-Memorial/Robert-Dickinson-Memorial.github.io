@@ -20,9 +20,28 @@ function cleanPublicUrl(value: unknown): string {
   }
 }
 
+async function permanentlyRemoveLimingPhotos() {
+  if (!env.DB || !env.BUCKET) return;
+  const memory = await env.DB.prepare(
+    `SELECT id, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key
+     FROM memories
+     WHERE status = 'approved' AND (id = 11 OR lower(trim(name)) = 'liming zhou')
+     LIMIT 1`
+  ).first<{ id: number; photoKey: string | null; photo2Key: string | null; photo3Key: string | null }>();
+  if (!memory) return;
+  const keys = [memory.photoKey, memory.photo2Key, memory.photo3Key].filter((key): key is string => Boolean(key));
+  if (!keys.length) return;
+  for (const key of keys) await env.BUCKET.delete(key);
+  await env.DB.prepare(
+    "UPDATE memories SET photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL WHERE id = ?"
+  ).bind(memory.id).run();
+}
+
 export async function GET() {
   try {
     if (!env.DB) throw new Error("Database unavailable");
+    try { await permanentlyRemoveLimingPhotos(); }
+    catch (cleanupError) { console.warn("Liming Zhou photo cleanup failed", cleanupError); }
     const result = await env.DB.prepare(
       `SELECT id, name, relationship, title, story, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key,
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
