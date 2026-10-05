@@ -10,7 +10,8 @@ function memoryPriority(memory: Memory) {
   return /^(haishan|hanshan) chen$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 1 :
           /^david schimel$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 2 :
           /^xubin zeng$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 3 :
-          /^kaicun wang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 4 : 5;
+          /^zong(?:-| )liang yang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 4 :
+          /^kaicun wang$/i.test(memory.name.trim().replace(/\s+/g, " ")) ? 5 : 6;
 }
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
