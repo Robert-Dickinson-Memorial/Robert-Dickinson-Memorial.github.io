@@ -685,7 +685,7 @@ export const defaultPageCopy: Record<string, string> = {
   "life.heroIntro": "Robert’s path through life and career.",
   "life.years": "1940–2026",
   "life.mentorKicker": "Beyond the timeline",
-  "life.mentorTitle": "The mentor he was",
+  "life.mentorTitle": "",
   "life.mentorBody": "Robert was a patient and generous mentor who made time for students, postdoctoral scholars, and young scientists, listened carefully to their ideas, and helped them find their way. He passed on more than knowledge - a way of thinking that combined grand vision and close attention to detail, grounded in curiosity, physical insight, rigor, and intellectual generosity. He valued the people he worked with as deeply as the questions they explored together.",
   "life.mentorText": "His influence continues through the questions they ask, the models they build, and the people they mentor in turn.",
   "life.sourcesIntro": "Biographical information was drawn from Robert’s curriculum vitae and institutional sources.",
