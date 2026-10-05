@@ -65,6 +65,11 @@ export default async function LifePage() {
       </div>
     </section>
     </div>
+    <section className="life-mentor-feature" aria-label={copy["life.mentorKicker"] || "Beyond the timeline"}>
+      <div className="life-mentor-heading"><p className="section-kicker">{copy["life.mentorKicker"]}</p></div>
+      <p className="life-mentor-body">{copy["life.mentorBody"]}</p>
+      <p className="life-mentor-closing">{copy["life.mentorText"]}</p>
+    </section>
     <SiteFooter />
   </main>;
 }
