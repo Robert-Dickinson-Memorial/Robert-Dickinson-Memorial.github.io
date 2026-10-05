@@ -65,12 +65,6 @@ export default async function LifePage() {
       </div>
     </section>
     </div>
-    <section className="life-mentor-feature" aria-labelledby="life-mentor-title">
-      <div className="life-mentor-heading"><p className="section-kicker">{copy["life.mentorKicker"]}</p><h2 id="life-mentor-title">{copy["life.mentorTitle"]}</h2></div>
-      <p className="life-mentor-body">{copy["life.mentorBody"]}</p>
-      <p className="life-mentor-closing">{copy["life.mentorText"]}</p>
-    </section>
-    <section className="sources-section"><p>{copy["life.sourcesIntro"]}</p><div><a href={copy["life.sourceJacksonUrl"]} target="_blank" rel="noopener noreferrer">{copy["life.sourceJacksonLabel"]}</a><a href={copy["life.sourceNasUrl"]} target="_blank" rel="noopener noreferrer">{copy["life.sourceNasLabel"]}</a></div></section>
     <SiteFooter />
   </main>;
 }
