@@ -78,12 +78,23 @@ export async function PATCH(request: Request) {
   const memory = await env.DB.prepare(
     "SELECT photo2_key AS photo2Key, photo3_key AS photo3Key, photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey FROM memories WHERE id = ? AND status = ?"
   ).bind(id, "pending").first<{ photo2Key: string | null; photo3Key: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null }>();
-  const result = await env.DB.prepare(
-    "UPDATE memories SET status = ? WHERE id = ? AND status = ?"
-  ).bind(status, id, "pending").run();
-
-  if (!result.meta.changes) {
-    return Response.json({ error: "This submission is no longer pending." }, { status: 409 });
+  if (action === "approve" && memory?.videoKey) {
+    if (env.BUCKET) {
+      for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key]) if (key) await env.BUCKET.delete(key);
+    }
+    const result = await env.DB.prepare(
+      "UPDATE memories SET status = ?, photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL WHERE id = ? AND status = ?"
+    ).bind(status, id, "pending").run();
+    if (!result.meta.changes) {
+      return Response.json({ error: "This submission is no longer pending." }, { status: 409 });
+    }
+  } else {
+    const result = await env.DB.prepare(
+      "UPDATE memories SET status = ? WHERE id = ? AND status = ?"
+    ).bind(status, id, "pending").run();
+    if (!result.meta.changes) {
+      return Response.json({ error: "This submission is no longer pending." }, { status: 409 });
+    }
   }
   if (action === "reject" && env.BUCKET) {
     for (const key of [memory?.photoKey, memory?.photo2Key, memory?.photo3Key]) if (key) await env.BUCKET.delete(key);
