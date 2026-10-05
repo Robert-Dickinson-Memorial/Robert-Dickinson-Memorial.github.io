@@ -645,12 +645,17 @@ function initializeMemorialPage() {
       if (!memories.length) {
         wallTarget.replaceChildren(node("p", { className: "memories-empty", text: copy["memories.emptyText"] || "Approved community memories will appear here." }));
       } else {
-        const priority = (memory) => memory.id === 11 ? 0 :
-          /^(haishan|hanshan) chen$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 1 :
-          /^david schimel$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 2 :
-          /^xubin zeng$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 3 :
-          /^zong(?:-| )liang yang$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 4 :
-          /^kaicun wang$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 5 : 6;
+        const priority = (memory) => {
+          if (memory.id === 11) return 0;
+          const normalized = String(memory.name || "").toLowerCase().replace(/[^a-z]+/g, " ").trim();
+          const words = new Set(normalized.split(/\s+/));
+          if (/^(haishan|hanshan) chen$/.test(normalized)) return 1;
+          if (normalized === "david schimel") return 2;
+          if (normalized === "xubin zeng") return 3;
+          if (words.has("zong") && words.has("liang") && words.has("yang")) return 4;
+          if (normalized === "kaicun wang") return 5;
+          return 6;
+        };
         const orderedMemories = [...memories].sort((a, b) =>
           priority(a) - priority(b) ||
           String(a.createdAt || "").localeCompare(String(b.createdAt || "")) ||
