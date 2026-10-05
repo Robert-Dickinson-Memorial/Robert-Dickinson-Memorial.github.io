@@ -32,8 +32,9 @@ export async function GET() {
          WHEN id = 11 THEN 0
          WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
          WHEN lower(trim(name)) = 'david schimel' THEN 2
-         WHEN lower(trim(name)) = 'kaicun wang' THEN 3
-         ELSE 4 END,
+         WHEN lower(trim(name)) = 'xubin zeng' THEN 3
+         WHEN lower(trim(name)) = 'kaicun wang' THEN 4
+         ELSE 5 END,
          created_at ASC, id ASC`
     ).bind("approved").all();
     return publicJson({ memories: result.results });
