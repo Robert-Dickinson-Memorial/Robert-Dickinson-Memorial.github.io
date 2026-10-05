@@ -648,7 +648,8 @@ function initializeMemorialPage() {
         const priority = (memory) => memory.id === 11 ? 0 :
           /^(haishan|hanshan) chen$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 1 :
           /^david schimel$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 2 :
-          /^kaicun wang$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 3 : 4;
+          /^xubin zeng$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 3 :
+          /^kaicun wang$/i.test(String(memory.name || "").trim().replace(/\s+/g, " ")) ? 4 : 5;
         const orderedMemories = [...memories].sort((a, b) =>
           priority(a) - priority(b) ||
           String(a.createdAt || "").localeCompare(String(b.createdAt || "")) ||
