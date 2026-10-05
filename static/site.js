@@ -121,8 +121,8 @@ function initializeMemorialPage() {
 
   async function getJson(path) {
     if (livePayloads.has(path)) return livePayloads.get(path);
-    // Events are edited frequently: prefer the saved record, retaining the mirror when unreachable.
-    if (path === "/api/events" && !window.MEMORIAL_BOOK_SNAPSHOT) {
+    // Events and memories are edited frequently: prefer live data, retaining the mirror when unreachable.
+    if ((path === "/api/events" || path === "/api/memories") && !window.MEMORIAL_BOOK_SNAPSHOT) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 5000);
       try {
