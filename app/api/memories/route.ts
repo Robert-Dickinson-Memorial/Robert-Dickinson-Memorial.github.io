@@ -40,8 +40,7 @@ async function permanentlyRemoveLimingPhotos() {
 export async function GET() {
   try {
     if (!env.DB) throw new Error("Database unavailable");
-    try { await permanentlyRemoveLimingPhotos(); }
-    catch (cleanupError) { console.warn("Liming Zhou photo cleanup failed", cleanupError); }
+    await permanentlyRemoveLimingPhotos();
     const result = await env.DB.prepare(
       `SELECT id, name, relationship, title, story, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key,
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
