@@ -23,6 +23,17 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Shared by the app and Pages; reused after navigation and list refreshes.
+    if (!document.querySelector("script[data-memory-reader-media]")) {
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = "/memory-reader-media.js?v=20261006-photos1";
+      script.dataset.memoryReaderMedia = "";
+      document.head.append(script);
+    }
+  }, []);
+
+  useEffect(() => {
     fetch("/api/memories")
       .then((response) => response.ok ? response.json() : { memories: [] })
       .then((data) => setMemories(data.memories || []))
