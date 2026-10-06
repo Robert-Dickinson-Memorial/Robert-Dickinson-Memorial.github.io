@@ -1,0 +1,147 @@
+/* Scoped shared reader styles. Card dimensions and unrelated dialogs stay intact. */
+html.memory-media-reading { overflow: hidden; }
+.memory-reader--illustrated {
+  box-sizing: border-box;
+  width: min(1080px, calc(100vw - 40px));
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid #d7ccb8;
+  border-radius: 10px;
+  background: #fffcf5;
+  color: #19384b;
+  overflow: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 24px 80px #07172455;
+  text-align: left;
+}
+.memory-reader--illustrated::backdrop { background: #071724c9; }
+.memory-story-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 26px;
+  background: #fffcf5;
+  border-bottom: 1px solid #dfd7ca;
+}
+.memory-story-label { font: 600 12px/1.4 Arial, sans-serif; color: #755c31; letter-spacing: .13em; text-transform: uppercase; }
+.memory-story-close, .memory-photo-controls button, .memory-photo-original {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 9px 14px;
+  border: 1px solid #b5bfb5;
+  border-radius: 5px;
+  background: transparent;
+  color: #284b43;
+  font: 500 14px/1.25 Arial, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.memory-illustrated-body { padding: 28px clamp(20px, 4vw, 56px) 44px; }
+.memory-reader--illustrated .memory-reader-author { margin: 0 0 13px; font: 500 15px/1.5 Arial, sans-serif; color: #6e674f; }
+.memory-reader--illustrated .memory-illustrated-title { font: 400 clamp(1.7rem, 3.5vw, 2.7rem)/1.16 Georgia, serif; letter-spacing: -.02em; margin: 0 0 24px; color: #19384b; }
+.memory-reader--illustrated .memory-reader-story {
+  display: block;
+  max-height: none;
+  height: auto;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 400 18px/1.8 Georgia, serif;
+  color: #2d404b;
+  margin: 26px 0 0;
+}
+.memory-story-photos { display: block; margin: 0 0 24px; }
+.memory-reader--illustrated .memory-photo-help { color: #647066; font: 14px/1.5 Arial, sans-serif; margin: 0 0 13px; }
+.memory-story-figure { margin: 0 0 26px; padding: 0; }
+.memory-story-photo-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #e0dace;
+  border-radius: 5px;
+  background: #eeede8;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+.memory-reader--illustrated .memory-story-photo {
+  display: block;
+  position: static;
+  width: 100%;
+  height: auto;
+  max-height: 66vh;
+  max-height: 66dvh;
+  object-fit: contain;
+  aspect-ratio: auto;
+  margin: 0 auto;
+  border: 0;
+  padding: 0;
+}
+.memory-story-photo-caption { padding: 9px 0 0; color: #786a4e; font: 13px/1.5 Arial, sans-serif; }
+.memory-story-video { display: block; width: 100%; max-height: 65vh; height: auto; background: #101c24; margin: 0 0 25px; }
+.memory-story-links { display: flex; flex-wrap: wrap; gap: 14px 26px; margin-top: 30px; padding-top: 22px; border-top: 1px solid #ddd4c6; }
+.memory-story-links a { color: #355e4a; font: 15px/1.5 Arial, sans-serif; text-decoration: underline; text-underline-offset: 4px; }
+
+.memory-photo-viewer {
+  box-sizing: border-box;
+  width: calc(100vw - 24px);
+  max-width: calc(100vw - 24px);
+  height: calc(100vh - 24px);
+  height: calc(100dvh - 24px);
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  border: 1px solid #576267;
+  border-radius: 8px;
+  padding: 0;
+  margin: auto;
+  background: #0e202b;
+  color: #f9f4e9;
+  overflow: hidden;
+}
+.memory-photo-viewer[open] { display: flex; flex-direction: column; }
+.memory-photo-viewer::backdrop { background: #020b13ed; }
+.memory-photo-toolbar { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 18px; padding: 12px 18px; border-bottom: 1px solid #42515b; background: #142b39; }
+.memory-photo-counter { font: 500 14px/1.4 Arial, sans-serif; color: #e5d3a7; }
+.memory-photo-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 7px; }
+.memory-photo-controls button, .memory-photo-original { color: #f9f4e9; border-color: #677879; background: #213b49; }
+.memory-photo-controls [hidden] { display: none; }
+.memory-photo-controls button:disabled { opacity: .38; cursor: default; }
+.memory-photo-controls .memory-photo-close { background: #e2cf9f; color: #152c39; border-color: #e2cf9f; }
+.memory-photo-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+.memory-photo-canvas { display: grid; place-items: center; min-width: 100%; min-height: 100%; width: max-content; height: max-content; box-sizing: border-box; padding: 16px; }
+.memory-photo-viewer .memory-photo-image { position: static; display: block; width: auto; height: auto; max-width: none; max-height: none; object-fit: contain; margin: 0; border: 0; aspect-ratio: auto; cursor: zoom-in; user-select: none; }
+.memory-photo-stage.is-zoomed, .memory-photo-stage.is-zoomed .memory-photo-image { cursor: grab; }
+.memory-photo-stage.is-zoomed:active, .memory-photo-stage.is-zoomed:active .memory-photo-image { cursor: grabbing; }
+.memory-photo-viewer .memory-photo-status { flex: 0 0 auto; margin: 0; padding: 10px 18px; color: #ced9d8; background: #142b39; font: 13px/1.45 Arial, sans-serif; border-top: 1px solid #42515b; }
+.memory-reader--illustrated button:focus-visible, .memory-reader--illustrated a:focus-visible,
+.memory-photo-viewer button:focus-visible, .memory-photo-viewer a:focus-visible, .memory-photo-stage:focus-visible { outline: 3px solid #b3934f; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .memory-reader--illustrated { width: calc(100vw - 16px); max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); border-radius: 7px; }
+  .memory-story-toolbar { padding: 9px 16px; }
+  .memory-illustrated-body { padding: 23px 17px 30px; }
+  .memory-reader--illustrated .memory-reader-story { font-size: 17px; line-height: 1.7; }
+  .memory-photo-viewer { width: calc(100vw - 12px); max-width: calc(100vw - 12px); height: calc(100vh - 12px); height: calc(100dvh - 12px); max-height: calc(100vh - 12px); max-height: calc(100dvh - 12px); }
+  .memory-photo-toolbar { padding: 8px; gap: 8px; }
+  .memory-photo-controls { justify-content: flex-start; gap: 5px; }
+  .memory-photo-controls button, .memory-photo-original { font-size: 13px; padding: 8px 10px; }
+}
