@@ -80,6 +80,16 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
               <button type="button" className="memory-reader-close" onClick={(event) => event.currentTarget.closest("dialog")?.close()} aria-label="Close full memory">Close ×</button>
               <p className="memory-reader-author">{memory.name} · {memory.relationship}</p>
               <h2 id={`memory-reader-title-${memory.id}`}>{memory.title}</h2>
+              {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key) && <div className="memory-reader-media">
+                {memory.videoKey
+                  ? <video className="memory-reader-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />
+                  : [memory.photoKey, memory.photo2Key, memory.photo3Key].filter((key): key is string => Boolean(key)).map((key, index) => {
+                      const src = `/api/photos/${key.split("/").map(encodeURIComponent).join("/")}`;
+                      return <a className="memory-reader-photo-link" href={src} target="_blank" rel="noopener noreferrer" key={key} aria-label={`Open photo ${index + 1} at full size`}>
+                        <img src={src} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />
+                      </a>;
+                    })}
+              </div>}
               <p className="memory-reader-story">{memory.story}</p>
             </dialog>
           </div>}
