@@ -32,7 +32,7 @@ try {
     const page = await browser.newPage({viewport:{width, height:width > 600 ? 1000 : 844}});
     if (server) await page.addInitScript(() => { window.MEMORIAL_BOOK_SNAPSHOT = true; });
     await page.goto(origin + '/memories/', {waitUntil:'domcontentloaded'});
-    await page.waitForFunction(() => Boolean(window[Symbol.for('rd-memorial.memory-reader-media.v1')]), {timeout:30000});
+    await page.waitForFunction(() => Boolean(window[Symbol.for('rd-memorial.memory-reader-media.v1')]), null, {timeout:30000});
     await page.locator('.memory-card .memory-read-more').first().waitFor({timeout:45000});
     const photoId = await page.evaluate(() => {
       const cards = [...document.querySelectorAll('.memory-card')];
@@ -51,13 +51,13 @@ try {
     assert.equal(await reader.locator('.memory-reader-story').textContent(), source.story, 'Full story text must not change');
     assert.equal(await reader.locator('.memory-story-photo').count(), source.images.length, 'All attached photographs must appear');
     assert.deepEqual(await reader.locator('.memory-story-photo').evaluateAll(images=>images.map(i=>i.src)), source.images, 'Use the same approved image URLs, not thumbnail copies');
-    await page.waitForFunction(() => document.querySelector('.memory-story-photo')?.naturalWidth > 0, {timeout:30000});
+    await page.waitForFunction(() => document.querySelector('.memory-story-photo')?.naturalWidth > 0, null, {timeout:30000});
     const fit = await reader.locator('.memory-story-photo').first().evaluate(i=>getComputedStyle(i).objectFit);
     assert.equal(fit, 'contain', 'Show the complete photograph, not a crop');
     await reader.locator('.memory-story-photo-button').first().click();
     const zoom = page.locator('.memory-photo-viewer[open]');
     await zoom.waitFor();
-    await page.waitForFunction(() => document.querySelector('.memory-photo-image')?.naturalWidth > 0, {timeout:30000});
+    await page.waitForFunction(() => document.querySelector('.memory-photo-image')?.naturalWidth > 0, null, {timeout:30000});
     const before = (await zoom.locator('.memory-photo-image').boundingBox()).width;
     await zoom.getByRole('button',{name:'Zoom in',exact:true}).click();
     assert.ok((await zoom.locator('.memory-photo-image').boundingBox()).width > before, 'Zoom in must enlarge the photograph');
@@ -77,7 +77,7 @@ try {
     }
     await page.keyboard.press('Escape');
     await reader.waitFor({state:'detached'});
-    assert.equal(await page.evaluate(()=>document.activeElement?.closest('.memory-card')?.id),photoId);
+    await page.waitForFunction(id => document.activeElement?.closest('.memory-card')?.id === id, photoId, {timeout:5000});
     assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('memory-media-reading')),false);
     // Preserve the previously requested video-only cover rule.
     const videoId = await page.evaluate(()=>[...document.querySelectorAll('.memory-card')].find(c=>c.querySelector('.memory-card-media video') && c.querySelector('.memory-read-more'))?.id);
