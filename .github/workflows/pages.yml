@@ -41,18 +41,23 @@ jobs:
           cp static/sitemap.xml _site/sitemap.xml
           cp static/memory-book.html _site/memory-book/index.html
           cp public/memory-book.js public/memory-book.css _site/
+          cp public/memory-reader-media.js public/memory-reader-media.css _site/
+          node --check public/memory-reader-media.js
           cp -r public/memory-book-fonts _site/memory-book-fonts
           cp static/tree/index.html _site/tree/index.html
           python3 scripts/add-seo.py
           tail -n +4 app/globals.css > _site/assets/styles.css
-          # Give every deployment a fresh stylesheet URL to avoid stale browser caches.
+          # Give every deployment fresh asset URLs, including the shared photo reader.
           python3 - <<'PY'
           import os
           from pathlib import Path
           version = os.environ["GITHUB_SHA"]
           for page in Path("_site").rglob("*.html"):
               html = page.read_text()
-              page.write_text(html.replace("assets/styles.css", f"assets/styles.css?v={version}").replace("site.js", f"site.js?v={version}").replace("memory-book.css", f"memory-book.css?v={version}"))
+              html = html.replace("assets/styles.css", f"assets/styles.css?v={version}").replace("site.js", f"site.js?v={version}").replace("memory-book.css", f"memory-book.css?v={version}")
+              reader = f'<link rel="stylesheet" data-memory-reader-media href="/memory-reader-media.css?v={version}"><script type="module" data-memory-reader-media src="/memory-reader-media.js?v={version}"></script>'
+              # Loaded on every entry page so soft navigation to Memories also works.
+              page.write_text(html.replace("</head>", reader + "\n</head>"))
           PY
           cp public/robert-dickinson.jpg _site/assets/robert-dickinson.jpg
           cp public/dickinson-1967-mit-phd.jpg _site/assets/dickinson-1967-mit-phd.jpg
@@ -123,6 +128,11 @@ jobs:
           export MEMORIAL_BOOK_PLAYWRIGHT="$RUNNER_TEMP/memorial-book-tools/node_modules/playwright"
           node scripts/generate-memory-book.mjs _site
 
+      - name: Test full-story photographs and zoom before publication
+        run: |
+          export MEMORIAL_BOOK_PLAYWRIGHT="$RUNNER_TEMP/memorial-book-tools/node_modules/playwright"
+          node scripts/test-memory-reader-media.mjs _site
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
@@ -178,3 +188,10 @@ jobs:
           else:
               raise SystemExit(f"Published-site verification failed: {last}")
           PY
+
+      - name: Verify photo reader on the live public website
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          export MEMORIAL_BOOK_PLAYWRIGHT="$RUNNER_TEMP/memorial-book-tools/node_modules/playwright"
+          node scripts/test-memory-reader-media.mjs "$PAGE_URL"
