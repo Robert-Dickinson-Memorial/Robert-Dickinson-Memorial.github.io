@@ -686,8 +686,20 @@ function initializeMemorialPage() {
               const reader = node("dialog", { className: "memory-reader", attrs: { "aria-labelledby": `memory-reader-title-${memory.id}` } });
               const close = node("button", { className: "memory-reader-close", text: "Close ×", attrs: { type: "button", "aria-label": "Close full memory" } });
               reader.append(close, node("p", { className: "memory-reader-author", text: `${memory.name} · ${memory.relationship}` }),
-                node("h2", { text: memory.title, attrs: { id: `memory-reader-title-${memory.id}` } }),
-                node("p", { className: "memory-reader-story", text: memory.story }));
+                node("h2", { text: memory.title, attrs: { id: `memory-reader-title-${memory.id}` } }));
+              const readerMedia = node("div", { className: "memory-reader-media" });
+              if (memory.videoKey) {
+                readerMedia.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-reader-video", "aria-label": memory.title } }));
+              } else {
+                [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).forEach((key, index) => {
+                  const src = objectUrl("/api/photos", key);
+                  const link = node("a", { className: "memory-reader-photo-link", attrs: { href: src, target: "_blank", rel: "noopener noreferrer", "aria-label": `Open photo ${index + 1} at full size` } });
+                  link.append(node("img", { attrs: { src, alt: `Photo ${index + 1} shared by ${memory.name}`, loading: "lazy" } }));
+                  readerMedia.append(link);
+                });
+              }
+              if (readerMedia.childElementCount) reader.append(readerMedia);
+              reader.append(node("p", { className: "memory-reader-story", text: memory.story }));
               const toggle = node("button", { className: "memory-read-more", text: "Read full story", attrs: { type: "button", "aria-haspopup": "dialog" } });
               toggle.addEventListener("click", () => reader.showModal());
               close.addEventListener("click", () => reader.close());
