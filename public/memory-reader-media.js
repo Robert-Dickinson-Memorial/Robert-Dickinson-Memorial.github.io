@@ -252,8 +252,14 @@ function installMemoryReaderMedia() {
       document.documentElement.classList.remove("memory-media-reading");
       dialog.remove();
       // The underlying list can refresh while reading. Restore focus to its new button.
-      const target = opener.isConnected ? opener : document.getElementById(card.id)?.querySelector(".memory-read-more");
-      target?.focus({ preventScroll: true });
+      const restoreFocus = () => {
+        if (reader?.open || viewer?.open) return;
+        const target = opener.isConnected ? opener : document.getElementById(card.id)?.querySelector(".memory-read-more");
+        target?.focus({ preventScroll: true });
+      };
+      restoreFocus();
+      // Native modal inertness can clear on the following frame after a list refresh.
+      requestAnimationFrame(restoreFocus);
     }, { once: true });
     dialog.showModal();
     close.focus({ preventScroll: true });
