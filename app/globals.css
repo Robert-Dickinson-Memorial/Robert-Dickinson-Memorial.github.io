@@ -2758,13 +2758,22 @@ html[data-page="memories"] .share-section { padding-top: 48px; }
 
 .memory-card > .memory-video { height: 185px; margin: 0 0 16px; object-fit: contain; }
 @media (max-width: 620px) { .memory-card > .memory-video { height: 220px; } }
-.memory-reader { width: min(720px, calc(100vw - 32px)); max-width: none; max-height: min(86dvh, 850px); overflow-y: auto; margin: auto; padding: clamp(24px, 4vw, 48px); border: 1px solid #c9b992; border-radius: 12px; background: #faf7f0; color: #173443; box-shadow: 0 22px 70px rgb(5 25 36 / 30%); }
+.memory-reader { width: min(920px, calc(100vw - 32px)); max-width: none; max-height: min(90dvh, 980px); overflow-y: auto; margin: auto; padding: clamp(24px, 4vw, 48px); border: 1px solid #c9b992; border-radius: 12px; background: #faf7f0; color: #173443; box-shadow: 0 22px 70px rgb(5 25 36 / 30%); }
 .memory-reader::backdrop { background: rgb(7 25 36 / 68%); }
 .memory-reader-close { display: block; margin-left: auto; padding: 8px 12px; border: 1px solid #c8b992; border-radius: 5px; background: #fff; color: #173443; font: inherit; cursor: pointer; }
 .memory-reader-author { color: #82642e; font-size: .85rem; font-weight: 700; margin: 16px 0 8px; }
 .memory-reader h2 { font-family: Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.2; margin: 0 0 24px; }
+.memory-reader-media { display: grid; gap: 18px; margin: 0 0 30px; }
+.memory-reader-photo-link { display: block; border: 0; background: #eef0eb; cursor: zoom-in; }
+.memory-reader-photo-link img { display: block; width: 100%; max-height: 72dvh; object-fit: contain; background: #eef0eb; }
+.memory-reader-video { display: block; width: 100%; max-height: 70dvh; background: #081923; object-fit: contain; }
+.memory-reader-photo-link:focus-visible { outline: 3px solid #548eb3; outline-offset: 3px; }
 .memory-reader-story { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 1.06rem; line-height: 1.85; margin: 0; }
 .memory-reader-close:focus-visible { outline: 2px solid #173443; outline-offset: 3px; }
+@media (max-width: 620px) {
+  .memory-reader { width: calc(100vw - 20px); padding: 22px 18px 30px; }
+  .memory-reader-photo-link img { max-height: 64dvh; }
+}
 
 /* Keep stories visible on arrival; expand the contribution form only when requested. */
 .memory-share-panel { margin: 0 clamp(22px, 8vw, 130px); border: 1px solid #c8b487; border-radius: 10px; background: #f6ecd8; overflow: hidden; }
