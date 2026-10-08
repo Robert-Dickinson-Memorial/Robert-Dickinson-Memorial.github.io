@@ -4255,3 +4255,39 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
 .memory-grid > .memory-card > .memory-attachments a { flex: 1 1 0; min-width: 0; padding: 6px 8px; }
 .memory-grid > .memory-card > a { font-size: .76rem; margin-top: 8px; }
 @media print { .memory-grid { grid-auto-rows: auto; } .memory-grid > .memory-card { height: auto; display: block; } .memory-grid > .memory-card > .memory-story-space { overflow: visible; } .memory-story-space > .memory-story { display: block; overflow: visible; } }
+
+/* RD_EVENT_PROGRAM: one compact resource, not two event cards. */
+.event-program-resource {
+  margin: 25px 0; padding: 23px 0 20px;
+  border-block: 1px solid #d6dfd5;
+  color: var(--public-ink, #183449);
+}
+.event-program-resource h4 {
+  margin: 0 0 8px; font: 400 1.55rem/1.2 Georgia, "Times New Roman", serif;
+  letter-spacing: -.02em; color: inherit;
+}
+.event-program-resource .event-program-intro {
+  margin: 0 0 17px; color: #52636e; font: 400 .95rem/1.55 Arial, sans-serif;
+}
+.event-program-formats { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 22px; }
+.event-program-format { display: flex; flex-direction: column; gap: 8px; max-width: 100%; }
+.event-program-resource a.event-program-link {
+  box-sizing: border-box; display: inline-flex; align-items: center; justify-content: space-between;
+  gap: 20px; min-height: 46px; padding: 12px 17px; border: 1px solid #65856d; border-radius: 4px;
+  background: transparent; color: #335b43; text-decoration: none;
+  font: 600 .95rem/1.4 Arial, sans-serif; overflow-wrap: anywhere;
+}
+.event-program-resource a.event-program-link-primary { background: #40684b; color: #fff; border-color: #40684b; }
+.event-program-resource a.event-program-link:hover { background: #edf3ea; }
+.event-program-resource a.event-program-link-primary:hover { background: #31553b; }
+.event-program-resource a.event-program-link:focus-visible,
+.event-program-help summary:focus-visible { outline: 3px solid #4079a0; outline-offset: 4px; }
+.event-program-meta { color: #5a6872; font: 400 .77rem/1.5 Arial, sans-serif; }
+.event-program-help { margin-top: 17px; color: #46624f; font: 400 .83rem/1.6 Arial, sans-serif; }
+.event-program-help summary { width: fit-content; max-width: 100%; cursor: pointer; padding: 3px 0; }
+.event-program-help p { margin: 9px 0 0; max-width: 68ch; color: #52636e; line-height: 1.65; }
+@media (max-width: 550px) {
+  .event-program-formats { flex-direction: column; gap: 16px; }
+  .event-program-format { width: 100%; }
+  .event-program-resource a.event-program-link { width: 100%; }
+}

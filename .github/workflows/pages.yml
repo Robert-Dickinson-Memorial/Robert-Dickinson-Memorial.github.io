@@ -36,6 +36,9 @@ jobs:
           cp static/sections.html _site/gallery/index.html
           cp static/sections.html _site/memories/index.html
           cp static/site.js _site/site.js
+          # RD_EVENT_PROGRAM: publish the two original PDFs without changing them.
+          mkdir -p _site/events/2026-10-09
+          cp public/events/2026-10-09/*.pdf _site/events/2026-10-09/
           cp static/config.js _site/config.js
           cp static/robots.txt _site/robots.txt
           cp static/sitemap.xml _site/sitemap.xml

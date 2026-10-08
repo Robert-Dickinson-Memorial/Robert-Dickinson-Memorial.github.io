@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
 import type { MemorialEvent } from "./site-data";
+import EventProgram, { isMemorialProgramEvent } from "./event-program";
 
 export default function EventsSection({ events, copy, portrait = "/robert-dickinson.jpg" }: { events: MemorialEvent[]; copy: Record<string, string>; portrait?: string }) {
   const [filter, setFilter] = useState("upcoming");
   const c = (key: string) => copy[`events.design.${key}`];
   const visible = events.filter(e => filter === "all" || (filter === "past") === (Date.parse(e.endAt || e.startAt) < Date.now()));
+  const programEventId = visible.find(e => isMemorialProgramEvent(e, copy))?.id;
   const date = (v: string, opts: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("en-US", {timeZone:"America/Los_Angeles", ...opts}).format(new Date(v));
   function calendar(e: MemorialEvent) {
     const escape = (v: string) => v.replace(/\\/g,"\\\\").replace(/\r?\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
@@ -21,6 +23,7 @@ export default function EventsSection({ events, copy, portrait = "/robert-dickin
       <div className="event-feature-copy"><p className="section-kicker">{c("details")}</p><h3>{e.title}</h3><time dateTime={e.startAt}>{date(e.startAt,{weekday:"long",month:"long",day:"numeric",year:"numeric"})}<br/>{date(e.startAt,{timeStyle:"short"})}{e.endAt ? ` – ${date(e.endAt,{timeStyle:"short"})}` : ""} Pacific Time</time>
       {e.location && <p className="event-venue">{e.location}</p>}
       <div className="event-actions">{e.linkUrl && <a className="event-primary" href={e.linkUrl} target="_blank" rel="noopener noreferrer">{e.linkLabel || copy["events.defaultLink"]} ↗</a>}<button type="button" onClick={()=>calendar(e)}>{c("calendar")} ↓</button>{e.location && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}`} target="_blank" rel="noopener noreferrer">{c("directions")} ↗</a>}</div>
+      {programEventId !== undefined && e.id === programEventId && <EventProgram copy={copy} eventId={e.id} />}
       {e.description && <div className="event-story">{e.description.split(/(https?:\/\/[^\s]+)/g).map((p,i)=>/^https?:\/\//.test(p)?<a key={i} href={p} target="_blank" rel="noopener noreferrer">{p === "https://robert-dickinson-memorial.github.io/" ? "Robert’s memorial website ↗" : p}</a>:p)}</div>}</div>
     </article>)}</div>
     <aside className="event-planning"><h2>{c("planning")}</h2><p>{c("planningIntro")}</p><div className="event-planning-grid">{["venue","online","remember"].map(k=><div key={k}><h3>{c(`${k}Title`)}</h3><p>{c(`${k}Text`)}</p>{k==="remember" && <div className="event-remembrance"><a href="/tree/">{c("tree")} →</a><a href="/memories/">{c("memory")} →</a></div>}</div>)}</div></aside>

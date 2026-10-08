@@ -557,6 +557,66 @@ function initializeMemorialPage() {
     renderLegacy(content, content.pageCopy);
   }
 
+  // RD_EVENT_PROGRAM: labels also live in pageCopy for the management editor.
+  const eventProgramDefaults = {
+  "events.programDate": "2026-10-09",
+  "events.programTitle": "Memorial program",
+  "events.programIntro": "Choose the format that suits you—the content is the same.",
+  "events.programReadLabel": "Read the program",
+  "events.programReadMeta": "PDF · 4 pages · Reading order",
+  "events.programReadUrl": "/events/2026-10-09/memorial-program.pdf",
+  "events.programPrintLabel": "Print a folded booklet",
+  "events.programPrintMeta": "PDF · 2 pages · US Letter print layout",
+  "events.programPrintUrl": "/events/2026-10-09/printable-booklet-letter.pdf",
+  "events.programPrintHelpLabel": "Printing instructions",
+  "events.programPrintHelp": "Print on US Letter paper in landscape, double-sided, at actual size, flipping on the short edge. Fold in half. The pages are already arranged for folding; do not apply a second booklet layout. Test one sheet before printing multiple copies.",
+  "events.programNewTab": "Opens a PDF in a new tab"
+};
+  function isMemorialProgramEvent(event, copy = {}) {
+    const when = new Date(event.startAt);
+    if (!Number.isFinite(when.getTime())) return false;
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit"
+    }).formatToParts(when);
+    const part = kind => parts.find(p => p.type === kind)?.value || "";
+    const day = `${part("year")}-${part("month")}-${part("day")}`;
+    return day === (copy["events.programDate"] ?? eventProgramDefaults["events.programDate"])
+      && /dickinson|james west|ucla/i.test(`${event.title} ${event.location || ""}`);
+  }
+  function createEventProgram(copy, eventId) {
+    const c = key => copy[`events.program${key}`] ?? eventProgramDefaults[`events.program${key}`];
+    const safeUrl = raw => {
+      if (/^\/(?!\/)/.test(raw) && !raw.includes("\\")) return raw;
+      try { const url = new URL(raw); return url.protocol === "https:" && !url.username && !url.password ? url.href : ""; }
+      catch { return ""; }
+    };
+    const formats = [["Read", "event-program-link event-program-link-primary"], ["Print", "event-program-link"]]
+      .map(([kind, className]) => ({kind, className, url: safeUrl(c(kind + "Url"))})).filter(item => item.url);
+    if (!formats.length) return null;
+    const headingId = `event-program-title-${eventId}`;
+    const resource = node("aside", {className: "event-program-resource", attrs: {"data-event-program": "", "aria-labelledby": headingId}});
+    resource.append(node("h4", {text: c("Title"), attrs: {id: headingId}}),
+      node("p", {className: "event-program-intro", text: c("Intro")}));
+    const links = node("div", {className: "event-program-formats"});
+    formats.forEach(({kind, className, url}) => {
+      const format = node("div", {className: "event-program-format"});
+      const link = node("a", {className, text: c(kind + "Label") + " ", attrs: {
+        href: url, target: "_blank", rel: "noopener noreferrer", type: "application/pdf",
+        "aria-label": `${c(kind + "Label")}. ${c(kind + "Meta")}. ${c("NewTab")}.`
+      }});
+      link.append(node("span", {text: "↗", attrs: {"aria-hidden": "true"}}));
+      format.append(link, node("span", {className: "event-program-meta", text: c(kind + "Meta")}));
+      links.append(format);
+    });
+    resource.append(links);
+    if (formats.some(item => item.kind === "Print")) {
+      const help = node("details", {className: "event-program-help"});
+      help.append(node("summary", {text: c("PrintHelpLabel")}), node("p", {text: c("PrintHelp")}));
+      resource.append(help);
+    }
+    return resource;
+  }
+
   let eventFilter = "upcoming";
   async function hydrateEvents() {
     const target = pageDocument.querySelector("[data-events]");
@@ -569,6 +629,7 @@ function initializeMemorialPage() {
     ["upcoming","past","all"].forEach(f=>{const b=node("button",{text:c(f),attrs:{type:"button","aria-pressed":String(eventFilter===f)}});b.onclick=()=>{eventFilter=f;hydrateEvents();};bar.append(b);});
     const list=node("div",{className:"event-feature-list",attrs:{"aria-live":"polite"}});
     const visible=events.filter(e=>eventFilter==="all"||(eventFilter==="past")===(Date.parse(e.endAt||e.startAt)<Date.now()));
+    const programEventId = visible.find(e => isMemorialProgramEvent(e, editableCopy))?.id;
     if(!visible.length)list.append(node("p",{className:"events-empty",text:c("empty"+eventFilter[0].toUpperCase()+eventFilter.slice(1))}));
     visible.forEach(e=>{
       const article=node("article",{className:"event-feature"}),photo=node("div",{className:"event-feature-photo"});
@@ -585,6 +646,10 @@ function initializeMemorialPage() {
         const url=URL.createObjectURL(new Blob([lines.join("\r\n")+"\r\n"],{type:"text/calendar;charset=utf-8"}));const a=node("a",{attrs:{href:url,download:`robert-dickinson-event-${e.id}.ics`}});a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
       };actions.append(cal);
       if(e.location)actions.append(node("a",{text:c("directions")+" ↗",attrs:{href:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(e.location),target:"_blank",rel:"noopener noreferrer"}}));body.append(actions);
+      if (programEventId !== undefined && e.id === programEventId) {
+        const program = createEventProgram(editableCopy, e.id);
+        if (program) body.append(program);
+      }
       if(e.description){const story=node("div",{className:"event-story"});e.description.split(/(https?:\/\/[^\s]+)/g).forEach(p=>{story.append(/^https?:\/\//.test(p)?node("a",{text:p==="https://robert-dickinson-memorial.github.io/"?"Robert’s memorial website ↗":p,attrs:{href:p,target:"_blank",rel:"noopener noreferrer"}}):document.createTextNode(p));});body.append(story);}
       article.append(photo,body);list.append(article);
     });
