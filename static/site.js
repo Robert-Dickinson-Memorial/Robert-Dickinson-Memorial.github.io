@@ -595,8 +595,7 @@ function initializeMemorialPage() {
     if (!formats.length) return null;
     const headingId = `event-program-title-${eventId}`;
     const resource = node("aside", {className: "event-program-resource", attrs: {"data-event-program": "", "aria-labelledby": headingId}});
-    resource.append(node("h4", {text: c("Title"), attrs: {id: headingId}}),
-      node("p", {className: "event-program-intro", text: c("Intro")}));
+    resource.append(node("h4", {text: c("Title"), attrs: {id: headingId}}));
     const links = node("div", {className: "event-program-formats"});
     formats.forEach(({kind, className, url}) => {
       const format = node("div", {className: "event-program-format"});
@@ -618,6 +617,22 @@ function initializeMemorialPage() {
   }
 
   let eventFilter = "upcoming";
+// Keep the editable source intact; omit only the known invitation boilerplate.
+function eventDescriptionParts(description) {
+  const redundant = new Set([
+    "Professor Robert E. Dickinson\n26 March 1940 – 11 September 2026",
+    "For those who cannot attend in person, a live video stream will be available via the Zoom link below.",
+    "Honor Robert through a living tribute or a memory shared with his community:\nhttps://robert-dickinson-memorial.github.io/",
+    "Honor Robert through a living tribute or a memory shared with his community:",
+    "https://robert-dickinson-memorial.github.io/"
+  ]);
+  const paragraphs = (description || "").replace(/\r\n/g, "\n").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  return {
+    logistics: paragraphs.filter(p => /^Parking:/.test(p) || p === "Reception to follow.").sort((a, b) => Number(/^Parking:/.test(b)) - Number(/^Parking:/.test(a))),
+    remaining: paragraphs.filter(p => !redundant.has(p) && !/^Parking:/.test(p) && p !== "Reception to follow.").join("\n\n")
+  };
+}
+
   async function hydrateEvents() {
     const target = pageDocument.querySelector("[data-events]");
     if (!(target instanceof HTMLElement)) return;
@@ -634,9 +649,12 @@ function initializeMemorialPage() {
     visible.forEach(e=>{
       const article=node("article",{className:"event-feature"}),photo=node("div",{className:"event-feature-photo"});
       const img=node("img",{attrs:{src:eventPortrait,alt:"Robert E. Dickinson","data-site-asset":"portrait"}});
-      const badge=node("div",{className:"event-date-badge"});badge.append(node("span",{text:date(e.startAt,{month:"short"})}),node("strong",{text:date(e.startAt,{day:"numeric"})}),node("span",{text:date(e.startAt,{year:"numeric"})}));photo.append(img,badge);
-      const body=node("div",{className:"event-feature-copy"});body.append(node("p",{className:"section-kicker",text:c("details")}),node("h3",{text:e.title}),node("time",{text:date(e.startAt,{weekday:"long",month:"long",day:"numeric",year:"numeric"})+"\n"+date(e.startAt,{timeStyle:"short"})+(e.endAt?" – "+date(e.endAt,{timeStyle:"short"}):"")+" Pacific Time",attrs:{datetime:e.startAt}}));
+      photo.append(img);
+      const details = eventDescriptionParts(e.description);
+      const body=node("div",{className:"event-feature-copy"});body.append(node("h3",{text:e.title}),node("time",{text:date(e.startAt,{weekday:"long",month:"long",day:"numeric",year:"numeric"})+"\n"+date(e.startAt,{timeStyle:"short"})+(e.endAt?" – "+date(e.endAt,{timeStyle:"short"}):"")+" Pacific Time",attrs:{datetime:e.startAt}}));
       if(e.location)body.append(node("p",{className:"event-venue",text:e.location}));
+      if(details.logistics.length){const info=node("div",{className:"event-logistics"});details.logistics.forEach(p=>info.append(node("p",{text:p})));body.append(info);}
+      if(details.remaining){const story=node("div",{className:"event-story"});details.remaining.split(/(https?:\/\/[^\s]+)/g).forEach(p=>{story.append(/^https?:\/\//.test(p)?node("a",{text:p==="https://robert-dickinson-memorial.github.io/"?"Robert’s memorial website ↗":p,attrs:{href:p,target:"_blank",rel:"noopener noreferrer"}}):document.createTextNode(p));});body.append(story);}
       const actions=node("div",{className:"event-actions"});
       if(e.linkUrl)actions.append(node("a",{className:"event-primary",text:(e.linkLabel||editableCopy["events.defaultLink"]||"Event details")+" ↗",attrs:{href:e.linkUrl,target:"_blank",rel:"noopener noreferrer"}}));
       const cal=node("button",{text:c("calendar")+" ↓",attrs:{type:"button"}});cal.onclick=()=>{
@@ -650,10 +668,10 @@ function initializeMemorialPage() {
         const program = createEventProgram(editableCopy, e.id);
         if (program) body.append(program);
       }
-      if(e.description){const story=node("div",{className:"event-story"});e.description.split(/(https?:\/\/[^\s]+)/g).forEach(p=>{story.append(/^https?:\/\//.test(p)?node("a",{text:p==="https://robert-dickinson-memorial.github.io/"?"Robert’s memorial website ↗":p,attrs:{href:p,target:"_blank",rel:"noopener noreferrer"}}):document.createTextNode(p));});body.append(story);}
+
       article.append(photo,body);list.append(article);
     });
-    const planning=node("aside",{className:"event-planning"});planning.append(node("h2",{text:c("planning")}),node("p",{text:c("planningIntro")}));const grid=node("div",{className:"event-planning-grid"});["venue","online","remember"].forEach(k=>{const item=node("div");item.append(node("h3",{text:c(k+"Title")}),node("p",{text:c(k+"Text")}));if(k==="remember"){const links=node("div",{className:"event-remembrance"});links.append(node("a",{text:c("tree")+" →",attrs:{href:"/tree/"}}),node("a",{text:c("memory")+" →",attrs:{href:"/memories/"}}));item.append(links);}grid.append(item);});planning.append(grid);target.replaceChildren(bar,list,planning);
+    target.replaceChildren(bar,list);
   }
 
   function videoEmbedUrl(value) {

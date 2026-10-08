@@ -46,7 +46,6 @@ export default function EventProgram({ copy, eventId }: {
   const headingId = `event-program-title-${eventId}`;
   return <aside className="event-program-resource" data-event-program aria-labelledby={headingId}>
     <h4 id={headingId}>{c("Title")}</h4>
-    <p className="event-program-intro">{c("Intro")}</p>
     <div className="event-program-formats">
       {readUrl && <div className="event-program-format">
         <a className="event-program-link event-program-link-primary" href={readUrl}

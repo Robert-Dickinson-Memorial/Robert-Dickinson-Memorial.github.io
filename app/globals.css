@@ -4291,3 +4291,18 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
   .event-program-format { width: 100%; }
   .event-program-resource a.event-program-link { width: 100%; }
 }
+
+/* Compact Events layout: attendance details first, program second. */
+.event-feature { grid-template-columns:minmax(200px,26%) minmax(0,1fr); align-items:start; }
+.event-feature-photo { margin:24px 0 24px 24px; border-radius:5px; overflow:hidden; }
+.event-feature-photo img { height:auto; max-height:420px; object-fit:contain; }
+.event-logistics { color:#53616c; font-size:.94rem; line-height:1.5; margin:8px 0 16px; }
+.event-logistics p { margin:4px 0; }
+.event-feature-copy .event-story { border:0; padding-top:0; margin:16px 0; }
+.event-program-resource { margin-bottom:0; padding-bottom:0; border-bottom:0; }
+.event-program-formats { margin-top:14px; }
+@media(max-width:760px) {
+ .event-feature { grid-template-columns:1fr; }
+ .event-feature-photo { display:none; }
+ .event-feature-copy { padding:24px; }
+}
