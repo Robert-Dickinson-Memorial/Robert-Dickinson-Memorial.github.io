@@ -38,10 +38,12 @@ try {
     for (const order of ['newest', 'oldest']) {
       await sort.selectOption(order);
       const rows = await page.locator('.memory-card').evaluateAll(cards => cards.map(card => ({id:Number(card.id.replace('memory-','')), date:card.dataset.createdAt})));
-      assert.deepEqual(rows.slice(0,2).map(row=>row.id), [11,12], 'Pinned memories stay first in both sort orders');
-      const chronological = [...rows.slice(2)].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
-      if(order==='newest')chronological.reverse();
-      assert.deepEqual(rows.slice(2), chronological, 'All other memories follow the selected upload order');
+      const special = rows.filter(row=>[11,12].includes(row.id)).sort((a,b)=>a.id-b.id);
+      const chronological = rows.filter(row=>![11,12].includes(row.id)).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+      const expected = [...special, ...chronological];
+      assert.deepEqual(special.map(row=>row.id), [11,12], 'Both early submissions are present');
+      if(order==='newest')expected.reverse();
+      assert.deepEqual(rows, expected, 'The complete ordering reverses, including the two early submissions');
     }
     const photoId = await page.evaluate(() => {
       const cards = [...document.querySelectorAll('.memory-card')];

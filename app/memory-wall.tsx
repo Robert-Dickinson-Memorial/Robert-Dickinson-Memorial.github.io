@@ -5,7 +5,8 @@ import { ExternalLink, FileText, Quote } from "lucide-react";
 
 type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
 
-// Pin Liming Zhou and Haishan Chen; everyone else follows original upload time.
+// Liming Zhou and Haishan Chen informed the owner first, before their uploads.
+// Treat them as the earliest submissions and reverse the entire order for newest first.
 const memoryPriority = (memory: Memory) => memory.id === 11 ? 0 : memory.id === 12 ? 1 : 2;
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
@@ -66,7 +67,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
     <>
     <label className="memory-sort">Sort memories <select aria-label="Sort memories" value={sortOrder} onChange={event => setSortOrder(event.target.value)}><option value="oldest">Oldest to newest</option><option value="newest">Newest to oldest</option></select></label>
     <div className="memory-grid" ref={gridRef}>
-      {[...memories].sort((a, b) => memoryPriority(a) - memoryPriority(b) || (sortOrder === "newest" ? -1 : 1) * ((a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id)).map((memory) => (
+      {[...memories].sort((a, b) => (sortOrder === "newest" ? -1 : 1) * (memoryPriority(a) - memoryPriority(b) || (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id)).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
           <header className="memory-author">
             <span className="memory-author-mark" aria-hidden="true">{memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("")}</span>
