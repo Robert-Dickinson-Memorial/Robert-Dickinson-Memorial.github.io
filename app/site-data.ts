@@ -823,8 +823,8 @@ export const defaultPageCopy: Record<string, string> = {
   "memories.formSocialPlaceholder": "https://…",
   "memories.formPdf": "Upload your story as a PDF",
   "memories.formPdfHelp": "PDF · up to 15 MB",
-  "memories.formPhoto": "Add up to three photos",
-  "memories.formPhotoHelp": "Up to 3 photos · JPG, PNG or WebP · 8 MB each",
+  "memories.formPhoto": "Add up to five photos",
+  "memories.formPhotoHelp": "Up to 5 photos · JPG, PNG or WebP · 8 MB each",
   "memories.pdfLink": "Read the shared PDF",
   "memories.socialLink": "View the shared public post",
   "memories.formConsent": "I give permission for this story, photo, PDF, video, and/or shared public link to be published on this memorial site after review.",
@@ -1173,8 +1173,8 @@ export async function getSiteContent(): Promise<SiteContent> {
         if (saved["tree.arborButton"] === "Continue with Arbor Day") saved["tree.arborButton"] = "Plant a tree";
         if (saved["tree.minnesotaButton"] === "Continue with A Living Tribute") saved["tree.minnesotaButton"] = "Plant a tree";
         for (const key of ["events.design.upcomingTitle", "events.design.pastTitle", "events.design.allTitle", "events.design.intro", "events.design.programTitle", "events.design.programText"]) delete saved[key];
-        if (saved["memories.formPhoto"] === "Add a photo") saved["memories.formPhoto"] = defaultPageCopy["memories.formPhoto"];
-        if (saved["memories.formPhotoHelp"] === "JPG, PNG or WebP · up to 8 MB") saved["memories.formPhotoHelp"] = defaultPageCopy["memories.formPhotoHelp"];
+        if (["Add a photo", "Add up to three photos"].includes(saved["memories.formPhoto"])) saved["memories.formPhoto"] = defaultPageCopy["memories.formPhoto"];
+        if (["JPG, PNG or WebP · up to 8 MB", "Up to 3 photos · JPG, PNG or WebP · 8 MB each"].includes(saved["memories.formPhotoHelp"])) saved["memories.formPhotoHelp"] = defaultPageCopy["memories.formPhotoHelp"];
         const merged = { ...defaultContent.pageCopy, ...saved };
         merged["legacy.heroTitle"] = merged["home.legacyTitle"];
         return Object.fromEntries(Object.entries(merged).map(([key, value]) => [key, reviseEditorialText(value)]));

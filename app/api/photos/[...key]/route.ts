@@ -8,8 +8,8 @@ export async function GET(_request: Request, context: { params: Promise<{ key: s
   const { key } = await context.params;
   const objectKey = key.join("/");
   const approved = await env.DB.prepare(
-    "SELECT id FROM memories WHERE (photo_key = ? OR photo2_key = ? OR photo3_key = ?) AND status = ? LIMIT 1"
-  ).bind(objectKey, objectKey, objectKey, "approved").first();
+    "SELECT id FROM memories WHERE (photo_key = ? OR photo2_key = ? OR photo3_key = ? OR photo4_key = ? OR photo5_key = ?) AND status = ? LIMIT 1"
+  ).bind(objectKey, objectKey, objectKey, objectKey, objectKey, "approved").first();
   if (!approved) return publicMediaResponse("Not found", { status: 404 });
   const object = await env.BUCKET.get(objectKey);
   if (!object) return publicMediaResponse("Not found", { status: 404 });

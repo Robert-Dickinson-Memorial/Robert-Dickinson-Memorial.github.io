@@ -6,7 +6,7 @@ import { BookOpen, CalendarPlus, FileUp, FileX, ImageOff, ImagePlus, Save, Trash
 import type { GalleryItem, LegacyChapter, LegacyPublication, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null; photoName: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; photoName: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -418,7 +418,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
       await responseData(await fetch("/api/admin/memories", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...payload, action: "edit" }) }));
       (formElement.elements.namedItem("originalStory") as HTMLInputElement).value = String(payload.story ?? "").trim();
       saved.push("memory text");
-      for (const slot of [1, 2, 3]) if (formElement.querySelector<HTMLInputElement>(`[data-memory-photo][data-slot="${slot}"]`)?.files?.length) {
+      for (const slot of [1, 2, 3, 4, 5]) if (formElement.querySelector<HTMLInputElement>(`[data-memory-photo][data-slot="${slot}"]`)?.files?.length) {
         await sendMemoryAttachment(id, formElement, "photo", slot); saved.push(`photo ${slot}`);
       }
       if (owner && formElement.querySelector<HTMLInputElement>("[data-memory-pdf]")?.files?.length) {
@@ -465,10 +465,10 @@ export default function Manager({ content, events, media, publishedMemories, edi
     finally { setBusy(false); }
   }
 
-  async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "photo2" | "photo3" | "pdf" | "video" | "link" | "all", hasPhoto = true) {
+  async function removePublishedMemory(id: number, title: string, mode: "text" | "photo" | "photo2" | "photo3" | "photo4" | "photo5" | "pdf" | "video" | "link" | "all", hasPhoto = true) {
     const warning = mode === "text"
       ? hasPhoto ? `Delete the memory entry “${title}”? Its photo will be preserved in the public gallery, while any PDF, video, or public link will be removed with the memory.` : `Permanently delete the memory entry “${title}” and any PDF, video, or public link attached to it?`
-      : ["photo", "photo2", "photo3"].includes(mode) ? `Delete only this photo attached to “${title}”? The rest of the memory will remain published.`
+      : ["photo", "photo2", "photo3", "photo4", "photo5"].includes(mode) ? `Delete only this photo attached to “${title}”? The rest of the memory will remain published.`
       : mode === "video" ? `Delete only the video attached to “${title}”?`
       : mode === "pdf" ? `Delete only the PDF attached to “${title}”? The rest of the memory will remain published.`
       : mode === "link" ? `Remove only the public link attached to “${title}”? The rest of the memory will remain published.`
@@ -722,14 +722,14 @@ export default function Manager({ content, events, media, publishedMemories, edi
                 <label>Memory title<input name="title" defaultValue={item.title} required /></label>
                 <label>Memory text <span>May be blank when the memory has a PDF, video, or public link.</span><textarea name="story" rows={7} defaultValue={item.story} /></label>
                 <div className="manager-attachment-controls">
-                  {([1, 2, 3] as const).map(slot => {
-                    const photoKey = slot === 1 ? attachment.photoKey : slot === 2 ? attachment.photo2Key : attachment.photo3Key;
+                  {([1, 2, 3, 4, 5] as const).map(slot => {
+                    const photoKey = slot === 5 ? attachment.photo5Key : slot === 4 ? attachment.photo4Key : slot === 1 ? attachment.photoKey : slot === 2 ? attachment.photo2Key : attachment.photo3Key;
                     return <div className="manager-photo-controls" key={slot}>
                       <input type="hidden" data-current-photo-key data-slot={slot} value={photoKey || ""} readOnly />
                       {photoKey && <img className="manager-image-preview" src={`/api/photos/${photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={`Photo ${slot} for ${item.title}`} />}
                       <label>Photo {slot} · {photoKey ? "Replace" : "Add"} <span>JPG, PNG, or WebP, up to 12 MB.</span><input data-memory-photo data-slot={slot} type="file" accept="image/jpeg,image/png,image/webp" /></label>
                       <button type="button" className="manager-secondary" disabled={busy} onClick={event => uploadMemoryAttachment(item.id, event.currentTarget.closest("form") as HTMLFormElement, "photo", slot)}><ImagePlus size={16} /> Save photo {slot}</button>
-                      {photoKey && <button type="button" className="manager-danger" disabled={busy} onClick={() => removePublishedMemory(item.id, item.title, slot === 1 ? "photo" : slot === 2 ? "photo2" : "photo3")}><ImageOff size={16} /> Delete photo {slot}</button>}
+                      {photoKey && <button type="button" className="manager-danger" disabled={busy} onClick={() => removePublishedMemory(item.id, item.title, slot === 5 ? "photo5" : slot === 4 ? "photo4" : slot === 1 ? "photo" : slot === 2 ? "photo2" : "photo3")}><ImageOff size={16} /> Delete photo {slot}</button>}
                     </div>;
                   })}
                   {owner && <div className="manager-photo-controls"><label>{attachment.pdfKey ? "Replace the shared PDF" : "Add a shared PDF"} <span>PDF, up to 15 MB. If Memory text is blank, it is extracted automatically after upload. Existing edited text is preserved.</span><input data-memory-pdf type="file" accept="application/pdf,.pdf" /></label><button type="button" className="manager-secondary" disabled={busy} onClick={(event) => uploadMemoryAttachment(item.id, event.currentTarget.closest("form") as HTMLFormElement, "pdf")}><FileUp size={16} /> {attachment.pdfKey ? "Replace PDF" : "Upload PDF"}</button></div>}
@@ -738,7 +738,7 @@ export default function Manager({ content, events, media, publishedMemories, edi
           {item.videoKey && <video className="memory-video" controls playsInline preload="metadata" aria-label={item.title} src={`/api/memory-videos/${item.videoKey.split("/").map(encodeURIComponent).join("/")}`} />}
                 {attachment.pdfKey && <p className="manager-memory-attachment"><a href={`/api/memory-files/${attachment.pdfKey.split("/").map(encodeURIComponent).join("/")}`} target="_blank" rel="noopener noreferrer">Open PDF{attachment.pdfName ? ` · ${attachment.pdfName}` : ""} ↗</a></p>}
                 {memoryMessages[item.id] && <p className="manager-memory-status" role="status">{memoryMessages[item.id]}</p>}
-                <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory & selected files</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(attachment.photoKey || attachment.photo2Key || attachment.photo3Key))}><FileX size={16} /> Delete memory entry</button>{attachment.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}{attachment.pdfKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "pdf")}><FileX size={16} /> Delete PDF</button>}{item.videoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "video")}><FileX size={16} /> Delete video</button>}{item.socialUrl && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "link")}><FileX size={16} /> Remove link</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
+                <div className="manager-inline-actions"><button className="manager-secondary" disabled={busy}><Save size={16} /> Save memory & selected files</button><button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "text", Boolean(attachment.photoKey || attachment.photo2Key || attachment.photo3Key || attachment.photo4Key || attachment.photo5Key))}><FileX size={16} /> Delete memory entry</button>{attachment.photoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "photo")}><ImageOff size={16} /> Delete photo</button>}{attachment.pdfKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "pdf")}><FileX size={16} /> Delete PDF</button>}{item.videoKey && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "video")}><FileX size={16} /> Delete video</button>}{item.socialUrl && <button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "link")}><FileX size={16} /> Remove link</button>}<button type="button" className="manager-danger" onClick={() => removePublishedMemory(item.id, item.title, "all")}><Trash2 size={16} /> Delete all</button></div>
               </form>})}
               {!publishedMemories.length && <p>No memories are currently published.</p>}
             </div>

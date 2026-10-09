@@ -4306,3 +4306,6 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
  .event-feature-photo { display:none; }
  .event-feature-copy { padding:24px; }
 }
+
+.memory-sort { display:flex; align-items:center; justify-content:flex-end; gap: .65rem; margin: 0 0 1.25rem; font-size:.95rem; }
+.memory-sort select { padding:.55rem .8rem; border:1px solid #b7c9c4; border-radius:.5rem; color:#163b35; background:#fff; font:inherit; }

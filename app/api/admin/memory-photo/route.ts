@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const form = await request.formData();
   const id = Number(form.get("id"));
   const slot = Number(form.get("slot") || 1);
-  if (![1, 2, 3].includes(slot)) return Response.json({ error: "Invalid photo slot." }, { status: 400 });
+  if (![1, 2, 3, 4, 5].includes(slot)) return Response.json({ error: "Invalid photo slot." }, { status: 400 });
   const keyColumn = slot === 1 ? "photo_key" : `photo${slot}_key`;
   const nameColumn = slot === 1 ? "photo_name" : `photo${slot}_name`;
   const file = form.get("file");
@@ -54,8 +54,8 @@ export async function POST(request: Request) {
 
   if (current.photoKey) {
     const stillUsed = await env.DB.prepare(
-      "SELECT (SELECT COUNT(*) FROM memories WHERE photo_key = ? OR photo2_key = ? OR photo3_key = ?) + (SELECT COUNT(*) FROM gallery_items WHERE object_key = ?) AS count"
-    ).bind(current.photoKey, current.photoKey, current.photoKey, current.photoKey).first<{ count: number }>();
+      "SELECT (SELECT COUNT(*) FROM memories WHERE photo_key = ? OR photo2_key = ? OR photo3_key = ? OR photo4_key = ? OR photo5_key = ?) + (SELECT COUNT(*) FROM gallery_items WHERE object_key = ?) AS count"
+    ).bind(current.photoKey, current.photoKey, current.photoKey, current.photoKey, current.photoKey, current.photoKey).first<{ count: number }>();
     if (!stillUsed?.count) {
       try { await env.BUCKET.delete(current.photoKey); } catch (error) { console.warn("Previous memory photo cleanup failed", error); }
     }

@@ -10,7 +10,7 @@ export type PendingMemory = {
   email: string | null;
   title: string;
   story: string;
-  photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null;
+  photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null;
   photoName: string | null;
   videoKey: string | null; videoName: string | null; pdfKey: string | null;
   pdfName: string | null;
@@ -52,7 +52,7 @@ export default function ReviewQueue({ initialMemories }: { initialMemories: Pend
       <div className="review-list">
         {memories.map((memory) => (
           <article className="review-card" key={memory.id}>
-            {[memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/admin/photos/${key}`} alt={`Photo ${index + 1} submitted by ${memory.name}`} />)}
+            {[memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/admin/photos/${key}`} alt={`Photo ${index + 1} submitted by ${memory.name}`} />)}
             <div className="review-card-body">
               <div className="review-meta">
                 <span>{memory.relationship}</span>

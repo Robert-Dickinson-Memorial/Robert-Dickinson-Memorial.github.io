@@ -10,6 +10,8 @@ export const memories = sqliteTable("memories", {
   photoKey: text("photo_key"),
   photoName: text("photo_name"),
   photo2Key: text("photo2_key"), photo2Name: text("photo2_name"),
+  photo4Key: text("photo4_key"), photo4Name: text("photo4_name"),
+  photo5Key: text("photo5_key"), photo5Name: text("photo5_name"),
   photo3Key: text("photo3_key"), photo3Name: text("photo3_name"),
   videoKey: text("video_key"),
   videoName: text("video_name"),

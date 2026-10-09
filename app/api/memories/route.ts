@@ -23,17 +23,17 @@ function cleanPublicUrl(value: unknown): string {
 async function permanentlyRemoveLimingPhotos() {
   if (!env.DB || !env.BUCKET) return;
   const memory = await env.DB.prepare(
-    `SELECT id, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key
+    `SELECT id, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key
      FROM memories
      WHERE status = 'approved' AND (id = 11 OR lower(trim(name)) = 'liming zhou')
      LIMIT 1`
-  ).first<{ id: number; photoKey: string | null; photo2Key: string | null; photo3Key: string | null }>();
+  ).first<{ id: number; photoKey: string | null; photo2Key: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null }>();
   if (!memory) return;
-  const keys = [memory.photoKey, memory.photo2Key, memory.photo3Key].filter((key): key is string => Boolean(key));
+  const keys = [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter((key): key is string => Boolean(key));
   if (!keys.length) return;
   for (const key of keys) await env.BUCKET.delete(key);
   await env.DB.prepare(
-    "UPDATE memories SET photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL WHERE id = ?"
+    "UPDATE memories SET photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL, photo4_key = NULL, photo4_name = NULL, photo5_key = NULL, photo5_name = NULL WHERE id = ?"
   ).bind(memory.id).run();
 }
 
@@ -42,7 +42,7 @@ export async function GET() {
     if (!env.DB) throw new Error("Database unavailable");
     await permanentlyRemoveLimingPhotos();
     const result = await env.DB.prepare(
-      `SELECT id, name, relationship, title, story, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key,
+      `SELECT id, name, relationship, title, story, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key,
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
               created_at AS createdAt
        FROM memories WHERE status = ?
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
     if (contentType.includes("multipart/form-data")) {
       // Bound the request before multipart parsing, including chunked requests.
-      const maxBody = 92 * 1024 * 1024;
+      const maxBody = 108 * 1024 * 1024;
       if (Number(request.headers.get("content-length")) > maxBody) return publicJson({ error: "Attachments are too large. Video limit: 50 MB." }, { status: 413 });
       let received = 0;
       const bounded = request.body?.pipeThrough(new TransformStream({ transform(chunk, controller) {
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
       editId = Number(form.get("editId") || 0);
       editToken = clean(form.get("editToken"), 64);
       photos = form.getAll("photo").filter((file): file is File => file instanceof File && file.size > 0);
-      if (photos.length > 3) return publicJson({ error: "Choose up to three photos." }, { status: 400 });
+      if (photos.length > 5) return publicJson({ error: "Choose up to five photos." }, { status: 400 });
       if (photos.some(file => !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024)) return publicJson({ error: "Each photo must be JPG, PNG, or WebP, up to 8 MB." }, { status: 400 });
       photo = photos[0] || null;
       const videoCandidate = form.get("video");
@@ -199,12 +199,14 @@ export async function POST(request: Request) {
       if (previous) {
         const result = await env.DB.prepare(
           `UPDATE memories SET name = ?, relationship = ?, title = ?, story = ?, social_url = ?,
-            photo_key = ?, photo_name = ?, photo2_key = ?, photo2_name = ?, photo3_key = ?, photo3_name = ?, pdf_key = ?, pdf_name = ?, video_key = ?, video_name = ?
+            photo_key = ?, photo_name = ?, photo2_key = ?, photo2_name = ?, photo3_key = ?, photo3_name = ?, photo4_key = ?, photo4_name = ?, photo5_key = ?, photo5_name = ?, pdf_key = ?, pdf_name = ?, video_key = ?, video_name = ?
            WHERE id = ? AND status = 'pending' AND preview_token_hash = ?`
         ).bind(name, relationship, title, story, socialUrl || null,
           photoKey || previous.photoKey, photoName || previous.photoName,
           photo ? extraPhotos[0]?.key || null : previous.photo2Key, photo ? extraPhotos[0]?.name || null : previous.photo2Name,
           photo ? extraPhotos[1]?.key || null : previous.photo3Key, photo ? extraPhotos[1]?.name || null : previous.photo3Name,
+          photo ? extraPhotos[2]?.key || null : previous.photo4Key, photo ? extraPhotos[2]?.name || null : previous.photo4Name,
+          photo ? extraPhotos[3]?.key || null : previous.photo5Key, photo ? extraPhotos[3]?.name || null : previous.photo5Name,
           pdfKey || previous.pdfKey, pdfName || previous.pdfName,
           videoKey || previous.videoKey, videoName || previous.videoName,
           editId, await tokenHash(editToken)).run();
@@ -213,9 +215,9 @@ export async function POST(request: Request) {
         editToken = [...crypto.getRandomValues(new Uint8Array(32))].map((byte) => byte.toString(16).padStart(2, "0")).join("");
         const result = await env.DB.prepare(
           `INSERT INTO memories
-           (name, relationship, email, title, story, photo_key, photo_name, photo2_key, photo2_name, photo3_key, photo3_name, pdf_key, pdf_name, video_key, video_name, social_url, status, consent, created_at, preview_token_hash)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        ).bind(name, relationship, email || null, title, story, photoKey, photoName, extraPhotos[0]?.key || null, extraPhotos[0]?.name || null, extraPhotos[1]?.key || null, extraPhotos[1]?.name || null, pdfKey, pdfName, videoKey, videoName, socialUrl || null, "pending", 1, new Date().toISOString(), await tokenHash(editToken)).run();
+           (name, relationship, email, title, story, photo_key, photo_name, photo2_key, photo2_name, photo3_key, photo3_name, photo4_key, photo4_name, photo5_key, photo5_name, pdf_key, pdf_name, video_key, video_name, social_url, status, consent, created_at, preview_token_hash)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(name, relationship, email || null, title, story, photoKey, photoName, extraPhotos[0]?.key || null, extraPhotos[0]?.name || null, extraPhotos[1]?.key || null, extraPhotos[1]?.name || null, extraPhotos[2]?.key || null, extraPhotos[2]?.name || null, extraPhotos[3]?.key || null, extraPhotos[3]?.name || null, pdfKey, pdfName, videoKey, videoName, socialUrl || null, "pending", 1, new Date().toISOString(), await tokenHash(editToken)).run();
         editId = Number(result.meta.last_row_id);
       }
     } catch (error) {
@@ -228,7 +230,7 @@ export async function POST(request: Request) {
 
     if (previous && env.BUCKET) {
       try {
-        if (photoKey) for (const key of [previous.photo2Key, previous.photo3Key]) if (key) await env.BUCKET.delete(key);
+        if (photoKey) for (const key of [previous.photo2Key, previous.photo3Key, previous.photo4Key, previous.photo5Key]) if (key) await env.BUCKET.delete(key);
         if (photoKey && previous.photoKey && previous.photoKey !== photoKey) await env.BUCKET.delete(previous.photoKey);
         if (pdfKey && previous.pdfKey && previous.pdfKey !== pdfKey) await env.BUCKET.delete(previous.pdfKey);
         if (videoKey && previous.videoKey && previous.videoKey !== videoKey) await env.BUCKET.delete(previous.videoKey);

@@ -16,7 +16,7 @@ type PublishedMemory = {
   relationship: string;
   title: string;
   story: string;
-  photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null;
+  photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null;
   photoName: string | null;
   videoKey: string | null; videoName: string | null; pdfKey: string | null;
   pdfName: string | null;
@@ -33,7 +33,7 @@ export default async function ManagePage() {
     env.DB.prepare(`SELECT id, title, start_at AS startAt, end_at AS endAt, location, description, link_label AS linkLabel, link_url AS linkUrl FROM events ORDER BY start_at ASC`).all<MemorialEvent>(),
     env.DB.prepare(`SELECT id, kind, title, caption, object_key AS objectKey, external_url AS externalUrl, created_at AS createdAt FROM gallery_items ORDER BY created_at DESC`).all<GalleryItem>(),
     env.DB.prepare(`SELECT email, display_name AS displayName, created_at AS createdAt FROM memorial_editors ORDER BY created_at ASC`).all<{ email: string; displayName: string | null; createdAt: string }>(),
-    env.DB.prepare(`SELECT id, name, relationship, title, story, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo3_name AS photo3Name, photo_key AS photoKey, photo_name AS photoName,
+    env.DB.prepare(`SELECT id, name, relationship, title, story, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo3_name AS photo3Name, photo4_name AS photo4Name, photo5_name AS photo5Name, photo_key AS photoKey, photo_name AS photoName,
                            video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, pdf_name AS pdfName, social_url AS socialUrl
                     FROM memories WHERE status = 'approved' ORDER BY created_at DESC, id DESC`).all<PublishedMemory>(),
   ]) : [{ results: [] }, { results: [] }, { results: [] }, { results: [] }];

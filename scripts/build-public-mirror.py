@@ -22,7 +22,7 @@ QUERIES = {
     "gallery": """SELECT id, kind, title, caption, object_key AS objectKey,
                   external_url AS externalUrl, created_at AS createdAt FROM gallery_items
                   WHERE published = 1 ORDER BY created_at DESC, id DESC""",
-    "memories": """SELECT id, name, relationship, title, story, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo3_name AS photo3Name, photo_key AS photoKey,
+    "memories": """SELECT id, name, relationship, title, story, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo3_name AS photo3Name, photo4_name AS photo4Name, photo5_name AS photo5Name, photo_key AS photoKey,
                    video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey,
                    social_url AS socialUrl, created_at AS createdAt FROM memories
                    WHERE status = 'approved' ORDER BY CASE WHEN id = 11 THEN 0 WHEN id = 12 THEN 1 ELSE 2 END, created_at ASC, id ASC""",
@@ -65,7 +65,7 @@ def public_keys(content, gallery, memories):
         if item.get("kind") == "image":
             add("/api/gallery/photos", item.get("objectKey"))
     for memory in memories:
-        for field in ("photoKey", "photo2Key", "photo3Key"):
+        for field in ("photoKey", "photo2Key", "photo3Key", "photo4Key", "photo5Key"):
             add("/api/photos", memory.get(field))
         add("/api/memory-videos", memory.get("videoKey"))
         add("/api/memory-files", memory.get("pdfKey"))
@@ -122,7 +122,12 @@ def main():
     # Keep the current public edition available during that short interval.
     columns = {column['name'] for column in query('PRAGMA table_info(memories)')}
     if 'photo2_key' not in columns:
-        QUERIES['memories'] = QUERIES['memories'].replace('photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo3_name AS photo3Name, ', '')
+        QUERIES['memories'] = QUERIES['memories'].replace('photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo3_name AS photo3Name, photo4_name AS photo4Name, photo5_name AS photo5Name, ', '')
+    for slot in (4, 5):
+        if f"photo{slot}_key" not in columns:
+            for field in ("key", "name"):
+                alias = "Key" if field == "key" else "Name"
+                QUERIES["memories"] = QUERIES["memories"].replace(f"photo{slot}_{field} AS photo{slot}{alias}, ", "")
     (OUTPUT / "api").mkdir(parents=True, exist_ok=True)
     (OUTPUT / "media").mkdir(parents=True, exist_ok=True)
     rows = {name: query(sql) for name, sql in QUERIES.items() if name not in ("tree_total", "restoration_total")}

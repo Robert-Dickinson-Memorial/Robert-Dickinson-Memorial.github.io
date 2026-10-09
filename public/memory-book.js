@@ -15,7 +15,7 @@ export async function renderMemoryBook(target, data, options={}) {
   const pages=[],toc=[],failed=[],stamp=options.generatedAt||new Date().toISOString();let current,body,flowKind='',flowLabel='';
   target.className='keepsake-book';target.replaceChildren();target.dataset.ready='false';
   const sizes=new Map();
-  const sources=[...Object.keys(content.siteAssets||{}).map(asset),...(content.lifePhotos||[]).map(p=>media('/api/life-photos',p.objectKey)),...gallery.filter(p=>p.kind==='image'&&p.objectKey).map(p=>media('/api/gallery/photos',p.objectKey)),...memories.flatMap(m=>[m.photoKey,m.photo2Key,m.photo3Key].filter(Boolean).map(key=>media('/api/photos',key)))];
+  const sources=[...Object.keys(content.siteAssets||{}).map(asset),...(content.lifePhotos||[]).map(p=>media('/api/life-photos',p.objectKey)),...gallery.filter(p=>p.kind==='image'&&p.objectKey).map(p=>media('/api/gallery/photos',p.objectKey)),...memories.flatMap(m=>[m.photoKey,m.photo2Key,m.photo3Key, m.photo4Key, m.photo5Key].filter(Boolean).map(key=>media('/api/photos',key)))];
   await Promise.all([...new Set(sources.filter(Boolean))].map(src=>new Promise(resolve=>{const im=new Image();const timer=setTimeout(resolve,30000);im.onload=()=>{clearTimeout(timer);sizes.set(src,{width:im.naturalWidth,height:im.naturalHeight});resolve();};im.onerror=()=>{clearTimeout(timer);resolve();};im.src=options.imageUrl?options.imageUrl(src):src;})));
   // Request the actual characters before measuring; font loading must not repaginate later.
   await Promise.all([document.fonts.load('16px "Memorial CJK"',JSON.stringify(data)),document.fonts.load('400 16px "Book Serif"'),document.fonts.load('700 21px "Book Serif"'),document.fonts.load('italic 400 23px "Book Serif"')]);
@@ -166,7 +166,7 @@ export async function renderMemoryBook(target, data, options={}) {
   // Preserve the public memorial's editorial ordering, including pinned contributors.
   for(const memory of memories){
     page(memory.name,'kb-memory-page');const memoryFirstPage=current;bodyGroup(el('p',memory.relationship||c('book.memoryPrefix','A memory from'),'kb-kicker'),el('h2',memory.title||memory.name),el('p',memory.name,'kb-byline'));
-    for(const [index,key] of [memory.photoKey,memory.photo2Key,memory.photo3Key].entries())if(key)append(figure(media('/api/photos',key),'',`${c('book.memoryPrefix','A memory from')} ${memory.name}`,index===0?'kb-memory-photo':'kb-gallery-image'));
+    for(const [index,key] of [memory.photoKey,memory.photo2Key,memory.photo3Key, memory.photo4Key, memory.photo5Key].entries())if(key)append(figure(media('/api/photos',key),'',`${c('book.memoryPrefix','A memory from')} ${memory.name}`,index===0?'kb-memory-photo':'kb-gallery-image'));
     const storyStart=pages.length;prose(memory.story,'kb-drop-cap');balanceTail(storyStart);
     if(pages.length>storyStart&&memory.photoKey){const last=body.lastElementChild,bottom=last?last.offsetTop+last.offsetHeight:0;if(body.clientHeight-bottom>300){const closingPhoto=figure(media('/api/photos',memory.photoKey),'',memory.name,'kb-memory-closing-photo');body.append(closingPhoto);if(!fits())closingPhoto.remove();}}
     if(memory.pdfKey||memory.videoKey||memory.socialUrl){

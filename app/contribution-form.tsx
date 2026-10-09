@@ -65,7 +65,7 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
     setMessage("");
     const form = new FormData(event.currentTarget);
     const photos = form.getAll("photo").filter((file): file is File => file instanceof File && file.size > 0);
-    if (photos.length > 3 || photos.some(file => file.size > 8 * 1024 * 1024)) { setStatus("error"); setMessage("Choose up to three photos, each up to 8 MB."); return; }
+    if (photos.length > 5 || photos.some(file => file.size > 8 * 1024 * 1024)) { setStatus("error"); setMessage("Choose up to five photos, each up to 8 MB."); return; }
     const story = String(form.get("story") || "").trim();
     const socialUrl = String(form.get("socialUrl") || "").trim();
     const pdf = form.get("pdf");
@@ -120,7 +120,7 @@ export default function ContributionForm({ copy }: { copy: Record<string, string
       </label>
       <label className="photo-field">
         <ImagePlus size={22} aria-hidden="true" />
-        <span><strong>{copy["memories.formPhoto"]}</strong><small>{copy["memories.formPhotoHelp"]}</small></span>
+        <span><strong>{["Add a photo", "Add up to three photos"].includes(copy["memories.formPhoto"]) ? "Add up to five photos" : copy["memories.formPhoto"]}</strong><small>{["JPG, PNG or WebP · up to 8 MB", "Up to 3 photos · JPG, PNG or WebP · 8 MB each"].includes(copy["memories.formPhotoHelp"]) ? "Up to 5 photos · JPG, PNG or WebP · 8 MB each" : copy["memories.formPhotoHelp"]}</small></span>
         <input name="photo" type="file" multiple accept="image/jpeg,image/png,image/webp" />
       </label>
       <label className="photo-field video-field">

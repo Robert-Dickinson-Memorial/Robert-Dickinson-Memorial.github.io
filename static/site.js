@@ -530,8 +530,8 @@ function initializeMemorialPage() {
     const { content } = await getJson("/api/content");
     if (!content || typeof content !== "object") return;
     editableCopy = { ...content.pageCopy };
-    if (editableCopy["memories.formPhoto"] === "Add a photo") editableCopy["memories.formPhoto"] = "Add up to three photos";
-    if (editableCopy["memories.formPhotoHelp"] === "JPG, PNG or WebP · up to 8 MB") editableCopy["memories.formPhotoHelp"] = "Up to 3 photos · JPG, PNG or WebP · 8 MB each";
+    if (["Add a photo", "Add up to three photos"].includes(editableCopy["memories.formPhoto"])) editableCopy["memories.formPhoto"] = "Add up to five photos";
+    if (["JPG, PNG or WebP · up to 8 MB", "Up to 3 photos · JPG, PNG or WebP · 8 MB each"].includes(editableCopy["memories.formPhotoHelp"])) editableCopy["memories.formPhotoHelp"] = "Up to 5 photos · JPG, PNG or WebP · 8 MB each";
     applyTheme(content);
     applyPageCopy(editableCopy);
     applySiteAssets(content);
@@ -713,6 +713,7 @@ function eventDescriptionParts(description) {
     target.append(node("a",{className:"gallery-book-link",text:(editableCopy["gallery.bookButton"]||"Turn photos into a book")+" →",attrs:{href:"/memory-book/"}}));
   }
 
+  let memorySortOrder = "oldest";
   let memorySnippetObserver;
   cleanups.push(() => memorySnippetObserver?.disconnect());
   async function hydrateMemories() {
@@ -723,6 +724,27 @@ function eventDescriptionParts(description) {
       getJson("/api/content"),
     ]);
     const copy = content.pageCopy || editableCopy || {};
+    let sortControl = pageDocument.querySelector("[data-memory-sort]");
+    if (!sortControl) {
+      const label = node("label", { className: "memory-sort", text: "Sort memories " });
+      sortControl = node("select", { attrs: { "data-memory-sort": "", "aria-label": "Sort memories" } });
+      sortControl.append(node("option", { text: "Oldest to newest", attrs: { value: "oldest" } }), node("option", { text: "Newest to oldest", attrs: { value: "newest" } }));
+      sortControl.value = memorySortOrder;
+      sortControl.addEventListener("change", () => {
+        memorySortOrder = sortControl.value;
+        const priority = memory => Number(memory.id) === 11 ? 0 : Number(memory.id) === 12 ? 1 : 2;
+        const direction = memorySortOrder === "newest" ? -1 : 1;
+        const cards = [...wallTarget.querySelectorAll(".memory-card")];
+        cards.sort((left, right) => {
+          const a = { id: left.id.replace("memory-", ""), createdAt: left.dataset.createdAt };
+          const b = { id: right.id.replace("memory-", ""), createdAt: right.dataset.createdAt };
+          return priority(a) - priority(b) || direction * (String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || Number(a.id) - Number(b.id));
+        });
+        wallTarget.append(...cards);
+      });
+      label.append(sortControl);
+      wallTarget.before(label);
+    }
 
     if (wallTarget instanceof HTMLElement) {
       if (!memories.length) {
@@ -732,10 +754,10 @@ function eventDescriptionParts(description) {
         const memoryPriority = (memory) => Number(memory.id) === 11 ? 0 : Number(memory.id) === 12 ? 1 : 2;
         const orderedMemories = [...memories].sort((a, b) =>
           memoryPriority(a) - memoryPriority(b) ||
-          String(a.createdAt || "").localeCompare(String(b.createdAt || "")) ||
-          Number(a.id || 0) - Number(b.id || 0));
+          (memorySortOrder === "newest" ? -1 : 1) * (String(a.createdAt || "").localeCompare(String(b.createdAt || "")) ||
+          Number(a.id || 0) - Number(b.id || 0)));
         wallTarget.replaceChildren(...orderedMemories.map((memory) => {
-          const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}` } });
+          const article = node("article", { className: "memory-card", attrs: { id: `memory-${memory.id}`, "data-created-at": memory.createdAt || "" } });
           const author = node("header", { className: "memory-author" });
           const initials = memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("");
           const identity = node("div");
@@ -746,7 +768,7 @@ function eventDescriptionParts(description) {
           if (memory.videoKey) {
             media.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
           } else {
-            for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean)) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+            for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter(Boolean)) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
           }
           if (media.childElementCount) article.append(media);
           article.append(node("h3", { text: memory.title }));
@@ -765,7 +787,7 @@ function eventDescriptionParts(description) {
               if (memory.videoKey) {
                 readerMedia.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-reader-video", "aria-label": memory.title } }));
               } else {
-                [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).forEach((key, index) => {
+                [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter(Boolean).forEach((key, index) => {
                   const src = objectUrl("/api/photos", key);
                   const link = node("a", { className: "memory-reader-photo-link", attrs: { href: src, target: "_blank", rel: "noopener noreferrer", "aria-label": `Open photo ${index + 1} at full size` } });
                   link.append(node("img", { attrs: { src, alt: `Photo ${index + 1} shared by ${memory.name}`, loading: "lazy" } }));
@@ -1081,7 +1103,7 @@ function eventDescriptionParts(description) {
           : node("img", { attrs: { src: url, alt: `Shared by ${memory.name}` } }));
       }
     }
-    for (const [index, name] of [memory.photoName, memory.photo2Name, memory.photo3Name].entries()) {
+    for (const [index, name] of [memory.photoName, memory.photo2Name, memory.photo3Name, memory.photo4Name, memory.photo5Name].entries()) {
       if (memory.videoName || !name || (index === 0 && mediaKind === "photo")) continue;
       const res = await previewRequest(`/api/memory-preview?id=${editAccess.id}&media=${index === 0 ? "photo" : "photo" + (index + 1)}`);
       if (res.ok) {
@@ -1148,7 +1170,7 @@ function eventDescriptionParts(description) {
     const formData = new FormData(form);
     if (editAccess) { formData.set("editId", String(editAccess.id)); formData.set("editToken", editAccess.token); }
     const photos = formData.getAll("photo").filter(file => file instanceof File && file.size > 0);
-    if (photos.length > 3 || photos.some(file => file.size > 8 * 1024 * 1024)) { showMessage("Choose up to three photos, each up to 8 MB."); return; }
+    if (photos.length > 5 || photos.some(file => file.size > 8 * 1024 * 1024)) { showMessage("Choose up to five photos, each up to 8 MB."); return; }
     const story = String(formData.get("story") || "").trim();
     const socialUrl = String(formData.get("socialUrl") || "").trim();
     const video = formData.get("video");

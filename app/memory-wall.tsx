@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink, FileText, Quote } from "lucide-react";
 
-type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
+type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
 
 // Pin Liming Zhou and Haishan Chen; everyone else follows original upload time.
 const memoryPriority = (memory: Memory) => memory.id === 11 ? 0 : memory.id === 12 ? 1 : 2;
 
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
+  const [sortOrder, setSortOrder] = useState("oldest");
   const [loaded, setLoaded] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -62,17 +63,19 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   }
 
   return (
+    <>
+    <label className="memory-sort">Sort memories <select aria-label="Sort memories" value={sortOrder} onChange={event => setSortOrder(event.target.value)}><option value="oldest">Oldest to newest</option><option value="newest">Newest to oldest</option></select></label>
     <div className="memory-grid" ref={gridRef}>
-      {[...memories].sort((a, b) => memoryPriority(a) - memoryPriority(b) || (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id).map((memory) => (
+      {[...memories].sort((a, b) => memoryPriority(a) - memoryPriority(b) || (sortOrder === "newest" ? -1 : 1) * ((a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id)).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
           <header className="memory-author">
             <span className="memory-author-mark" aria-hidden="true">{memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("")}</span>
             <div><strong>{memory.name}</strong><span>{memory.relationship}</span></div>
           </header>
-          {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key) && <div className="memory-card-media">
+          {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key || memory.photo4Key || memory.photo5Key) && <div className="memory-card-media">
           {memory.videoKey
             ? <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />
-            : [memory.photoKey, memory.photo2Key, memory.photo3Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
+            : [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
           </div>}
           <h3>{memory.title}</h3>
           {memory.story && <div className="memory-story-space"><p className="memory-story">{memory.story}</p>
@@ -81,10 +84,10 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
               <button type="button" className="memory-reader-close" onClick={(event) => event.currentTarget.closest("dialog")?.close()} aria-label="Close full memory">Close ×</button>
               <p className="memory-reader-author">{memory.name} · {memory.relationship}</p>
               <h2 id={`memory-reader-title-${memory.id}`}>{memory.title}</h2>
-              {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key) && <div className="memory-reader-media">
+              {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key || memory.photo4Key || memory.photo5Key) && <div className="memory-reader-media">
                 {memory.videoKey
                   ? <video className="memory-reader-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />
-                  : [memory.photoKey, memory.photo2Key, memory.photo3Key].filter((key): key is string => Boolean(key)).map((key, index) => {
+                  : [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter((key): key is string => Boolean(key)).map((key, index) => {
                       const src = `/api/photos/${key.split("/").map(encodeURIComponent).join("/")}`;
                       return <a className="memory-reader-photo-link" href={src} target="_blank" rel="noopener noreferrer" key={key} aria-label={`Open photo ${index + 1} at full size`}>
                         <img src={src} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />
@@ -101,5 +104,6 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
         </article>
       ))}
     </div>
+    </>
   );
 }

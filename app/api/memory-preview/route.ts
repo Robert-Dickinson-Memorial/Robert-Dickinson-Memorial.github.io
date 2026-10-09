@@ -12,10 +12,10 @@ export async function GET(request: Request) {
   if (!memory) return publicJson({ error: "This private preview is unavailable. It may already have been reviewed." }, { status: 404 });
   const kind = url.searchParams.get("media");
   if (!kind) {
-    const { photo2Key: _photo2Key, photo3Key: _photo3Key, photoKey: _photoKey, pdfKey: _pdfKey, videoKey: _videoKey, ...safe } = memory;
+    const { photo2Key: _photo2Key, photo3Key: _photo3Key, photo4Key: _photo4Key, photo5Key: _photo5Key, photoKey: _photoKey, pdfKey: _pdfKey, videoKey: _videoKey, ...safe } = memory;
     return publicJson({ memory: safe }, { headers: { "cache-control": "no-store" } });
   }
-  const key = kind === "photo2" ? memory.photo2Key : kind === "photo3" ? memory.photo3Key : kind === "photo" ? memory.photoKey : kind === "pdf" ? memory.pdfKey : kind === "video" ? memory.videoKey : null;
+  const key = kind === "photo4" ? memory.photo4Key : kind === "photo5" ? memory.photo5Key : kind === "photo2" ? memory.photo2Key : kind === "photo3" ? memory.photo3Key : kind === "photo" ? memory.photoKey : kind === "pdf" ? memory.pdfKey : kind === "video" ? memory.videoKey : null;
   if (!key || !env.BUCKET) return publicJson({ error: "Attachment not found." }, { status: 404 });
   const object = await env.BUCKET.get(key);
   if (!object) return publicJson({ error: "Attachment not found." }, { status: 404 });

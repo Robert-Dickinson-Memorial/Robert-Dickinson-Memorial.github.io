@@ -34,6 +34,15 @@ try {
     await page.goto(origin + '/memories/', {waitUntil:'domcontentloaded'});
     await page.waitForFunction(() => Boolean(window[Symbol.for('rd-memorial.memory-reader-media.v1')]), null, {timeout:30000});
     await page.locator('.memory-card .memory-read-more').first().waitFor({timeout:45000});
+    const sort = page.getByRole('combobox', {name:'Sort memories'});
+    for (const order of ['newest', 'oldest']) {
+      await sort.selectOption(order);
+      const rows = await page.locator('.memory-card').evaluateAll(cards => cards.map(card => ({id:Number(card.id.replace('memory-','')), date:card.dataset.createdAt})));
+      assert.deepEqual(rows.slice(0,2).map(row=>row.id), [11,12], 'Pinned memories stay first in both sort orders');
+      const chronological = [...rows.slice(2)].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+      if(order==='newest')chronological.reverse();
+      assert.deepEqual(rows.slice(2), chronological, 'All other memories follow the selected upload order');
+    }
     const photoId = await page.evaluate(() => {
       const cards = [...document.querySelectorAll('.memory-card')];
       const eligible = c => c.querySelector('.memory-read-more') && c.querySelector('.memory-card-media img') && !c.querySelector('.memory-card-media video');
@@ -78,7 +87,7 @@ try {
     await page.keyboard.press('Escape');
     await reader.waitFor({state:'detached'});
     await page.waitForFunction(id => document.activeElement?.closest('.memory-card')?.id === id, photoId, {timeout:5000});
-    assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('memory-media-reading')),false);
+    await page.waitForFunction(()=>!document.documentElement.classList.contains('memory-media-reading'), null, {timeout:5000});
     // Preserve the previously requested video-only cover rule.
     const videoId = await page.evaluate(()=>[...document.querySelectorAll('.memory-card')].find(c=>c.querySelector('.memory-card-media video') && c.querySelector('.memory-read-more'))?.id);
     if (videoId) {

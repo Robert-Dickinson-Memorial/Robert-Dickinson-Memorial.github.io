@@ -12,8 +12,8 @@ export async function GET(request: Request, context: { params: Promise<{ key: st
   const { key } = await context.params;
   const objectKey = key.join("/");
   const pending = await env.DB.prepare(
-    "SELECT id FROM memories WHERE (photo_key = ? OR photo2_key = ? OR photo3_key = ?) AND status = ? LIMIT 1"
-  ).bind(objectKey, objectKey, objectKey, "pending").first();
+    "SELECT id FROM memories WHERE (photo_key = ? OR photo2_key = ? OR photo3_key = ? OR photo4_key = ? OR photo5_key = ?) AND status = ? LIMIT 1"
+  ).bind(objectKey, objectKey, objectKey, objectKey, objectKey, "pending").first();
   if (!pending) return new Response("Not found", { status: 404 });
 
   const object = await env.BUCKET.get(objectKey);

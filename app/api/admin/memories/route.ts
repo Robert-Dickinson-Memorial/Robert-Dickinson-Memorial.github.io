@@ -76,14 +76,14 @@ export async function PATCH(request: Request) {
 
   const status = action === "approve" ? "approved" : "rejected";
   const memory = await env.DB.prepare(
-    "SELECT photo2_key AS photo2Key, photo3_key AS photo3Key, photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey FROM memories WHERE id = ? AND status = ?"
-  ).bind(id, "pending").first<{ photo2Key: string | null; photo3Key: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null }>();
+    "SELECT photo2_key AS photo2Key, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey FROM memories WHERE id = ? AND status = ?"
+  ).bind(id, "pending").first<{ photo2Key: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null }>();
   if (action === "approve" && memory?.videoKey) {
     if (env.BUCKET) {
-      for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key]) if (key) await env.BUCKET.delete(key);
+      for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key]) if (key) await env.BUCKET.delete(key);
     }
     const result = await env.DB.prepare(
-      "UPDATE memories SET status = ?, photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL WHERE id = ? AND status = ?"
+      "UPDATE memories SET status = ?, photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL, photo4_key = NULL, photo4_name = NULL, photo5_key = NULL, photo5_name = NULL WHERE id = ? AND status = ?"
     ).bind(status, id, "pending").run();
     if (!result.meta.changes) {
       return Response.json({ error: "This submission is no longer pending." }, { status: 409 });
@@ -97,10 +97,10 @@ export async function PATCH(request: Request) {
     }
   }
   if (action === "reject" && env.BUCKET) {
-    for (const key of [memory?.photoKey, memory?.photo2Key, memory?.photo3Key]) if (key) await env.BUCKET.delete(key);
+    for (const key of [memory?.photoKey, memory?.photo2Key, memory?.photo3Key, memory?.photo4Key, memory?.photo5Key]) if (key) await env.BUCKET.delete(key);
     if (memory?.videoKey) await env.BUCKET.delete(memory.videoKey);
     if (memory?.pdfKey) await env.BUCKET.delete(memory.pdfKey);
-    await env.DB.prepare("UPDATE memories SET photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL, pdf_key = NULL, pdf_name = NULL, video_key = NULL, video_name = NULL WHERE id = ?").bind(id).run();
+    await env.DB.prepare("UPDATE memories SET photo_key = NULL, photo_name = NULL, photo2_key = NULL, photo2_name = NULL, photo3_key = NULL, photo3_name = NULL, photo4_key = NULL, photo4_name = NULL, photo5_key = NULL, photo5_name = NULL, pdf_key = NULL, pdf_name = NULL, video_key = NULL, video_name = NULL WHERE id = ?").bind(id).run();
   }
   return Response.json({ ok: true, id, status });
 }
@@ -115,19 +115,19 @@ export async function DELETE(request: Request) {
 
   const id = Number(new URL(request.url).searchParams.get("id"));
   const mode = new URL(request.url).searchParams.get("mode") || "all";
-  if (!Number.isInteger(id) || id < 1 || !["text", "photo", "photo2", "photo3", "pdf", "video", "link", "all"].includes(mode)) {
+  if (!Number.isInteger(id) || id < 1 || !["text", "photo", "photo2", "photo3", "photo4", "photo5", "pdf", "video", "link", "all"].includes(mode)) {
     return Response.json({ error: "Invalid memory." }, { status: 400 });
   }
 
   const memory = await env.DB.prepare(
-    "SELECT story, photo2_key AS photo2Key, photo3_key AS photo3Key, photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl FROM memories WHERE id = ? AND status = 'approved'"
-  ).bind(id).first<{ story: string; photo2Key: string | null; photo3Key: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null }>();
+    "SELECT story, photo2_key AS photo2Key, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo_key AS photoKey, video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl FROM memories WHERE id = ? AND status = 'approved'"
+  ).bind(id).first<{ story: string; photo2Key: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null }>();
   if (!memory) {
     return Response.json({ error: "Published memory not found." }, { status: 404 });
   }
 
   if (mode === "text") {
-    const photoKeys = [memory.photoKey, memory.photo2Key, memory.photo3Key].filter((key): key is string => Boolean(key));
+    const photoKeys = [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter((key): key is string => Boolean(key));
     await env.DB.batch([
       ...photoKeys.map(key => env.DB.prepare(
         "INSERT INTO gallery_items (kind, title, caption, object_key, external_url, published, created_at) VALUES ('image', 'Community photograph', NULL, ?, NULL, 1, ?)"
@@ -139,8 +139,8 @@ export async function DELETE(request: Request) {
     return Response.json({ ok: true, id, deleted: "text" });
   }
 
-  if (["photo", "photo2", "photo3"].includes(mode)) {
-    const key = mode === "photo2" ? memory.photo2Key : mode === "photo3" ? memory.photo3Key : memory.photoKey;
+  if (["photo", "photo2", "photo3", "photo4", "photo5"].includes(mode)) {
+    const key = mode === "photo4" ? memory.photo4Key : mode === "photo5" ? memory.photo5Key : mode === "photo2" ? memory.photo2Key : mode === "photo3" ? memory.photo3Key : memory.photoKey;
     if (!key) return Response.json({ error: "This memory has no photo in that slot." }, { status: 404 });
     const keyColumn = mode === "photo" ? "photo_key" : `${mode}_key`;
     const nameColumn = mode === "photo" ? "photo_name" : `${mode}_name`;
@@ -171,7 +171,7 @@ export async function DELETE(request: Request) {
     return Response.json({ ok: true, id, deleted: "link" });
   }
 
-  for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key]) if (key) await env.BUCKET.delete(key);
+  for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key]) if (key) await env.BUCKET.delete(key);
   if (memory.videoKey) await env.BUCKET.delete(memory.videoKey);
     if (memory.pdfKey) await env.BUCKET.delete(memory.pdfKey);
   await env.DB.prepare("DELETE FROM memories WHERE id = ? AND status = 'approved'").bind(id).run();
