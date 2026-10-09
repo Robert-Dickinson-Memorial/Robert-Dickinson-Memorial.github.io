@@ -105,9 +105,9 @@ jobs:
               raise SystemExit(f"Missing public memory: {' '.join(tokens)}")
 
           zong = find_person(("zong", "liang", "yang"))
-          kaicun = find_person(("kaicun", "wang"))
-          if zong >= kaicun:
-              raise SystemExit(f"Incorrect memory order: Zong-Liang Yang index {zong}, Kaicun Wang index {kaicun}")
+          order = [(str(item.get("createdAt") or ""), int(item["id"])) for item in data]
+          if order != sorted(order):
+              raise SystemExit("Memories are not ordered by original upload time, earliest first")
 
           zong_story = str(data[zong].get("story") or "")
           caption = re.compile(r"(?im)^\s*(?:fig(?:ure)?\.?|photo|plate)\s*(?:\d+)?\s*[:.\-)–—]?\s+")
@@ -175,11 +175,11 @@ jobs:
                   names = [str(item.get("name") or "") for item in payload["memories"]]
                   normalize = lambda value: re.sub(r"[^a-z]+", " ", value.lower()).strip()
                   zong = next(i for i,n in enumerate(names) if {"zong","liang","yang"} <= set(normalize(n).split()))
-                  kaicun = next(i for i,n in enumerate(names) if {"kaicun","wang"} <= set(normalize(n).split()))
                   if 'path === "/api/memories"' not in js:
                       raise AssertionError("published site.js is not the live-first memories renderer")
-                  if zong >= kaicun:
-                      raise AssertionError(f"published order wrong: Zong={zong}, Kaicun={kaicun}")
+                  order = [(str(item.get("createdAt") or ""), int(item["id"])) for item in payload["memories"]]
+                  if order != sorted(order):
+                      raise AssertionError("published memories are not earliest-upload-first")
                   story = str(payload["memories"][zong].get("story") or "")
                   if re.search(r"(?im)^\s*(?:fig(?:ure)?\.?|photo|plate)\s*(?:\d+)?\s*[:.\-)–—]?\s+", story):
                       raise AssertionError("published Zong story still contains a figure/photo caption")

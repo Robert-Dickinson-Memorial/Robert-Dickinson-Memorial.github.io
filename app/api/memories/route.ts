@@ -46,15 +46,7 @@ export async function GET() {
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
               created_at AS createdAt
        FROM memories WHERE status = ?
-       ORDER BY CASE
-         WHEN id = 11 THEN 0
-         WHEN lower(trim(name)) IN ('haishan chen', 'hanshan chen') THEN 1
-         WHEN lower(trim(name)) = 'david schimel' THEN 2
-         WHEN lower(trim(name)) = 'xubin zeng' THEN 3
-         WHEN lower(name) LIKE '%zong%liang%yang%' THEN 4
-         WHEN lower(trim(name)) = 'kaicun wang' THEN 5
-         ELSE 6 END,
-         created_at ASC, id ASC`
+       ORDER BY created_at ASC, id ASC`
     ).bind("approved").all();
     return publicJson({ memories: result.results }, { headers: { "cache-control": "no-store, max-age=0" } });
   } catch {
