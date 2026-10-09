@@ -4307,7 +4307,11 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
  .event-feature-copy { padding:24px; }
 }
 
-.memory-sort { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; margin:0 0 1.5rem; padding:1.1rem 1.4rem; border:2px solid #527d70; border-radius:.75rem; background:#e9f2ed; color:#163b35; font-size:1.1rem; font-weight:700; }
-.memory-sort select { padding:.75rem 1rem; min-width:220px; border:2px solid #527d70; border-radius:.5rem; color:#163b35; background:#fff; font:inherit; cursor:pointer; }
-.memory-sort select:focus-visible { outline:3px solid #a66b31; outline-offset:3px; }
-@media(max-width:540px) { .memory-sort select { width:100%; } }
+/* Simple, visible sorting choices without a surrounding panel. */
+.memory-sort { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.35rem 1.25rem; margin:0 0 1.5rem; }
+.memory-sort-label { color:#65716b; font-size:.9rem; }
+.memory-sort-button { padding:.65rem 0; border:0; border-bottom:3px solid transparent; background:transparent; color:#56665e; font:inherit; font-size:1rem; font-weight:600; cursor:pointer; }
+.memory-sort-button[aria-pressed="true"] { color:#163b35; border-bottom-color:#163b35; }
+.memory-sort-button:hover { color:#163b35; border-bottom-color:#a6b9ae; }
+.memory-sort-button:focus-visible { outline:2px solid #a66b31; outline-offset:4px; border-radius:2px; }
+@media(max-width:540px) { .memory-sort { justify-content:flex-start; gap:.3rem 1rem; } .memory-sort-label { flex-basis:100%; } }

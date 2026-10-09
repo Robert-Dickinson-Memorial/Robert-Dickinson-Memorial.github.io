@@ -724,26 +724,27 @@ function eventDescriptionParts(description) {
       getJson("/api/content"),
     ]);
     const copy = content.pageCopy || editableCopy || {};
-    let sortControl = pageDocument.querySelector("[data-memory-sort]");
-    if (!sortControl) {
-      const label = node("label", { className: "memory-sort", text: "↕ Sort posts by upload order " });
-      sortControl = node("select", { attrs: { "data-memory-sort": "", "aria-label": "Sort memories" } });
-      sortControl.append(node("option", { text: "Oldest to newest", attrs: { value: "oldest" } }), node("option", { text: "Newest to oldest", attrs: { value: "newest" } }));
-      sortControl.value = memorySortOrder;
-      sortControl.addEventListener("change", () => {
-        memorySortOrder = sortControl.value;
-        const priority = memory => Number(memory.id) === 11 ? 0 : Number(memory.id) === 12 ? 1 : 2;
-        const direction = memorySortOrder === "newest" ? -1 : 1;
-        const cards = [...wallTarget.querySelectorAll(".memory-card")];
-        cards.sort((left, right) => {
-          const a = { id: left.id.replace("memory-", ""), createdAt: left.dataset.createdAt };
-          const b = { id: right.id.replace("memory-", ""), createdAt: right.dataset.createdAt };
-          return direction * (priority(a) - priority(b) || String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || Number(a.id) - Number(b.id));
+    if (!pageDocument.querySelector("[data-memory-sort]")) {
+      const controls = node("div", { className: "memory-sort", attrs: { "data-memory-sort": "", role: "group", "aria-label": "Sort memories" } });
+      controls.append(node("span", { className: "memory-sort-label", text: "Sort by" }));
+      for (const [value, text] of [["oldest", "Oldest to newest"], ["newest", "Newest to oldest"]]) {
+        const button = node("button", { className: "memory-sort-button", text, attrs: { type: "button", "aria-pressed": String(memorySortOrder === value) } });
+        button.addEventListener("click", () => {
+          memorySortOrder = value;
+          controls.querySelectorAll("button").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+          const priority = memory => Number(memory.id) === 11 ? 0 : Number(memory.id) === 12 ? 1 : 2;
+          const direction = value === "newest" ? -1 : 1;
+          const cards = [...wallTarget.querySelectorAll(".memory-card")];
+          cards.sort((left, right) => {
+            const a = { id: left.id.replace("memory-", ""), createdAt: left.dataset.createdAt };
+            const b = { id: right.id.replace("memory-", ""), createdAt: right.dataset.createdAt };
+            return direction * (priority(a) - priority(b) || String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || Number(a.id) - Number(b.id));
+          });
+          wallTarget.append(...cards);
         });
-        wallTarget.append(...cards);
-      });
-      label.append(sortControl);
-      wallTarget.before(label);
+        controls.append(button);
+      }
+      wallTarget.before(controls);
     }
 
     if (wallTarget instanceof HTMLElement) {

@@ -65,7 +65,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
 
   return (
     <>
-    <label className="memory-sort">↕ Sort posts by upload order <select aria-label="Sort memories" value={sortOrder} onChange={event => setSortOrder(event.target.value)}><option value="oldest">Oldest to newest</option><option value="newest">Newest to oldest</option></select></label>
+    <div className="memory-sort" role="group" aria-label="Sort memories"><span className="memory-sort-label">Sort by</span>{[["oldest", "Oldest to newest"], ["newest", "Newest to oldest"]].map(([value, label]) => <button key={value} type="button" className="memory-sort-button" aria-pressed={sortOrder === value} onClick={() => setSortOrder(value)}>{label}</button>)}</div>
     <div className="memory-grid" ref={gridRef}>
       {[...memories].sort((a, b) => (sortOrder === "newest" ? -1 : 1) * (memoryPriority(a) - memoryPriority(b) || (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id)).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>

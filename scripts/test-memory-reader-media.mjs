@@ -34,9 +34,11 @@ try {
     await page.goto(origin + '/memories/', {waitUntil:'domcontentloaded'});
     await page.waitForFunction(() => Boolean(window[Symbol.for('rd-memorial.memory-reader-media.v1')]), null, {timeout:30000});
     await page.locator('.memory-card .memory-read-more').first().waitFor({timeout:45000});
-    const sort = page.getByRole('combobox', {name:'Sort memories'});
+    const sort = page.getByRole('group', {name:'Sort memories'});
     for (const order of ['newest', 'oldest']) {
-      await sort.selectOption(order);
+      const choice = sort.getByRole('button', {name:order==='newest'?'Newest to oldest':'Oldest to newest'});
+      await choice.click();
+      assert.equal(await choice.getAttribute('aria-pressed'),'true');
       const rows = await page.locator('.memory-card').evaluateAll(cards => cards.map(card => ({id:Number(card.id.replace('memory-','')), date:card.dataset.createdAt})));
       const special = rows.filter(row=>[11,12].includes(row.id)).sort((a,b)=>a.id-b.id);
       const chronological = rows.filter(row=>![11,12].includes(row.id)).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
