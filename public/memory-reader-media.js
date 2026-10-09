@@ -112,7 +112,7 @@ function installMemoryReaderMedia() {
       image.alt = photos[index].alt;
       image.src = photos[index].src;
       original.href = photos[index].src;
-      counter.textContent = `Photo ${index + 1} of ${photos.length}`;
+      counter.textContent = `Photo ${index + 1} of ${photos.length}` + (photos[index].caption ? ` · ${photos[index].caption}` : "");
       previous.disabled = index === 0;
       next.disabled = index === photos.length - 1;
       minus.disabled = true;
@@ -178,7 +178,7 @@ function installMemoryReaderMedia() {
     const video = media?.querySelector("video");
     // Video is the sole visual for video posts, including Liming Zhou's post.
     const photos = video ? [] : [...(media?.querySelectorAll("img") || [])]
-      .map((img, i) => ({ src: safeUrl(img.currentSrc || img.src), alt: img.alt || `Shared photograph ${i + 1}` }))
+      .map((img, i) => ({ src: safeUrl(img.currentSrc || img.src), alt: img.alt || `Shared photograph ${i + 1}`, caption: img.dataset.photoCaption || "" }))
       .filter((item, i, list) => item.src && list.findIndex(other => other.src === item.src) === i);
     const dialog = el("dialog", "memory-reader memory-reader--illustrated");
     const titleId = `memory-illustrated-title-${++sequence}`;
@@ -208,8 +208,8 @@ function installMemoryReaderMedia() {
         img.decoding = "async";
         zoom.append(img);
         zoom.onclick = () => openPhoto(photos, i, zoom);
-        // No PDF captions or filenames are injected into the story.
-        const caption = el("figcaption", "memory-story-photo-caption", `Photo ${i + 1} of ${photos.length} · Click to enlarge`);
+        // Only captions explicitly saved by an editor accompany the photograph.
+        const caption = el("figcaption", "memory-story-photo-caption", photo.caption || `Photo ${i + 1} of ${photos.length} · Click to enlarge`);
         figure.append(zoom, caption);
         gallery.append(figure);
       });

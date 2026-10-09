@@ -22,7 +22,7 @@ QUERIES = {
     "gallery": """SELECT id, kind, title, caption, object_key AS objectKey,
                   external_url AS externalUrl, created_at AS createdAt FROM gallery_items
                   WHERE published = 1 ORDER BY created_at DESC, id DESC""",
-    "memories": """SELECT id, name, relationship, title, story, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo3_name AS photo3Name, photo4_name AS photo4Name, photo5_name AS photo5Name, photo_key AS photoKey,
+    "memories": """SELECT id, name, relationship, title, story, photo_caption AS photoCaption, photo2_caption AS photo2Caption, photo3_caption AS photo3Caption, photo4_caption AS photo4Caption, photo5_caption AS photo5Caption, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key, photo3_name AS photo3Name, photo4_name AS photo4Name, photo5_name AS photo5Name, photo_key AS photoKey,
                    video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey,
                    social_url AS socialUrl, created_at AS createdAt FROM memories
                    WHERE status = 'approved' ORDER BY CASE WHEN id = 11 THEN 0 WHEN id = 12 THEN 1 ELSE 2 END, created_at ASC, id ASC""",
@@ -128,6 +128,10 @@ def main():
             for field in ("key", "name"):
                 alias = "Key" if field == "key" else "Name"
                 QUERIES["memories"] = QUERIES["memories"].replace(f"photo{slot}_{field} AS photo{slot}{alias}, ", "")
+    for slot in range(1, 6):
+        prefix = "photo" if slot == 1 else f"photo{slot}"
+        if f"{prefix}_caption" not in columns:
+            QUERIES["memories"] = QUERIES["memories"].replace(f"{prefix}_caption AS {prefix}Caption, ", "")
     (OUTPUT / "api").mkdir(parents=True, exist_ok=True)
     (OUTPUT / "media").mkdir(parents=True, exist_ok=True)
     rows = {name: query(sql) for name, sql in QUERIES.items() if name not in ("tree_total", "restoration_total")}

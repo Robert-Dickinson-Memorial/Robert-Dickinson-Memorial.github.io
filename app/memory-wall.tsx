@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink, FileText, Quote } from "lucide-react";
 
-type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
+type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photoCaption: string | null; photo2Caption: string | null; photo3Caption: string | null; photo4Caption: string | null; photo5Caption: string | null; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
 
 // Liming Zhou and Haishan Chen informed the owner first, before their uploads.
 // Treat them as the earliest submissions and reverse the entire order for newest first.
@@ -20,7 +20,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
     if (!document.querySelector("script[data-memory-reader-media]")) {
       const script = document.createElement("script");
       script.type = "module";
-      script.src = "/memory-reader-media.js?v=20261006-photos1";
+      script.src = "/memory-reader-media.js?v=20261009-captions1";
       script.dataset.memoryReaderMedia = "";
       document.head.append(script);
     }
@@ -65,7 +65,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
 
   return (
     <>
-    <label className="memory-sort">Sort memories <select aria-label="Sort memories" value={sortOrder} onChange={event => setSortOrder(event.target.value)}><option value="oldest">Oldest to newest</option><option value="newest">Newest to oldest</option></select></label>
+    <label className="memory-sort">↕ Sort posts by upload order <select aria-label="Sort memories" value={sortOrder} onChange={event => setSortOrder(event.target.value)}><option value="oldest">Oldest to newest</option><option value="newest">Newest to oldest</option></select></label>
     <div className="memory-grid" ref={gridRef}>
       {[...memories].sort((a, b) => (sortOrder === "newest" ? -1 : 1) * (memoryPriority(a) - memoryPriority(b) || (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id)).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
@@ -76,7 +76,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
           {(memory.videoKey || memory.photoKey || memory.photo2Key || memory.photo3Key || memory.photo4Key || memory.photo5Key) && <div className="memory-card-media">
           {memory.videoKey
             ? <video className="memory-video" controls playsInline preload="metadata" aria-label={memory.title} src={`/api/memory-videos/${memory.videoKey.split("/").map(encodeURIComponent).join("/")}`} />
-            : [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter(Boolean).map((key, index) => <img key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
+            : [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].map((key, index) => key && <img data-photo-caption={memory[index === 0 ? "photoCaption" : `photo${index + 1}Caption` as keyof Memory] || ""} key={key} src={`/api/photos/${key}`} alt={`Photo ${index + 1} shared by ${memory.name}`} loading="lazy" />)}
           </div>}
           <h3>{memory.title}</h3>
           {memory.story && <div className="memory-story-space"><p className="memory-story">{memory.story}</p>

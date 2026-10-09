@@ -166,7 +166,7 @@ export async function renderMemoryBook(target, data, options={}) {
   // Preserve the public memorial's editorial ordering, including pinned contributors.
   for(const memory of memories){
     page(memory.name,'kb-memory-page');const memoryFirstPage=current;bodyGroup(el('p',memory.relationship||c('book.memoryPrefix','A memory from'),'kb-kicker'),el('h2',memory.title||memory.name),el('p',memory.name,'kb-byline'));
-    for(const [index,key] of [memory.photoKey,memory.photo2Key,memory.photo3Key, memory.photo4Key, memory.photo5Key].entries())if(key)append(figure(media('/api/photos',key),'',`${c('book.memoryPrefix','A memory from')} ${memory.name}`,index===0?'kb-memory-photo':'kb-gallery-image'));
+    for(const [index,key] of [memory.photoKey,memory.photo2Key,memory.photo3Key, memory.photo4Key, memory.photo5Key].entries())if(key)append(figure(media('/api/photos',key),memory[index===0?'photoCaption':`photo${index+1}Caption`]||'',`${c('book.memoryPrefix','A memory from')} ${memory.name}`,index===0?'kb-memory-photo':'kb-gallery-image'));
     const storyStart=pages.length;prose(memory.story,'kb-drop-cap');balanceTail(storyStart);
     if(pages.length>storyStart&&memory.photoKey){const last=body.lastElementChild,bottom=last?last.offsetTop+last.offsetHeight:0;if(body.clientHeight-bottom>300){const closingPhoto=figure(media('/api/photos',memory.photoKey),'',memory.name,'kb-memory-closing-photo');body.append(closingPhoto);if(!fits())closingPhoto.remove();}}
     if(memory.pdfKey||memory.videoKey||memory.socialUrl){

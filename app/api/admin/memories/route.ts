@@ -36,6 +36,18 @@ export async function PATCH(request: Request) {
   const action = body.action;
   if (!Number.isInteger(id) || id < 1) return Response.json({ error: "Invalid memory." }, { status: 400 });
 
+  if (action === "photo-caption") {
+    const slot = Number(body.slot);
+    if (![1, 2, 3, 4, 5].includes(slot)) return Response.json({ error: "Invalid photo slot." }, { status: 400 });
+    if (typeof body.caption !== "string" || body.caption.length > 1000) return Response.json({ error: "Use a caption of up to 1,000 characters." }, { status: 400 });
+    if (typeof body.expectedPhotoKey !== "string" || !body.expectedPhotoKey) return Response.json({ error: "Save a photograph before adding its caption." }, { status: 400 });
+    const prefix = slot === 1 ? "photo" : `photo${slot}`;
+    const result = await env.DB.prepare(`UPDATE memories SET ${prefix}_caption = ? WHERE id = ? AND status = 'approved' AND ${prefix}_key = ?`)
+      .bind(body.caption.trim() || null, id, body.expectedPhotoKey).run();
+    if (!result.meta.changes) return Response.json({ error: "This photo changed. Reload the editor before saving its caption." }, { status: 409 });
+    return Response.json({ ok: true, id, slot });
+  }
+
   if (action === "edit") {
     const name = clean(body.name, 100);
     const relationship = clean(body.relationship, 120);
@@ -144,7 +156,7 @@ export async function DELETE(request: Request) {
     if (!key) return Response.json({ error: "This memory has no photo in that slot." }, { status: 404 });
     const keyColumn = mode === "photo" ? "photo_key" : `${mode}_key`;
     const nameColumn = mode === "photo" ? "photo_name" : `${mode}_name`;
-    await env.DB.prepare(`UPDATE memories SET ${keyColumn} = NULL, ${nameColumn} = NULL WHERE id = ? AND status = 'approved'`).bind(id).run();
+    await env.DB.prepare(`UPDATE memories SET ${keyColumn} = NULL, ${nameColumn} = NULL, ${mode}_caption = NULL WHERE id = ? AND status = 'approved'`).bind(id).run();
     await env.BUCKET.delete(key);
     return Response.json({ ok: true, id, deleted: mode });
   }

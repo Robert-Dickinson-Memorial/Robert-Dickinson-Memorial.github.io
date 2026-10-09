@@ -4307,5 +4307,7 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
  .event-feature-copy { padding:24px; }
 }
 
-.memory-sort { display:flex; align-items:center; justify-content:flex-end; gap: .65rem; margin: 0 0 1.25rem; font-size:.95rem; }
-.memory-sort select { padding:.55rem .8rem; border:1px solid #b7c9c4; border-radius:.5rem; color:#163b35; background:#fff; font:inherit; }
+.memory-sort { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; margin:0 0 1.5rem; padding:1.1rem 1.4rem; border:2px solid #527d70; border-radius:.75rem; background:#e9f2ed; color:#163b35; font-size:1.1rem; font-weight:700; }
+.memory-sort select { padding:.75rem 1rem; min-width:220px; border:2px solid #527d70; border-radius:.5rem; color:#163b35; background:#fff; font:inherit; cursor:pointer; }
+.memory-sort select:focus-visible { outline:3px solid #a66b31; outline-offset:3px; }
+@media(max-width:540px) { .memory-sort select { width:100%; } }

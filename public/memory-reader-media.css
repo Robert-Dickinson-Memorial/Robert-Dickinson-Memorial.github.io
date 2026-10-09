@@ -145,3 +145,5 @@ html.memory-media-reading { overflow: hidden; }
   .memory-photo-controls { justify-content: flex-start; gap: 5px; }
   .memory-photo-controls button, .memory-photo-original { font-size: 13px; padding: 8px 10px; }
 }
+
+.memory-story-photo-caption { white-space:pre-wrap; overflow-wrap:anywhere; }

@@ -6,7 +6,7 @@ import { BookOpen, CalendarPlus, FileUp, FileX, ImageOff, ImagePlus, Save, Trash
 import type { GalleryItem, LegacyChapter, LegacyPublication, MemorialEvent, SiteContent } from "../site-data";
 
 type MemorialEditor = { email: string; displayName: string | null; createdAt: string };
-type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; photoName: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
+type PublishedMemory = { id: number; name: string; relationship: string; title: string; story: string; photoCaption: string | null; photo2Caption: string | null; photo3Caption: string | null; photo4Caption: string | null; photo5Caption: string | null; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo4Key: string | null; photo5Key: string | null; photo3Name: string | null; photo4Name: string | null; photo5Name: string | null; photoKey: string | null; photoName: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; pdfName: string | null; socialUrl: string | null };
 
 async function responseData(response: Response) {
   const data = await response.json();
@@ -406,6 +406,20 @@ export default function Manager({ content, events, media, publishedMemories, edi
     } catch (error) { setMessage(error instanceof Error ? error.message : "Please try again."); setBusy(false); }
   }
 
+  async function savePhotoCaption(id: number, form: HTMLFormElement, slot: number) {
+    const key = form.querySelector<HTMLInputElement>(`[data-current-photo-key][data-slot="${slot}"]`)?.value;
+    if (!key) return;
+    const caption = form.querySelector<HTMLTextAreaElement>(`[data-photo-caption][data-slot="${slot}"]`)?.value || "";
+    await responseData(await fetch("/api/admin/memories", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ id, action: "photo-caption", slot, caption, expectedPhotoKey: key }) }));
+  }
+
+  async function saveCaptionButton(id: number, form: HTMLFormElement, slot: number) {
+    setBusy(true);
+    try { await savePhotoCaption(id, form, slot); setMemoryMessages(previous => ({...previous, [id]: `Photo ${slot} caption saved.`})); }
+    catch(error) { setMemoryMessages(previous => ({...previous, [id]: error instanceof Error ? error.message : "Unable to save caption."})); }
+    finally { setBusy(false); }
+  }
+
   async function savePublishedMemory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage("");
     const formElement = event.currentTarget;
@@ -421,6 +435,8 @@ export default function Manager({ content, events, media, publishedMemories, edi
       for (const slot of [1, 2, 3, 4, 5]) if (formElement.querySelector<HTMLInputElement>(`[data-memory-photo][data-slot="${slot}"]`)?.files?.length) {
         await sendMemoryAttachment(id, formElement, "photo", slot); saved.push(`photo ${slot}`);
       }
+      for (const slot of [1, 2, 3, 4, 5]) await savePhotoCaption(id, formElement, slot);
+      saved.push("photo captions");
       if (owner && formElement.querySelector<HTMLInputElement>("[data-memory-pdf]")?.files?.length) {
         await sendMemoryAttachment(id, formElement, "pdf"); saved.push("PDF");
       }
@@ -728,6 +744,8 @@ export default function Manager({ content, events, media, publishedMemories, edi
                       <input type="hidden" data-current-photo-key data-slot={slot} value={photoKey || ""} readOnly />
                       {photoKey && <img className="manager-image-preview" src={`/api/photos/${photoKey.split("/").map(encodeURIComponent).join("/")}`} alt={`Photo ${slot} for ${item.title}`} />}
                       <label>Photo {slot} · {photoKey ? "Replace" : "Add"} <span>JPG, PNG, or WebP, up to 12 MB.</span><input data-memory-photo data-slot={slot} type="file" accept="image/jpeg,image/png,image/webp" /></label>
+                      <label>Caption for photo {slot}<span>Names, place, date, or the story behind this photograph.</span><textarea data-photo-caption data-slot={slot} rows={2} maxLength={1000} defaultValue={item[slot === 1 ? "photoCaption" : `photo${slot}Caption` as keyof PublishedMemory] || ""} /></label>
+                      {photoKey && <button type="button" className="manager-secondary" disabled={busy} onClick={event => saveCaptionButton(item.id, event.currentTarget.closest("form") as HTMLFormElement, slot)}>Save caption {slot}</button>}
                       <button type="button" className="manager-secondary" disabled={busy} onClick={event => uploadMemoryAttachment(item.id, event.currentTarget.closest("form") as HTMLFormElement, "photo", slot)}><ImagePlus size={16} /> Save photo {slot}</button>
                       {photoKey && <button type="button" className="manager-danger" disabled={busy} onClick={() => removePublishedMemory(item.id, item.title, slot === 5 ? "photo5" : slot === 4 ? "photo4" : slot === 1 ? "photo" : slot === 2 ? "photo2" : "photo3")}><ImageOff size={16} /> Delete photo {slot}</button>}
                     </div>;

@@ -726,7 +726,7 @@ function eventDescriptionParts(description) {
     const copy = content.pageCopy || editableCopy || {};
     let sortControl = pageDocument.querySelector("[data-memory-sort]");
     if (!sortControl) {
-      const label = node("label", { className: "memory-sort", text: "Sort memories " });
+      const label = node("label", { className: "memory-sort", text: "↕ Sort posts by upload order " });
       sortControl = node("select", { attrs: { "data-memory-sort": "", "aria-label": "Sort memories" } });
       sortControl.append(node("option", { text: "Oldest to newest", attrs: { value: "oldest" } }), node("option", { text: "Newest to oldest", attrs: { value: "newest" } }));
       sortControl.value = memorySortOrder;
@@ -768,7 +768,7 @@ function eventDescriptionParts(description) {
           if (memory.videoKey) {
             media.append(node("video", { attrs: { src: objectUrl("/api/memory-videos", memory.videoKey), controls: "", playsinline: "", preload: "metadata", class: "memory-video", "aria-label": memory.title } }));
           } else {
-            for (const key of [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].filter(Boolean)) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, loading: "lazy" } }));
+            for (const [index, key] of [memory.photoKey, memory.photo2Key, memory.photo3Key, memory.photo4Key, memory.photo5Key].entries()) if (key) media.append(node("img", { attrs: { src: objectUrl("/api/photos", key), alt: `Shared by ${memory.name}`, "data-photo-caption": memory[index === 0 ? "photoCaption" : `photo${index + 1}Caption`] || "", loading: "lazy" } }));
           }
           if (media.childElementCount) article.append(media);
           article.append(node("h3", { text: memory.title }));

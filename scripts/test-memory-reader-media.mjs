@@ -52,7 +52,9 @@ try {
     });
     assert.ok(photoId, 'A published memory with a photograph is required for this test');
     const card = page.locator(`[id="${photoId}"]`);
+    if (server) await card.locator(".memory-card-media img").first().evaluate(img => { img.dataset.photoCaption = "Robert and colleagues — <field visit>, 2002."; });
     const source = await card.evaluate(c => ({
+      captions:[...c.querySelectorAll(".memory-card-media img")].map(i=>i.dataset.photoCaption || ""),
       story:c.querySelector('.memory-reader-story').textContent,
       images:[...new Set([...c.querySelectorAll('.memory-card-media img')].map(i=>i.currentSrc || i.src))]
     }));
@@ -60,6 +62,7 @@ try {
     const reader = page.locator('.memory-reader--illustrated[open]');
     await reader.waitFor();
     assert.equal(await reader.locator('.memory-reader-story').textContent(), source.story, 'Full story text must not change');
+    for (let i=0;i<source.captions.length;i++) if(source.captions[i]) assert.equal(await reader.locator('.memory-story-photo-caption').nth(i).textContent(),source.captions[i], 'Photo captions render as saved, including literal markup characters');
     assert.equal(await reader.locator('.memory-story-photo').count(), source.images.length, 'All attached photographs must appear');
     assert.deepEqual(await reader.locator('.memory-story-photo').evaluateAll(images=>images.map(i=>i.src)), source.images, 'Use the same approved image URLs, not thumbnail copies');
     await page.waitForFunction(() => document.querySelector('.memory-story-photo')?.naturalWidth > 0, null, {timeout:30000});

@@ -42,7 +42,7 @@ export async function GET() {
     if (!env.DB) throw new Error("Database unavailable");
     await permanentlyRemoveLimingPhotos();
     const result = await env.DB.prepare(
-      `SELECT id, name, relationship, title, story, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key,
+      `SELECT id, name, relationship, title, story, photo_caption AS photoCaption, photo2_caption AS photo2Caption, photo3_caption AS photo3Caption, photo4_caption AS photo4Caption, photo5_caption AS photo5Caption, photo_key AS photoKey, photo2_key AS photo2Key, photo3_key AS photo3Key, photo4_key AS photo4Key, photo5_key AS photo5Key,
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
               created_at AS createdAt
        FROM memories WHERE status = ?
