@@ -46,7 +46,7 @@ export async function GET() {
               video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey, social_url AS socialUrl,
               created_at AS createdAt
        FROM memories WHERE status = ?
-       ORDER BY created_at ASC, id ASC`
+       ORDER BY CASE WHEN id = 11 THEN 0 WHEN id = 12 THEN 1 ELSE 2 END, created_at ASC, id ASC`
     ).bind("approved").all();
     return publicJson({ memories: result.results }, { headers: { "cache-control": "no-store, max-age=0" } });
   } catch {

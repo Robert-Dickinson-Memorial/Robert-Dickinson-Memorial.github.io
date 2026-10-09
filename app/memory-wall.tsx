@@ -5,6 +5,9 @@ import { ExternalLink, FileText, Quote } from "lucide-react";
 
 type Memory = { id: number; name: string; relationship: string; title: string; story: string; createdAt: string; photo2Key: string | null; photo2Name: string | null; photo3Key: string | null; photo3Name: string | null; photoKey: string | null; videoKey: string | null; videoName: string | null; pdfKey: string | null; socialUrl: string | null };
 
+// Pin Liming Zhou and Haishan Chen; everyone else follows original upload time.
+const memoryPriority = (memory: Memory) => memory.id === 11 ? 0 : memory.id === 12 ? 1 : 2;
+
 export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -60,7 +63,7 @@ export default function MemoryWall({ copy }: { copy: Record<string, string> }) {
 
   return (
     <div className="memory-grid" ref={gridRef}>
-      {[...memories].sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id).map((memory) => (
+      {[...memories].sort((a, b) => memoryPriority(a) - memoryPriority(b) || (a.createdAt || "").localeCompare(b.createdAt || "") || a.id - b.id).map((memory) => (
         <article className="memory-card" id={`memory-${memory.id}`} key={memory.id}>
           <header className="memory-author">
             <span className="memory-author-mark" aria-hidden="true">{memory.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("")}</span>

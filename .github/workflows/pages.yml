@@ -105,7 +105,9 @@ jobs:
               raise SystemExit(f"Missing public memory: {' '.join(tokens)}")
 
           zong = find_person(("zong", "liang", "yang"))
-          order = [(str(item.get("createdAt") or ""), int(item["id"])) for item in data]
+          order = [(str(item.get("createdAt") or ""), int(item["id"])) for item in data[2:]]
+          if [int(item["id"]) for item in data[:2]] != [11, 12]:
+              raise SystemExit("Liming Zhou and Haishan Chen must be first and second")
           if order != sorted(order):
               raise SystemExit("Memories are not ordered by original upload time, earliest first")
 
@@ -177,7 +179,9 @@ jobs:
                   zong = next(i for i,n in enumerate(names) if {"zong","liang","yang"} <= set(normalize(n).split()))
                   if 'path === "/api/memories"' not in js:
                       raise AssertionError("published site.js is not the live-first memories renderer")
-                  order = [(str(item.get("createdAt") or ""), int(item["id"])) for item in payload["memories"]]
+                  order = [(str(item.get("createdAt") or ""), int(item["id"])) for item in payload["memories"][2:]]
+                  if [int(item["id"]) for item in payload["memories"][:2]] != [11, 12]:
+                      raise AssertionError("published pinned memories are not first and second")
                   if order != sorted(order):
                       raise AssertionError("published memories are not earliest-upload-first")
                   story = str(payload["memories"][zong].get("story") or "")

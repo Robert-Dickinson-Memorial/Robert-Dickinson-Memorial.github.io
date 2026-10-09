@@ -728,7 +728,10 @@ function eventDescriptionParts(description) {
       if (!memories.length) {
         wallTarget.replaceChildren(node("p", { className: "memories-empty", text: copy["memories.emptyText"] || "Approved community memories will appear here." }));
       } else {
+        // Keep the two requested tributes first; all others follow upload time.
+        const memoryPriority = (memory) => Number(memory.id) === 11 ? 0 : Number(memory.id) === 12 ? 1 : 2;
         const orderedMemories = [...memories].sort((a, b) =>
+          memoryPriority(a) - memoryPriority(b) ||
           String(a.createdAt || "").localeCompare(String(b.createdAt || "")) ||
           Number(a.id || 0) - Number(b.id || 0));
         wallTarget.replaceChildren(...orderedMemories.map((memory) => {

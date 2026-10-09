@@ -25,7 +25,7 @@ QUERIES = {
     "memories": """SELECT id, name, relationship, title, story, photo2_key AS photo2Key, photo2_name AS photo2Name, photo3_key AS photo3Key, photo3_name AS photo3Name, photo_key AS photoKey,
                    video_key AS videoKey, video_name AS videoName, pdf_key AS pdfKey,
                    social_url AS socialUrl, created_at AS createdAt FROM memories
-                   WHERE status = 'approved' ORDER BY created_at ASC, id ASC""",
+                   WHERE status = 'approved' ORDER BY CASE WHEN id = 11 THEN 0 WHEN id = 12 THEN 1 ELSE 2 END, created_at ASC, id ASC""",
     "tree_total": "SELECT COALESCE(SUM(reported_tree_count), 0) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'tree' AND payment_confirmed = 1",
     "restoration_total": "SELECT COUNT(*) AS total FROM tree_dedications WHERE status = 'approved' AND contribution_type = 'restoration' AND payment_confirmed = 1",
 }
