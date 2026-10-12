@@ -45,6 +45,11 @@ export default function EventProgram({ copy, eventId }: {
   if (!readUrl && !printUrl) return null;
   const headingId = `event-program-title-${eventId}`;
   return <aside className="event-program-resource" data-event-program aria-labelledby={headingId}>
+    <div className="event-recording" data-event-recording>
+      <h4>Event recording</h4>
+      <a className="event-program-link event-program-link-primary" href="https://ucla.zoom.us/rec/share/odWEcQy_4uHSVW9DGc20vJxVnmwUsYr_OfqwPyrkrNqkn4Isr4PDWE7w2c9jwpNJ.vyD-KyooHWoriwwI" target="_blank" rel="noopener noreferrer">Watch the recording ↗</a>
+      <p>Zoom passcode: <code>{"GT0DY?m&"}</code></p>
+    </div>
     <h4 id={headingId}>{c("Title")}</h4>
     <div className="event-program-formats">
       {readUrl && <div className="event-program-format">

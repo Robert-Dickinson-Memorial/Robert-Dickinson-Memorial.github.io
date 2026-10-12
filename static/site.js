@@ -595,6 +595,11 @@ function initializeMemorialPage() {
     if (!formats.length) return null;
     const headingId = `event-program-title-${eventId}`;
     const resource = node("aside", {className: "event-program-resource", attrs: {"data-event-program": "", "aria-labelledby": headingId}});
+    const recording = node("div", {className: "event-recording", attrs: {"data-event-recording": ""}});
+    const passcode = node("p", {text: "Zoom passcode: "});
+    passcode.append(node("code", {text: "GT0DY?m&"}));
+    recording.append(node("h4", {text: "Event recording"}), node("a", {className: "event-program-link event-program-link-primary", text: "Watch the recording ↗", attrs: {href: "https://ucla.zoom.us/rec/share/odWEcQy_4uHSVW9DGc20vJxVnmwUsYr_OfqwPyrkrNqkn4Isr4PDWE7w2c9jwpNJ.vyD-KyooHWoriwwI", target: "_blank", rel: "noopener noreferrer"}}), passcode);
+    resource.append(recording);
     resource.append(node("h4", {text: c("Title"), attrs: {id: headingId}}));
     const links = node("div", {className: "event-program-formats"});
     formats.forEach(({kind, className, url}) => {
@@ -616,7 +621,7 @@ function initializeMemorialPage() {
     return resource;
   }
 
-  let eventFilter = "upcoming";
+  let eventFilter = "all";
 // Keep the editable source intact; omit only the known invitation boilerplate.
 function eventDescriptionParts(description) {
   const redundant = new Set([

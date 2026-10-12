@@ -4308,6 +4308,9 @@ html[data-page="life"] .life-reference-page,.life-page-active {background-image:
 }
 
 /* Simple, visible sorting choices without a surrounding panel. */
+.event-recording { margin-bottom:1.5rem; padding-bottom:1.25rem; border-bottom:1px solid #d9e1dc; }
+.event-recording p { margin:.65rem 0 0; }
+.event-recording code { font-size:1rem; font-weight:600; user-select:all; }
 .memory-sort { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.35rem 1.25rem; margin:0 0 1.5rem; }
 .memory-sort-label { color:#65716b; font-size:.9rem; }
 .memory-sort-button { padding:.65rem 0; border:0; border-bottom:3px solid transparent; background:transparent; color:#56665e; font:inherit; font-size:1rem; font-weight:600; cursor:pointer; }

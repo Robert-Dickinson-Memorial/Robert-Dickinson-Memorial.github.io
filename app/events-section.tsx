@@ -20,7 +20,7 @@ function eventDescriptionParts(description: string | null | undefined) {
 }
 
 export default function EventsSection({ events, copy, portrait = "/robert-dickinson.jpg" }: { events: MemorialEvent[]; copy: Record<string, string>; portrait?: string }) {
-  const [filter, setFilter] = useState("upcoming");
+  const [filter, setFilter] = useState("all");
   const c = (key: string) => copy[`events.design.${key}`];
   const visible = events.filter(e => filter === "all" || (filter === "past") === (Date.parse(e.endAt || e.startAt) < Date.now()));
   const programEventId = visible.find(e => isMemorialProgramEvent(e, copy))?.id;
